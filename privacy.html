@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Categories - Dubizzle Clone</title>
+    <title>Privacy Policy - Dubizzle Clone</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script>
         tailwind.config = {
@@ -31,7 +31,6 @@
         }
     </script>
     <script>
-        // Apply theme immediately to prevent flashing
         if (localStorage.getItem('theme') === 'dark' || (!('theme' in localStorage) && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
             document.documentElement.classList.add('dark');
         } else {
@@ -41,7 +40,7 @@
     <link href="assets/css/style.css" rel="stylesheet">
 </head>
 
-<body class="bg-secondary dark:bg-gray-900 text-gray-800 dark:text-gray-100 transition-colors duration-300">
+<body class="bg-gray-50 dark:bg-gray-900 text-gray-800 dark:text-gray-100 transition-colors duration-300">
 
     <!-- Header -->
     <header class="site-header sticky top-0 z-50">
@@ -236,7 +235,7 @@
                                         class="block px-4 py-2 text-sm text-gray-700 dark:text-gray-200 hover:bg-gray-50 dark:hover:bg-gray-700 hover:text-accent transition"
                                         data-translate="commercialSale">Commercial for Sale</a>
                                     <a href="search.html"
-                                        class="block px-4 py-2 text-sm text-gray-700 dark:text-gray-200 hover:bg-gray-50 dark:hover:bg-gray-700 hover:text-accent transition"
+                                        class="block px-4 py-2 text-sm text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-700 hover:text-accent transition"
                                         data-translate="multipleUnits">Multiple Units</a>
                                     <a href="search.html"
                                         class="block px-4 py-2 text-sm text-gray-700 dark:text-gray-200 hover:bg-gray-50 dark:hover:bg-gray-700 hover:text-accent transition"
@@ -315,293 +314,55 @@
         </div>
     </div>
 
-    <!-- User State (Simulation) -->
-    <a href="dashboard.html"
-        class="block px-4 py-2 text-sm text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-700 hover:text-accent"
-        data-translate="myDashboard">My Dashboard</a>
-    <a href="favorites.html"
-        class="block px-4 py-2 text-sm text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-700 hover:text-accent"
-        data-translate="myFavorites">My Favorites</a>
-    </div>
-    </div>
 
-    <!-- Post Ad Button -->
-    <a href="post-ad.html"
-        class="bg-accent text-white px-4 py-2 rounded-full font-bold hover:bg-orange-600 transition shadow-md hover:shadow-lg text-sm whitespace-nowrap"
-        data-translate="postAd">Post ad</a>
-    </div>
-    </div>
-    </div>
-
-    <!-- Main Navbar (Bottom Part) -->
-    <nav class="bg-white dark:bg-gray-900 shadow-md transition-colors duration-300">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div class="flex justify-between h-16">
-                <!-- Logo -->
-                <div class="flex-shrink-0 flex items-center">
-                    <a href="index.html" class="text-2xl font-bold text-primary dark:text-white">DubizzleClone</a>
-                </div>
-
-                <!-- Desktop Menu -->
-                <div class="hidden md:flex items-center space-x-6 rtl:space-x-reverse">
-
-                    <!-- Motors Dropdown -->
-                    <div class="group relative h-full flex items-center">
-                        <a href="categories.html"
-                            class="flex items-center text-gray-700 dark:text-gray-300 hover:text-accent font-medium transition group-hover:text-accent h-full px-2">
-                            <span data-translate="motorsTitle">Motors</span>
-                            <svg class="w-4 h-4 ml-1 transition-transform group-hover:rotate-180 rtl:mr-1 rtl:ml-0"
-                                fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                    d="M19 9l-7 7-7-7"></path>
-                            </svg>
-                        </a>
-                        <div
-                            class="absolute top-full left-0 w-56 bg-white dark:bg-gray-800 shadow-xl rounded-b-lg border-t-2 border-accent opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-300 transform scale-95 origin-top group-hover:scale-100 z-50">
-                            <div class="py-2">
-                                <a href="search.html"
-                                    class="block px-4 py-2 text-sm text-gray-700 dark:text-gray-200 hover:bg-gray-50 dark:hover:bg-gray-700 hover:text-accent transition"
-                                    data-translate="usedCars">Used Cars</a>
-                                <a href="search.html"
-                                    class="block px-4 py-2 text-sm text-gray-700 dark:text-gray-200 hover:bg-gray-50 dark:hover:bg-gray-700 hover:text-accent transition"
-                                    data-translate="motorcycles">Motorcycles</a>
-                                <a href="search.html"
-                                    class="block px-4 py-2 text-sm text-gray-700 dark:text-gray-200 hover:bg-gray-50 dark:hover:bg-gray-700 hover:text-accent transition"
-                                    data-translate="heavyVehicles">Heavy Vehicles</a>
-                                <a href="search.html"
-                                    class="block px-4 py-2 text-sm text-gray-700 dark:text-gray-200 hover:bg-gray-50 dark:hover:bg-gray-700 hover:text-accent transition"
-                                    data-translate="boats">Boats</a>
-                                <a href="search.html"
-                                    class="block px-4 py-2 text-sm text-gray-700 dark:text-gray-200 hover:bg-gray-50 dark:hover:bg-gray-700 hover:text-accent transition"
-                                    data-translate="autoAccessories">Auto Accessories</a>
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- Property Dropdown -->
-                    <div class="group relative h-full flex items-center">
-                        <a href="categories.html"
-                            class="flex items-center text-gray-700 dark:text-gray-300 hover:text-accent font-medium transition group-hover:text-accent h-full px-2">
-                            <span data-translate="propertyTitle">Property</span>
-                            <svg class="w-4 h-4 ml-1 transition-transform group-hover:rotate-180 rtl:mr-1 rtl:ml-0"
-                                fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                    d="M19 9l-7 7-7-7"></path>
-                            </svg>
-                        </a>
-                        <div
-                            class="absolute top-full left-0 w-56 bg-white dark:bg-gray-800 shadow-xl rounded-b-lg border-t-2 border-accent opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-300 transform scale-95 origin-top group-hover:scale-100 z-50">
-                            <div class="py-2">
-                                <a href="search.html"
-                                    class="block px-4 py-2 text-sm text-gray-700 dark:text-gray-200 hover:bg-gray-50 dark:hover:bg-gray-700 hover:text-accent transition"
-                                    data-translate="residentialSale">Residential for Sale</a>
-                                <a href="search.html"
-                                    class="block px-4 py-2 text-sm text-gray-700 dark:text-gray-200 hover:bg-gray-50 dark:hover:bg-gray-700 hover:text-accent transition"
-                                    data-translate="commercialSale">Commercial for Sale</a>
-                                <a href="search.html"
-                                    class="block px-4 py-2 text-sm text-gray-700 dark:text-gray-200 hover:bg-gray-50 dark:hover:bg-gray-700 hover:text-accent transition"
-                                    data-translate="multipleUnits">Multiple Units</a>
-                                <a href="search.html"
-                                    class="block px-4 py-2 text-sm text-gray-700 dark:text-gray-200 hover:bg-gray-50 dark:hover:bg-gray-700 hover:text-accent transition"
-                                    data-translate="landSale">Land for Sale</a>
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- Classifieds Dropdown -->
-                    <div class="group relative h-full flex items-center">
-                        <a href="categories.html"
-                            class="flex items-center text-gray-700 dark:text-gray-300 hover:text-accent font-medium transition group-hover:text-accent h-full px-2">
-                            <span data-translate="classifiedsTitle">Classifieds</span>
-                            <svg class="w-4 h-4 ml-1 transition-transform group-hover:rotate-180 rtl:mr-1 rtl:ml-0"
-                                fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                    d="M19 9l-7 7-7-7"></path>
-                            </svg>
-                        </a>
-                        <div
-                            class="absolute top-full left-0 w-56 bg-white dark:bg-gray-800 shadow-xl rounded-b-lg border-t-2 border-accent opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-300 transform scale-95 origin-top group-hover:scale-100 z-50">
-                            <div class="py-2">
-                                <a href="search.html"
-                                    class="block px-4 py-2 text-sm text-gray-700 dark:text-gray-200 hover:bg-gray-50 dark:hover:bg-gray-700 hover:text-accent transition"
-                                    data-translate="electronics">Electronics</a>
-                                <a href="search.html"
-                                    class="block px-4 py-2 text-sm text-gray-700 dark:text-gray-200 hover:bg-gray-50 dark:hover:bg-gray-700 hover:text-accent transition"
-                                    data-translate="computers">Computers</a>
-                                <a href="search.html"
-                                    class="block px-4 py-2 text-sm text-gray-700 dark:text-gray-200 hover:bg-gray-50 dark:hover:bg-gray-700 hover:text-accent transition"
-                                    data-translate="clothing">Clothing</a>
-                                <a href="search.html"
-                                    class="block px-4 py-2 text-sm text-gray-700 dark:text-gray-200 hover:bg-gray-50 dark:hover:bg-gray-700 hover:text-accent transition"
-                                    data-translate="cameras">Cameras</a>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
+    <main class="max-w-4xl mx-auto py-16 px-4 sm:px-6 lg:px-8">
+        <div
+            class="bg-white dark:bg-gray-800 rounded-3xl shadow-xl overflow-hidden animate-fade-in border dark:border-gray-700">
+            <div class="bg-primary dark:bg-primary p-12 text-center text-white">
+                <h1 class="text-4xl font-bold mb-4" data-translate="privacyPolicy">Privacy Policy</h1>
+                <p class="opacity-80" data-translate="lastUpdated">Last Updated: February 2026</p>
             </div>
 
+            <div class="p-8 md:p-12 space-y-8 text-gray-600 dark:text-gray-400 leading-relaxed">
+                <section>
+                    <h2 class="text-2xl font-bold text-gray-900 dark:text-white mb-4" data-translate="introduction">1.
+                        Introduction</h2>
+                    <p data-translate="introText">Welcome to DubizzleClone. We respect your privacy and are committed to
+                        protecting your personal data. This privacy policy will inform you as to how we look after your
+                        personal data when you visit our website.</p>
+                </section>
 
-            <!-- Mobile Menu Button -->
-            <div class="md:hidden flex items-center">
-                <button id="mobile-menu-btn"
-                    class="text-gray-700 dark:text-gray-300 hover:text-accent focus:outline-none p-2">
-                    <svg class="h-6 w-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                            d="M4 6h16M4 12h16M4 18h16"></path>
-                    </svg>
-                </button>
+                <section>
+                    <h2 class="text-2xl font-bold text-gray-900 dark:text-white mb-4" data-translate="dataCollection">2.
+                        Data Collection</h2>
+                    <p data-translate="dataCollectionText">We collect information you provide directly to us when you
+                        create an account, post an ad, or contact support. This may include your name, email address,
+                        phone number, and location.</p>
+                </section>
+
+                <section>
+                    <h2 class="text-2xl font-bold text-gray-900 dark:text-white mb-4" data-translate="dataUsage">3. Data
+                        Usage</h2>
+                    <p data-translate="dataUsageText">We use your data to provide our services, improve user experience,
+                        and communicate with you. We do not sell your personal data to third parties.</p>
+                </section>
+
+                <section>
+                    <h2 class="text-2xl font-bold text-gray-900 dark:text-white mb-4" data-translate="security">4.
+                        Security</h2>
+                    <p data-translate="securityText">We implement industry-standard security measures to protect your
+                        information from unauthorized access.</p>
+                </section>
+
+                <section>
+                    <h2 class="text-2xl font-bold text-gray-900 dark:text-white mb-4" data-translate="cookies">5.
+                        Cookies</h2>
+                    <p data-translate="cookiesText">We use cookies to enhance your browsing experience and analyze site
+                        traffic.</p>
+                </section>
             </div>
         </div>
-        </div>
-    </nav>
-    </header> <!-- Mobile Menu -->
-    <div id="mobile-menu" class="hidden-menu md:hidden bg-white border-t border-gray-100 animate-fade-in">
-        <div class="px-2 pt-2 pb-3 space-y-1 sm:px-3">
-            <a href="categories.html" data-translate="mobileMenuCategories"
-                class="block px-3 py-2 rounded-md text-base font-medium text-gray-700 hover:text-accent hover:bg-gray-50">Categories</a>
-            <a href="search.html" data-translate="mobileMenuForSale"
-                class="block px-3 py-2 rounded-md text-base font-medium text-gray-700 hover:text-accent hover:bg-gray-50">For
-                Sale</a>
-            <a href="login.html" data-translate="mobileMenuLogin"
-                class="block px-3 py-2 rounded-md text-base font-medium text-primary hover:bg-gray-50">Log in / Sign
-                up</a>
-            <a href="post-ad.html" data-translate="mobileMenuPostAd"
-                class="block px-3 py-2 mt-4 text-center text-white bg-accent rounded-md font-bold">Post an Ad</a>
-        </div>
-    </div>
-    </nav>
-
-
-    <div class="max-w-7xl mx-auto py-12 px-4 sm:px-6 lg:px-8 animate-fade-in">
-        <h1 class="text-4xl font-bold text-gray-900 dark:text-white mb-10 text-center" data-translate="allCategories">
-            All Categories
-        </h1>
-
-        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-
-            <!-- Motors -->
-            <div
-                class="bg-white dark:bg-gray-800 rounded-xl shadow-md overflow-hidden hover:shadow-lg transition-all duration-300">
-                <div
-                    class="bg-blue-50 dark:bg-blue-900/20 p-4 border-b border-blue-100 dark:border-blue-800 flex items-center">
-                    <div
-                        class="p-2 bg-blue-100 dark:bg-blue-900/40 rounded-full mr-3 text-primary dark:text-blue-400 rtl:ml-3 rtl:mr-0">
-                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                d="M13 10V3L4 14h7v7l9-11h-7z"></path>
-                        </svg>
-                    </div>
-                    <h2 class="text-xl font-bold text-gray-900 dark:text-white" data-translate="motorsTitle">Motors</h2>
-                </div>
-                <div class="p-4">
-                    <ul class="space-y-2 text-gray-600 dark:text-gray-300">
-                        <li><a href="search.html" class="hover:text-accent transition" data-translate="usedCars">Used
-                                Cars for Sale</a></li>
-                        <li><a href="search.html" class="hover:text-accent transition"
-                                data-translate="motorcycles">Motorcycles - Scooters</a></li>
-                        <li><a href="search.html" class="hover:text-accent transition"
-                                data-translate="heavyVehicles">Heavy Vehicles</a></li>
-                        <li><a href="search.html" class="hover:text-accent transition" data-translate="boats">Boats</a>
-                        </li>
-                        <li><a href="search.html" class="hover:text-accent transition"
-                                data-translate="autoAccessories">Auto Accessories & Parts</a></li>
-                    </ul>
-                </div>
-            </div>
-
-            <!-- Property for Sale -->
-            <div class="bg-white dark:bg-gray-800 rounded-xl shadow-md overflow-hidden hover:shadow-lg transition">
-                <div
-                    class="bg-green-50 dark:bg-green-900/20 p-4 border-b border-green-100 dark:border-green-800 flex items-center">
-                    <div
-                        class="p-2 bg-green-100 dark:bg-green-900/40 rounded-full mr-3 text-green-700 dark:text-green-400 rtl:ml-3 rtl:mr-0">
-                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4">
-                            </path>
-                        </svg>
-                    </div>
-                    <h2 class="text-xl font-bold text-gray-900 dark:text-white" data-translate="propertyTitle">Property
-                        for Sale</h2>
-                </div>
-                <div class="p-4">
-                    <ul class="space-y-2 text-gray-600 dark:text-gray-300">
-                        <li><a href="search.html" class="hover:text-accent transition"
-                                data-translate="residentialSale">Residential for Sale</a></li>
-                        <li><a href="search.html" class="hover:text-accent transition"
-                                data-translate="commercialSale">Commercial for Sale</a></li>
-                        <li><a href="search.html" class="hover:text-accent transition"
-                                data-translate="multipleUnits">Multiple Units for Sale</a></li>
-                        <li><a href="search.html" class="hover:text-accent transition" data-translate="landSale">Land
-                                for Sale</a></li>
-                    </ul>
-                </div>
-            </div>
-
-            <!-- Classifieds -->
-            <div class="bg-white dark:bg-gray-800 rounded-xl shadow-md overflow-hidden hover:shadow-lg transition">
-                <div
-                    class="bg-yellow-50 dark:bg-yellow-900/20 p-4 border-b border-yellow-100 dark:border-yellow-800 flex items-center">
-                    <div
-                        class="p-2 bg-yellow-100 dark:bg-yellow-900/40 rounded-full mr-3 text-yellow-700 dark:text-yellow-400 rtl:ml-3 rtl:mr-0">
-                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6">
-                            </path>
-                        </svg>
-                    </div>
-                    <h2 class="text-xl font-bold text-gray-900 dark:text-white" data-translate="classifiedsTitle">
-                        Classifieds</h2>
-                </div>
-                <div class="p-4">
-                    <ul class="space-y-2 text-gray-600 dark:text-gray-300">
-                        <li><a href="search.html" class="hover:text-accent transition"
-                                data-translate="electronics">Electronics</a></li>
-                        <li><a href="search.html" class="hover:text-accent transition"
-                                data-translate="computers">Computers & Networking</a></li>
-                        <li><a href="search.html" class="hover:text-accent transition"
-                                data-translate="clothing">Clothing & Accessories</a></li>
-                        <li><a href="search.html" class="hover:text-accent transition" data-translate="cameras">Cameras
-                                & Imaging</a></li>
-                        <li><a href="search.html" class="hover:text-accent transition" data-translate="jewelry">Jewelry
-                                & Watches</a></li>
-                    </ul>
-                </div>
-            </div>
-
-            <!-- Jobs -->
-            <div class="bg-white dark:bg-gray-800 rounded-xl shadow-md overflow-hidden hover:shadow-lg transition">
-                <div
-                    class="bg-purple-50 dark:bg-purple-900/20 p-4 border-b border-purple-100 dark:border-purple-800 flex items-center">
-                    <div
-                        class="p-2 bg-purple-100 dark:bg-purple-900/40 rounded-full mr-3 text-purple-700 dark:text-purple-400 rtl:ml-3 rtl:mr-0">
-                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                d="M21 13.255A23.931 23.931 0 0112 15c-3.183 0-6.22-.62-9-1.745M16 6V4a2 2 0 00-2-2h-4a2 2 0 00-2 2v2m4 6h.01M5 20h14a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z">
-                            </path>
-                        </svg>
-                    </div>
-                    <h2 class="text-xl font-bold text-gray-900 dark:text-white" data-translate="jobsTitle">Jobs</h2>
-                </div>
-                <div class="p-4">
-                    <ul class="space-y-2 text-gray-600 dark:text-gray-300">
-                        <li><a href="search.html" class="hover:text-accent transition"
-                                data-translate="accounting">Accounting</a></li>
-                        <li><a href="search.html" class="hover:text-accent transition"
-                                data-translate="engineering">Engineering</a></li>
-                        <li><a href="search.html" class="hover:text-accent transition" data-translate="sales">Sales</a>
-                        </li>
-                        <li><a href="search.html" class="hover:text-accent transition" data-translate="media">Media</a>
-                        </li>
-                        <li><a href="search.html" class="hover:text-accent transition"
-                                data-translate="medical">Medical</a></li>
-                    </ul>
-                </div>
-            </div>
-
-        </div>
-    </div>
+    </main>
 
     <!-- Footer -->
     <footer
