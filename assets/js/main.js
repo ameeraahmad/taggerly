@@ -157,7 +157,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 if ((el.tagName === 'INPUT' || el.tagName === 'TEXTAREA') && el.getAttribute('placeholder')) {
                     el.setAttribute('placeholder', translations[lang][key]);
                 } else {
-                    el.textContent = translations[lang][key];
+                    el.innerHTML = translations[lang][key];
                 }
             }
         });

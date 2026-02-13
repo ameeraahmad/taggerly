@@ -29,8 +29,7 @@ const arTranslations = {
     city_qatar: "الدوحة",
 
     // Cities List
-    dubai: "دبي",
-    abuDhabi: "أبو ظبي",
+
     sharjah: "الشارقة",
     ajman: "عجمان",
     cairo: "القاهرة",
@@ -203,18 +202,32 @@ const arTranslations = {
     categoryLabel: "القسم",
     priceLabel: "السعر (درهم)",
     locationLabel: "الموقع",
+    featuredBadge: "مميز",
+    ads: "إعلان",
+    previous: "السابق",
+    next: "التالي",
+    adTitle1: "تويوتا كامري 2024 - مواصفات خليجية",
+    adDesc1: "حالة ممتازة، مالك أول، مسافة مقطوعة قليلة. تاريخ الخدمة متوفر. اتصل للمعاينة.",
+    adTitle2: "فورد موستانج 2018 - V8 GT",
+    adDesc2: "مواصفات أمريكية، عادم معدل، إطارات جديدة. سيارة قوية جداً.",
 
     // Post Ad
     postAdTitle: "نشر إعلان",
     cancel: "إلغاء",
     adTitleLabel: "عنوان الإعلان",
     adTitlePlaceholder: "مثال: ايفون 14 برو ماكس للبيع",
-    descriptionLabel: "الوصف",
-    descriptionPlaceholder: "وصف الغرض...",
+    descriptionLabel: "وصف الإعلان",
+    descriptionPlaceholder: "أدخل وصفاً للإعلان...",
     photosLabel: "الصور",
     uploadFile: "رفع ملف",
     dragDrop: "أو اسحب وأفلت",
     postNow: "انشر الآن",
+    selectCategory: "اختر القسم",
+    forRent: "للايجار",
+    homeGarden: "المنزل والحديقة",
+    termsConditions: "الشروط والأحكام",
+    pricePlaceholder: "مثال: 3500",
+    uploadLimits: "PNG, JPG, GIF بحد أقصى 5 ميجابايت",
 
     // Categories Page
     motorsTitle: "موتورات",
@@ -270,6 +283,11 @@ const arTranslations = {
     details: "التفاصيل",
     call: "اتصال",
     chat: "دردشة",
+    breadcrumbToyota: "تويوتا",
+    breadcrumbCamry: "تويوتا كامري 2024",
+    adDescriptionText: "بيع سيارتي تويوتا كامري موديل 2024. مواصفات خليجية، مشتراة من الفطيم.<br><br>- مالك أول<br>- خالية من الحوادث<br>- تاريخ خدمة كامل<br>- تحت الضمان حتى 2029<br>- مسافة مقطوعة قليلة (فقط 15,000 كم)<br><br>السيارة بحالة الوكالة. الداخلية لا تزال برائحة الجديدة. سبب البيع: الترقية إلى SUV. السعر قابل للتفاوض قليلاً للمشترين الجادين. يرجى عدم الاتصال للتفاوض البخس.",
+    adDetailsTitle: "تويوتا كامري 2024 - حالة ممتازة",
+    postedTime: "نشر منذ ساعتين",
     sellerInfo: "معلومات البائع",
     memberSince: "عضو منذ",
     viewProfile: "عرض الملف",
@@ -277,4 +295,5 @@ const arTranslations = {
     meetPublic: "قابل في مكان عام.",
     checkItem: "افحص الغرض قبل الشراء.",
     payAfter: "ادفع فقط بعد استلام الغرض.",
+    timeAgo: "منذ ساعتين",
 };

@@ -362,7 +362,7 @@
                     <h1 class="text-2xl font-bold text-gray-900 dark:text-white"><span
                             data-translate="searchResults">Search
                             Results</span> <span class="text-gray-400 dark:text-gray-500 text-lg font-normal">(124
-                            ads)</span></h1>
+                            <span data-translate="ads">ads</span>)</span></h1>
                     <div
                         class="flex items-center space-x-2 text-sm text-gray-600 dark:text-gray-400 rtl:space-x-reverse">
                         <span data-translate="sortBy">Sort by:</span>
@@ -387,8 +387,8 @@
                         <div class="h-48 sm:h-auto sm:w-64 bg-gray-200 dark:bg-gray-700 relative flex-shrink-0">
                             <img src="https://images.unsplash.com/photo-1533473359331-0135ef1b58bf?ixlib=rb-1.2.1&auto=format&fit=crop&w=634&q=80"
                                 class="w-full h-full object-cover transition duration-300 group-hover:scale-105">
-                            <div
-                                class="absolute top-2 left-2 bg-accent text-white text-xs font-bold px-2 py-1 rounded rtl:right-2 rtl:left-auto">
+                            <div class="absolute top-2 left-2 bg-accent text-white text-xs font-bold px-2 py-1 rounded rtl:right-2 rtl:left-auto"
+                                data-translate="featuredBadge">
                                 FEATURED</div>
                         </div>
                         <div class="p-6 flex flex-col justify-between flex-grow">
@@ -396,7 +396,8 @@
                                 <div class="flex justify-between items-start">
                                     <h3
                                         class="font-bold text-xl text-primary dark:text-blue-400 mb-2 hover:underline cursor-pointer">
-                                        <a href="ad-details.html">Toyota Camry 2024 - GCC Specs</a>
+                                        <a href="ad-details.html" data-translate="adTitle1">Toyota Camry 2024 - GCC
+                                            Specs</a>
                                     </h3>
                                     <button class="text-gray-400 hover:text-red-500"><svg class="w-6 h-6" fill="none"
                                             stroke="currentColor" viewBox="0 0 24 24">
@@ -405,9 +406,10 @@
                                             </path>
                                         </svg></button>
                                 </div>
-                                <div class="text-2xl font-bold text-accent mb-2">25,000 <span
-                                        class="currency-label">AED</span></div>
-                                <p class="text-gray-600 dark:text-gray-400 mb-4 line-clamp-2">Perfect condition, single
+                                <div class="text-2xl font-bold text-accent mb-2">25,000 <span class="currency-label"
+                                        data-translate="currency_uae">AED</span></div>
+                                <p class="text-gray-600 dark:text-gray-400 mb-4 line-clamp-2" data-translate="adDesc1">
+                                    Perfect condition, single
                                     owner, low mileage.
                                     Service history available. Contact for viewing.</p>
                             </div>
@@ -421,17 +423,19 @@
                                             </path>
                                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                                                 d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"></path>
-                                        </svg> Dubai</span>
+                                        </svg> <span class="city-label" data-translate="dubai">Dubai</span></span>
                                     <span class="flex items-center"><svg class="w-4 h-4 mr-1 rtl:ml-1 rtl:mr-0"
                                             fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                                                 d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path>
-                                        </svg> 2 hours ago</span>
+                                        </svg> <span data-translate="timeAgo">2 hours ago</span></span>
                                 </div>
                                 <a href="ad-details.html"
-                                    class="text-primary dark:text-blue-400 font-medium hover:text-accent"
-                                    data-translate="viewDetails">View
-                                    Details &rarr;</a>
+                                    class="text-primary dark:text-blue-400 font-medium hover:text-accent group-hover:underline flex items-center gap-1">
+                                    <span data-translate="viewDetails">View Details</span>
+                                    <span
+                                        class="rtl:rotate-180 inline-block transition-transform group-hover:translate-x-1 rtl:group-hover:-translate-x-1">&rarr;</span>
+                                </a>
                             </div>
                         </div>
                     </div>
@@ -448,7 +452,8 @@
                                 <div class="flex justify-between items-start">
                                     <h3
                                         class="font-bold text-xl text-primary dark:text-blue-400 mb-2 hover:underline cursor-pointer">
-                                        <a href="ad-details.html">Ford Mustang 2018 - V8 GT</a>
+                                        <a href="ad-details.html" data-translate="adTitle2">Ford Mustang 2018 - V8
+                                            GT</a>
                                     </h3>
                                     <button class="text-gray-400 hover:text-red-500"><svg class="w-6 h-6" fill="none"
                                             stroke="currentColor" viewBox="0 0 24 24">
@@ -457,9 +462,10 @@
                                             </path>
                                         </svg></button>
                                 </div>
-                                <div class="text-2xl font-bold text-accent mb-2">85,000 <span
-                                        class="currency-label">AED</span></div>
-                                <p class="text-gray-600 dark:text-gray-400 mb-4 line-clamp-2">American specs, modified
+                                <div class="text-2xl font-bold text-accent mb-2">85,000 <span class="currency-label"
+                                        data-translate="currency_uae">AED</span></div>
+                                <p class="text-gray-600 dark:text-gray-400 mb-4 line-clamp-2" data-translate="adDesc2">
+                                    American specs, modified
                                     exhaust, new tires.
                                     Very powerful car.</p>
                             </div>
@@ -473,17 +479,20 @@
                                             </path>
                                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                                                 d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"></path>
-                                        </svg> <span class="city-label">Abu Dhabi</span></span>
+                                        </svg> <span class="city-label" data-translate="abuDhabi">Abu
+                                            Dhabi</span></span>
                                     <span class="flex items-center"><svg class="w-4 h-4 mr-1 rtl:ml-1 rtl:mr-0"
                                             fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                                                 d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path>
-                                        </svg> 5 hours ago</span>
+                                        </svg> <span data-translate="timeAgo">5 hours ago</span></span>
                                 </div>
                                 <a href="ad-details.html"
-                                    class="text-primary dark:text-blue-400 font-medium hover:text-accent"
-                                    data-translate="viewDetails">View
-                                    Details &rarr;</a>
+                                    class="text-primary dark:text-blue-400 font-medium hover:text-accent group-hover:underline flex items-center gap-1">
+                                    <span data-translate="viewDetails">View Details</span>
+                                    <span
+                                        class="rtl:rotate-180 inline-block transition-transform group-hover:translate-x-1 rtl:group-hover:-translate-x-1">&rarr;</span>
+                                </a>
                             </div>
                         </div>
                     </div>
@@ -495,7 +504,8 @@
                     <nav class="relative z-0 inline-flex rounded-md shadow-sm -space-x-px rtl:space-x-reverse"
                         aria-label="Pagination">
                         <a href="#"
-                            class="relative inline-flex items-center px-2 py-2 rounded-l-md border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 text-sm font-medium text-gray-500 dark:text-gray-400 hover:bg-gray-50 dark:hover:bg-gray-700 rtl:rounded-r-md rtl:rounded-l-none">
+                            class="relative inline-flex items-center px-2 py-2 rounded-l-md border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 text-sm font-medium text-gray-500 dark:text-gray-400 hover:bg-gray-50 dark:hover:bg-gray-700 rtl:rounded-r-md rtl:rounded-l-none"
+                            data-translate="previous">
                             Previous
                         </a>
                         <a href="#" aria-current="page"
@@ -511,7 +521,8 @@
                             3
                         </a>
                         <a href="#"
-                            class="relative inline-flex items-center px-2 py-2 rounded-r-md border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 text-sm font-medium text-gray-500 dark:text-gray-400 hover:bg-gray-50 dark:hover:bg-gray-700 rtl:rounded-l-md rtl:rounded-r-none">
+                            class="relative inline-flex items-center px-2 py-2 rounded-r-md border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 text-sm font-medium text-gray-500 dark:text-gray-400 hover:bg-gray-50 dark:hover:bg-gray-700 rtl:rounded-l-md rtl:rounded-r-none"
+                            data-translate="next">
                             Next
                         </a>
                     </nav>

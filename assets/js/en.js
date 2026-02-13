@@ -198,6 +198,14 @@ const enTranslations = {
     categoryLabel: "Category",
     priceLabel: "Price (AED)",
     locationLabel: "Location",
+    featuredBadge: "FEATURED",
+    ads: "ads",
+    previous: "Previous",
+    next: "Next",
+    adTitle1: "Toyota Camry 2024 - GCC Specs",
+    adDesc1: "Perfect condition, single owner, low mileage. Service history available. Contact for viewing.",
+    adTitle2: "Ford Mustang 2018 - V8 GT",
+    adDesc2: "American specs, modified exhaust, new tires. Very powerful car.",
 
     // Post Ad
     postAdTitle: "Post an Ad",
@@ -210,6 +218,10 @@ const enTranslations = {
     uploadFile: "Upload a file",
     dragDrop: "or drag and drop",
     postNow: "Post Now",
+    selectCategory: "Select a category",
+    termsConditions: "Terms & Conditions",
+    pricePlaceholder: "e.g. 3500",
+    uploadLimits: "PNG, JPG, GIF up to 5MB",
 
     // Categories Page
     motorsTitle: "Motors",
@@ -265,6 +277,11 @@ const enTranslations = {
     details: "Details",
     call: "Call",
     chat: "Chat",
+    breadcrumbToyota: "Toyota",
+    breadcrumbCamry: "Toyota Camry 2024",
+    adDescriptionText: "Selling my Toyota Camry 2024 model. GCC specs, bought from Al Futtaim.<br><br>- Single owner<br>- Accident free<br>- Full service history<br>- Under warranty until 2029<br>- Low mileage (only 15,000 KM)<br><br>Car is in pristine condition. Interior still smells new. Reason for selling: Upgrading to SUV. Price is slightly negotiable for serious buyers. No low ballers please.",
+    adDetailsTitle: "Toyota Camry 2024 - Excellent Condition",
+    postedTime: "Posted 2 hours ago",
     sellerInfo: "Seller Information",
     memberSince: "Member since",
     viewProfile: "View Profile",
@@ -277,4 +294,5 @@ const enTranslations = {
     chatSupport: "Chat Support",
     chatPlaceholder: "Type your message...",
     chatWelcome: "Hello! How can we help you today?",
+    timeAgo: "2 hours ago",
 };
