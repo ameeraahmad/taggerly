@@ -307,4 +307,27 @@ const arTranslations = {
     tabContracting: "مقاولات",
     payAfter: "ادفع فقط بعد استلام الغرض.",
     timeAgo: "منذ ساعتين",
+
+    // Ad Titles
+    ad_mercedes_c_class: "مرسيدس بنز سي كلاس",
+    ad_audi_a4: "أودي أي 4 2023",
+    ad_tesla_model_3: "تسلا موديل 3",
+    ad_harley_sportster: "هارلي ديفيدسون سبورتستر",
+    ad_ducati_panigale: "دوكاتي بانيجال في 4",
+    ad_smart_tv_55: "تلفزيون ذكي 55 بوصة",
+    ad_refrigerator: "ثلاجة",
+    ad_iphone_14_pro: "آيفون 14 برو",
+    ad_ipad_pro: "آيباد برو",
+    ad_luxury_villa: "فيلا فاخرة في التلال",
+    ad_family_home_garden: "منزل عائلي مع حديقة",
+    ad_modern_apartment_downtown: "شقة حديثة في وسط المدينة",
+    ad_sea_view_penthouse: "بنتهاوس بإطلالة بحرية",
+
+    // Featured Ads Section
+    ad_feat_toyota_camry: "تويوتا كامري 2024 - بحالة ممتازة",
+    ad_feat_luxury_2bhk: "شقة فاخرة غرفتين وصالة في المارينا",
+    ad_feat_headphones: "سماعات رأس لاسلكية مانعة للضوضاء",
+    ad_feat_sofa: "أريكة قماشية حديثة - 3 مقاعد",
 };
+
+

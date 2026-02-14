@@ -306,4 +306,27 @@ const enTranslations = {
     chatPlaceholder: "Type your message...",
     chatWelcome: "Hello! How can we help you today?",
     timeAgo: "2 hours ago",
+
+    // Ad Titles
+    ad_mercedes_c_class: "Mercedes-Benz C-Class",
+    ad_audi_a4: "Audi A4 2023",
+    ad_tesla_model_3: "Tesla Model 3",
+    ad_harley_sportster: "Harley-Davidson Sportster",
+    ad_ducati_panigale: "Ducati Panigale V4",
+    ad_smart_tv_55: "Smart TV 55 Inch",
+    ad_refrigerator: "Refrigerator",
+    ad_iphone_14_pro: "iPhone 14 Pro",
+    ad_ipad_pro: "iPad Pro",
+    ad_luxury_villa: "Luxury Villa in Hills",
+    ad_family_home_garden: "Family Home with Garden",
+    ad_modern_apartment_downtown: "Modern Apartment Downtown",
+    ad_sea_view_penthouse: "Sea View Penthouse",
+
+    // Featured Ads Section
+    ad_feat_toyota_camry: "Toyota Camry 2024 - Excellent Condition",
+    ad_feat_luxury_2bhk: "Luxury 2BHK Apartment in Marina",
+    ad_feat_headphones: "Wireless Noise Cancelling Headphones",
+    ad_feat_sofa: "Modern Fabric Sofa - 3 Seater",
 };
+
+
