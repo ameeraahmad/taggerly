@@ -227,6 +227,9 @@ const enTranslations = {
     motorsTitle: "Motors",
     usedCars: "Used Cars for Sale",
     motorcycles: "Motorcycles - Scooters",
+    featuredCategories: "Featured Categories",
+    electronicsAppliances: "Electronics & Appliances",
+    mobilesTablets: "Mobiles & Tablets",
     heavyVehicles: "Heavy Vehicles",
     boats: "Boats",
     autoAccessories: "Auto Accessories & Parts",
@@ -288,6 +291,14 @@ const enTranslations = {
     mapLocation: "Map Location",
     meetPublic: "Meet in a public place.",
     checkItem: "Check the item before you buy.",
+
+    // User Ads Tabs
+    tabProperties: "Properties",
+    tabElectronics: "Electronics",
+    tabFurniture: "Furniture",
+    tabFashion: "Fashion",
+    tabServices: "Services",
+    tabContracting: "Contracting",
     payAfter: "Pay only after collecting the item.",
 
     // Chat Widget

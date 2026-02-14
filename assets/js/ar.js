@@ -233,6 +233,9 @@ const arTranslations = {
     motorsTitle: "موتورات",
     usedCars: "سيارات مستعملة للبيع",
     motorcycles: "دراجات نارية - سكوترات",
+    featuredCategories: "فئات مميزة",
+    electronicsAppliances: "إلكترونيات وأجهزة منزلية",
+    mobilesTablets: "موبايلات وتابلت",
     heavyVehicles: "مركبات ثقيلة",
     boats: "قوارب",
     autoAccessories: "إكسسوارات وقطع غيار السيارات",
@@ -292,8 +295,16 @@ const arTranslations = {
     memberSince: "عضو منذ",
     viewProfile: "عرض الملف",
     mapLocation: "الموقع على الخريطة",
-    meetPublic: "قابل في مكان عام.",
-    checkItem: "افحص الغرض قبل الشراء.",
+    meetPublic: "قابل البائع في مكان عام.",
+    checkItem: "افحص السلعة قبل الشراء.",
+
+    // User Ads Tabs
+    tabProperties: "عقارات",
+    tabElectronics: "إلكترونيات",
+    tabFurniture: "أثاث",
+    tabFashion: "أزياء",
+    tabServices: "خدمات",
+    tabContracting: "مقاولات",
     payAfter: "ادفع فقط بعد استلام الغرض.",
     timeAgo: "منذ ساعتين",
 };
