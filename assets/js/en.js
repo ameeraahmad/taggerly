@@ -174,6 +174,8 @@ const enTranslations = {
     billingEnquiry: "Billing",
     nameLabel: "Name",
     emailLabel: "Email",
+    phoneLabel: "Phone Number",
+    phonePlaceholder: "+971 -- --- ----",
     messageLabel: "Message",
     sendMessage: "Send Message",
 

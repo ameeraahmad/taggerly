@@ -178,6 +178,8 @@ const arTranslations = {
     billingEnquiry: "الفواتير",
     nameLabel: "الاسم",
     emailLabel: "البريد الإلكتروني",
+    phoneLabel: "رقم الهاتف",
+    phonePlaceholder: "+971 -- --- ----",
     messageLabel: "الرسالة",
     sendMessage: "إرسال الرسالة",
 
