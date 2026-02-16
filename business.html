@@ -1,0 +1,305 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Taggerly for Business - Enterprise Solutions</title>
+    <meta name="description"
+        content="The most powerful advertising tools for car showrooms, real estate agencies, and professional sellers on Taggerly.">
+    <link rel="icon" type="image/png" href="assets/images/favicon.png">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: {
+                        primary: '#0B2447',
+                        accent: '#FF6B00',
+                    }
+                }
+            }
+        }
+    </script>
+    <script>
+        if (localStorage.getItem('theme') === 'dark' || (!('theme' in localStorage) && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
+            document.documentElement.classList.add('dark');
+        } else {
+            document.documentElement.classList.remove('dark');
+        }
+    </script>
+    <link href="assets/css/style.css" rel="stylesheet">
+    <style>
+        .glass-card {
+            background: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .dark .glass-card {
+            background: rgba(0, 0, 0, 0.2);
+        }
+
+        .animate-float {
+            animation: float 6s ease-in-out infinite;
+        }
+
+        @keyframes float {
+
+            0%,
+            100% {
+                transform: translateY(0);
+            }
+
+            50% {
+                transform: translateY(-20px);
+            }
+        }
+    </style>
+</head>
+
+<body class="bg-white dark:bg-gray-900 text-gray-900 dark:text-gray-100 transition-colors duration-300">
+
+    <!-- Header -->
+    <header class="site-header absolute top-0 left-0 right-0 z-50">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-20 flex items-center justify-between">
+            <a href="index.html" class="text-2xl font-bold text-primary dark:text-white">Dubizzle<span
+                    class="text-accent">Clone</span></a>
+
+            <div class="flex items-center gap-6">
+                <a href="plans.html" class="hidden md:block hover:text-accent font-medium transition"
+                    data-translate="plansTitle">Pricing Plans</a>
+                <button id="theme-toggle" class="p-2 rounded-full hover:bg-white/10 transition">
+                    <svg class="w-6 h-6 sun hidden" fill="currentColor" viewBox="0 0 20 20">
+                        <path
+                            d="M10 2a1 1 0 011 1v1a1 1 0 11-2 0V3a1 1 0 011-1zm4 8a4 4 0 11-8 0 4 4 0 018 0zm-.464 4.95l.707.707a1 1 0 001.414-1.414l-.707-.707a1 1 0 00-1.414 1.414zm2.12-10.607a1 1 0 010 1.414l-.706.707a1 1 0 11-1.414-1.414l.707-.707a1 1 0 011.414 0zM17 11a1 1 0 100-2h-1a1 1 0 100 2h1zm-7 4a1 1 0 011 1v1a1 1 0 11-2 0v-1a1 1 0 011-1zM5.05 6.464A1 1 0 106.465 5.05l-.708-.707a1 1 0 00-1.414 1.414l.707.707zm1.414 8.486l-.707.707a1 1 0 01-1.414-1.414l.707-.707a1 1 0 011.414 1.414zM4 11a1 1 0 100-2H3a1 1 0 000 2h1z">
+                        </path>
+                    </svg>
+                    <svg class="w-6 h-6 moon" fill="currentColor" viewBox="0 0 20 20">
+                        <path d="M17.293 13.293A8 8 0 016.707 2.707a8.001 8.001 0 1010.586 10.586z"></path>
+                    </svg>
+                </button>
+                <button id="lang-toggle"
+                    class="p-2 border border-white/20 rounded-lg text-sm font-bold hover:bg-white/10 transition uppercase text-white">EN</button>
+                <a href="login.html"
+                    class="bg-accent text-white px-6 py-2 rounded-full font-bold hover:bg-orange-600 transition shadow-lg"
+                    data-translate="login">Login</a>
+            </div>
+        </div>
+    </header>
+
+    <main>
+        <!-- Hero Section -->
+        <section class="min-h-screen pt-32 pb-20 bg-primary text-white relative overflow-hidden flex items-center">
+            <div
+                class="absolute inset-0 bg-[url('https://images.unsplash.com/photo-1497366216548-37526070297c?ixlib=rb-1.2.1&auto=format&fit=crop&w=1950&q=80')] bg-cover bg-center mix-blend-overlay opacity-20">
+            </div>
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
+                <div class="grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
+                    <div class="space-y-8 animate-slide-up">
+                        <span
+                            class="inline-block px-4 py-1 bg-accent/20 border border-accent text-accent rounded-full text-sm font-bold tracking-widest uppercase"
+                            data-translate="forBusiness">FOR BUSINESS</span>
+                        <h1 class="text-5xl md:text-7xl font-bold leading-tight" data-translate="businessTitle">Grow
+                            Your Business with Taggerly</h1>
+                        <p class="text-xl text-gray-300 max-w-lg" data-translate="businessSubtitle">The most powerful
+                            advertising tools for car showrooms, real estate agencies, and professional sellers.</p>
+                        <div class="flex flex-col sm:flex-row gap-4">
+                            <a href="plans.html"
+                                class="bg-accent text-white px-8 py-4 rounded-full font-bold text-center hover:bg-orange-600 transition shadow-xl transform hover:-translate-y-1"
+                                data-translate="startTrial">Start Your Free Trial</a>
+                            <a href="contact.html"
+                                class="bg-white/10 backdrop-blur-md border border-white/20 text-white px-8 py-4 rounded-full font-bold text-center hover:bg-white/20 transition"
+                                data-translate="contactSales">Contact Sales</a>
+                        </div>
+                    </div>
+                    <div class="hidden lg:block animate-float">
+                        <div class="relative">
+                            <img src="https://images.unsplash.com/photo-1460925895917-afdab827c52f?ixlib=rb-1.2.1&auto=format&fit=crop&w=800&q=80"
+                                alt="Dashboard" class="rounded-2xl shadow-2xl border border-white/10">
+                            <div class="absolute -bottom-10 -left-10 glass-card p-6 rounded-2xl animate-pulse">
+                                <div class="flex items-center gap-4">
+                                    <div class="w-12 h-12 bg-green-500 rounded-full flex items-center justify-center">
+                                        <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor"
+                                            viewBox="0 0 24 24">
+                                            <path d="M5 13l4 4L19 7"></path>
+                                        </svg>
+                                    </div>
+                                    <div>
+                                        <p class="text-xs text-gray-400">Monthly Leads</p>
+                                        <p class="text-2xl font-bold">+1,240%</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Stats Section -->
+        <section class="py-12 bg-white dark:bg-gray-800 border-b dark:border-gray-700">
+            <div
+                class="max-w-7xl mx-auto px-4 grid grid-cols-2 md:grid-cols-4 gap-8 text-center text-primary dark:text-white">
+                <div>
+                    <p class="text-4xl font-extrabold mb-1">2M+</p>
+                    <p class="text-gray-500 dark:text-gray-400 text-sm" data-translate="monthlyUsers">Monthly Users</p>
+                </div>
+                <div>
+                    <p class="text-4xl font-extrabold mb-1">50K+</p>
+                    <p class="text-gray-500 dark:text-gray-400 text-sm" data-translate="verifiedBusinesses">Verified
+                        Businesses</p>
+                </div>
+                <div>
+                    <p class="text-4xl font-extrabold mb-1">200K+</p>
+                    <p class="text-gray-500 dark:text-gray-400 text-sm" data-translate="dailyListings">Daily Listings
+                    </p>
+                </div>
+                <div>
+                    <p class="text-4xl font-extrabold mb-1">15+</p>
+                    <p class="text-gray-500 dark:text-gray-400 text-sm" data-translate="countries">Countries</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Features Section -->
+        <section class="py-24">
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                <div class="text-center mb-20">
+                    <h2 class="text-4xl font-bold mb-4" data-translate="whyChooseUs">Why Choose Taggerly for Business?
+                    </h2>
+                </div>
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-12 text-center">
+                    <div class="space-y-4">
+                        <div
+                            class="w-16 h-16 bg-blue-100 dark:bg-blue-900/30 text-blue-600 rounded-2xl flex items-center justify-center mx-auto mb-6 transform hover:rotate-6 transition">
+                            <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"></path>
+                            </svg>
+                        </div>
+                        <h3 class="text-xl font-bold" data-translate="reachMillions">Reach Millions</h3>
+                        <p class="text-gray-600 dark:text-gray-400 text-sm" data-translate="reachMillionsDesc">Connect
+                            with a massive audience of active buyers searching for what you offer.</p>
+                    </div>
+                    <div class="space-y-4">
+                        <div
+                            class="w-16 h-16 bg-green-100 dark:bg-green-900/30 text-green-600 rounded-2xl flex items-center justify-center mx-auto mb-6 transform hover:rotate-6 transition">
+                            <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-width="2"
+                                    d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z">
+                                </path>
+                            </svg>
+                        </div>
+                        <h3 class="text-xl font-bold" data-translate="verifiedStatus">Verified Status</h3>
+                        <p class="text-gray-600 dark:text-gray-400 text-sm" data-translate="verifiedStatusDesc">Build
+                            instant trust with a 'Verified Seller' badge that stands out.</p>
+                    </div>
+                    <div class="space-y-4">
+                        <div
+                            class="w-16 h-16 bg-purple-100 dark:bg-purple-900/30 text-purple-600 rounded-2xl flex items-center justify-center mx-auto mb-6 transform hover:rotate-6 transition">
+                            <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-width="2"
+                                    d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z">
+                                </path>
+                            </svg>
+                        </div>
+                        <h3 class="text-xl font-bold" data-translate="advancedAnalytics">Advanced Analytics</h3>
+                        <p class="text-gray-600 dark:text-gray-400 text-sm" data-translate="advancedAnalyticsDesc">Track
+                            your performance with detailed insights on views, leads, and clicks.</p>
+                    </div>
+                    <div class="space-y-4">
+                        <div
+                            class="w-16 h-16 bg-orange-100 dark:bg-orange-900/30 text-orange-600 rounded-2xl flex items-center justify-center mx-auto mb-6 transform hover:rotate-6 transition">
+                            <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-width="2"
+                                    d="M18.364 5.636l-3.536 3.536m0 5.656l3.536 3.536M9.172 9.172L5.636 5.636m3.536 9.192l-3.536 3.536M21 12a9 9 0 11-18 0 9 9 0 0118 0zm-5 0a4 4 0 11-8 0 4 4 0 018 0z">
+                                </path>
+                            </svg>
+                        </div>
+                        <h3 class="text-xl font-bold" data-translate="dedicatedSupport">Dedicated Support</h3>
+                        <p class="text-gray-600 dark:text-gray-400 text-sm" data-translate="dedicatedSupportDesc">Get
+                            24/7 priority assistance from our experts to maximize your results.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- CTA Section -->
+        <section class="py-24 bg-gray-50 dark:bg-gray-800/30">
+            <div class="max-w-4xl mx-auto px-4 text-center">
+                <div class="bg-primary rounded-3xl p-12 text-white shadow-2xl relative overflow-hidden group">
+                    <div
+                        class="absolute inset-x-0 top-0 h-1 bg-gradient-to-r from-transparent via-accent to-transparent">
+                    </div>
+                    <h2 class="text-4xl font-bold mb-6" data-translate="ctaTitleBusiness">Ready to scale your leads?
+                    </h2>
+                    <p class="text-gray-300 mb-10 text-lg" data-translate="ctaSubtitleBusiness">Join thousands of
+                        successful businesses on Taggerly today.</p>
+                    <div class="flex flex-col sm:flex-row gap-4 justify-center">
+                        <a href="plans.html"
+                            class="bg-accent text-white px-10 py-4 rounded-full font-bold hover:bg-orange-600 transition shadow-lg transform hover:scale-105"
+                            data-translate="getStarted">Get
+                            Started Now</a>
+                        <a href="contact.html"
+                            class="bg-white/10 border border-white/20 px-10 py-4 rounded-full font-bold hover:bg-white/20 transition"
+                            data-translate="learnMore">Learn
+                            More</a>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <!-- Footer -->
+    <footer class="site-footer bg-gray-900 text-white pt-16 pb-8 border-t border-gray-800">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="grid grid-cols-1 md:grid-cols-4 gap-12 mb-12">
+                <div>
+                    <a href="index.html" class="text-2xl font-bold mb-6 block">Dubizzle<span
+                            class="text-accent">Clone</span></a>
+                    <p class="text-gray-400 text-sm" data-translate="footerText">The best place to buy and sell anything
+                        in the UAE.</p>
+                </div>
+                <div>
+                    <h4 class="font-bold mb-6 text-gray-200" data-translate="quickLinks">Quick Links</h4>
+                    <ul class="space-y-4 text-sm text-gray-400">
+                        <li><a href="about.html" class="hover:text-accent transition">About Us</a></li>
+                        <li><a href="blog.html" class="hover:text-accent transition">Blog</a></li>
+                        <li><a href="business.html" class="hover:text-accent transition font-bold text-white">For
+                                Business</a></li>
+                        <li><a href="plans.html" class="hover:text-accent transition">Pricing Plans</a></li>
+                    </ul>
+                </div>
+                <div>
+                    <h4 class="font-bold mb-6 text-gray-200" data-translate="support">Support</h4>
+                    <ul class="space-y-4 text-sm text-gray-400">
+                        <li><a href="help.html" class="hover:text-accent transition">Help Center</a></li>
+                        <li><a href="privacy.html" class="hover:text-accent transition">Privacy Policy</a></li>
+                        <li><a href="terms.html" class="hover:text-accent transition">Terms & Conditions</a></li>
+                    </ul>
+                </div>
+                <div>
+                    <h4 class="font-bold mb-6 text-gray-200" data-translate="followUs">Follow Us</h4>
+                    <div class="flex space-x-4">
+                        <a href="#"
+                            class="w-10 h-10 rounded-full bg-gray-800 flex items-center justify-center hover:bg-accent transition text-gray-400 hover:text-white"><svg
+                                class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
+                                <path
+                                    d="M24 4.557c-.883.392-1.832.656-2.828.775 1.017-.609 1.798-1.574 2.165-2.724-.951.564-2.005.974-3.127 1.195-.897-.957-2.178-1.555-3.594-1.555-3.179 0-5.515 2.966-4.797 6.045-4.091-.205-7.719-2.165-10.148-5.144-1.29 2.213-.669 5.108 1.523 6.574-.806-.026-1.566-.247-2.229-.616-.054 2.281 1.581 4.415 3.949 4.89-.693.188-1.452.232-2.224.084.626 1.956 2.444 3.379 4.6 3.419-2.07 1.623-4.678 2.348-7.29 2.04 2.179 1.397 4.768 2.212 7.548 2.212 9.142 0 14.307-7.721 13.995-14.646.962-.695 1.797-1.562 2.457-2.549z" />
+                            </svg></a>
+                    </div>
+                </div>
+            </div>
+            <div class="border-t border-gray-800 pt-8 text-center text-sm text-gray-500">
+                <p>&copy; 2026 DubizzleClone. All rights reserved.</p>
+            </div>
+        </div>
+    </footer>
+
+    <script src="assets/js/en.js"></script>
+    <script src="assets/js/ar.js"></script>
+    <script src="assets/js/main.js"></script>
+</body>
+
+</html>

@@ -497,7 +497,115 @@ function initChatWidget() {
 
 // Ensure the widget is initialized
 if (document.readyState === 'loading') {
-    document.addEventListener('DOMContentLoaded', initChatWidget);
+    document.addEventListener('DOMContentLoaded', () => {
+        initChatWidget();
+        initNewFeatures();
+    });
 } else {
     initChatWidget();
+    initNewFeatures();
 }
+
+// --- New Features Initialization ---
+function initNewFeatures() {
+    const lang = localStorage.getItem('lang') || 'en';
+
+    // 1. Inject Back to Top Button
+    const bttHtml = `
+        <button class="back-to-top" id="backToTop" aria-label="Back to Top" title="${translations[lang].backToTop}">
+            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 10l7-7m0 0l7 7m-7-7v18"></path>
+            </svg>
+        </button>
+    `;
+    document.body.insertAdjacentHTML('beforeend', bttHtml);
+
+    const bttBtn = document.getElementById('backToTop');
+    if (bttBtn) {
+        window.addEventListener('scroll', () => {
+            if (window.scrollY > 300) {
+                bttBtn.classList.add('show');
+            } else {
+                bttBtn.classList.remove('show');
+            }
+        });
+
+        bttBtn.addEventListener('click', () => {
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        });
+    }
+
+    // 2. Inject Cookie Consent Banner
+    if (!localStorage.getItem('cookieConsent')) {
+        const cookieHtml = `
+            <div class="cookie-consent" id="cookieConsent">
+                <p class="text-sm" data-translate="cookieNotice">${translations[lang].cookieNotice}</p>
+                <button class="cookie-btn" id="acceptCookies" data-translate="acceptCookies">${translations[lang].acceptCookies}</button>
+            </div>
+        `;
+        document.body.insertAdjacentHTML('beforeend', cookieHtml);
+
+        const cookieBanner = document.getElementById('cookieConsent');
+        const acceptBtn = document.getElementById('acceptCookies');
+
+        setTimeout(() => { if (cookieBanner) cookieBanner.classList.add('show'); }, 1000);
+
+        if (acceptBtn) {
+            acceptBtn.addEventListener('click', () => {
+                localStorage.setItem('cookieConsent', 'true');
+                cookieBanner.classList.remove('show');
+                setTimeout(() => { cookieBanner.remove(); }, 500);
+            });
+        }
+    }
+
+    // 3. Password Visibility Toggle Logic
+    initPasswordToggles();
+}
+
+function initPasswordToggles() {
+    const lang = localStorage.getItem('lang') || 'en';
+    const passwordFields = document.querySelectorAll('input[type="password"]');
+
+    passwordFields.forEach(field => {
+        // Wrap the field if not already wrapped
+        if (!field.parentElement.classList.contains('password-wrapper')) {
+            const wrapper = document.createElement('div');
+            wrapper.className = 'password-wrapper mt-1';
+            field.parentNode.insertBefore(wrapper, field);
+            wrapper.appendChild(field);
+
+            const toggle = document.createElement('span');
+            toggle.className = 'password-toggle text-xs font-bold text-accent select-none';
+            toggle.setAttribute('data-translate-target', 'toggle');
+            toggle.textContent = translations[lang].showPassword;
+            wrapper.appendChild(toggle);
+
+            toggle.addEventListener('click', () => {
+                const isPassword = field.getAttribute('type') === 'password';
+                field.setAttribute('type', isPassword ? 'text' : 'password');
+                const currLang = localStorage.getItem('lang') || 'en';
+                toggle.textContent = isPassword ? translations[currLang].hidePassword : translations[currLang].showPassword;
+            });
+        }
+    });
+}
+
+// Global function to update translations for new dynamically injected elements
+const originalUpdateLanguage = updateLanguage;
+updateLanguage = function (lang) {
+    if (typeof originalUpdateLanguage === 'function') {
+        originalUpdateLanguage(lang);
+    }
+
+    // Update newly injected elements
+    const btt = document.getElementById('backToTop');
+    if (btt) btt.setAttribute('title', translations[lang].backToTop);
+
+    const toggles = document.querySelectorAll('.password-toggle');
+    toggles.forEach(t => {
+        const field = t.previousElementSibling;
+        const isVisible = field.getAttribute('type') === 'text';
+        t.textContent = isVisible ? translations[lang].hidePassword : translations[lang].showPassword;
+    });
+};

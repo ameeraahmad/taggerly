@@ -485,3 +485,114 @@ html[dir="rtl"] .chat-widget {
         left: 1rem;
     }
 }
+
+/* --- Back to Top Button --- */
+.back-to-top {
+    position: fixed;
+    bottom: 2rem;
+    left: 2rem;
+    width: 45px;
+    height: 45px;
+    background-color: #0B2447;
+    color: white;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+    opacity: 0;
+    visibility: hidden;
+    transition: all 0.3s ease;
+    z-index: 999;
+}
+
+html[dir="rtl"] .back-to-top {
+    left: auto;
+    right: 2rem;
+}
+
+.back-to-top.show {
+    opacity: 1;
+    visibility: visible;
+    transform: translateY(-10px);
+}
+
+.back-to-top:hover {
+    background-color: #FF6B00;
+    transform: translateY(-15px);
+}
+
+/* Adjustments for Chat Widget position */
+.chat-widget {
+    bottom: 2rem;
+    right: 2rem;
+}
+
+html[dir="rtl"] .chat-widget {
+    right: auto;
+    left: 2rem;
+}
+
+/* --- Cookie Consent --- */
+.cookie-consent {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    background: white;
+    padding: 1rem 2rem;
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: center;
+    gap: 1.5rem;
+    box-shadow: 0 -4px 15px rgba(0, 0, 0, 0.05);
+    z-index: 2000;
+    transform: translateY(100%);
+    transition: transform 0.5s ease;
+}
+
+.dark .cookie-consent {
+    background: #1f2937;
+    color: white;
+}
+
+.cookie-consent.show {
+    transform: translateY(0);
+}
+
+.cookie-btn {
+    background: #FF6B00;
+    color: white;
+    padding: 0.5rem 1.5rem;
+    border-radius: 0.5rem;
+    font-weight: bold;
+    cursor: pointer;
+    transition: background 0.3s;
+}
+
+.cookie-btn:hover {
+    background: #e65100;
+}
+
+/* --- Password Toggle --- */
+.password-wrapper {
+    position: relative;
+}
+
+.password-toggle {
+    position: absolute;
+    right: 1rem;
+    top: 50%;
+    transform: translateY(-50%);
+    cursor: pointer;
+    color: #6b7280;
+    display: flex;
+    align-items: center;
+}
+
+html[dir="rtl"] .password-toggle {
+    right: auto;
+    left: 1rem;
+}

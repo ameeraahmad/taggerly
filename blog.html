@@ -1,0 +1,300 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Blog - Dubizzle Clone | Tips & Guides</title>
+    <meta name="description" content="Read the latest tips, news, and guides for buying and selling on Dubizzle Clone.">
+    <link rel="icon" type="image/png" href="assets/images/favicon.png">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: {
+                        primary: '#0B2447',
+                        accent: '#FF6B00',
+                    }
+                }
+            }
+        }
+    </script>
+    <script>
+        if (localStorage.getItem('theme') === 'dark' || (!('theme' in localStorage) && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
+            document.documentElement.classList.add('dark');
+        } else {
+            document.documentElement.classList.remove('dark');
+        }
+    </script>
+    <link href="assets/css/style.css" rel="stylesheet">
+</head>
+
+<body class="bg-gray-50 dark:bg-gray-900 text-gray-900 dark:text-gray-100 transition-colors duration-300">
+
+    <!-- Header (Dynamic) -->
+    <!-- Note: In a real project, this would be a component or a shared file -->
+    <header class="site-header sticky top-0 z-50 bg-white dark:bg-gray-900 shadow-md">
+        <!-- Reusing the site header structure -->
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
+            <a href="index.html" class="text-2xl font-bold text-primary dark:text-white">Dubizzle<span
+                    class="text-accent">Clone</span></a>
+
+            <nav class="hidden md:flex space-x-8 rtl:space-x-reverse">
+                <a href="index.html" class="hover:text-accent font-medium transition" data-translate="home">Home</a>
+                <a href="search.html" class="hover:text-accent font-medium transition"
+                    data-translate="categories">Categories</a>
+                <a href="post-ad.html" class="hover:text-accent font-medium transition" data-translate="postAd">Post
+                    Ad</a>
+                <a href="blog.html" class="text-accent font-bold transition" data-translate="blog">Blog</a>
+            </nav>
+
+            <div class="flex items-center gap-4">
+                <button id="theme-toggle" class="p-2 rounded-full hover:bg-gray-100 dark:hover:bg-gray-800 transition">
+                    <svg class="w-6 h-6 sun hidden" fill="currentColor" viewBox="0 0 20 20">
+                        <path
+                            d="M10 2a1 1 0 011 1v1a1 1 0 11-2 0V3a1 1 0 011-1zm4 8a4 4 0 11-8 0 4 4 0 018 0zm-.464 4.95l.707.707a1 1 0 001.414-1.414l-.707-.707a1 1 0 00-1.414 1.414zm2.12-10.607a1 1 0 010 1.414l-.706.707a1 1 0 11-1.414-1.414l.707-.707a1 1 0 011.414 0zM17 11a1 1 0 100-2h-1a1 1 0 100 2h1zm-7 4a1 1 0 011 1v1a1 1 0 11-2 0v-1a1 1 0 011-1zM5.05 6.464A1 1 0 106.465 5.05l-.708-.707a1 1 0 00-1.414 1.414l.707.707zm1.414 8.486l-.707.707a1 1 0 01-1.414-1.414l.707-.707a1 1 0 011.414 1.414zM4 11a1 1 0 100-2H3a1 1 0 000 2h1z">
+                        </path>
+                    </svg>
+                    <svg class="w-6 h-6 moon" fill="currentColor" viewBox="0 0 20 20">
+                        <path d="M17.293 13.293A8 8 0 016.707 2.707a8.001 8.001 0 1010.586 10.586z"></path>
+                    </svg>
+                </button>
+                <button id="lang-toggle"
+                    class="p-2 border dark:border-gray-700 rounded-lg text-sm font-bold hover:bg-gray-100 dark:hover:bg-gray-800 transition uppercase">EN</button>
+            </div>
+        </div>
+    </header>
+
+    <main>
+        <!-- Blog Hero -->
+        <section class="bg-primary text-white py-20 relative overflow-hidden">
+            <div class="absolute inset-0 opacity-10">
+                <svg class="w-full h-full" fill="currentColor" viewBox="0 0 100 100" preserveAspectRatio="none">
+                    <path d="M0 0 L100 100 L100 0 Z"></path>
+                </svg>
+            </div>
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10 text-center">
+                <h1 class="text-4xl md:text-6xl font-bold mb-6" data-translate="blog">Blog</h1>
+                <p class="text-xl text-gray-300 max-w-2xl mx-auto" data-translate="blogSubtitle">Tips, news, and guides
+                    for savvy buyers and sellers.</p>
+            </div>
+        </section>
+
+        <!-- Search & Categories Bar -->
+        <section
+            class="sticky top-16 z-40 bg-white dark:bg-gray-800 border-b dark:border-gray-700 shadow-sm transition-colors duration-300">
+            <div
+                class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4 flex flex-col md:flex-row justify-between items-center gap-4">
+                <div
+                    class="flex items-center space-x-4 rtl:space-x-reverse overflow-x-auto pb-2 md:pb-0 hide-scrollbar w-full md:w-auto">
+                    <button class="px-4 py-2 bg-accent text-white rounded-full text-sm font-bold whitespace-nowrap"
+                        data-translate="allCategories">All Categories</button>
+                    <button
+                        class="px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-700 rounded-full text-sm font-medium whitespace-nowrap transition"
+                        data-translate="categoryAutomotive">Automotive</button>
+                    <button
+                        class="px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-700 rounded-full text-sm font-medium whitespace-nowrap transition"
+                        data-translate="categoryRealEstate">Real Estate</button>
+                    <button
+                        class="px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-700 rounded-full text-sm font-medium whitespace-nowrap transition"
+                        data-translate="categoryLifestyle">Lifestyle</button>
+                    <button
+                        class="px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-700 rounded-full text-sm font-medium whitespace-nowrap transition"
+                        data-translate="categorySafety">Safety</button>
+                </div>
+                <div class="relative w-full md:w-64">
+                    <input type="text"
+                        class="w-full pl-10 pr-4 py-2 rounded-full border dark:border-gray-700 dark:bg-gray-900 focus:outline-none focus:ring-2 focus:ring-accent transition"
+                        placeholder="Search articles..." data-translate="blogSearchPlaceholder">
+                    <svg class="w-5 h-5 absolute left-3 top-2.5 text-gray-400" fill="none" stroke="currentColor"
+                        viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                            d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
+                    </svg>
+                </div>
+            </div>
+        </section>
+
+        <!-- Main Blog Grid -->
+        <section class="py-16">
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                <h2 class="text-3xl font-bold mb-12" data-translate="latestArticles">Latest Articles</h2>
+
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                    <!-- Post 1 -->
+                    <article
+                        class="bg-white dark:bg-gray-800 rounded-2xl overflow-hidden shadow-sm hover:shadow-xl transition flex flex-col group cursor-pointer">
+                        <div class="h-56 overflow-hidden">
+                            <img src="https://images.unsplash.com/photo-1550355291-bbee04a92027?ixlib=rb-1.2.1&auto=format&fit=crop&w=800&q=80"
+                                alt="Blog Post"
+                                class="w-full h-full object-cover group-hover:scale-110 transition duration-500">
+                        </div>
+                        <div class="p-6 flex-grow flex flex-col">
+                            <span class="text-accent text-xs font-bold uppercase tracking-wider mb-2"
+                                data-translate="categoryAutomotive">Automotive</span>
+                            <h3 class="text-xl font-bold mb-3 group-hover:text-accent transition"
+                                data-translate="postTitle1">How to Sell Your Car Fast in the UAE</h3>
+                            <p class="text-gray-600 dark:text-gray-400 text-sm mb-6 flex-grow"
+                                data-translate="postDesc1">Learn the top tips to prepare your car for sale and get the
+                                best price quickly.</p>
+                            <div class="flex items-center justify-between mt-auto">
+                                <span class="text-xs text-gray-500" data-translate="dummyJoinedDate">March 2024</span>
+                                <span class="text-accent font-bold text-sm flex items-center">
+                                    <span data-translate="readMore">Read More</span>
+                                    <svg class="w-4 h-4 ml-1 rtl:mr-1 rtl:ml-0 transform rtl:rotate-180" fill="none"
+                                        stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                            d="M9 5l7 7-7 7"></path>
+                                    </svg>
+                                </span>
+                            </div>
+                        </div>
+                    </article>
+
+                    <!-- Post 2 -->
+                    <article
+                        class="bg-white dark:bg-gray-800 rounded-2xl overflow-hidden shadow-sm hover:shadow-xl transition flex flex-col group cursor-pointer">
+                        <div class="h-56 overflow-hidden">
+                            <img src="https://images.unsplash.com/photo-1512917774080-9991f1c4c750?ixlib=rb-1.2.1&auto=format&fit=crop&w=800&q=80"
+                                alt="Blog Post"
+                                class="w-full h-full object-cover group-hover:scale-110 transition duration-500">
+                        </div>
+                        <div class="p-6 flex-grow flex flex-col">
+                            <span class="text-blue-500 text-xs font-bold uppercase tracking-wider mb-2"
+                                data-translate="categoryRealEstate">Real Estate</span>
+                            <h3 class="text-xl font-bold mb-3 group-hover:text-accent transition"
+                                data-translate="postTitle2">Top 5 Neighborhoods to Live in Dubai 2026</h3>
+                            <p class="text-gray-600 dark:text-gray-400 text-sm mb-6 flex-grow"
+                                data-translate="postDesc2">A comprehensive guide to the most popular residential areas
+                                for families and singles.</p>
+                            <div class="flex items-center justify-between mt-auto">
+                                <span class="text-xs text-gray-500" data-translate="dummyJoinedDate">March 2024</span>
+                                <span class="text-accent font-bold text-sm flex items-center">
+                                    <span data-translate="readMore">Read More</span>
+                                    <svg class="w-4 h-4 ml-1 rtl:mr-1 rtl:ml-0 transform rtl:rotate-180" fill="none"
+                                        stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                            d="M9 5l7 7-7 7"></path>
+                                    </svg>
+                                </span>
+                            </div>
+                        </div>
+                    </article>
+
+                    <!-- Post 3 -->
+                    <article
+                        class="bg-white dark:bg-gray-800 rounded-2xl overflow-hidden shadow-sm hover:shadow-xl transition flex flex-col group cursor-pointer">
+                        <div class="h-56 overflow-hidden">
+                            <img src="https://images.unsplash.com/photo-1581578731522-745d05cb972b?ixlib=rb-1.2.1&auto=format&fit=crop&w=800&q=80"
+                                alt="Blog Post"
+                                class="w-full h-full object-cover group-hover:scale-110 transition duration-500">
+                        </div>
+                        <div class="p-6 flex-grow flex flex-col">
+                            <span class="text-green-500 text-xs font-bold uppercase tracking-wider mb-2"
+                                data-translate="categoryLifestyle">Lifestyle</span>
+                            <h3 class="text-xl font-bold mb-3 group-hover:text-accent transition"
+                                data-translate="postTitle3">Spring Cleaning: How to Declutter Your Home</h3>
+                            <p class="text-gray-600 dark:text-gray-400 text-sm mb-6 flex-grow"
+                                data-translate="postDesc3">Simple steps to organize your space and turn your old items
+                                into cash.</p>
+                            <div class="flex items-center justify-between mt-auto">
+                                <span class="text-xs text-gray-500" data-translate="dummyJoinedDate">March 2024</span>
+                                <span class="text-accent font-bold text-sm flex items-center">
+                                    <span data-translate="readMore">Read More</span>
+                                    <svg class="w-4 h-4 ml-1 rtl:mr-1 rtl:ml-0 transform rtl:rotate-180" fill="none"
+                                        stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                            d="M9 5l7 7-7 7"></path>
+                                    </svg>
+                                </span>
+                            </div>
+                        </div>
+                    </article>
+                </div>
+
+                <!-- Load More Button -->
+                <div class="text-center mt-16">
+                    <button
+                        class="px-10 py-4 bg-gray-100 dark:bg-gray-800 border dark:border-gray-700 rounded-full font-bold hover:bg-gray-200 dark:hover:bg-gray-700 transition"
+                        data-translate="viewAll">View All Articles</button>
+                </div>
+            </div>
+        </section>
+
+        <!-- Newsletter Subscription -->
+        <section class="bg-gray-100 dark:bg-gray-800/50 py-20 transition-colors duration-300">
+            <div class="max-w-4xl mx-auto px-4 text-center">
+                <h2 class="text-3xl font-bold mb-4" data-translate="followUs">Subscribe to our Newsletter</h2>
+                <p class="text-gray-600 dark:text-gray-400 mb-8" data-translate="blogSubtitle">Get the latest tips and
+                    deals delivered straight to your inbox.</p>
+                <form class="flex flex-col sm:flex-row gap-4 max-w-lg mx-auto">
+                    <input type="email" placeholder="Email address"
+                        class="flex-grow px-6 py-4 rounded-full border dark:border-gray-700 dark:bg-gray-900 focus:outline-none focus:ring-2 focus:ring-accent"
+                        required>
+                    <button type="submit"
+                        class="bg-accent text-white px-8 py-4 rounded-full font-bold hover:bg-orange-600 transition shadow-lg"
+                        data-translate="signUpBtn">Subscribe</button>
+                </form>
+            </div>
+        </section>
+    </main>
+
+    <!-- Footer (Standardized) -->
+    <footer class="site-footer bg-gray-900 text-white pt-16 pb-8 border-t border-gray-800">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="grid grid-cols-1 md:grid-cols-4 gap-12 mb-12">
+                <div class="col-span-1 md:col-span-1">
+                    <a href="index.html" class="text-2xl font-bold mb-6 block">Dubizzle<span
+                            class="text-accent">Clone</span></a>
+                    <p class="text-gray-400 text-sm leading-relaxed" data-translate="footerText">The best place to buy
+                        and sell anything in the UAE.</p>
+                </div>
+                <div>
+                    <h4 class="font-bold mb-6 text-gray-200" data-translate="quickLinks">Quick Links</h4>
+                    <ul class="space-y-4 text-sm text-gray-400">
+                        <li><a href="about.html" class="hover:text-accent transition">About Us</a></li>
+                        <li><a href="contact.html" class="hover:text-accent transition">Contact Us</a></li>
+                        <li><a href="blog.html" class="hover:text-accent transition font-bold text-white">Blog</a></li>
+                        <li><a href="plans.html" class="hover:text-accent transition">Pricing Plans</a></li>
+                    </ul>
+                </div>
+                <div>
+                    <h4 class="font-bold mb-6 text-gray-200" data-translate="support">Support</h4>
+                    <ul class="space-y-4 text-sm text-gray-400">
+                        <li><a href="help.html" class="hover:text-accent transition">Help Center</a></li>
+                        <li><a href="privacy.html" class="hover:text-accent transition">Privacy Policy</a></li>
+                        <li><a href="#" class="hover:text-accent transition">Terms & Conditions</a></li>
+                    </ul>
+                </div>
+                <div>
+                    <h4 class="font-bold mb-6 text-gray-200" data-translate="followUs">Follow Us</h4>
+                    <div class="flex space-x-4 rtl:space-x-reverse">
+                        <a href="#"
+                            class="w-10 h-10 rounded-full bg-gray-800 flex items-center justify-center hover:bg-accent transition text-gray-400 hover:text-white"><svg
+                                class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
+                                <path
+                                    d="M24 4.557c-.883.392-1.832.656-2.828.775 1.017-.609 1.798-1.574 2.165-2.724-.951.564-2.005.974-3.127 1.195-.897-.957-2.178-1.555-3.594-1.555-3.179 0-5.515 2.966-4.797 6.045-4.091-.205-7.719-2.165-10.148-5.144-1.29 2.213-.669 5.108 1.523 6.574-.806-.026-1.566-.247-2.229-.616-.054 2.281 1.581 4.415 3.949 4.89-.693.188-1.452.232-2.224.084.626 1.956 2.444 3.379 4.6 3.419-2.07 1.623-4.678 2.348-7.29 2.04 2.179 1.397 4.768 2.212 7.548 2.212 9.142 0 14.307-7.721 13.995-14.646.962-.695 1.797-1.562 2.457-2.549z" />
+                            </svg></a>
+                        <a href="#"
+                            class="w-10 h-10 rounded-full bg-gray-800 flex items-center justify-center hover:bg-accent transition text-gray-400 hover:text-white"><svg
+                                class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
+                                <path
+                                    d="M12 2.163c3.204 0 3.584.012 4.85.072 3.269.156 5.093 1.824 5.248 5.093.057 1.266.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.987 4.881-5.248 5.093-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.156-5.094-1.824-5.248-5.093-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.987-4.881 5.248-5.093 1.265-.06 1.644-.072 4.849-.072zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.206-6.788 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.789 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.206 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z" />
+                            </svg></a>
+                    </div>
+                </div>
+            </div>
+            <div class="border-t border-gray-800 pt-8 text-center text-sm text-gray-500">
+                <p data-translate="rights">&copy; 2026 DubizzleClone. All rights reserved.</p>
+            </div>
+        </div>
+    </footer>
+
+    <script src="assets/js/en.js"></script>
+    <script src="assets/js/ar.js"></script>
+    <script src="assets/js/main.js"></script>
+</body>
+
+</html>
