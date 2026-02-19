@@ -8,12 +8,12 @@ const sequelize = databaseUrl
     ? new Sequelize(databaseUrl, {
         dialect: 'postgres',
         protocol: 'postgres',
-        dialectOptions: {
+        dialectOptions: isProduction ? {
             ssl: {
                 require: true,
                 rejectUnauthorized: false
             }
-        },
+        } : {},
         logging: false
     })
     : new Sequelize({
