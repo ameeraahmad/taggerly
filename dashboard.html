@@ -529,7 +529,72 @@
 
     <script src="assets/js/en.js"></script>
     <script src="assets/js/ar.js"></script>
+    <script src="assets/js/api-client.js"></script>
     <script src="assets/js/main.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', async () => {
+            if (!localStorage.getItem('token')) {
+                window.location.href = 'login.html';
+                return;
+            }
+
+            const user = JSON.parse(localStorage.getItem('user'));
+            // Update Sidebar Profile
+            if (user) {
+                document.querySelector('.w-20.h-20').textContent = user.name.split(' ').map(n => n[0]).join('').toUpperCase();
+                document.querySelector('h2.font-bold.text-lg').textContent = user.name;
+            }
+
+            try {
+                const response = await apiClient.getMyAds();
+                const ads = response.data;
+
+                // Update Stats
+                const stats = document.querySelectorAll('.text-3xl.font-bold.text-gray-900');
+                stats[0].textContent = ads.length;
+                stats[1].textContent = ads.reduce((acc, ad) => acc + (ad.views || 0), 0);
+
+                // Update Ad List
+                const container = document.querySelector('.divide-y');
+                container.innerHTML = '';
+
+                if (ads.length === 0) {
+                    container.innerHTML = '<div class="p-6 text-center text-gray-500">You haven\'t posted any ads yet.</div>';
+                }
+
+                ads.forEach(ad => {
+                    const adItem = `
+                        <div class="p-6 flex items-center hover:bg-gray-50 transition">
+                            <img src="${ad.images[0] || 'https://via.placeholder.com/150'}" class="w-16 h-16 rounded object-cover mr-4 rtl:ml-4 rtl:mr-0">
+                            <div class="flex-grow">
+                                <h4 class="font-bold text-gray-900 mb-1"><a href="ad-details.html?id=${ad.id}">${ad.title}</a></h4>
+                                <div class="text-sm text-gray-500">${ad.category} • Posted ${new Date(ad.createdAt).toLocaleDateString()}</div>
+                            </div>
+                            <div class="flex items-center space-x-2 rtl:space-x-reverse">
+                                <span class="bg-green-100 text-green-800 text-xs px-2 py-1 rounded-full font-bold">${ad.status.toUpperCase()}</span>
+                                <button class="p-2 text-gray-400 hover:text-accent"><svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"></path></svg></button>
+                                <button class="p-2 text-gray-400 hover:text-red-500" onclick="deleteAd(${ad.id})"><svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path></svg></button>
+                            </div>
+                        </div>
+                    `;
+                    container.insertAdjacentHTML('beforeend', adItem);
+                });
+            } catch (err) {
+                console.error('Error loading dashboard:', err);
+            }
+        });
+
+        async function deleteAd(id) {
+            if (confirm('Are you sure you want to delete this ad?')) {
+                try {
+                    await apiClient.fetch(`/ads/${id}`, { method: 'DELETE' });
+                    window.location.reload();
+                } catch (err) {
+                    alert(err.message);
+                }
+            }
+        }
+    </script>
 </body>
 
 </html>

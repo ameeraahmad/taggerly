@@ -212,6 +212,7 @@
 
     <script src="assets/js/en.js"></script>
     <script src="assets/js/ar.js"></script>
+    <script src="assets/js/api-client.js"></script>
     <script src="assets/js/main.js"></script>
     <script>
         const toggleBtn = document.getElementById('toggle-forms');
@@ -251,6 +252,49 @@
         if (urlParams.get('mode') === 'signup') {
             toggleBtn.click();
         }
+
+        // Login Logic
+        loginForm.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const email = loginForm.querySelector('input[type="email"]').value;
+            const password = loginForm.querySelector('input[type="password"]').value;
+
+            try {
+                const response = await apiClient.login(email, password);
+                alert(currentLang === 'ar' ? 'تم تسجيل الدخول بنجاح!' : 'Login successful!');
+                window.location.href = 'index.html';
+            } catch (err) {
+                alert(err.message);
+            }
+        });
+
+        // Signup Logic
+        signupForm.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const inputs = signupForm.querySelectorAll('input');
+            const firstName = inputs[0].value;
+            const lastName = inputs[1].value;
+            const email = inputs[2].value;
+            const password = inputs[3].value;
+            const confirmPassword = inputs[4].value;
+
+            if (password !== confirmPassword) {
+                alert(currentLang === 'ar' ? 'كلمات المرور غير متطابقة!' : 'Passwords do not match!');
+                return;
+            }
+
+            try {
+                await apiClient.register({
+                    name: `${firstName} ${lastName}`,
+                    email,
+                    password
+                });
+                alert(currentLang === 'ar' ? 'تم إنشاء الحساب بنجاح!' : 'Account created successfully!');
+                window.location.href = 'index.html';
+            } catch (err) {
+                alert(err.message);
+            }
+        });
     </script>
 </body>
 

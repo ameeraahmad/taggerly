@@ -596,7 +596,87 @@
 
     <script src="assets/js/en.js"></script>
     <script src="assets/js/ar.js"></script>
+    <script src="assets/js/api-client.js"></script>
     <script src="assets/js/main.js"></script>
+    <script>
+        async function loadSearchResults(params = {}) {
+            try {
+                const response = await apiClient.getAds(params);
+                const ads = response.data;
+                const container = document.querySelector('.space-y-4');
+                container.innerHTML = '';
+
+                // Update count
+                document.querySelector('.text-lg.font-normal').innerHTML = `(${ads.length} <span data-translate="ads">ads</span>)`;
+
+                if (ads.length === 0) {
+                    container.innerHTML = '<div class="text-center py-20 text-gray-500">No results found matching your criteria.</div>';
+                    return;
+                }
+
+                ads.forEach(ad => {
+                    const item = `
+                        <div class="bg-white dark:bg-gray-800 border dark:border-gray-700 rounded-xl overflow-hidden shadow-sm hover:shadow-md transition flex flex-col sm:flex-row group animate-fade-in cursor-pointer" onclick="window.location.href='ad-details.html?id=${ad.id}'">
+                            <div class="h-48 sm:h-auto sm:w-64 bg-gray-200 dark:bg-gray-700 relative flex-shrink-0">
+                                <img src="${ad.images[0] || 'https://via.placeholder.com/300'}" class="w-full h-full object-cover transition duration-300 group-hover:scale-105">
+                                ${ad.status === 'active' ? '<div class="absolute top-2 left-2 bg-accent text-white text-xs font-bold px-2 py-1 rounded">FEATURED</div>' : ''}
+                            </div>
+                            <div class="p-6 flex flex-col justify-between flex-grow">
+                                <div>
+                                    <div class="flex justify-between items-start">
+                                        <h3 class="font-bold text-xl text-primary dark:text-blue-400 mb-2 hover:underline">${ad.title}</h3>
+                                        <button class="text-gray-400 hover:text-red-500" onclick="event.stopPropagation(); toggleFav(${ad.id}, this)">
+                                            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"></path>
+                                            </svg>
+                                        </button>
+                                    </div>
+                                    <div class="text-2xl font-bold text-accent mb-2">${ad.price} <span class="currency-label">AED</span></div>
+                                    <p class="text-gray-600 dark:text-gray-400 mb-4 line-clamp-2">${ad.description}</p>
+                                </div>
+                                <div class="flex justify-between items-center text-sm text-gray-500 dark:text-gray-400 border-t dark:border-gray-700 pt-4">
+                                    <div class="flex items-center space-x-4 rtl:space-x-reverse">
+                                        <span class="flex items-center"><svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"></path></svg> <span>${ad.city}</span></span>
+                                        <span class="flex items-center"><svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg> <span>${new Date(ad.createdAt).toLocaleDateString()}</span></span>
+                                    </div>
+                                    <span class="text-primary dark:text-blue-400 font-medium hover:text-accent">View Details &rarr;</span>
+                                </div>
+                            </div>
+                        </div>
+                    `;
+                    container.insertAdjacentHTML('beforeend', item);
+                });
+            } catch (err) {
+                console.error('Error loading search results:', err);
+            }
+        }
+
+        document.addEventListener('DOMContentLoaded', () => {
+            const urlParams = new URLSearchParams(window.location.search);
+            const initialParams = {};
+            if (urlParams.get('q')) initialParams.search = urlParams.get('q');
+            if (urlParams.get('category')) initialParams.category = urlParams.get('category');
+
+            loadSearchResults(initialParams);
+
+            // Handle Filter Form
+            const filterBtn = document.querySelector('button[data-translate="applyFilters"]');
+            if (filterBtn) {
+                filterBtn.addEventListener('click', () => {
+                    const minPrice = document.querySelector('input[data-translate="minPrice"]').value;
+                    const maxPrice = document.querySelector('input[data-translate="maxPrice"]').value;
+                    const city = document.querySelector('select[data-dynamic-location="true"]').value;
+
+                    const params = {
+                        minPrice,
+                        maxPrice,
+                        city: city.includes('all') ? '' : city
+                    };
+                    loadSearchResults(params);
+                });
+            }
+        });
+    </script>
 </body>
 
 </html>

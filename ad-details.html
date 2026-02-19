@@ -550,19 +550,64 @@
 
     <script src="assets/js/en.js"></script>
     <script src="assets/js/ar.js"></script>
+    <script src="assets/js/api-client.js"></script>
     <script src="assets/js/main.js"></script>
     <script>
-        function changeImage(element) {
-            // Update main image
-            const mainImage = document.getElementById('mainImage');
-            mainImage.src = element.src.replace('&w=150&q=150', '&w=1350&q=80'); // Use higher res for main
+        async function loadAdDetails() {
+            const urlParams = new URLSearchParams(window.location.search);
+            const id = urlParams.get('id');
+            if (!id) return;
 
-            // Update active state
-            document.querySelectorAll('.gallery-thumb').forEach(thumb => {
-                thumb.classList.remove('active');
-            });
+            try {
+                const response = await apiClient.getAd(id);
+                const ad = response.data;
+
+                // Update Title & Page Title
+                document.title = `${ad.title} - Ad Details - Dubizzle Clone`;
+                document.querySelector('h1').textContent = ad.title;
+                document.querySelector('.text-2xl.font-bold.text-gray-900.mb-2').textContent = ad.title;
+
+                // Update Price
+                document.querySelector('.text-4xl.font-bold.text-accent').innerHTML = `${ad.price} <span class="currency-label">AED</span>`;
+
+                // Update Images
+                const mainImage = document.getElementById('mainImage');
+                if (ad.images && ad.images.length > 0) {
+                    mainImage.src = ad.images[0];
+                    const thumbContainer = document.querySelector('.flex.p-4.space-x-4');
+                    thumbContainer.innerHTML = '';
+                    ad.images.forEach((img, index) => {
+                        const thumb = `<img src="${img}" class="gallery-thumb rounded-md ${index === 0 ? 'active' : ''}" onclick="changeImage(this)">`;
+                        thumbContainer.insertAdjacentHTML('beforeend', thumb);
+                    });
+                }
+
+                // Update Description
+                document.querySelector('.text-gray-700.leading-relaxed.mb-6').textContent = ad.description;
+
+                // Update Location
+                document.querySelectorAll('.city-label').forEach(el => el.textContent = ad.city);
+
+                // Update Seller Info
+                if (ad.user) {
+                    document.querySelector('.font-bold.text-primary').textContent = ad.user.name;
+                    const avatar = document.querySelector('.w-12.h-12');
+                    avatar.textContent = ad.user.name.split(' ').map(n => n[0]).join('').toUpperCase();
+                }
+
+            } catch (err) {
+                console.error('Error loading ad:', err);
+            }
+        }
+
+        function changeImage(element) {
+            const mainImage = document.getElementById('mainImage');
+            mainImage.src = element.src;
+            document.querySelectorAll('.gallery-thumb').forEach(thumb => thumb.classList.remove('active'));
             element.classList.add('active');
         }
+
+        document.addEventListener('DOMContentLoaded', loadAdDetails);
     </script>
 </body>
 

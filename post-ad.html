@@ -284,7 +284,46 @@
 
     <script src="assets/js/en.js"></script>
     <script src="assets/js/ar.js"></script>
+    <script src="assets/js/api-client.js"></script>
     <script src="assets/js/main.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            // Check auth
+            if (!localStorage.getItem('token')) {
+                alert('Please login to post an ad.');
+                window.location.href = 'login.html';
+                return;
+            }
+
+            const form = document.querySelector('form');
+            form.addEventListener('submit', async (e) => {
+                e.preventDefault();
+
+                const category = form.querySelector('select').value;
+                const title = form.querySelectorAll('input')[0].value;
+                const price = form.querySelectorAll('input')[1].value;
+                const description = form.querySelector('textarea').value;
+                const city = document.getElementById('post-ad-location').value;
+
+                const adData = {
+                    title,
+                    description,
+                    price: parseFloat(price),
+                    category,
+                    city,
+                    images: ['https://via.placeholder.com/600x400'], // Placeholder for now
+                };
+
+                try {
+                    await apiClient.createAd(adData);
+                    alert('Ad posted successfully!');
+                    window.location.href = 'index.html';
+                } catch (err) {
+                    alert(err.message);
+                }
+            });
+        });
+    </script>
 </body>
 
 </html>

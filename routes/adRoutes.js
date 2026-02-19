@@ -1,35 +1,29 @@
 const express = require('express');
 const router = express.Router();
-const Ad = require('../models/Ad');
+const {
+    getAllAds,
+    getAdById,
+    createAd,
+    updateAd,
+    deleteAd,
+    getUserAds,
+    toggleFavorite,
+    getFavorites,
+    getDashboardStats
+} = require('../controllers/adController');
+const { protect } = require('../middleware/authMiddleware');
 
-// @route   GET /api/ads
-// @desc    Get all ads
-router.get('/', async (req, res) => {
-    try {
-        const ads = await Ad.find().sort({ createdAt: -1 });
-        res.json(ads);
-    } catch (err) {
-        res.status(500).json({ message: err.message });
-    }
-});
+// Public routes
+router.get('/', getAllAds);
+router.get('/favorites', protect, getFavorites);
+router.get('/my-ads', protect, getUserAds);
+router.get('/stats/dashboard', protect, getDashboardStats);
+router.get('/:id', getAdById);
 
-// @route   POST /api/ads
-// @desc    Create an ad
-router.post('/', async (req, res) => {
-    const ad = new Ad({
-        title: req.body.title,
-        description: req.body.description,
-        price: req.body.price,
-        category: req.body.category,
-        location: req.body.location
-    });
-
-    try {
-        const newAd = await ad.save();
-        res.status(201).json(newAd);
-    } catch (err) {
-        res.status(400).json({ message: err.message });
-    }
-});
+// Private routes
+router.post('/', protect, createAd);
+router.post('/:id/favorite', protect, toggleFavorite);
+router.put('/:id', protect, updateAd);
+router.delete('/:id', protect, deleteAd);
 
 module.exports = router;

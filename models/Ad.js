@@ -1,51 +1,62 @@
-const mongoose = require('mongoose');
+const { DataTypes } = require('sequelize');
+const { sequelize } = require('../config/db');
 
-const adSchema = new mongoose.Schema({
+const Ad = sequelize.define('Ad', {
+    id: {
+        type: DataTypes.INTEGER,
+        autoIncrement: true,
+        primaryKey: true
+    },
     title: {
-        type: String,
-        required: [true, 'Please provide ad title'],
-        trim: true
+        type: DataTypes.STRING,
+        allowNull: false
     },
     description: {
-        type: String,
-        required: [true, 'Please provide description']
+        type: DataTypes.TEXT,
+        allowNull: false
     },
     price: {
-        type: Number,
-        required: [true, 'Please provide price']
+        type: DataTypes.FLOAT,
+        allowNull: false
     },
     category: {
-        type: String,
-        required: [true, 'Please provide category'],
-        enum: ['Motors', 'Property', 'Classifieds', 'Jobs', 'Services']
+        type: DataTypes.ENUM('Motors', 'Property', 'Classifieds', 'Jobs', 'Services'),
+        allowNull: false
     },
     subCategory: {
-        type: String
+        type: DataTypes.STRING
     },
-    location: {
-        city: { type: String, required: true },
-        area: { type: String }
+    city: {
+        type: DataTypes.STRING,
+        allowNull: false
     },
-    images: [{
-        type: String, // URLs to images
-        default: ['https://via.placeholder.com/600x400?text=No+Image']
-    }],
-    user: {
-        type: mongoose.Schema.ObjectId,
-        ref: 'User',
-        // required: true
+    area: {
+        type: DataTypes.STRING
+    },
+    images: {
+        type: DataTypes.TEXT,
+        defaultValue: JSON.stringify(['https://via.placeholder.com/600x400?text=No+Image']),
+        get() {
+            const val = this.getDataValue('images');
+            return val ? JSON.parse(val) : [];
+        },
+        set(val) {
+            this.setDataValue('images', JSON.stringify(val));
+        }
     },
     status: {
-        type: String,
-        enum: ['active', 'sold', 'deleted'],
-        default: 'active'
+        type: DataTypes.ENUM('active', 'sold', 'deleted'),
+        defaultValue: 'active'
     },
-    createdAt: {
-        type: Date,
-        default: Date.now
+    userId: {
+        type: DataTypes.INTEGER
+    },
+    views: {
+        type: DataTypes.INTEGER,
+        defaultValue: 0
     }
+}, {
+    timestamps: true
 });
-
-const Ad = mongoose.model('Ad', adSchema);
 
 module.exports = Ad;

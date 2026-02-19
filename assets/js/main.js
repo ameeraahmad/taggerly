@@ -389,7 +389,106 @@ document.addEventListener('DOMContentLoaded', () => {
             }
         });
     });
+
+    // --- Global Auth State Logic ---
+    function updateAuthState() {
+        const user = JSON.parse(localStorage.getItem('user'));
+        const token = localStorage.getItem('token');
+        const userDropdown = document.querySelector('.group.relative.h-full.flex.items-center div'); // The dropdown content
+
+        if (token && user) {
+            // User is logged in
+            const dropdownHTML = `
+                <div class="px-4 py-3 border-b dark:border-gray-700">
+                    <p class="text-sm font-bold text-gray-900 dark:text-white">${user.name}</p>
+                    <p class="text-xs text-gray-500 truncate">${user.email}</p>
+                </div>
+                <a href="profile.html" class="block px-4 py-2 text-sm text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-700 hover:text-accent font-bold" data-translate="myProfile">My Profile</a>
+                <a href="dashboard.html" class="block px-4 py-2 text-sm text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-700 hover:text-accent" data-translate="myDashboard">My Dashboard</a>
+                <a href="favorites.html" class="block px-4 py-2 text-sm text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-700 hover:text-accent" data-translate="myFavorites">My Favorites</a>
+                <div class="border-t dark:border-gray-700 my-1"></div>
+                <a href="#" id="logout-btn" class="block px-4 py-2 text-sm text-red-600 hover:bg-gray-100 dark:hover:bg-gray-700" data-translate="logout">Logout</a>
+            `;
+            if (userDropdown) userDropdown.innerHTML = dropdownHTML;
+
+            const logoutBtn = document.getElementById('logout-btn');
+            if (logoutBtn) {
+                logoutBtn.addEventListener('click', (e) => {
+                    e.preventDefault();
+                    if (window.apiClient) window.apiClient.logout();
+                });
+            }
+        }
+    }
+
+    updateAuthState();
+
+    // --- Dynamic Ads Loading (Home Page) ---
+    const adsContainer = document.querySelector('.featured-ads .grid');
+    if (adsContainer && window.apiClient) {
+        loadFeaturedAds(adsContainer);
+    }
 });
+
+async function loadFeaturedAds(container) {
+    try {
+        const response = await apiClient.getAds({ limit: 8 });
+        const ads = response.data;
+
+        if (ads.length === 0) return; // Keep static ads if none in DB
+
+        container.innerHTML = ''; // Clear static ads
+        ads.forEach(ad => {
+            const card = `
+                <div class="ad-card-main bg-white dark:bg-gray-800 border dark:border-gray-700 rounded-xl overflow-hidden shadow-sm hover:shadow-lg transition group cursor-pointer" onclick="window.location.href='ad-details.html?id=${ad.id}'">
+                    <div class="ad-card-img-container relative h-48 bg-gray-200 dark:bg-gray-700">
+                        <img src="${ad.images[0] || 'https://via.placeholder.com/300x200'}" alt="${ad.title}" class="w-full h-full object-cover transition duration-300 group-hover:scale-105">
+                        ${ad.status === 'active' ? '<div class="badge-featured absolute top-2 right-2 bg-accent text-white text-xs font-bold px-2 py-1 rounded">FEATURED</div>' : ''}
+                        <button class="wishlist-btn absolute bottom-2 right-2 bg-white dark:bg-gray-700 p-2 rounded-full shadow hover:text-red-500 transition" onclick="event.stopPropagation(); toggleFav(${ad.id}, this)">
+                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"></path>
+                            </svg>
+                        </button>
+                    </div>
+                    <div class="p-4">
+                        <div class="text-sm text-gray-500 dark:text-gray-400 mb-1">${ad.category}</div>
+                        <h3 class="font-bold text-lg text-gray-900 dark:text-white mb-2 truncate">${ad.title}</h3>
+                        <div class="font-bold text-accent text-xl mb-2">${ad.price} <span class="currency-label">AED</span></div>
+                        <div class="flex items-center text-gray-500 dark:text-gray-400 text-sm">
+                            <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"></path>
+                            </svg>
+                            <span>${ad.city}</span>
+                        </div>
+                    </div>
+                </div>
+            `;
+            container.insertAdjacentHTML('beforeend', card);
+        });
+    } catch (err) {
+        console.error('Error loading ads:', err);
+    }
+}
+
+window.toggleFav = async function (adId, btn) {
+    if (!localStorage.getItem('token')) {
+        window.location.href = 'login.html';
+        return;
+    }
+    try {
+        const res = await apiClient.toggleFavorite(adId);
+        const svg = btn.querySelector('svg');
+        if (res.isFavorite) {
+            svg.setAttribute('fill', 'currentColor');
+            svg.classList.add('text-red-500');
+        } else {
+            svg.setAttribute('fill', 'none');
+            svg.classList.remove('text-red-500');
+        }
+    } catch (err) {
+        alert(err.message);
+    }
+};
 
 // Horizontal Slider Scroll Function (Global)
 window.scrollSlider = function (elementId, scrollAmount) {

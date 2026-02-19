@@ -557,7 +557,43 @@
 
     <script src="assets/js/en.js"></script>
     <script src="assets/js/ar.js"></script>
+    <script src="assets/js/api-client.js"></script>
     <script src="assets/js/main.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const user = JSON.parse(localStorage.getItem('user'));
+            const token = localStorage.getItem('token');
+
+            if (!token || !user) {
+                window.location.href = 'login.html';
+                return;
+            }
+
+            // Update UI with user data
+            const nameElements = document.querySelectorAll('[data-translate="dummyName"]');
+            nameElements.forEach(el => el.textContent = user.name);
+
+            const emailElement = document.querySelector('.text-base.text-gray-900.dark:text-white.font-semibold:not(.city-label):not(.country-label)');
+            // Note: The selector above might be tricky due to similar structures. 
+            // Let's use a more direct approach if possible, or just look for the text.
+            const contactInfoDivs = document.querySelectorAll('.flex.items-start.gap-4');
+            if (contactInfoDivs[0]) {
+                contactInfoDivs[0].querySelector('p.text-base').textContent = user.email;
+            }
+
+            // Update sidebar avatar initials if no image
+            const avatarContainer = document.querySelector('.w-24.h-24.bg-white.rounded-full');
+            if (avatarContainer && !user.avatar) {
+                avatarContainer.innerHTML = `<div class="w-full h-full flex items-center justify-center text-4xl font-bold text-primary">${user.name.split(' ').map(n => n[0]).join('').toUpperCase()}</div>`;
+            }
+
+            // Update header profile img if needed
+            const headerProfileImg = document.getElementById('header-profile-img');
+            if (headerProfileImg && !user.avatar) {
+                headerProfileImg.parentElement.innerHTML = `<div class="w-full h-full flex items-center justify-center text-xs font-bold bg-gray-200 dark:bg-gray-600">${user.name.split(' ').map(n => n[0]).join('').toUpperCase()}</div>`;
+            }
+        });
+    </script>
 </body>
 
 </html>
