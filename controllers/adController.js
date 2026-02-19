@@ -65,10 +65,23 @@ exports.getAdById = async (req, res) => {
 // @route   POST /api/ads
 exports.createAd = async (req, res) => {
     try {
-        const { title, description, price, category, subCategory, city, area, images } = req.body;
+        const { title, description, price, category, subCategory, city, area } = req.body;
+
+        let images = [];
+        if (req.files && req.files.length > 0) {
+            // Fix: handle both localhost and production environments
+            const protocol = req.protocol;
+            const host = req.get('host');
+            images = req.files.map(file => `${protocol}://${host}/uploads/${file.filename}`);
+        } else if (req.body.images) {
+            // Fallback for cases where images are sent as JSON strings/arrays (like in manual tests)
+            images = Array.isArray(req.body.images) ? req.body.images : JSON.parse(req.body.images);
+        }
+
         const ad = await Ad.create({
             title, description, price, category, subCategory,
-            city, area, images,
+            city, area,
+            images,
             userId: req.user ? req.user.id : null
         });
         res.status(201).json({ success: true, data: ad });

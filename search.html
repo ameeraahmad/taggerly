@@ -296,28 +296,50 @@
 
                     <!-- Categories -->
                     <div class="mb-6">
-                        <h3 class="text-sm font-semibold text-gray-500 dark:text-gray-400 mb-2 uppercase"
-                            data-translate="categoryLabel">
-                            Category</h3>
-                        <div class="space-y-2">
-                            <label class="flex items-center cursor-pointer">
-                                <input type="radio" name="category" class="text-accent focus:ring-accent bg-transparent"
-                                    checked>
-                                <span class="ml-2 text-gray-700 dark:text-gray-300 rtl:mr-2 rtl:ml-0"
-                                    data-translate="allCategories">All
-                                    Categories</span>
+                        <h3 class="text-xs font-bold text-gray-400 dark:text-gray-500 mb-3 uppercase tracking-wider"
+                            data-translate="categoryLabel">Category</h3>
+                        <div class="space-y-2 max-h-48 overflow-y-auto pr-2 hide-scrollbar">
+                            <label class="flex items-center group cursor-pointer">
+                                <input type="radio" name="category" value=""
+                                    class="w-4 h-4 text-accent border-gray-300 focus:ring-accent" checked>
+                                <span
+                                    class="ml-2 text-sm text-gray-600 dark:text-gray-300 group-hover:text-accent transition"
+                                    data-translate="allCategories">All Categories</span>
                             </label>
-                            <label class="flex items-center cursor-pointer">
-                                <input type="radio" name="category"
-                                    class="text-accent focus:ring-accent bg-transparent">
-                                <span class="ml-2 text-gray-700 dark:text-gray-300 rtl:mr-2 rtl:ml-0"
+                            <label class="flex items-center group cursor-pointer">
+                                <input type="radio" name="category" value="Motors"
+                                    class="w-4 h-4 text-accent border-gray-300 focus:ring-accent">
+                                <span
+                                    class="ml-2 text-sm text-gray-600 dark:text-gray-300 group-hover:text-accent transition"
                                     data-translate="motors">Motors</span>
                             </label>
-                            <label class="flex items-center cursor-pointer">
-                                <input type="radio" name="category"
-                                    class="text-accent focus:ring-accent bg-transparent">
-                                <span class="ml-2 text-gray-700 dark:text-gray-300 rtl:mr-2 rtl:ml-0"
+                            <label class="flex items-center group cursor-pointer">
+                                <input type="radio" name="category" value="Property"
+                                    class="w-4 h-4 text-accent border-gray-300 focus:ring-accent">
+                                <span
+                                    class="ml-2 text-sm text-gray-600 dark:text-gray-300 group-hover:text-accent transition"
                                     data-translate="property">Property</span>
+                            </label>
+                            <label class="flex items-center group cursor-pointer">
+                                <input type="radio" name="category" value="Electronics"
+                                    class="w-4 h-4 text-accent border-gray-300 focus:ring-accent">
+                                <span
+                                    class="ml-2 text-sm text-gray-600 dark:text-gray-300 group-hover:text-accent transition"
+                                    data-translate="electronics">Electronics</span>
+                            </label>
+                            <label class="flex items-center group cursor-pointer">
+                                <input type="radio" name="category" value="Mobiles"
+                                    class="w-4 h-4 text-accent border-gray-300 focus:ring-accent">
+                                <span
+                                    class="ml-2 text-sm text-gray-600 dark:text-gray-300 group-hover:text-accent transition"
+                                    data-translate="mobiles">Mobiles</span>
+                            </label>
+                            <label class="flex items-center group cursor-pointer">
+                                <input type="radio" name="category" value="Furniture"
+                                    class="w-4 h-4 text-accent border-gray-300 focus:ring-accent">
+                                <span
+                                    class="ml-2 text-sm text-gray-600 dark:text-gray-300 group-hover:text-accent transition"
+                                    data-translate="furniture">Furniture</span>
                             </label>
                         </div>
                     </div>
@@ -601,50 +623,60 @@
     <script>
         async function loadSearchResults(params = {}) {
             try {
+                // Keep track of current state for reference
+                window.currentSearchParams = params;
+
                 const response = await apiClient.getAds(params);
-                const ads = response.data;
+                const results = response.data;
                 const container = document.querySelector('.space-y-4');
                 container.innerHTML = '';
 
-                // Update count
-                document.querySelector('.text-lg.font-normal').innerHTML = `(${ads.length} <span data-translate="ads">ads</span>)`;
+                // Update count display
+                const countContainer = document.querySelector('.text-lg.font-normal');
+                if (countContainer) {
+                    countContainer.innerHTML = `(${results.length} <span data-translate="ads">ads</span>)`;
+                }
 
-                if (ads.length === 0) {
-                    container.innerHTML = '<div class="text-center py-20 text-gray-500">No results found matching your criteria.</div>';
+                if (results.length === 0) {
+                    container.innerHTML = `
+                        <div class="text-center py-20 bg-white dark:bg-gray-800 rounded-xl border dark:border-gray-700">
+                            <svg class="mx-auto h-12 w-12 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.172 9.172a4 4 0 015.656 0M9 10h.01M15 10h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+                            <h3 class="mt-2 text-sm font-medium text-gray-900 dark:text-white">No results found</h3>
+                            <p class="mt-1 text-sm text-gray-500">Try adjusting your filters or search terms.</p>
+                        </div>
+                    `;
                     return;
                 }
 
-                ads.forEach(ad => {
-                    const item = `
-                        <div class="bg-white dark:bg-gray-800 border dark:border-gray-700 rounded-xl overflow-hidden shadow-sm hover:shadow-md transition flex flex-col sm:flex-row group animate-fade-in cursor-pointer" onclick="window.location.href='ad-details.html?id=${ad.id}'">
-                            <div class="h-48 sm:h-auto sm:w-64 bg-gray-200 dark:bg-gray-700 relative flex-shrink-0">
-                                <img src="${ad.images[0] || 'https://via.placeholder.com/300'}" class="w-full h-full object-cover transition duration-300 group-hover:scale-105">
-                                ${ad.status === 'active' ? '<div class="absolute top-2 left-2 bg-accent text-white text-xs font-bold px-2 py-1 rounded">FEATURED</div>' : ''}
+                results.forEach(ad => {
+                    const adCard = `
+                        <div class="bg-white dark:bg-gray-800 border dark:border-gray-700 rounded-xl overflow-hidden shadow-sm hover:shadow-lg transition-all flex flex-col sm:flex-row group animate-fade-in relative cursor-pointer" onclick="window.location.href='ad-details.html?id=${ad.id}'">
+                            <div class="h-48 sm:h-auto sm:w-64 bg-gray-200 dark:bg-gray-700 relative overflow-hidden flex-shrink-0">
+                                <img src="${ad.images[0] || 'https://via.placeholder.com/300'}" class="w-full h-full object-cover transition duration-500 group-hover:scale-110" alt="${ad.title}">
+                                ${ad.status === 'active' ? '<div class="absolute top-3 left-3 bg-accent text-white text-[10px] font-black px-2 py-1 rounded shadow-lg uppercase tracking-tighter">Featured</div>' : ''}
                             </div>
                             <div class="p-6 flex flex-col justify-between flex-grow">
-                                <div>
+                                <div class="flex-grow">
                                     <div class="flex justify-between items-start">
-                                        <h3 class="font-bold text-xl text-primary dark:text-blue-400 mb-2 hover:underline">${ad.title}</h3>
-                                        <button class="text-gray-400 hover:text-red-500" onclick="event.stopPropagation(); toggleFav(${ad.id}, this)">
-                                            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"></path>
-                                            </svg>
+                                        <h3 class="font-black text-lg sm:text-xl text-gray-900 dark:text-gray-100 group-hover:text-accent transition line-clamp-1">${ad.title}</h3>
+                                        <button class="text-gray-300 hover:text-red-500 transition-colors" onclick="event.stopPropagation(); toggleFav(${ad.id}, this)">
+                                            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"></path></svg>
                                         </button>
                                     </div>
-                                    <div class="text-2xl font-bold text-accent mb-2">${ad.price} <span class="currency-label">AED</span></div>
-                                    <p class="text-gray-600 dark:text-gray-400 mb-4 line-clamp-2">${ad.description}</p>
+                                    <div class="text-2xl font-black text-accent mt-1 mb-3">${ad.price.toLocaleString()} <span class="text-sm font-bold">AED</span></div>
+                                    <p class="text-gray-500 dark:text-gray-400 text-sm mb-4 line-clamp-2">${ad.description}</p>
                                 </div>
-                                <div class="flex justify-between items-center text-sm text-gray-500 dark:text-gray-400 border-t dark:border-gray-700 pt-4">
-                                    <div class="flex items-center space-x-4 rtl:space-x-reverse">
-                                        <span class="flex items-center"><svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"></path></svg> <span>${ad.city}</span></span>
-                                        <span class="flex items-center"><svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg> <span>${new Date(ad.createdAt).toLocaleDateString()}</span></span>
+                                <div class="flex justify-between items-center text-[11px] font-bold text-gray-400 dark:text-gray-500 pt-4 border-t dark:border-gray-700/50 uppercase tracking-widest leading-none">
+                                    <div class="flex items-center space-x-6 rtl:space-x-reverse">
+                                        <span class="flex items-center"><svg class="w-3.5 h-3.5 mr-1.5 text-accent" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"></path></svg> ${ad.city}</span>
+                                        <span class="flex items-center"><svg class="w-3.5 h-3.5 mr-1.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg> <span>${new Date(ad.createdAt).toLocaleDateString()}</span></span>
                                     </div>
-                                    <span class="text-primary dark:text-blue-400 font-medium hover:text-accent">View Details &rarr;</span>
+                                    <span class="hidden sm:inline-block text-accent group-hover:translate-x-1 transition-transform">Details &rarr;</span>
                                 </div>
                             </div>
                         </div>
                     `;
-                    container.insertAdjacentHTML('beforeend', item);
+                    container.insertAdjacentHTML('beforeend', adCard);
                 });
             } catch (err) {
                 console.error('Error loading search results:', err);
@@ -654,25 +686,67 @@
         document.addEventListener('DOMContentLoaded', () => {
             const urlParams = new URLSearchParams(window.location.search);
             const initialParams = {};
-            if (urlParams.get('q')) initialParams.search = urlParams.get('q');
-            if (urlParams.get('category')) initialParams.category = urlParams.get('category');
+
+            // Sync Search Bar with Query
+            const searchInput = document.querySelector('.search-input');
+            if (urlParams.get('q')) {
+                initialParams.search = urlParams.get('q');
+                if (searchInput) searchInput.value = urlParams.get('q');
+            }
+            if (urlParams.get('category')) {
+                initialParams.category = urlParams.get('category');
+                const radio = document.querySelector(`input[name="category"][value="${urlParams.get('category')}"]`);
+                if (radio) radio.checked = true;
+            }
 
             loadSearchResults(initialParams);
 
-            // Handle Filter Form
-            const filterBtn = document.querySelector('button[data-translate="applyFilters"]');
-            if (filterBtn) {
-                filterBtn.addEventListener('click', () => {
-                    const minPrice = document.querySelector('input[data-translate="minPrice"]').value;
-                    const maxPrice = document.querySelector('input[data-translate="maxPrice"]').value;
-                    const city = document.querySelector('select[data-dynamic-location="true"]').value;
+            // Filter Application logic
+            const applyBtn = document.querySelector('button[data-translate="applyFilters"]');
+            const resetBtn = document.querySelector('button[data-translate="reset"]');
 
-                    const params = {
-                        minPrice,
-                        maxPrice,
-                        city: city.includes('all') ? '' : city
-                    };
-                    loadSearchResults(params);
+            const applyFilters = () => {
+                const category = document.querySelector('input[name="category"]:checked')?.value || '';
+                const minPrice = document.querySelector('input[data-translate="minPrice"]').value;
+                const maxPrice = document.querySelector('input[data-translate="maxPrice"]').value;
+                const city = document.querySelector('select[data-dynamic-location="true"]').value;
+                const search = document.querySelector('.search-input')?.value || '';
+
+                const params = {
+                    category,
+                    minPrice,
+                    maxPrice,
+                    city: (city.toLowerCase().includes('all') || city === '') ? '' : city,
+                    search
+                };
+
+                // Remove empty params
+                Object.keys(params).forEach(key => !params[key] && delete params[key]);
+
+                loadSearchResults(params);
+            };
+
+            if (applyBtn) applyBtn.addEventListener('click', applyFilters);
+
+            if (resetBtn) {
+                resetBtn.addEventListener('click', () => {
+                    document.querySelector('input[name="category"][value=""]').checked = true;
+                    document.querySelector('input[data-translate="minPrice"]').value = '';
+                    document.querySelector('input[data-translate="maxPrice"]').value = '';
+                    document.querySelector('select[data-dynamic-location="true"]').selectedIndex = 0;
+                    if (searchInput) searchInput.value = '';
+                    loadSearchResults({});
+                });
+            }
+
+            // Sync Header Search
+            const headerSearchBtn = document.querySelector('.search-wrapper button');
+            if (headerSearchBtn) {
+                headerSearchBtn.addEventListener('click', applyFilters);
+            }
+            if (searchInput) {
+                searchInput.addEventListener('keypress', (e) => {
+                    if (e.key === 'Enter') applyFilters();
                 });
             }
         });

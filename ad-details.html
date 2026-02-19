@@ -32,21 +32,55 @@
     </script>
     <link href="assets/css/style.css" rel="stylesheet">
     <style>
-        .gallery-main {
-            height: 400px;
+        .gallery-main-container {
+            height: 500px;
+            background: #000;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+            position: relative;
+        }
+
+        #mainImage {
+            transition: opacity 0.3s ease-in-out, transform 0.5s ease;
+            max-height: 100%;
+            max-width: 100%;
+            object-fit: contain;
+        }
+
+        .gallery-main-container:hover #mainImage {
+            transform: scale(1.05);
         }
 
         .gallery-thumb {
-            height: 80px;
+            width: 100px;
+            height: 70px;
             cursor: pointer;
-            opacity: 0.7;
-            transition: opacity 0.3s;
+            object-fit: cover;
+            opacity: 0.6;
+            transition: all 0.3s ease;
+            border: 2px solid transparent;
         }
 
-        .gallery-thumb:hover,
+        .gallery-thumb:hover {
+            opacity: 0.9;
+            transform: translateY(-2px);
+        }
+
         .gallery-thumb.active {
             opacity: 1;
-            border: 2px solid #FF6B00;
+            border-color: #FF6B00;
+            box-shadow: 0 4px 12px rgba(255, 107, 0, 0.2);
+        }
+
+        .hide-scrollbar::-webkit-scrollbar {
+            display: none;
+        }
+
+        .hide-scrollbar {
+            -ms-overflow-style: none;
+            scrollbar-width: none;
         }
     </style>
 </head>
@@ -342,21 +376,33 @@
             <!-- Left Column: Gallery & Description -->
             <div class="w-full lg:w-2/3">
                 <!-- Gallery -->
-                <div class="bg-white rounded-xl shadow-sm overflow-hidden mb-8">
-                    <div class="gallery-main relative bg-gray-900 flex items-center justify-center">
-                        <img id="mainImage"
-                            src="https://images.unsplash.com/photo-1533473359331-0135ef1b58bf?ixlib=rb-1.2.1&auto=format&fit=crop&w=1350&q=80"
-                            alt="Car Main" class="max-h-full max-w-full object-contain">
+                <div
+                    class="bg-white dark:bg-gray-800 rounded-xl shadow-sm overflow-hidden mb-8 border dark:border-gray-700">
+                    <div class="gallery-main-container group">
+                        <img id="mainImage" src="https://via.placeholder.com/800x500?text=Loading..."
+                            alt="Ad Main Image">
+                        <!-- Navigation Arrows (Optional but nice) -->
+                        <div
+                            class="absolute inset-0 flex justify-between items-center px-4 opacity-0 group-hover:opacity-100 transition-opacity">
+                            <button onclick="prevImage()"
+                                class="bg-black/50 text-white p-2 rounded-full hover:bg-black/70 transition">
+                                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                        d="M15 19l-7-7 7-7"></path>
+                                </svg>
+                            </button>
+                            <button onclick="nextImage()"
+                                class="bg-black/50 text-white p-2 rounded-full hover:bg-black/70 transition">
+                                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                        d="M9 5l7 7-7 7"></path>
+                                </svg>
+                            </button>
+                        </div>
                     </div>
-                    <div class="flex p-4 space-x-4 overflow-x-auto bg-white border-t rtl:space-x-reverse">
-                        <img src="https://images.unsplash.com/photo-1533473359331-0135ef1b58bf?ixlib=rb-1.2.1&auto=format&fit=crop&w=150&q=150"
-                            class="gallery-thumb rounded-md active" onclick="changeImage(this)">
-                        <img src="https://images.unsplash.com/photo-1494976388531-d1058494cdd8?ixlib=rb-1.2.1&auto=format&fit=crop&w=150&q=150"
-                            class="gallery-thumb rounded-md" onclick="changeImage(this)">
-                        <img src="https://images.unsplash.com/photo-1583121274602-3e2820c69888?ixlib=rb-1.2.1&auto=format&fit=crop&w=150&q=150"
-                            class="gallery-thumb rounded-md" onclick="changeImage(this)">
-                        <img src="https://images.unsplash.com/photo-1503376763036-066120622c74?ixlib=rb-1.2.1&auto=format&fit=crop&w=150&q=150"
-                            class="gallery-thumb rounded-md" onclick="changeImage(this)">
+                    <div id="thumb-container"
+                        class="flex p-4 gap-4 overflow-x-auto bg-gray-50 dark:bg-gray-800/50 border-t dark:border-gray-700 hide-scrollbar scroll-smooth">
+                        <!-- Thumbnails injected via JS -->
                     </div>
                 </div>
 
@@ -411,35 +457,63 @@
             <div class="w-full lg:w-1/3 space-y-6">
 
                 <!-- Price Card -->
-                <div class="bg-white rounded-xl shadow-sm p-6">
-                    <h1 class="text-2xl font-bold text-gray-900 mb-2" data-translate="adDetailsTitle">Toyota Camry 2024
-                        - Excellent Condition</h1>
-                    <div class="flex justify-between items-center mb-4">
-                        <span class="text-sm text-gray-500" data-translate="postedTime">Posted 2 hours ago</span>
-                        <span class="text-sm text-gray-500 city-label" data-translate="dubai">Dubai</span>
+                <div class="bg-white dark:bg-gray-800 rounded-xl shadow-sm p-6 border dark:border-gray-700">
+                    <h1 class="text-2xl font-bold text-gray-900 dark:text-white mb-2 leading-tight"
+                        data-translate="adDetailsTitle">Loading...</h1>
+                    <div class="flex justify-between items-center mb-6 text-sm">
+                        <div class="flex items-center text-gray-500 dark:text-gray-400">
+                            <svg class="w-4 h-4 mr-1 text-accent" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                            </svg>
+                            <span id="postedTime">Recently</span>
+                        </div>
+                        <div class="flex items-center text-gray-500 dark:text-gray-400">
+                            <span class="city-label">UAE</span>
+                        </div>
                     </div>
-                    <div class="text-4xl font-bold text-accent mb-6">25,000 <span class="currency-label">AED</span>
+
+                    <div class="bg-orange-50 dark:bg-accent/10 rounded-xl p-4 mb-6">
+                        <div class="text-3xl font-bold text-accent mb-0">
+                            <span id="priceValue">0</span> <span class="text-lg">AED</span>
+                        </div>
                     </div>
-                    <div class="flex space-x-3 rtl:space-x-reverse">
+
+                    <div class="flex items-center justify-between mb-6 px-1">
+                        <div class="flex items-center text-gray-500 text-xs">
+                            <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path>
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z">
+                                </path>
+                            </svg>
+                            <span id="viewCount">0</span> <span class="ml-1">views</span>
+                        </div>
+                        <span
+                            class="text-accent text-xs font-bold uppercase tracking-wider bg-accent/10 px-2 py-0.5 rounded">Verified</span>
+                    </div>
+
+                    <div class="flex flex-col gap-3">
                         <button
-                            class="flex-1 bg-accent text-white py-3 rounded-lg font-bold hover:bg-orange-600 transition shadow flex justify-center items-center">
+                            class="w-full bg-accent text-white py-3.5 rounded-xl font-bold hover:bg-orange-600 transition shadow-lg shadow-accent/20 flex justify-center items-center">
                             <svg class="w-5 h-5 mr-2 rtl:ml-2 rtl:mr-0" fill="none" stroke="currentColor"
                                 viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                                     d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z">
                                 </path>
                             </svg>
-                            <span data-translate="call">Call</span>
+                            <span data-translate="call">Call Seller</span>
                         </button>
                         <button
-                            class="flex-1 border-2 border-accent text-accent py-3 rounded-lg font-bold hover:bg-orange-50 transition flex justify-center items-center">
+                            class="w-full bg-primary text-white py-3.5 rounded-xl font-bold hover:bg-slate-800 transition shadow-lg flex justify-center items-center">
                             <svg class="w-5 h-5 mr-2 rtl:ml-2 rtl:mr-0" fill="none" stroke="currentColor"
                                 viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                                     d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z">
                                 </path>
                             </svg>
-                            <span data-translate="chat">Chat</span>
+                            <span data-translate="chat">Send Message</span>
                         </button>
                     </div>
                 </div>
@@ -553,6 +627,9 @@
     <script src="assets/js/api-client.js"></script>
     <script src="assets/js/main.js"></script>
     <script>
+        let currentImages = [];
+        let currentIndex = 0;
+
         async function loadAdDetails() {
             const urlParams = new URLSearchParams(window.location.search);
             const id = urlParams.get('id');
@@ -561,38 +638,38 @@
             try {
                 const response = await apiClient.getAd(id);
                 const ad = response.data;
+                currentImages = ad.images || [];
 
                 // Update Title & Page Title
-                document.title = `${ad.title} - Ad Details - Dubizzle Clone`;
+                document.title = `${ad.title} - Dubizzle Clone`;
                 document.querySelector('h1').textContent = ad.title;
-                document.querySelector('.text-2xl.font-bold.text-gray-900.mb-2').textContent = ad.title;
+                document.querySelector('.text-2xl.font-bold.text-gray-900').textContent = ad.title;
 
-                // Update Price
-                document.querySelector('.text-4xl.font-bold.text-accent').innerHTML = `${ad.price} <span class="currency-label">AED</span>`;
+                // Update Price & Views
+                document.getElementById('priceValue').textContent = ad.price.toLocaleString();
+                document.getElementById('viewCount').textContent = ad.views || 0;
 
-                // Update Images
-                const mainImage = document.getElementById('mainImage');
-                if (ad.images && ad.images.length > 0) {
-                    mainImage.src = ad.images[0];
-                    const thumbContainer = document.querySelector('.flex.p-4.space-x-4');
-                    thumbContainer.innerHTML = '';
-                    ad.images.forEach((img, index) => {
-                        const thumb = `<img src="${img}" class="gallery-thumb rounded-md ${index === 0 ? 'active' : ''}" onclick="changeImage(this)">`;
-                        thumbContainer.insertAdjacentHTML('beforeend', thumb);
-                    });
+                if (ad.createdAt) {
+                    const date = new Date(ad.createdAt);
+                    document.getElementById('postedTime').textContent = `Posted ${date.toLocaleDateString()}`;
                 }
 
                 // Update Description
-                document.querySelector('.text-gray-700.leading-relaxed.mb-6').textContent = ad.description;
+                document.querySelector('.text-gray-700.leading-relaxed').textContent = ad.description;
 
-                // Update Location
+                // Update City
                 document.querySelectorAll('.city-label').forEach(el => el.textContent = ad.city);
+
+                // Load Initial Image
+                if (currentImages.length > 0) {
+                    renderGallery();
+                }
 
                 // Update Seller Info
                 if (ad.user) {
-                    document.querySelector('.font-bold.text-primary').textContent = ad.user.name;
                     const avatar = document.querySelector('.w-12.h-12');
                     avatar.textContent = ad.user.name.split(' ').map(n => n[0]).join('').toUpperCase();
+                    document.querySelector('.font-bold.text-primary').textContent = ad.user.name;
                 }
 
             } catch (err) {
@@ -600,11 +677,45 @@
             }
         }
 
-        function changeImage(element) {
-            const mainImage = document.getElementById('mainImage');
-            mainImage.src = element.src;
-            document.querySelectorAll('.gallery-thumb').forEach(thumb => thumb.classList.remove('active'));
-            element.classList.add('active');
+        function renderGallery() {
+            const mainImg = document.getElementById('mainImage');
+            const thumbContainer = document.getElementById('thumb-container');
+
+            mainImg.src = currentImages[currentIndex];
+
+            thumbContainer.innerHTML = '';
+            currentImages.forEach((img, idx) => {
+                const isActive = idx === currentIndex;
+                const thumb = document.createElement('img');
+                thumb.src = img;
+                thumb.className = `gallery-thumb rounded-lg ${isActive ? 'active' : ''}`;
+                thumb.onclick = () => jumpToImage(idx);
+                thumbContainer.appendChild(thumb);
+            });
+        }
+
+        function jumpToImage(idx) {
+            const mainImg = document.getElementById('mainImage');
+            currentIndex = idx;
+
+            // Subtle Fade effect
+            mainImg.style.opacity = '0';
+            setTimeout(() => {
+                renderGallery();
+                mainImg.style.opacity = '1';
+            }, 200);
+        }
+
+        function nextImage() {
+            if (currentImages.length === 0) return;
+            currentIndex = (currentIndex + 1) % currentImages.length;
+            jumpToImage(currentIndex);
+        }
+
+        function prevImage() {
+            if (currentImages.length === 0) return;
+            currentIndex = (currentIndex - 1 + currentImages.length) % currentImages.length;
+            jumpToImage(currentIndex);
         }
 
         document.addEventListener('DOMContentLoaded', loadAdDetails);
