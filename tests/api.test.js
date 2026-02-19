@@ -1,7 +1,13 @@
 const request = require('supertest');
 const app = require('../server');
+const { getSyncPromise } = require('../config/db');
 
 describe('Backend API Tests - Dubizzle Clone', () => {
+
+    beforeAll(async () => {
+        // Wait for database sync to complete before running tests
+        await getSyncPromise();
+    });
 
     // 1. Health Check
     test('GET /api/health - should return 200 and server status', async () => {

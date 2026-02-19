@@ -20,7 +20,7 @@ const Ad = sequelize.define('Ad', {
         allowNull: false
     },
     category: {
-        type: DataTypes.ENUM('Motors', 'Property', 'Classifieds', 'Jobs', 'Services'),
+        type: DataTypes.ENUM('Motors', 'Property', 'Classifieds', 'Jobs', 'Services', 'Furniture', 'Mobiles', 'Electronics'),
         allowNull: false
     },
     subCategory: {
