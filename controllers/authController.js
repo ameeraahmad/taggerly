@@ -1,5 +1,6 @@
 const User = require('../models/User');
 const jwt = require('jsonwebtoken');
+const bcrypt = require('bcryptjs');
 
 const generateToken = (id) => {
     return jwt.sign({ id }, process.env.JWT_SECRET || 'dubizzle_secret_key', {
@@ -141,7 +142,7 @@ exports.googleLogin = async (req, res) => {
         res.status(200).json({
             success: true,
             token,
-            user: {
+            data: {
                 id: user.id,
                 name: user.name,
                 email: user.email,
@@ -152,5 +153,55 @@ exports.googleLogin = async (req, res) => {
     } catch (err) {
         console.error('Google Auth Error:', err);
         res.status(400).json({ success: false, message: 'Google authentication failed' });
+    }
+};
+
+// @desc    Facebook Login
+// @route   POST /api/auth/facebook
+// @access  Public
+exports.facebookLogin = async (req, res) => {
+    const { accessToken } = req.body;
+
+    try {
+        // Verify with Facebook Graph API
+        const response = await fetch(`https://graph.facebook.com/me?fields=id,name,email,picture&access_token=${accessToken}`);
+        const data = await response.json();
+
+        if (data.error) {
+            return res.status(400).json({ success: false, message: 'Facebook authentication failed' });
+        }
+
+        const { id, name, email, picture } = data;
+
+        // Check if user exists
+        let user = await User.findOne({ where: { email } });
+
+        if (!user) {
+            // Create user if not exists
+            user = await User.create({
+                name,
+                email,
+                password: await bcrypt.hash(id + (process.env.JWT_SECRET || 'fallback_secret'), 10),
+                avatar: picture ? picture.data.url : null,
+                role: 'user'
+            });
+        }
+
+        const token = generateToken(user.id);
+
+        res.status(200).json({
+            success: true,
+            token,
+            data: {
+                id: user.id,
+                name: user.name,
+                email: user.email,
+                avatar: user.avatar
+            }
+        });
+
+    } catch (err) {
+        console.error('Facebook Auth Error:', err);
+        res.status(400).json({ success: false, message: 'Facebook authentication failed' });
     }
 };

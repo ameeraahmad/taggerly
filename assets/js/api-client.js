@@ -50,6 +50,16 @@ const apiClient = {
         return data;
     },
 
+    async facebookLogin(accessToken) {
+        const data = await this.fetch('/auth/facebook', {
+            method: 'POST',
+            body: JSON.stringify({ accessToken })
+        });
+        localStorage.setItem('token', data.token);
+        localStorage.setItem('user', JSON.stringify(data.data));
+        return data;
+    },
+
     async register(userData) {
         const data = await this.fetch('/auth/register', {
             method: 'POST',
