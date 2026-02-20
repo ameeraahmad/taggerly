@@ -425,23 +425,8 @@ document.addEventListener('DOMContentLoaded', () => {
                     <a href="dashboard.html" class="block px-4 py-2 text-sm text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-700 hover:text-accent" data-translate="myDashboard">My Dashboard</a>
                     <a href="favorites.html" class="block px-4 py-2 text-sm text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-700 hover:text-accent" data-translate="myFavorites">My Favorites</a>
                     <div class="border-t dark:border-gray-700 my-1"></div>
-                    <a href="#" class="logout-action-btn block px-4 py-2 text-sm text-red-600 hover:bg-gray-100 dark:hover:bg-gray-700" data-translate="logout">Logout</a>
+                    <a href="#" class="logout-action-btn block px-4 py-2 text-sm text-red-600 hover:bg-gray-100 dark:hover:bg-gray-700 font-bold" data-translate="logout">Logout</a>
                 `;
-            }
-
-            // Update mobile menu if it exists
-            const mobileMenuLinks = document.querySelector('#mobile-menu .px-2');
-            if (mobileMenuLinks) {
-                // Check if logout already exists to avoid duplication
-                if (!document.getElementById('mobile-logout-btn')) {
-                    const logoutLink = document.createElement('a');
-                    logoutLink.href = '#';
-                    logoutLink.id = 'mobile-logout-btn';
-                    logoutLink.className = 'logout-action-btn block px-3 py-2 rounded-md text-base font-medium text-red-600 hover:bg-gray-50 dark:hover:bg-gray-700';
-                    logoutLink.setAttribute('data-translate', 'logout');
-                    logoutLink.textContent = translations[window.currentLang].logout || 'Logout';
-                    mobileMenuLinks.appendChild(logoutLink);
-                }
             }
 
             // Update user button label if it exists
@@ -449,10 +434,25 @@ document.addEventListener('DOMContentLoaded', () => {
             if (userBtnText && user) {
                 userBtnText.textContent = user.name;
             }
+        } else {
+            // User is NOT logged in
+            if (userDropdown) {
+                userDropdown.innerHTML = `
+                    <a href="login.html" class="block px-4 py-2 text-sm text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-700 hover:text-accent" data-translate="login">Log in</a>
+                    <a href="login.html?mode=signup" class="block px-4 py-2 text-sm text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-700 hover:text-accent" data-translate="createAccount">Sign Up</a>
+                `;
+            }
 
-            // Re-apply translations for the new dynamic elements
-            window.updateLanguage(window.currentLang);
+            // Ensure button text is "Log in"
+            const userBtnText = document.getElementById('user-btn-text');
+            if (userBtnText) {
+                userBtnText.textContent = translations[window.currentLang].login || 'Log in';
+                userBtnText.setAttribute('data-translate', 'login');
+            }
         }
+
+        // Re-apply translations for the new dynamic elements
+        window.updateLanguage(window.currentLang);
 
         // Attach event listeners to all logout buttons (dynamic or static)
         const logoutBtns = document.querySelectorAll('#logout-btn, #logout-btn-header, #logout-btn-sidebar, #mobile-logout-btn, .logout-action-btn, [data-translate="logout"]');
