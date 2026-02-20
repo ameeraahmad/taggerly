@@ -394,7 +394,15 @@ document.addEventListener('DOMContentLoaded', () => {
     function updateAuthState() {
         const user = JSON.parse(localStorage.getItem('user'));
         const token = localStorage.getItem('token');
-        const userDropdown = document.querySelector('.group.relative.h-full.flex.items-center div'); // The dropdown content
+
+        // Find the user dropdown - look for the one containing 'My Profile' link
+        const allDropdowns = document.querySelectorAll('.group.relative.h-full.flex.items-center .absolute, .group.relative.h-full.flex.items-center div[class*="absolute"]');
+        let userDropdown = null;
+        allDropdowns.forEach(d => {
+            if (d.querySelector('[data-translate="myProfile"]')) {
+                userDropdown = d;
+            }
+        });
 
         if (token && user) {
             // User is logged in
@@ -427,6 +435,8 @@ document.addEventListener('DOMContentLoaded', () => {
                     mobileMenuLinks.appendChild(logoutLink);
                 }
             }
+            // Re-apply translations for the new dynamic elements
+            updateLanguage(currentLang);
         }
 
         // Attach event listeners to all logout buttons (dynamic or static)
