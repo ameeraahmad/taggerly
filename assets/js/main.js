@@ -5,17 +5,16 @@ const translations = {
 };
 
 document.addEventListener('DOMContentLoaded', () => {
-    // Language Switching Logic
     const htmlToUpdate = document.documentElement;
 
     // --- Country & Currency Dropdown Logic ---
     const countryOptions = document.querySelectorAll('.country-option');
     const currentCountryFlag = document.getElementById('current-country-flag');
     const currentCountryName = document.getElementById('current-country-name');
-    let selectedCountry = localStorage.getItem('selectedCountry') || 'uae';
-    let currentLang = localStorage.getItem('lang') || 'en';
+    window.selectedCountry = localStorage.getItem('selectedCountry') || 'uae';
+    window.currentLang = localStorage.getItem('lang') || 'en';
 
-    function updateDynamicContent(country, lang) {
+    window.updateDynamicContent = function (country, lang) {
         const countryName = translations[lang][country] || translations['en'][country] || country;
 
         // --- 1. Update Currencies ---
@@ -101,15 +100,15 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
-    function setCountry(country, flag, name) {
+    window.setCountry = function (country, flag, name) {
         if (currentCountryFlag) currentCountryFlag.textContent = flag;
 
-        selectedCountry = country;
+        window.selectedCountry = country;
         localStorage.setItem('selectedCountry', country);
         localStorage.setItem('selectedCountryFlag', flag);
         localStorage.setItem('selectedCountryName', name);
 
-        updateDynamicContent(selectedCountry, currentLang);
+        window.updateDynamicContent(window.selectedCountry, window.currentLang);
     }
 
     if (countryOptions.length > 0) {
@@ -127,13 +126,14 @@ document.addEventListener('DOMContentLoaded', () => {
         const storedCountry = localStorage.getItem('selectedCountry') || 'uae';
         const storedFlag = localStorage.getItem('selectedCountryFlag') || '🇦🇪';
         const storedName = localStorage.getItem('selectedCountryName') || 'uae';
-        setCountry(storedCountry, storedFlag, storedName);
+        window.setCountry(storedCountry, storedFlag, storedName);
     }
 
     // --- Language Switching Logic ---
     const langBtn = document.getElementById('lang-toggle');
 
-    function updateLanguage(lang) {
+    window.updateLanguage = function (lang) {
+        const htmlToUpdate = document.documentElement;
         // Update direction and font
         if (lang === 'ar') {
             htmlToUpdate.setAttribute('dir', 'rtl');
@@ -147,7 +147,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
         // Save preference
         localStorage.setItem('lang', lang);
-        currentLang = lang;
+        window.currentLang = lang;
 
         // Update text content for elements with data-translate key
         const elementsToTranslate = document.querySelectorAll('[data-translate]');
@@ -157,24 +157,32 @@ document.addEventListener('DOMContentLoaded', () => {
                 if ((el.tagName === 'INPUT' || el.tagName === 'TEXTAREA') && el.getAttribute('placeholder')) {
                     el.setAttribute('placeholder', translations[lang][key]);
                 } else {
-                    el.innerHTML = translations[lang][key];
+                    // Specific logic for user button text
+                    if (el.id === 'user-btn-text' && localStorage.getItem('token')) {
+                        const user = JSON.parse(localStorage.getItem('user'));
+                        el.textContent = user ? user.name : translations[lang][key];
+                    } else {
+                        el.innerHTML = translations[lang][key];
+                    }
                 }
             }
         });
 
         // Update dynamic content (currencies, locations) when language changes
-        updateDynamicContent(selectedCountry, currentLang);
+        if (window.updateDynamicContent) {
+            window.updateDynamicContent(window.selectedCountry, window.currentLang);
+        }
     }
 
     if (langBtn) {
         langBtn.addEventListener('click', (e) => {
             e.preventDefault();
-            const newLang = currentLang === 'en' ? 'ar' : 'en';
-            updateLanguage(newLang);
+            const newLang = window.currentLang === 'en' ? 'ar' : 'en';
+            window.updateLanguage(newLang);
         });
 
         // Initialize on load
-        updateLanguage(currentLang);
+        window.updateLanguage(window.currentLang);
     }
 
     // --- Dark Mode Logic ---
@@ -431,12 +439,19 @@ document.addEventListener('DOMContentLoaded', () => {
                     logoutLink.id = 'mobile-logout-btn';
                     logoutLink.className = 'logout-action-btn block px-3 py-2 rounded-md text-base font-medium text-red-600 hover:bg-gray-50 dark:hover:bg-gray-700';
                     logoutLink.setAttribute('data-translate', 'logout');
-                    logoutLink.textContent = translations[currentLang].logout || 'Logout';
+                    logoutLink.textContent = translations[window.currentLang].logout || 'Logout';
                     mobileMenuLinks.appendChild(logoutLink);
                 }
             }
+
+            // Update user button label if it exists
+            const userBtnText = document.getElementById('user-btn-text');
+            if (userBtnText && user) {
+                userBtnText.textContent = user.name;
+            }
+
             // Re-apply translations for the new dynamic elements
-            updateLanguage(currentLang);
+            window.updateLanguage(window.currentLang);
         }
 
         // Attach event listeners to all logout buttons (dynamic or static)
@@ -767,20 +782,30 @@ function initPasswordToggles() {
 }
 
 // Global function to update translations for new dynamically injected elements
-const originalUpdateLanguage = updateLanguage;
-updateLanguage = function (lang) {
+const originalUpdateLanguage = window.updateLanguage;
+window.updateLanguage = function (lang) {
     if (typeof originalUpdateLanguage === 'function') {
         originalUpdateLanguage(lang);
     }
 
     // Update newly injected elements
     const btt = document.getElementById('backToTop');
-    if (btt) btt.setAttribute('title', translations[lang].backToTop);
+    if (btt) {
+        const titleKey = 'backToTop';
+        if (translations[lang] && translations[lang][titleKey]) {
+            btt.setAttribute('title', translations[lang][titleKey]);
+        }
+    }
 
     const toggles = document.querySelectorAll('.password-toggle');
     toggles.forEach(t => {
         const field = t.previousElementSibling;
-        const isVisible = field.getAttribute('type') === 'text';
-        t.textContent = isVisible ? translations[lang].hidePassword : translations[lang].showPassword;
+        if (field) {
+            const isVisible = field.getAttribute('type') === 'text';
+            const key = isVisible ? 'hidePassword' : 'showPassword';
+            if (translations[lang] && translations[lang][key]) {
+                t.textContent = translations[lang][key];
+            }
+        }
     });
 };
