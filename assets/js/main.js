@@ -398,27 +398,53 @@ document.addEventListener('DOMContentLoaded', () => {
 
         if (token && user) {
             // User is logged in
-            const dropdownHTML = `
-                <div class="px-4 py-3 border-b dark:border-gray-700">
-                    <p class="text-sm font-bold text-gray-900 dark:text-white">${user.name}</p>
-                    <p class="text-xs text-gray-500 truncate">${user.email}</p>
-                </div>
-                <a href="profile.html" class="block px-4 py-2 text-sm text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-700 hover:text-accent font-bold" data-translate="myProfile">My Profile</a>
-                <a href="dashboard.html" class="block px-4 py-2 text-sm text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-700 hover:text-accent" data-translate="myDashboard">My Dashboard</a>
-                <a href="favorites.html" class="block px-4 py-2 text-sm text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-700 hover:text-accent" data-translate="myFavorites">My Favorites</a>
-                <div class="border-t dark:border-gray-700 my-1"></div>
-                <a href="#" id="logout-btn" class="block px-4 py-2 text-sm text-red-600 hover:bg-gray-100 dark:hover:bg-gray-700" data-translate="logout">Logout</a>
-            `;
-            if (userDropdown) userDropdown.innerHTML = dropdownHTML;
+            // Update User Dropdown with profile info and logout
+            if (userDropdown) {
+                userDropdown.innerHTML = `
+                    <div class="px-4 py-3 border-b dark:border-gray-700">
+                        <p class="text-sm font-bold text-gray-900 dark:text-white">${user.name}</p>
+                        <p class="text-xs text-gray-500 truncate">${user.email}</p>
+                    </div>
+                    <a href="profile.html" class="block px-4 py-2 text-sm text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-700 hover:text-accent font-bold" data-translate="myProfile">My Profile</a>
+                    <a href="dashboard.html" class="block px-4 py-2 text-sm text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-700 hover:text-accent" data-translate="myDashboard">My Dashboard</a>
+                    <a href="favorites.html" class="block px-4 py-2 text-sm text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-700 hover:text-accent" data-translate="myFavorites">My Favorites</a>
+                    <div class="border-t dark:border-gray-700 my-1"></div>
+                    <a href="#" class="logout-action-btn block px-4 py-2 text-sm text-red-600 hover:bg-gray-100 dark:hover:bg-gray-700" data-translate="logout">Logout</a>
+                `;
+            }
 
-            const logoutBtn = document.getElementById('logout-btn');
-            if (logoutBtn) {
-                logoutBtn.addEventListener('click', (e) => {
-                    e.preventDefault();
-                    if (window.apiClient) window.apiClient.logout();
-                });
+            // Update mobile menu if it exists
+            const mobileMenuLinks = document.querySelector('#mobile-menu .px-2');
+            if (mobileMenuLinks) {
+                // Check if logout already exists to avoid duplication
+                if (!document.getElementById('mobile-logout-btn')) {
+                    const logoutLink = document.createElement('a');
+                    logoutLink.href = '#';
+                    logoutLink.id = 'mobile-logout-btn';
+                    logoutLink.className = 'logout-action-btn block px-3 py-2 rounded-md text-base font-medium text-red-600 hover:bg-gray-50 dark:hover:bg-gray-700';
+                    logoutLink.setAttribute('data-translate', 'logout');
+                    logoutLink.textContent = translations[currentLang].logout || 'Logout';
+                    mobileMenuLinks.appendChild(logoutLink);
+                }
             }
         }
+
+        // Attach event listeners to all logout buttons (dynamic or static)
+        const logoutBtns = document.querySelectorAll('#logout-btn, #logout-btn-header, #logout-btn-sidebar, #mobile-logout-btn, .logout-action-btn, [data-translate="logout"]');
+        logoutBtns.forEach(btn => {
+            // Avoid multiple listeners if function runs again
+            btn.onclick = (e) => {
+                e.preventDefault();
+                if (window.apiClient) {
+                    window.apiClient.logout();
+                } else {
+                    // Fallback if apiClient not initialized
+                    localStorage.removeItem('token');
+                    localStorage.removeItem('user');
+                    window.location.href = 'login.html';
+                }
+            };
+        });
     }
 
     updateAuthState();
