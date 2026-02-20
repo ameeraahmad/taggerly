@@ -672,6 +672,11 @@
                     document.querySelector('.font-bold.text-primary').textContent = ad.user.name;
                 }
 
+                // Update dynamic content (currencies, locations) after details are loaded
+                if (window.updateDynamicContent) {
+                    window.updateDynamicContent(window.selectedCountry, window.currentLang);
+                }
+
             } catch (err) {
                 console.error('Error loading ad:', err);
             }

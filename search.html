@@ -668,7 +668,7 @@
                                 </div>
                                 <div class="flex justify-between items-center text-[11px] font-bold text-gray-400 dark:text-gray-500 pt-4 border-t dark:border-gray-700/50 uppercase tracking-widest leading-none">
                                     <div class="flex items-center space-x-6 rtl:space-x-reverse">
-                                        <span class="flex items-center"><svg class="w-3.5 h-3.5 mr-1.5 text-accent" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"></path></svg> ${ad.city}</span>
+                                        <span class="flex items-center"><svg class="w-3.5 h-3.5 mr-1.5 text-accent" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"></path></svg> <span class="city-label">${ad.city}</span></span>
                                         <span class="flex items-center"><svg class="w-3.5 h-3.5 mr-1.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg> <span>${new Date(ad.createdAt).toLocaleDateString()}</span></span>
                                     </div>
                                     <span class="hidden sm:inline-block text-accent group-hover:translate-x-1 transition-transform">Details &rarr;</span>
@@ -678,6 +678,11 @@
                     `;
                     container.insertAdjacentHTML('beforeend', adCard);
                 });
+
+                // Update dynamic content (currencies, locations) for newly added search results
+                if (window.updateDynamicContent) {
+                    window.updateDynamicContent(window.selectedCountry, window.currentLang);
+                }
             } catch (err) {
                 console.error('Error loading search results:', err);
             }
