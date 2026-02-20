@@ -47,6 +47,7 @@
         }
     </script>
     <link href="assets/css/style.css" rel="stylesheet">
+    <script src="https://accounts.google.com/gsi/client" async defer></script>
     <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet">
     <style>
         body {
@@ -189,18 +190,37 @@
                         class="flex items-center justify-center py-2.5 border dark:border-gray-700 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-700 transition">
                         <img src="https://www.svgrepo.com/show/303114/facebook-3.svg"
                             class="h-5 w-5 mr-2 rtl:ml-2 rtl:mr-0" alt="Facebook">
-                        <span class="text-sm font-medium">Facebook</span>
-                    </button>
-                </div>
-            </div>
+                        <div class="mt-6">
+                            <div class="relative">
+                                <div class="absolute inset-0 flex items-center">
+                                    <div class="w-full border-t border-gray-300 dark:border-gray-600"></div>
+                                </div>
+                                <div class="relative flex justify-center text-sm">
+                                    <span class="px-2 bg-white dark:bg-gray-800 text-gray-500"
+                                        data-translate="orContinueWith">Or continue with</span>
+                                </div>
+                            </div>
 
-            <!-- Toggle Link -->
-            <p class="mt-8 text-center text-sm text-gray-600 dark:text-gray-400">
-                <span id="toggle-text" data-translate="dontHaveAccount">Don't have an account?</span>
-                <a href="#" id="toggle-forms" class="text-accent font-bold hover:underline ml-1 rtl:mr-1 rtl:ml-0"
-                    data-translate="createAccount">Sign Up</a>
-            </p>
-        </div>
+                            <div class="mt-6 grid grid-cols-1 gap-3">
+                                <button onclick="loginWithGoogle()"
+                                    class="w-full inline-flex justify-center py-2.5 px-4 border border-gray-300 dark:border-gray-600 rounded-xl shadow-sm bg-white dark:bg-gray-700 text-sm font-medium text-gray-700 dark:text-gray-200 hover:bg-gray-50 dark:hover:bg-gray-600 transition-all">
+                                    <svg class="w-5 h-5 mr-2" viewBox="0 0 24 24">
+                                        <path fill="#EA4335"
+                                            d="M12.48 10.92v3.28h7.84c-.24 1.84-.92 3.32-2 4.44-1.12 1.12-2.72 1.84-5.84 1.84-5.04 0-9.2-4.08-9.2-9.2s4.16-9.2 9.2-9.2c2.72 0 4.84 1.08 6.36 2.52l2.32-2.32C18.84 1.08 15.92 0 12.48 0 5.6 0 0 5.6 0 12.4s5.6 12.4 12.48 12.4c3.68 0 6.48-1.2 8.64-3.48 2.24-2.24 2.92-5.4 2.92-7.96 0-.52-.04-1.04-.12-1.52H12.48z" />
+                                    </svg>
+                                    <span>Google</span>
+                                </button>
+                            </div>
+                        </div>
+
+                        <!-- Toggle Link -->
+                        <p class="mt-8 text-center text-sm text-gray-600 dark:text-gray-400">
+                            <span id="toggle-text" data-translate="dontHaveAccount">Don't have an account?</span>
+                            <a href="#" id="toggle-forms"
+                                class="text-accent font-bold hover:underline ml-1 rtl:mr-1 rtl:ml-0"
+                                data-translate="createAccount">Sign Up</a>
+                        </p>
+                </div>
     </main>
 
     <!-- Footer -->
@@ -295,6 +315,24 @@
                 alert(err.message);
             }
         });
+
+        // Google Authentication
+        async function handleCredentialResponse(response) {
+            try {
+                const res = await apiClient.googleLogin(response.credential);
+                window.location.href = 'dashboard.html';
+            } catch (err) {
+                console.error('Google Auth Error:', err);
+            }
+        }
+
+        window.loginWithGoogle = function () {
+            google.accounts.id.initialize({
+                client_id: "755452292723-fake-id.apps.googleusercontent.com",
+                callback: handleCredentialResponse
+            });
+            google.accounts.id.prompt();
+        }
     </script>
 </body>
 

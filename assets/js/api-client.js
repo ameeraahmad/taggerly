@@ -40,6 +40,16 @@ const apiClient = {
         return data;
     },
 
+    async googleLogin(tokenId) {
+        const data = await this.fetch('/auth/google', {
+            method: 'POST',
+            body: JSON.stringify({ tokenId })
+        });
+        localStorage.setItem('token', data.token);
+        localStorage.setItem('user', JSON.stringify(data.data));
+        return data;
+    },
+
     async register(userData) {
         const data = await this.fetch('/auth/register', {
             method: 'POST',

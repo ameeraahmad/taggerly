@@ -12,6 +12,7 @@ const {
     getDashboardStats
 } = require('../controllers/adController');
 const { protect } = require('../middleware/authMiddleware');
+const { googleLogin } = require('../controllers/authController'); // Added for googleLogin
 
 // Public routes
 router.get('/', getAllAds);

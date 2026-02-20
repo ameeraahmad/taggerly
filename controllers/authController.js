@@ -105,3 +105,52 @@ exports.updateProfile = async (req, res) => {
         res.status(400).json({ success: false, message: err.message });
     }
 };
+const { OAuth2Client } = require('google-auth-library');
+const client = new OAuth2Client(process.env.GOOGLE_CLIENT_ID);
+
+// @desc    Google Login
+// @route   POST /api/auth/google
+// @access  Public
+exports.googleLogin = async (req, res) => {
+    const { tokenId } = req.body;
+
+    try {
+        const ticket = await client.verifyIdToken({
+            idToken: tokenId,
+            audience: process.env.GOOGLE_CLIENT_ID
+        });
+
+        const { email, name, picture, sub } = ticket.getPayload();
+
+        // Check if user exists
+        let user = await User.findOne({ where: { email } });
+
+        if (!user) {
+            // Create user if not exists
+            user = await User.create({
+                name,
+                email,
+                password: await bcrypt.hash(sub + process.env.JWT_SECRET, 10), // Random password
+                avatar: picture,
+                role: 'user'
+            });
+        }
+
+        const token = generateToken(user.id);
+
+        res.status(200).json({
+            success: true,
+            token,
+            user: {
+                id: user.id,
+                name: user.name,
+                email: user.email,
+                avatar: user.avatar
+            }
+        });
+
+    } catch (err) {
+        console.error('Google Auth Error:', err);
+        res.status(400).json({ success: false, message: 'Google authentication failed' });
+    }
+};
