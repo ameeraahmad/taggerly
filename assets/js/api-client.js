@@ -1,6 +1,6 @@
 const API_URL = window.location.origin.includes('localhost')
     ? 'http://localhost:5000/api'
-    : `${window.location.origin}/api`;
+    : '/api';
 
 const apiClient = {
     async fetch(endpoint, options = {}) {
