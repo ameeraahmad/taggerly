@@ -403,12 +403,19 @@ document.addEventListener('DOMContentLoaded', () => {
         const user = JSON.parse(localStorage.getItem('user'));
         const token = localStorage.getItem('token');
 
-        // Find the user dropdown - look for the one containing 'My Profile' link
-        const allDropdowns = document.querySelectorAll('.group.relative.h-full.flex.items-center .absolute, .group.relative.h-full.flex.items-center div[class*="absolute"]');
+        // Find the user dropdown - look for the one containing relevant links
+        const allDropdowns = document.querySelectorAll('.absolute, div[class*="absolute"]');
         let userDropdown = null;
         allDropdowns.forEach(d => {
-            if (d.querySelector('[data-translate="myProfile"]')) {
-                userDropdown = d;
+            // Check for any of the common user-related translation keys
+            if (d.querySelector('[data-translate="myProfile"]') ||
+                d.querySelector('[data-translate="login"]') ||
+                d.querySelector('[data-translate="myDashboard"]')) {
+
+                // Ensure it's inside a header action area (heuristic)
+                if (d.closest('.header-actions') || d.closest('.relative.group')) {
+                    userDropdown = d;
+                }
             }
         });
 
