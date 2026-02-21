@@ -49,7 +49,14 @@ exports.getAllAds = async (req, res) => {
 // @route   GET /api/ads/:id
 exports.getAdById = async (req, res) => {
     try {
-        const ad = await Ad.findByPk(req.params.id);
+        const User = require('../models/User');
+        const ad = await Ad.findByPk(req.params.id, {
+            include: [{
+                model: User,
+                as: 'user',
+                attributes: ['id', 'name', 'avatar', 'createdAt']
+            }]
+        });
         if (!ad) return res.status(404).json({ success: false, message: 'Ad not found' });
 
         // Increment views

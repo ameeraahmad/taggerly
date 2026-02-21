@@ -655,9 +655,26 @@
 
                 // Update Seller Info
                 if (ad.user) {
-                    const avatar = document.querySelector('.w-12.h-12');
-                    avatar.textContent = ad.user.name.split(' ').map(n => n[0]).join('').toUpperCase();
+                    const avatarContainer = document.querySelector('.w-12.h-12');
+
+                    // Show Avatar or Initials
+                    if (ad.user.avatar && !ad.user.avatar.includes('gravatar.com/avatar/00000000000000000000000000000000')) {
+                        avatarContainer.innerHTML = `<img src="${ad.user.avatar}" class="w-full h-full rounded-full object-cover">`;
+                        avatarContainer.classList.remove('bg-gray-300', 'flex', 'items-center', 'justify-center', 'text-xl', 'font-bold', 'text-gray-600');
+                    } else {
+                        avatarContainer.textContent = ad.user.name.split(' ').map(n => n[0]).join('').toUpperCase();
+                    }
+
                     document.querySelector('.font-bold.text-primary').textContent = ad.user.name;
+
+                    // Join Date
+                    if (ad.user.createdAt) {
+                        const joinDate = new Date(ad.user.createdAt);
+                        const memberSinceEl = document.querySelector('.text-sm.text-gray-500');
+                        if (memberSinceEl) {
+                            memberSinceEl.innerHTML = `<span data-translate="memberSince">Member since</span> ${joinDate.getFullYear()}`;
+                        }
+                    }
                 }
 
                 // Update dynamic content (currencies, locations) after details are loaded
