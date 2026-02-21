@@ -89,7 +89,7 @@ const apiClient = {
     async createAd(adData) {
         return this.fetch('/ads', {
             method: 'POST',
-            body: JSON.stringify(adData),
+            body: adData instanceof FormData ? adData : JSON.stringify(adData),
         });
     },
 
