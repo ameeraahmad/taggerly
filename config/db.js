@@ -33,9 +33,9 @@ const connectDB = async () => {
     syncPromise = (async () => {
         try {
             await sequelize.authenticate();
-            // Use alter: true only if NOT in SQLite or if explicitly needed
-            // For now, let's keep it simple to avoid SQLite FOREIGN KEY errors
-            const syncOptions = isTest ? { force: true } : { alter: false };
+            // In production/dev, we use alter: true to create/update tables
+            // In test, we use force: true for a clean slate
+            const syncOptions = isTest ? { force: true } : { alter: true };
             await sequelize.sync(syncOptions);
             isSynced = true;
             console.log(`✅ ${databaseUrl ? 'PostgreSQL' : 'SQLite'} Database connected and synced.`);
