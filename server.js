@@ -2,12 +2,14 @@ const express = require('express');
 const cors = require('cors');
 const dotenv = require('dotenv');
 const path = require('path');
+
+// Load env variables at the very beginning
+dotenv.config();
+
 const { connectDB } = require('./config/db');
 // Load associations
 require('./models/associations');
 
-// Load env variables
-dotenv.config();
 
 const app = express();
 const PORT = process.env.PORT || 5000;
