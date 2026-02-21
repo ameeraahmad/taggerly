@@ -31,7 +31,13 @@ const User = sequelize.define('User', {
     },
     avatar: {
         type: DataTypes.STRING,
-        defaultValue: 'default-avatar.png'
+        defaultValue: 'https://www.gravatar.com/avatar/00000000000000000000000000000000?d=mp&f=y'
+    },
+    bio: {
+        type: DataTypes.TEXT
+    },
+    location: {
+        type: DataTypes.STRING
     }
 }, {
     timestamps: true,

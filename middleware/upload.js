@@ -1,13 +1,38 @@
 const multer = require('multer');
 const path = require('path');
+const { CloudinaryStorage } = require('multer-storage-cloudinary');
+const cloudinary = require('cloudinary').v2;
 
-// Set storage engine
-const storage = multer.diskStorage({
-    destination: './uploads/',
-    filename: function (req, file, cb) {
-        cb(null, file.fieldname + '-' + Date.now() + path.extname(file.originalname));
-    }
-});
+// Configure Cloudinary only if variables are present
+if (process.env.CLOUDINARY_CLOUD_NAME) {
+    cloudinary.config({
+        cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
+        api_key: process.env.CLOUDINARY_API_KEY,
+        api_secret: process.env.CLOUDINARY_API_SECRET
+    });
+}
+
+let storage;
+
+if (process.env.CLOUDINARY_CLOUD_NAME) {
+    // Cloudinary Storage
+    storage = new CloudinaryStorage({
+        cloudinary: cloudinary,
+        params: {
+            folder: 'taggerly_ads',
+            allowed_formats: ['jpg', 'png', 'jpeg', 'webp'],
+            transformation: [{ width: 1000, height: 1000, crop: 'limit' }]
+        },
+    });
+} else {
+    // Local Disk Storage
+    storage = multer.diskStorage({
+        destination: './uploads/',
+        filename: function (req, file, cb) {
+            cb(null, file.fieldname + '-' + Date.now() + path.extname(file.originalname));
+        }
+    });
+}
 
 // Init upload
 const upload = multer({
@@ -20,11 +45,8 @@ const upload = multer({
 
 // Check file type
 function checkFileType(file, cb) {
-    // Allowed extensions
-    const filetypes = /jpeg|jpg|png|gif/;
-    // Check extension
+    const filetypes = /jpeg|jpg|png|gif|webp/;
     const extname = filetypes.test(path.extname(file.originalname).toLowerCase());
-    // Check mime
     const mimetype = filetypes.test(file.mimetype);
 
     if (mimetype && extname) {
@@ -35,3 +57,4 @@ function checkFileType(file, cb) {
 }
 
 module.exports = upload;
+
