@@ -1,6 +1,6 @@
+require('dotenv').config();
 const express = require('express');
 const cors = require('cors');
-const dotenv = require('dotenv');
 const path = require('path');
 const fs = require('fs');
 
@@ -10,19 +10,16 @@ if (!fs.existsSync(uploadsDir)) {
     fs.mkdirSync(uploadsDir);
 }
 
-// Load env variables at the very beginning
-dotenv.config();
-
 const { connectDB } = require('./config/db');
 // Load associations
 require('./models/associations');
 
-
 const app = express();
 const PORT = process.env.PORT || 5000;
 
-// Connect to Database
-connectDB();
+// Connect to Database (Non-blocking)
+connectDB().catch(err => console.error('Delayed DB Connection Error:', err));
+
 
 // Middleware
 app.use(cors());
@@ -47,6 +44,10 @@ app.get('/api/health', (req, res) => {
     res.json({ success: true, status: 'Server is running', timestamp: new Date() });
 });
 
+app.get('/api/ping', (req, res) => {
+    res.send('pong');
+});
+
 // Serve static files (After API routes)
 app.use(express.static(path.join(__dirname)));
 app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
@@ -67,11 +68,12 @@ app.use((err, req, res, next) => {
 
 // Start Server
 if (require.main === module) {
-    app.listen(PORT, () => {
-        console.log(`🚀 Server is running on http://localhost:${PORT}`);
+    app.listen(PORT, '0.0.0.0', () => {
+        console.log(`🚀 Server is listening on 0.0.0.0:${PORT}`);
     });
 }
 
 module.exports = app;
+
 
 
