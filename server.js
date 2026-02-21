@@ -66,10 +66,17 @@ app.use((req, res, next) => {
 // Global Error Handler
 app.use((err, req, res, next) => {
     console.error('🔥 Server Error:', err);
+
+    // Handle Sequelize Validation Errors
+    let message = err.message || 'Unknown Server Error';
+    if (err.name === 'SequelizeValidationError' || err.name === 'SequelizeUniqueConstraintError') {
+        message = err.errors.map(e => e.message).join(', ');
+    }
+
     res.status(err.status || 500).json({
         success: false,
-        message: err.message || 'Unknown Server Error',
-        error: process.env.NODE_ENV === 'development' ? err : {} // Provide full error in dev
+        message: message,
+        stack: process.env.NODE_ENV === 'development' ? err.stack : undefined
     });
 });
 

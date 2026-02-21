@@ -85,9 +85,14 @@ exports.createAd = async (req, res) => {
         }
 
         const ad = await Ad.create({
-            title, description, price, category, subCategory,
-            city, area,
-            images: images.length > 0 ? images : [],
+            title,
+            description,
+            price: Number(price),
+            category,
+            subCategory,
+            city,
+            area,
+            images: Array.isArray(images) ? images : [],
             userId: req.user ? req.user.id : null
         });
         res.status(201).json({ success: true, data: ad });
