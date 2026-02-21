@@ -87,12 +87,13 @@ exports.createAd = async (req, res) => {
         const ad = await Ad.create({
             title, description, price, category, subCategory,
             city, area,
-            images,
+            images: images.length > 0 ? images : [],
             userId: req.user ? req.user.id : null
         });
         res.status(201).json({ success: true, data: ad });
     } catch (err) {
-        res.status(400).json({ success: false, message: err.message });
+        console.error('🔥 Create Ad Error:', err);
+        res.status(500).json({ success: false, message: err.message || 'Error creating ad' });
     }
 };
 
