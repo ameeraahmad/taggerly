@@ -22,11 +22,20 @@ const apiClient = {
             headers,
         });
 
-        const data = await response.json();
-        if (!response.ok) {
-            throw new Error(data.message || 'Something went wrong');
+        // Try to parse as JSON, but handle HTML error responses gracefully
+        const contentType = response.headers.get("content-type");
+        if (contentType && contentType.indexOf("application/json") !== -1) {
+            const data = await response.json();
+            if (!response.ok) {
+                throw new Error(data.message || 'Something went wrong');
+            }
+            return data;
+        } else {
+            // Handle non-JSON response (likely an HTML error page)
+            const text = await response.text();
+            console.error('Server returned non-JSON response:', text);
+            throw new Error(`Server Error: ${response.status} ${response.statusText}`);
         }
-        return data;
     },
 
     // Auth
