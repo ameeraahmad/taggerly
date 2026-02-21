@@ -68,7 +68,8 @@ app.use((err, req, res, next) => {
     console.error('🔥 Server Error:', err);
     res.status(err.status || 500).json({
         success: false,
-        message: err.message || 'Internal Server Error'
+        message: err.message || 'Unknown Server Error',
+        error: process.env.NODE_ENV === 'development' ? err : {} // Provide full error in dev
     });
 });
 

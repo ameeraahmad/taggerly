@@ -33,8 +33,8 @@ const connectDB = async () => {
     syncPromise = (async () => {
         try {
             await sequelize.authenticate();
-            // Disable alter: true to avoid SQLite/Postgres sync validation errors during runtime
-            const syncOptions = isTest ? { force: true } : { alter: false };
+            // Enable alter: true to sync new fields (bio, location) and new chat tables
+            const syncOptions = isTest ? { force: true } : { alter: true };
             await sequelize.sync(syncOptions);
             isSynced = true;
             console.log(`✅ ${databaseUrl ? 'PostgreSQL' : 'SQLite'} Database connected and synced.`);
