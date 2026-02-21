@@ -53,7 +53,7 @@ app.use(express.static(path.join(__dirname)));
 app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
 
 // 404 Handler for API
-app.use('/api/*', (req, res) => {
+app.use('/api', (req, res) => {
     res.status(404).json({ success: false, message: 'API Endpoint not found' });
 });
 
