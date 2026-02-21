@@ -53,8 +53,14 @@ app.use(express.static(path.join(__dirname)));
 app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
 
 // 404 Handler for API
-app.use('/api', (req, res) => {
-    res.status(404).json({ success: false, message: 'API Endpoint not found' });
+app.use((req, res, next) => {
+    if (req.url.startsWith('/api')) {
+        return res.status(404).json({ success: false, message: 'API Endpoint not found' });
+    }
+    // For non-API routes, if no other route or static file handled it,
+    // you might want to serve a client-side app's index.html here,
+    // or a generic 404 page. For now, we'll just send a simple text 404.
+    res.status(404).send('Not Found');
 });
 
 // Global Error Handler

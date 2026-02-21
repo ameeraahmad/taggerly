@@ -33,15 +33,14 @@ const connectDB = async () => {
     syncPromise = (async () => {
         try {
             await sequelize.authenticate();
-            // In production/dev, we use alter: true to create/update tables
-            // In test, we use force: true for a clean slate
-            const syncOptions = isTest ? { force: true } : { alter: true };
+            // Disable alter: true to avoid SQLite/Postgres sync validation errors during runtime
+            const syncOptions = isTest ? { force: true } : { alter: false };
             await sequelize.sync(syncOptions);
             isSynced = true;
             console.log(`✅ ${databaseUrl ? 'PostgreSQL' : 'SQLite'} Database connected and synced.`);
         } catch (error) {
             console.error('❌ Database connection error:', error.message);
-            if (!isTest) process.exit(1);
+            // Don't exit process, let the server stay alive so we can see logs
             throw error;
         }
     })();
