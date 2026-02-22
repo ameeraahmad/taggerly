@@ -461,7 +461,9 @@ const enTranslations = {
     sendMsg: "Send",
     selectChat: "Select a conversation to start chatting",
     waitingForMessage: "Waiting for messages...",
-    newMessage: "New Message"
+    newMessage: "New Message",
+    online: "Online",
+    offline: "Offline"
 };
 
 

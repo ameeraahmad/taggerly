@@ -51,8 +51,8 @@ exports.getConversations = async (req, res) => {
                 [Op.or]: [{ buyerId: userId }, { sellerId: userId }]
             },
             include: [
-                { model: User, as: 'buyer', attributes: ['id', 'name', 'avatar'] },
-                { model: User, as: 'seller', attributes: ['id', 'name', 'avatar'] },
+                { model: User, as: 'buyer', attributes: ['id', 'name', 'avatar', 'isOnline', 'lastActive'] },
+                { model: User, as: 'seller', attributes: ['id', 'name', 'avatar', 'isOnline', 'lastActive'] },
                 { model: Ad, as: 'ad', attributes: ['id', 'title', 'price', 'images'] }
             ],
             order: [['updatedAt', 'DESC']]

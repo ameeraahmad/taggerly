@@ -462,7 +462,9 @@ const arTranslations = {
     sendMsg: "إرسال",
     selectChat: "اختر محادثة لبدء الدردشة",
     waitingForMessage: "في انتظار الرسائل...",
-    newMessage: "رسالة جديدة"
+    newMessage: "رسالة جديدة",
+    online: "متصل الآن",
+    offline: "غير متصل"
 };
 
 

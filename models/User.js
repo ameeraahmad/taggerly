@@ -38,6 +38,14 @@ const User = sequelize.define('User', {
     },
     location: {
         type: DataTypes.STRING
+    },
+    isOnline: {
+        type: DataTypes.BOOLEAN,
+        defaultValue: false
+    },
+    lastActive: {
+        type: DataTypes.DATE,
+        defaultValue: DataTypes.NOW
     }
 }, {
     timestamps: true,

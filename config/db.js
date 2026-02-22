@@ -55,7 +55,24 @@ const connectDB = async () => {
                             await queryInterface.addColumn('Ads', 'itemCondition', { type: Sequelize.STRING, allowNull: true });
                         }
                     } catch (mErr) {
-                        console.log('ℹ️ SQLite columns might already exist or handled by sync.');
+                        console.log('ℹ️ SQLite columns for Ads might already exist.');
+                    }
+                }
+
+                // Check Users table
+                const userTableInfo = await queryInterface.describeTable('Users').catch(() => ({}));
+                if (userTableInfo.id) {
+                    try {
+                        if (!userTableInfo.isOnline) {
+                            console.log('➕ Adding "isOnline" column to Users...');
+                            await queryInterface.addColumn('Users', 'isOnline', { type: Sequelize.BOOLEAN, defaultValue: false });
+                        }
+                        if (!userTableInfo.lastActive) {
+                            console.log('➕ Adding "lastActive" column to Users...');
+                            await queryInterface.addColumn('Users', 'lastActive', { type: Sequelize.DATE, defaultValue: Sequelize.NOW });
+                        }
+                    } catch (mErr) {
+                        console.log('ℹ️ SQLite columns for Users might already exist.');
                     }
                 }
             }

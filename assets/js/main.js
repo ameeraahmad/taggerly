@@ -28,6 +28,9 @@ document.addEventListener('DOMContentLoaded', () => {
                 // Refresh badges
                 if (window.refreshUnreadCount) window.refreshUnreadCount();
 
+                // Play notification sound
+                playNotificationSound();
+
                 // Show Toast if NOT on messages.html or not in current chat
                 const isMessagesPage = window.location.pathname.includes('messages.html');
                 const isInActiveConvo = isMessagesPage && (typeof currentConversationId !== 'undefined') && (window.currentConversationId == msg.conversationId);
@@ -36,7 +39,28 @@ document.addEventListener('DOMContentLoaded', () => {
                     showNotificationToast(msg);
                 }
             });
+
+            window.socket.on('user_status_change', (data) => {
+                // Update UI elements that track specific user status
+                // This could be used in messages.html or ad-details.html
+                const statusDots = document.querySelectorAll(`[data-user-status-id="${data.userId}"]`);
+                statusDots.forEach(dot => {
+                    if (data.isOnline) {
+                        dot.classList.add('bg-green-500');
+                        dot.classList.remove('bg-gray-400');
+                    } else {
+                        dot.classList.add('bg-gray-400');
+                        dot.classList.remove('bg-green-500');
+                    }
+                });
+            });
         }
+    }
+
+    function playNotificationSound() {
+        const audio = new Audio('https://assets.mixkit.co/active_storage/sfx/2354/2354-preview.mp3');
+        audio.volume = 0.5;
+        audio.play().catch(err => console.warn('Sound play blocked by browser:', err));
     }
 
     function showNotificationToast(msg) {

@@ -100,13 +100,24 @@ const io = new Server(server, {
 // Socket.io Connection Logic
 const ChatMessage = require('./models/ChatMessage');
 const Conversation = require('./models/Conversation');
+const User = require('./models/User');
 
 io.on('connection', (socket) => {
     console.log('👤 User connected:', socket.id);
 
-    socket.on('join_user', (userId) => {
+    socket.on('join_user', async (userId) => {
+        socket.userId = userId; // Store userId on socket object
         socket.join(`user_${userId}`);
         console.log(`👤 User joined user room: user_${userId}`);
+
+        // Update status to Online
+        try {
+            await User.update({ isOnline: true }, { where: { id: userId } });
+            // Broadcast to everyone that this user is online
+            io.emit('user_status_change', { userId, isOnline: true });
+        } catch (err) {
+            console.error('Error updating user status:', err);
+        }
     });
 
     socket.on('join_conversation', (conversationId) => {
@@ -144,8 +155,27 @@ io.on('connection', (socket) => {
         }
     });
 
-    socket.on('disconnect', () => {
+    socket.on('disconnect', async () => {
         console.log('👤 User disconnected');
+        if (socket.userId) {
+            try {
+                await User.update({
+                    isOnline: false,
+                    lastActive: new Date()
+                }, {
+                    where: { id: socket.userId }
+                });
+
+                // Broadcast to everyone that this user is offline
+                io.emit('user_status_change', {
+                    userId: socket.userId,
+                    isOnline: false,
+                    lastActive: new Date()
+                });
+            } catch (err) {
+                console.error('Error updating user disconnect status:', err);
+            }
+        }
     });
 });
 
