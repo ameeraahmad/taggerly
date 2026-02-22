@@ -460,7 +460,8 @@ const enTranslations = {
     typeMessage: "Type a message...",
     sendMsg: "Send",
     selectChat: "Select a conversation to start chatting",
-    waitingForMessage: "Waiting for messages..."
+    waitingForMessage: "Waiting for messages...",
+    newMessage: "New Message"
 };
 
 

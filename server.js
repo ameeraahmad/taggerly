@@ -104,6 +104,11 @@ const Conversation = require('./models/Conversation');
 io.on('connection', (socket) => {
     console.log('👤 User connected:', socket.id);
 
+    socket.on('join_user', (userId) => {
+        socket.join(`user_${userId}`);
+        console.log(`👤 User joined user room: user_${userId}`);
+    });
+
     socket.on('join_conversation', (conversationId) => {
         socket.join(`convo_${conversationId}`);
         console.log(`📂 User joined conversation: convo_${conversationId}`);
@@ -122,8 +127,18 @@ io.on('connection', (socket) => {
             // Update conversation timestamp
             await Conversation.update({ updatedAt: new Date() }, { where: { id: conversationId } });
 
-            // Broadcast to room
+            // Get conversation to find the recipient
+            const conversation = await Conversation.findByPk(conversationId);
+            const recipientId = conversation.buyerId === senderId ? conversation.sellerId : conversation.buyerId;
+
+            // Broadcast to conversation room
             io.to(`convo_${conversationId}`).emit('receive_message', newMessage);
+
+            // Also notify the recipient globally
+            io.to(`user_${recipientId}`).emit('new_message_notification', {
+                ...newMessage.get({ plain: true }),
+                recipientId
+            });
         } catch (err) {
             console.error('Socket error saving message:', err);
         }

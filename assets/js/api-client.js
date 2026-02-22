@@ -137,6 +137,10 @@ const apiClient = {
 
     async getChatMessages(conversationId) {
         return this.fetch(`/chat/messages/${conversationId}`);
+    },
+
+    async getUnreadCount() {
+        return this.fetch('/chat/unread-count');
     }
 };
 

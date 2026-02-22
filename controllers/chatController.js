@@ -58,7 +58,58 @@ exports.getConversations = async (req, res) => {
             order: [['updatedAt', 'DESC']]
         });
 
-        res.status(200).json({ success: true, count: conversations.length, data: conversations });
+        // Add unread count for each conversation
+        const enrichedConversations = await Promise.all(conversations.map(async (convo) => {
+            const unreadCount = await ChatMessage.count({
+                where: {
+                    conversationId: convo.id,
+                    senderId: { [Op.ne]: userId },
+                    isRead: false
+                }
+            });
+
+            const plainConvo = convo.get({ plain: true });
+            return {
+                ...plainConvo,
+                unreadCount
+            };
+        }));
+
+        res.status(200).json({ success: true, count: enrichedConversations.length, data: enrichedConversations });
+    } catch (err) {
+        res.status(500).json({ success: false, message: err.message });
+    }
+};
+
+// @desc    Get total unread messages count for user
+// @route   GET /api/chat/unread-count
+exports.getUnreadCount = async (req, res) => {
+    try {
+        const userId = req.user.id;
+
+        // Find all conversations user is part of
+        const conversations = await Conversation.findAll({
+            where: {
+                [Op.or]: [{ buyerId: userId }, { sellerId: userId }]
+            },
+            attributes: ['id']
+        });
+
+        const conversationIds = conversations.map(c => c.id);
+
+        if (conversationIds.length === 0) {
+            return res.status(200).json({ success: true, count: 0 });
+        }
+
+        const unreadCount = await ChatMessage.count({
+            where: {
+                conversationId: { [Op.in]: conversationIds },
+                senderId: { [Op.ne]: userId },
+                isRead: false
+            }
+        });
+
+        res.status(200).json({ success: true, count: unreadCount });
     } catch (err) {
         res.status(500).json({ success: false, message: err.message });
     }

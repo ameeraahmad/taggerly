@@ -14,6 +14,69 @@ document.addEventListener('DOMContentLoaded', () => {
     window.selectedCountry = localStorage.getItem('selectedCountry') || 'uae';
     window.currentLang = localStorage.getItem('lang') || 'en';
 
+    // --- Socket.io Global Initialization & Notifications ---
+    if (typeof io !== 'undefined') {
+        const user = JSON.parse(localStorage.getItem('user'));
+        const token = localStorage.getItem('token');
+        if (user && user.id && token) {
+            if (!window.socket) {
+                window.socket = io();
+                window.socket.emit('join_user', user.id);
+            }
+
+            window.socket.on('new_message_notification', (msg) => {
+                // Refresh badges
+                if (window.refreshUnreadCount) window.refreshUnreadCount();
+
+                // Show Toast if NOT on messages.html or not in current chat
+                const isMessagesPage = window.location.pathname.includes('messages.html');
+                const isInActiveConvo = isMessagesPage && (typeof currentConversationId !== 'undefined') && (window.currentConversationId == msg.conversationId);
+
+                if (!isInActiveConvo) {
+                    showNotificationToast(msg);
+                }
+            });
+        }
+    }
+
+    function showNotificationToast(msg) {
+        const existingToasts = document.querySelectorAll('.notification-toast');
+        existingToasts.forEach(t => t.remove());
+
+        const toast = document.createElement('div');
+        toast.className = 'notification-toast fixed bottom-4 right-4 bg-white dark:bg-gray-800 border dark:border-gray-700 text-gray-900 dark:text-gray-100 p-4 rounded-2xl shadow-2xl z-[100] flex items-center gap-4 animate-slide-up max-w-sm cursor-pointer border-l-4 border-l-accent rtl:border-l-0 rtl:border-r-4 rtl:border-r-accent';
+        toast.innerHTML = `
+            <div class="w-10 h-10 bg-accent rounded-full flex items-center justify-center font-bold text-white text-sm flex-shrink-0">
+                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 10h.01M12 10h.01M16 10h.01M9 16H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-5l-5 5v-5z"></path>
+                </svg>
+            </div>
+            <div class="flex-grow overflow-hidden">
+                <p class="text-xs text-accent font-bold uppercase tracking-tight" data-translate="newMessage">New Message</p>
+                <p class="text-sm font-medium truncate">${msg.message}</p>
+            </div>
+            <button class="text-gray-400 hover:text-gray-600 dark:hover:text-white p-1">&times;</button>
+        `;
+
+        toast.onclick = () => window.location.href = `messages.html?conversationId=${msg.conversationId}`;
+        toast.querySelector('button').onclick = (e) => {
+            e.stopPropagation();
+            toast.remove();
+        };
+
+        document.body.appendChild(toast);
+        if (window.translatePage) window.translatePage();
+
+        // Auto remove after 6 seconds
+        setTimeout(() => {
+            if (toast.parentElement) {
+                toast.classList.add('opacity-0', 'translate-y-4');
+                toast.style.transition = 'all 0.5s ease-out';
+                setTimeout(() => toast.remove(), 500);
+            }
+        }, 6000);
+    }
+
     window.updateDynamicContent = function (country, lang) {
         const countryName = translations[lang][country] || translations['en'][country] || country;
 
@@ -128,6 +191,30 @@ document.addEventListener('DOMContentLoaded', () => {
         const storedName = localStorage.getItem('selectedCountryName') || 'uae';
         window.setCountry(storedCountry, storedFlag, storedName);
     }
+
+    // --- Global Unread Count Logic ---
+    window.refreshUnreadCount = async function () {
+        if (!localStorage.getItem('token') || !window.apiClient) return;
+
+        try {
+            const response = await apiClient.getUnreadCount();
+            const count = response.count;
+
+            // Update all badges with class 'unread-badge'
+            const badges = document.querySelectorAll('.unread-badge');
+            badges.forEach(badge => {
+                if (count > 0) {
+                    badge.textContent = count > 99 ? '99+' : count;
+                    badge.classList.remove('hidden');
+                } else {
+                    badge.classList.add('hidden');
+                    badge.textContent = '0';
+                }
+            });
+        } catch (err) {
+            console.warn('Failed to refresh unread count:', err);
+        }
+    };
 
     // --- Language Switching Logic ---
     const langBtn = document.getElementById('lang-toggle');
@@ -430,7 +517,10 @@ document.addEventListener('DOMContentLoaded', () => {
                     </div>
                     <a href="profile.html" class="block px-4 py-2 text-sm text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-700 hover:text-accent font-bold" data-translate="myProfile">My Profile</a>
                     <a href="dashboard.html" class="block px-4 py-2 text-sm text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-700 hover:text-accent" data-translate="myDashboard">My Dashboard</a>
-                    <a href="messages.html" class="block px-4 py-2 text-sm text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-700 hover:text-accent" data-translate="messages">Messages</a>
+                    <a href="messages.html" class="flex items-center justify-between px-4 py-2 text-sm text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-700 hover:text-accent" data-translate="messages">
+                        <span data-translate="messages">Messages</span>
+                        <span class="unread-badge ml-2 bg-red-500 text-white text-[10px] font-bold px-1.5 py-0.5 rounded-full hidden">0</span>
+                    </a>
                     <a href="favorites.html" class="block px-4 py-2 text-sm text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-700 hover:text-accent" data-translate="myFavorites">My Favorites</a>
                     <div class="border-t dark:border-gray-700 my-1"></div>
                     <a href="#" class="logout-action-btn block px-4 py-2 text-sm text-red-600 hover:bg-gray-100 dark:hover:bg-gray-700 font-bold" data-translate="logout">Logout</a>
@@ -481,6 +571,9 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     updateAuthState();
+    refreshUnreadCount();
+    // Refresh unread count every 30 seconds
+    setInterval(refreshUnreadCount, 30000);
 
     // --- Dynamic Ads Loading (Home Page) ---
     const adsContainer = document.querySelector('.featured-ads .grid');

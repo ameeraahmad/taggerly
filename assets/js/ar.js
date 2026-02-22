@@ -461,7 +461,8 @@ const arTranslations = {
     typeMessage: "اكتب رسالة...",
     sendMsg: "إرسال",
     selectChat: "اختر محادثة لبدء الدردشة",
-    waitingForMessage: "في انتظار الرسائل..."
+    waitingForMessage: "في انتظار الرسائل...",
+    newMessage: "رسالة جديدة"
 };
 
 

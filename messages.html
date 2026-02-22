@@ -132,9 +132,9 @@
     <script src="assets/js/main.js"></script>
     <script src="/socket.io/socket.io.js"></script>
     <script>
-        let currentConversationId = null;
+        window.currentConversationId = null;
         let currentUser = JSON.parse(localStorage.getItem('user'));
-        let socket = io();
+        // socket is initialized globally in main.js
 
         document.addEventListener('DOMContentLoaded', async () => {
             if (!localStorage.getItem('token')) {
@@ -167,12 +167,17 @@
             }
 
             // Socket Listeners
-            socket.on('receive_message', (msg) => {
-                if (msg.conversationId == currentConversationId) {
+            window.socket.on('receive_message', (msg) => {
+                if (msg.conversationId == window.currentConversationId) {
                     addMessageToUI(msg);
+
+                    // Mark as read immediately since we are in the chat
+                    apiClient.getChatMessages(msg.conversationId).catch(console.error);
                 }
                 // Also update the conversation list to show the new last message/timestamp
                 loadConversations();
+                // Refresh global unread count
+                if (window.refreshUnreadCount) window.refreshUnreadCount();
             });
 
             // Periodic refresh for the conversation list
@@ -198,7 +203,8 @@
                 conversations.forEach(convo => {
                     const isBuyer = convo.buyerId === currentUser.id;
                     const otherUser = isBuyer ? convo.seller : convo.buyer;
-                    const isActive = convo.id == currentConversationId;
+                    const isActive = convo.id == window.currentConversationId;
+                    const unreadCount = convo.unreadCount || 0;
 
                     const initials = otherUser.name ? otherUser.name.split(' ').map(n => n[0]).join('').toUpperCase() : '?';
 
@@ -210,7 +216,10 @@
                             <div class="flex-grow min-w-0">
                                 <div class="flex justify-between items-baseline">
                                     <h4 class="font-bold text-sm dark:text-white truncate">${otherUser.name}</h4>
-                                    <span class="text-[10px] text-gray-400">${new Date(convo.updatedAt).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}</span>
+                                    <div class="flex flex-col items-end">
+                                        <span class="text-[10px] text-gray-400">${new Date(convo.updatedAt).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}</span>
+                                        ${unreadCount > 0 ? `<span class="bg-accent text-white text-[10px] px-1.5 py-0.5 rounded-full mt-1 font-bold">${unreadCount}</span>` : ''}
+                                    </div>
                                 </div>
                                 <p class="text-xs text-gray-500 truncate">${convo.ad ? convo.ad.title : 'Deleted Ad'}</p>
                             </div>
@@ -227,7 +236,7 @@
         }
 
         async function openConversation(convoId) {
-            currentConversationId = convoId;
+            window.currentConversationId = convoId;
             document.getElementById('no-chat-selected').classList.add('hidden');
             document.getElementById('active-chat').classList.remove('hidden');
 
@@ -237,9 +246,12 @@
                 else el.classList.remove('active');
             });
 
+            // Refresh global unread count as some were marked read
+            if (window.refreshUnreadCount) window.refreshUnreadCount();
+
             try {
                 // Join Socket Room
-                socket.emit('join_conversation', convoId);
+                window.socket.emit('join_conversation', convoId);
 
                 const response = await apiClient.getChatMessages(convoId);
                 const messages = response.data;
@@ -302,8 +314,8 @@
             input.value = '';
 
             // Send via Socket
-            socket.emit('send_message', {
-                conversationId: currentConversationId,
+            window.socket.emit('send_message', {
+                conversationId: window.currentConversationId,
                 senderId: currentUser.id,
                 message: message
             });
