@@ -140,7 +140,7 @@ exports.sendMessage = async (req, res) => {
         const chatMessage = await ChatMessage.create({
             conversationId,
             senderId,
-            message: message || null,
+            message: message || '', // Use empty string to satisfy DB NOT NULL constraint (image carries the content)
             image: imageUrl
         });
 
