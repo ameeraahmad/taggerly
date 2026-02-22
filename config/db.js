@@ -33,25 +33,36 @@ const connectDB = async () => {
     syncPromise = (async () => {
         try {
             await sequelize.authenticate();
+
+            // Manual migration for SQLite (Fix for SQLITE_ERROR: no column named year)
+            if (!databaseUrl && !isTest) {
+                console.log('🔍 Checking SQLite schema...');
+                const queryInterface = sequelize.getQueryInterface();
+                const tableInfo = await queryInterface.describeTable('Ads').catch(() => ({}));
+
+                if (tableInfo.id) { // Only if table exists
+                    try {
+                        if (!tableInfo.year) {
+                            console.log('➕ Adding "year" column to Ads...');
+                            await queryInterface.addColumn('Ads', 'year', { type: Sequelize.INTEGER, allowNull: true });
+                        }
+                        if (!tableInfo.kilometers) {
+                            console.log('➕ Adding "kilometers" column to Ads...');
+                            await queryInterface.addColumn('Ads', 'kilometers', { type: Sequelize.INTEGER, allowNull: true });
+                        }
+                        if (!tableInfo.itemCondition) {
+                            console.log('➕ Adding "itemCondition" column to Ads...');
+                            await queryInterface.addColumn('Ads', 'itemCondition', { type: Sequelize.STRING, allowNull: true });
+                        }
+                    } catch (mErr) {
+                        console.log('ℹ️ SQLite columns might already exist or handled by sync.');
+                    }
+                }
+            }
+
             // Enable alter: true to sync new fields (bio, location) and new chat tables
             const syncOptions = isTest ? { force: true } : { alter: true };
             await sequelize.sync(syncOptions);
-
-            // Manual fallback for SQLite column additions if 'alter' failed
-            if (!databaseUrl && !isTest) {
-                const queryInterface = sequelize.getQueryInterface();
-                const tableInfo = await queryInterface.describeTable('Ads');
-
-                if (!tableInfo.year) {
-                    await queryInterface.addColumn('Ads', 'year', { type: Sequelize.INTEGER, allowNull: true });
-                }
-                if (!tableInfo.kilometers) {
-                    await queryInterface.addColumn('Ads', 'kilometers', { type: Sequelize.INTEGER, allowNull: true });
-                }
-                if (!tableInfo.itemCondition) {
-                    await queryInterface.addColumn('Ads', 'itemCondition', { type: Sequelize.STRING, allowNull: true });
-                }
-            }
 
             isSynced = true;
             console.log(`✅ ${databaseUrl ? 'PostgreSQL' : 'SQLite'} Database connected and synced.`);
