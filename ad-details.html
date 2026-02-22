@@ -479,7 +479,7 @@
                     </div>
 
                     <div class="flex flex-col gap-3">
-                        <button
+                        <button id="call-seller-btn"
                             class="w-full bg-accent text-white py-3.5 rounded-xl font-bold hover:bg-orange-600 transition shadow-lg shadow-accent/20 flex justify-center items-center">
                             <svg class="w-5 h-5 mr-2 rtl:ml-2 rtl:mr-0" fill="none" stroke="currentColor"
                                 viewBox="0 0 24 24">
@@ -489,7 +489,7 @@
                             </svg>
                             <span data-translate="call">Call Seller</span>
                         </button>
-                        <button
+                        <button id="chat-seller-btn"
                             class="w-full bg-primary text-white py-3.5 rounded-xl font-bold hover:bg-slate-800 transition shadow-lg flex justify-center items-center">
                             <svg class="w-5 h-5 mr-2 rtl:ml-2 rtl:mr-0" fill="none" stroke="currentColor"
                                 viewBox="0 0 24 24">
@@ -709,6 +709,44 @@
                 // Update dynamic content (currencies, locations) after details are loaded
                 if (window.updateDynamicContent) {
                     window.updateDynamicContent(window.selectedCountry, window.currentLang);
+                }
+
+                // Chat and Call Button Listeners
+                const chatBtn = document.getElementById('chat-seller-btn');
+                const callBtn = document.getElementById('call-seller-btn');
+
+                if (chatBtn) {
+                    chatBtn.addEventListener('click', async () => {
+                        const token = localStorage.getItem('token');
+                        if (!token) {
+                            alert('Please login to chat with the seller');
+                            window.location.href = 'login.html';
+                            return;
+                        }
+
+                        try {
+                            chatBtn.disabled = true;
+                            chatBtn.textContent = 'Starting chat...';
+                            const response = await apiClient.startConversation(adId);
+                            if (response.success) {
+                                window.location.href = `messages.html?conversationId=${response.data.id}`;
+                            }
+                        } catch (err) {
+                            alert(err.message);
+                            chatBtn.disabled = false;
+                            chatBtn.textContent = 'Send Message';
+                        }
+                    });
+                }
+
+                if (callBtn) {
+                    callBtn.addEventListener('click', () => {
+                        if (ad.user && ad.user.phone) {
+                            alert(`Seller Phone: ${ad.user.phone}`);
+                        } else {
+                            alert('Seller phone number not available');
+                        }
+                    });
                 }
 
             } catch (err) {

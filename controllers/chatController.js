@@ -89,6 +89,11 @@ exports.sendMessage = async (req, res) => {
         await conversation.changed('updatedAt', true);
         await conversation.save();
 
+        // Emit via Socket
+        if (req.io) {
+            req.io.to(`convo_${conversationId}`).emit('receive_message', chatMessage);
+        }
+
         res.status(201).json({ success: true, data: chatMessage });
     } catch (err) {
         res.status(500).json({ success: false, message: err.message });

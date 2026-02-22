@@ -26,6 +26,12 @@ app.use(cors());
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
+// Pass io to controllers
+app.use((req, res, next) => {
+    req.io = io;
+    next();
+});
+
 // Routes
 const adRoutes = require('./routes/adRoutes');
 const authRoutes = require('./routes/authRoutes');
@@ -80,14 +86,62 @@ app.use((err, req, res, next) => {
     });
 });
 
+// Create HTTP Server for Socket.io
+const http = require('http');
+const server = http.createServer(app);
+const { Server } = require('socket.io');
+const io = new Server(server, {
+    cors: {
+        origin: "*",
+        methods: ["GET", "POST"]
+    }
+});
+
+// Socket.io Connection Logic
+const ChatMessage = require('./models/ChatMessage');
+const Conversation = require('./models/Conversation');
+
+io.on('connection', (socket) => {
+    console.log('👤 User connected:', socket.id);
+
+    socket.on('join_conversation', (conversationId) => {
+        socket.join(`convo_${conversationId}`);
+        console.log(`📂 User joined conversation: convo_${conversationId}`);
+    });
+
+    socket.on('send_message', async (data) => {
+        const { conversationId, senderId, message } = data;
+        try {
+            // Save to DB
+            const newMessage = await ChatMessage.create({
+                conversationId,
+                senderId,
+                message
+            });
+
+            // Update conversation timestamp
+            await Conversation.update({ updatedAt: new Date() }, { where: { id: conversationId } });
+
+            // Broadcast to room
+            io.to(`convo_${conversationId}`).emit('receive_message', newMessage);
+        } catch (err) {
+            console.error('Socket error saving message:', err);
+        }
+    });
+
+    socket.on('disconnect', () => {
+        console.log('👤 User disconnected');
+    });
+});
+
 // Start Server
 if (require.main === module) {
-    app.listen(PORT, '0.0.0.0', () => {
+    server.listen(PORT, '0.0.0.0', () => {
         console.log(`🚀 Server is listening on 0.0.0.0:${PORT}`);
     });
 }
 
-module.exports = app;
+module.exports = { app, server, io };
 
 
 

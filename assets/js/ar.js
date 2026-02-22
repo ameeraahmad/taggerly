@@ -453,6 +453,15 @@ const arTranslations = {
     ctaSubtitleBusiness: "انضم إلى آلاف الشركات الناجحة على تاجرلي اليوم.",
     getStarted: "ابدأ الآن",
     learnMore: "تعرف على المزيد",
+
+    // Chat Page
+    chatTitle: "الرسائل",
+    noConversations: "لا توجد محادثات بعد",
+    startChatting: "ابدأ المراسلة مع البائعين لتظهر رسائلك هنا.",
+    typeMessage: "اكتب رسالة...",
+    sendMsg: "إرسال",
+    selectChat: "اختر محادثة لبدء الدردشة",
+    waitingForMessage: "في انتظار الرسائل..."
 };
 
 

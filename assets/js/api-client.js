@@ -114,6 +114,29 @@ const apiClient = {
 
     async getMyAds() {
         return this.fetch('/ads/my-ads');
+    },
+
+    // Chat
+    async startConversation(adId) {
+        return this.fetch('/chat/conversation', {
+            method: 'POST',
+            body: JSON.stringify({ adId }),
+        });
+    },
+
+    async getConversations() {
+        return this.fetch('/chat/conversations');
+    },
+
+    async sendMessage(conversationId, message) {
+        return this.fetch('/chat/message', {
+            method: 'POST',
+            body: JSON.stringify({ conversationId, message }),
+        });
+    },
+
+    async getChatMessages(conversationId) {
+        return this.fetch(`/chat/messages/${conversationId}`);
     }
 };
 

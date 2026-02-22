@@ -452,6 +452,15 @@ const enTranslations = {
     ctaSubtitleBusiness: "Join thousands of successful businesses on Taggerly today.",
     getStarted: "Get Started Now",
     learnMore: "Learn More",
+
+    // Chat Page
+    chatTitle: "Messages",
+    noConversations: "No conversations yet",
+    startChatting: "Start chatting with sellers to see your messages here.",
+    typeMessage: "Type a message...",
+    sendMsg: "Send",
+    selectChat: "Select a conversation to start chatting",
+    waitingForMessage: "Waiting for messages..."
 };
 
 
