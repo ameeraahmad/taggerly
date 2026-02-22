@@ -63,6 +63,10 @@ const Ad = sequelize.define('Ad', {
     views: {
         type: DataTypes.INTEGER,
         defaultValue: 0
+    },
+    phone: {
+        type: DataTypes.STRING,
+        allowNull: true
     }
 }, {
     timestamps: true

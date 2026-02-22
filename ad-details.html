@@ -741,11 +741,9 @@
 
                 if (callBtn) {
                     callBtn.addEventListener('click', () => {
-                        if (ad.user && ad.user.phone) {
-                            alert(`Seller Phone: ${ad.user.phone}`);
-                        } else {
-                            alert('Seller phone number not available');
-                        }
+                        // Use per-ad phone if set, fallback to user profile phone
+                        const phoneUser = { ...ad.user, phone: ad.phone || (ad.user && ad.user.phone) };
+                        showPhoneModal(phoneUser);
                     });
                 }
 
@@ -796,6 +794,153 @@
         }
 
         document.addEventListener('DOMContentLoaded', loadAdDetails);
+    </script>
+
+    <!-- Phone Modal -->
+    <div id="phone-modal" class="fixed inset-0 z-[200] hidden items-center justify-center">
+        <!-- Backdrop -->
+        <div id="phone-modal-backdrop" class="absolute inset-0 bg-black/60 backdrop-blur-sm"
+            onclick="closePhoneModal()"></div>
+
+        <!-- Modal Box -->
+        <div
+            class="relative bg-white dark:bg-gray-800 rounded-2xl shadow-2xl p-8 w-full max-w-sm mx-4 text-center animate-fade-in">
+            <!-- Close Button -->
+            <button onclick="closePhoneModal()"
+                class="absolute top-4 right-4 text-gray-400 hover:text-gray-600 dark:hover:text-white text-xl">&times;</button>
+
+            <!-- Seller Avatar -->
+            <div id="modal-avatar"
+                class="w-16 h-16 rounded-full bg-accent/10 flex items-center justify-center text-2xl font-bold text-accent mx-auto mb-3">
+                ?</div>
+            <p id="modal-seller-name" class="font-bold text-gray-900 dark:text-white text-lg mb-1">Seller</p>
+            <p class="text-xs text-gray-400 mb-6" data-translate="verifiedSeller">Verified Seller</p>
+
+            <!-- Phone Number Display -->
+            <div id="phone-number-box" class="hidden">
+                <div
+                    class="flex items-center justify-center gap-3 bg-gray-100 dark:bg-gray-700 rounded-xl px-5 py-4 mb-5">
+                    <svg class="w-5 h-5 text-accent flex-shrink-0" fill="none" stroke="currentColor"
+                        viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                            d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z">
+                        </path>
+                    </svg>
+                    <span id="modal-phone-number"
+                        class="text-xl font-bold text-gray-900 dark:text-white tracking-widest"></span>
+                    <button id="copy-phone-btn" onclick="copyPhone()"
+                        class="text-gray-400 hover:text-accent transition">
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z">
+                            </path>
+                        </svg>
+                    </button>
+                </div>
+
+                <div class="flex gap-3">
+                    <a id="call-link" href="#"
+                        class="flex-1 flex items-center justify-center gap-2 bg-accent text-white py-3 rounded-xl font-bold hover:bg-orange-600 transition">
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z">
+                            </path>
+                        </svg>
+                        <span data-translate="call">Call</span>
+                    </a>
+                    <a id="whatsapp-link" href="#" target="_blank"
+                        class="flex-1 flex items-center justify-center gap-2 bg-green-500 text-white py-3 rounded-xl font-bold hover:bg-green-600 transition">
+                        <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
+                            <path
+                                d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347z" />
+                            <path
+                                d="M12 0C5.373 0 0 5.373 0 12c0 2.021.5 3.925 1.381 5.594L0 24l6.545-1.354A11.945 11.945 0 0012 24c6.627 0 12-5.373 12-12S18.627 0 12 0zm0 21.818a9.818 9.818 0 01-5.014-1.376l-.36-.214-3.732.772.795-3.647-.234-.375A9.818 9.818 0 1112 21.818z" />
+                        </svg>
+                        WhatsApp
+                    </a>
+                </div>
+            </div>
+
+            <!-- No Phone Fallback -->
+            <div id="no-phone-box" class="hidden">
+                <div
+                    class="w-14 h-14 rounded-full bg-gray-100 dark:bg-gray-700 flex items-center justify-center mx-auto mb-3">
+                    <svg class="w-7 h-7 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                            d="M18.364 18.364A9 9 0 005.636 5.636m12.728 12.728L5.636 5.636">
+                        </path>
+                    </svg>
+                </div>
+                <p class="text-gray-500 dark:text-gray-400 mb-4" data-translate="noPhone">No phone number registered.
+                </p>
+                <button onclick="closePhoneModal()"
+                    class="w-full bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-200 py-3 rounded-xl font-medium hover:bg-gray-200 dark:hover:bg-gray-600 transition"
+                    data-translate="close">Close</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let _currentPhoneNumber = null;
+
+        function showPhoneModal(user) {
+            const modal = document.getElementById('phone-modal');
+            const phoneBox = document.getElementById('phone-number-box');
+            const noPhoneBox = document.getElementById('no-phone-box');
+            const avatarEl = document.getElementById('modal-avatar');
+            const nameEl = document.getElementById('modal-seller-name');
+
+            // Set seller info
+            if (user) {
+                const initials = user.name ? user.name.split(' ').map(n => n[0]).join('').toUpperCase() : '?';
+                avatarEl.textContent = initials;
+                nameEl.textContent = user.name || 'Seller';
+            }
+
+            if (user && user.phone) {
+                _currentPhoneNumber = user.phone;
+                document.getElementById('modal-phone-number').textContent = user.phone;
+                document.getElementById('call-link').href = `tel:${user.phone}`;
+
+                // Clean phone for WhatsApp (remove spaces, dashes, +)
+                const cleanPhone = user.phone.replace(/[\s\-\(\)]/g, '');
+                document.getElementById('whatsapp-link').href = `https://wa.me/${cleanPhone}`;
+
+                phoneBox.classList.remove('hidden');
+                noPhoneBox.classList.add('hidden');
+            } else {
+                _currentPhoneNumber = null;
+                phoneBox.classList.add('hidden');
+                noPhoneBox.classList.remove('hidden');
+            }
+
+            modal.classList.remove('hidden');
+            modal.classList.add('flex');
+        }
+
+        function closePhoneModal() {
+            const modal = document.getElementById('phone-modal');
+            modal.classList.add('hidden');
+            modal.classList.remove('flex');
+        }
+
+        function copyPhone() {
+            if (!_currentPhoneNumber) return;
+            navigator.clipboard.writeText(_currentPhoneNumber).then(() => {
+                const btn = document.getElementById('copy-phone-btn');
+                btn.innerHTML = `<svg class="w-5 h-5 text-green-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg>`;
+                setTimeout(() => {
+                    btn.innerHTML = `<svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"></path></svg>`;
+                }, 2000);
+            }).catch(() => {
+                alert(_currentPhoneNumber);
+            });
+        }
+
+        // Close modal on Escape key
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape') closePhoneModal();
+        });
     </script>
 </body>
 

@@ -74,7 +74,7 @@ exports.createAd = async (req, res) => {
     try {
         const {
             title, description, price, category, subCategory,
-            city, area, year, kilometers, itemCondition
+            city, area, year, kilometers, itemCondition, phone
         } = req.body;
 
         let images = [];
@@ -107,6 +107,7 @@ exports.createAd = async (req, res) => {
             year: year ? Number(year) : null,
             kilometers: kilometers ? Number(kilometers) : null,
             itemCondition,
+            phone: phone || null,
             images: Array.isArray(images) ? images : [],
             userId: req.user ? req.user.id : null
         });

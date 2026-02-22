@@ -54,6 +54,10 @@ const connectDB = async () => {
                             console.log('➕ Adding "itemCondition" column to Ads...');
                             await queryInterface.addColumn('Ads', 'itemCondition', { type: Sequelize.STRING, allowNull: true });
                         }
+                        if (!tableInfo.phone) {
+                            console.log('➕ Adding "phone" column to Ads...');
+                            await queryInterface.addColumn('Ads', 'phone', { type: Sequelize.STRING, allowNull: true });
+                        }
                     } catch (mErr) {
                         console.log('ℹ️ SQLite columns for Ads might already exist.');
                     }
@@ -73,6 +77,19 @@ const connectDB = async () => {
                         }
                     } catch (mErr) {
                         console.log('ℹ️ SQLite columns for Users might already exist.');
+                    }
+                }
+
+                // Check ChatMessages table
+                const messageTableInfo = await queryInterface.describeTable('ChatMessages').catch(() => ({}));
+                if (messageTableInfo.id) {
+                    try {
+                        if (!messageTableInfo.image) {
+                            console.log('➕ Adding "image" column to ChatMessages...');
+                            await queryInterface.addColumn('ChatMessages', 'image', { type: Sequelize.STRING, allowNull: true });
+                        }
+                    } catch (mErr) {
+                        console.log('ℹ️ SQLite columns for ChatMessages might already exist.');
                     }
                 }
             }

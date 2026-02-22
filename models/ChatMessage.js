@@ -19,7 +19,11 @@ const ChatMessage = sequelize.define('ChatMessage', {
     },
     message: {
         type: DataTypes.TEXT,
-        allowNull: false
+        allowNull: true
+    },
+    image: {
+        type: DataTypes.STRING,
+        allowNull: true
     },
     isRead: {
         type: DataTypes.BOOLEAN,

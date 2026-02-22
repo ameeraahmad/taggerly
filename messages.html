@@ -115,7 +115,16 @@
 
                     <!-- Input Area -->
                     <div class="p-4 border-t dark:border-gray-700 bg-white dark:bg-gray-800">
-                        <form id="chat-form" class="flex gap-2">
+                        <form id="chat-form" class="flex gap-2 items-center">
+                            <input type="file" id="image-input" class="hidden" accept="image/*">
+                            <button type="button" id="photo-btn"
+                                class="text-gray-500 hover:text-accent p-2 rounded-full transition dark:text-gray-400">
+                                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                        d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z">
+                                    </path>
+                                </svg>
+                            </button>
                             <input type="text" id="message-input" data-translate="typeMessage"
                                 placeholder="Type a message..."
                                 class="flex-grow bg-gray-100 dark:bg-gray-700 border-none rounded-full px-5 py-3 focus:ring-2 focus:ring-accent dark:text-white">
@@ -316,10 +325,19 @@
         function addMessageToUI(msg, scroll = true) {
             const container = document.getElementById('messages-container');
             const isMine = msg.senderId === currentUser.id;
+
+            let contentHtml = '';
+            if (msg.image) {
+                contentHtml += `<img src="${msg.image}" class="max-w-full rounded-lg mb-1 cursor-pointer hover:opacity-90 transition" onclick="window.open('${msg.image}', '_blank')">`;
+            }
+            if (msg.message) {
+                contentHtml += `<p class="text-sm">${msg.message}</p>`;
+            }
+
             const msgHtml = `
-                <div class="flex ${isMine ? 'justify-end' : 'justify-start'} animate-fade-in">
+                <div class="flex ${isMine ? 'justify-end' : 'justify-start'} animate-fade-in mb-4">
                     <div class="max-w-[75%] px-4 py-2 rounded-2xl ${isMine ? 'bg-accent text-white rounded-tr-none' : 'bg-white dark:bg-gray-700 dark:text-white border dark:border-gray-600 rounded-tl-none shadow-sm'}">
-                        <p class="text-sm">${msg.message}</p>
+                        ${contentHtml}
                         <span class="text-[9px] ${isMine ? 'text-orange-100' : 'text-gray-400'} block mt-1 text-right">
                             ${new Date(msg.createdAt).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
                         </span>
@@ -332,20 +350,41 @@
             }
         }
 
+        document.getElementById('photo-btn').addEventListener('click', () => {
+            document.getElementById('image-input').click();
+        });
+
+        document.getElementById('image-input').addEventListener('change', async (e) => {
+            const file = e.target.files[0];
+            if (!file || !window.currentConversationId) return;
+
+            try {
+                // Show a loading/uploading state if needed
+                const response = await apiClient.sendMessage(window.currentConversationId, null, file);
+                if (response.success) {
+                    // Message will be broadcasted via Socket.io and added to UI by listener
+                    // or we can add it manually if socket is slow
+                    e.target.value = ''; // Reset input
+                }
+            } catch (err) {
+                alert('Failed to send image: ' + err.message);
+            }
+        });
+
         document.getElementById('chat-form').addEventListener('submit', async (e) => {
             e.preventDefault();
             const input = document.getElementById('message-input');
             const message = input.value.trim();
-            if (!message || !currentConversationId) return;
+            if (!message || !window.currentConversationId) return;
 
             input.value = '';
 
-            // Send via Socket
-            window.socket.emit('send_message', {
-                conversationId: window.currentConversationId,
-                senderId: currentUser.id,
-                message: message
-            });
+            try {
+                const response = await apiClient.sendMessage(window.currentConversationId, message);
+                // No need to manually add to UI, socket listener handle it
+            } catch (err) {
+                console.error('Error sending message:', err);
+            }
         });
     </script>
 </body>

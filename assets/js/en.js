@@ -463,7 +463,13 @@ const enTranslations = {
     waitingForMessage: "Waiting for messages...",
     newMessage: "New Message",
     online: "Online",
-    offline: "Offline"
+    offline: "Offline",
+    verifiedSeller: "Verified Seller",
+    noPhone: "No phone number registered.",
+    close: "Close",
+    phoneLabel: "Contact Phone Number",
+    phonePlaceholder: "e.g. +971 50 123 4567",
+    phoneInfo: "This number will be shown to buyers. Leave blank to hide."
 };
 
 

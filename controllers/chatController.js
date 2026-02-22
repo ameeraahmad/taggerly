@@ -130,10 +130,18 @@ exports.sendMessage = async (req, res) => {
             return res.status(403).json({ success: false, message: 'Not authorized' });
         }
 
+        let imageUrl = null;
+        if (req.file) {
+            const protocol = req.protocol;
+            const host = req.get('host');
+            imageUrl = `${protocol}://${host}/uploads/${req.file.filename}`;
+        }
+
         const chatMessage = await ChatMessage.create({
             conversationId,
             senderId,
-            message
+            message: message || null,
+            image: imageUrl
         });
 
         // Update conversation's updatedAt timestamp
@@ -143,6 +151,13 @@ exports.sendMessage = async (req, res) => {
         // Emit via Socket
         if (req.io) {
             req.io.to(`convo_${conversationId}`).emit('receive_message', chatMessage);
+
+            // Notify recipient globally
+            const recipientId = conversation.buyerId === senderId ? conversation.sellerId : conversation.buyerId;
+            req.io.to(`user_${recipientId}`).emit('new_message_notification', {
+                ...chatMessage.get({ plain: true }),
+                recipientId
+            });
         }
 
         res.status(201).json({ success: true, data: chatMessage });

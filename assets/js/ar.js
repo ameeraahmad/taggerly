@@ -464,7 +464,13 @@ const arTranslations = {
     waitingForMessage: "في انتظار الرسائل...",
     newMessage: "رسالة جديدة",
     online: "متصل الآن",
-    offline: "غير متصل"
+    offline: "غير متصل",
+    verifiedSeller: "بائع موثق",
+    noPhone: "لا يوجد رقم هاتف مسجل.",
+    close: "إغلاق",
+    phoneLabel: "رقم هاتف التواصل",
+    phonePlaceholder: "مثال: +971 50 123 4567",
+    phoneInfo: "سيظهر هذا الرقم للمشترين. اتركه فارغاً لإخفائه."
 };
 
 

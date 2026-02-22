@@ -125,35 +125,9 @@ io.on('connection', (socket) => {
         console.log(`📂 User joined conversation: convo_${conversationId}`);
     });
 
-    socket.on('send_message', async (data) => {
-        const { conversationId, senderId, message } = data;
-        try {
-            // Save to DB
-            const newMessage = await ChatMessage.create({
-                conversationId,
-                senderId,
-                message
-            });
-
-            // Update conversation timestamp
-            await Conversation.update({ updatedAt: new Date() }, { where: { id: conversationId } });
-
-            // Get conversation to find the recipient
-            const conversation = await Conversation.findByPk(conversationId);
-            const recipientId = conversation.buyerId === senderId ? conversation.sellerId : conversation.buyerId;
-
-            // Broadcast to conversation room
-            io.to(`convo_${conversationId}`).emit('receive_message', newMessage);
-
-            // Also notify the recipient globally
-            io.to(`user_${recipientId}`).emit('new_message_notification', {
-                ...newMessage.get({ plain: true }),
-                recipientId
-            });
-        } catch (err) {
-            console.error('Socket error saving message:', err);
-        }
-    });
+    // Note: send_message is now handled via HTTP API (POST /api/chat/message)
+    // The API saves to DB, handles image uploads, and emits receive_message + new_message_notification via req.io
+    // Socket is used here only for joining rooms
 
     socket.on('disconnect', async () => {
         console.log('👤 User disconnected');

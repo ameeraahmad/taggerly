@@ -128,7 +128,19 @@ const apiClient = {
         return this.fetch('/chat/conversations');
     },
 
-    async sendMessage(conversationId, message) {
+    async sendMessage(conversationId, message, imageFile = null) {
+        if (imageFile) {
+            const formData = new FormData();
+            formData.append('conversationId', conversationId);
+            if (message) formData.append('message', message);
+            formData.append('image', imageFile);
+
+            return this.fetch('/chat/message', {
+                method: 'POST',
+                body: formData
+            });
+        }
+
         return this.fetch('/chat/message', {
             method: 'POST',
             body: JSON.stringify({ conversationId, message }),
