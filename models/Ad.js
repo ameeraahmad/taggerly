@@ -33,6 +33,15 @@ const Ad = sequelize.define('Ad', {
     area: {
         type: DataTypes.STRING
     },
+    year: {
+        type: DataTypes.INTEGER
+    },
+    kilometers: {
+        type: DataTypes.INTEGER
+    },
+    itemCondition: {
+        type: DataTypes.STRING
+    },
     images: {
         type: DataTypes.TEXT,
         defaultValue: JSON.stringify(['https://via.placeholder.com/600x400?text=No+Image']),

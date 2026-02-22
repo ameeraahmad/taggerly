@@ -293,6 +293,7 @@ const arTranslations = {
     backToSearch: "العودة للبحث",
     year: "السنة",
     kilometers: "كم",
+    condition: "الحالة",
     color: "اللون",
     doors: "الأبواب",
     warranty: "الضمان",

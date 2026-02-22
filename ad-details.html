@@ -414,28 +414,24 @@
                     <h3 class="font-bold text-lg mb-4 text-gray-900 mt-6" data-translate="details">Details</h3>
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-y-4 gap-x-8">
                         <div class="flex justify-between border-b pb-2">
+                            <span class="text-gray-500" data-translate="categoryLabel">Category</span>
+                            <span id="detail-category" class="font-medium text-gray-900">-</span>
+                        </div>
+                        <div class="flex justify-between border-b pb-2">
+                            <span class="text-gray-500" data-translate="locationLabel">Location</span>
+                            <span id="detail-city" class="font-medium text-gray-900">-</span>
+                        </div>
+                        <div class="flex justify-between border-b pb-2">
                             <span class="text-gray-500" data-translate="year">Year</span>
-                            <span class="font-medium text-gray-900">2024</span>
+                            <span id="detail-year" class="font-medium text-gray-900">-</span>
                         </div>
                         <div class="flex justify-between border-b pb-2">
                             <span class="text-gray-500" data-translate="kilometers">Kilometers</span>
-                            <span class="font-medium text-gray-900">15,000</span>
+                            <span id="detail-kilometers" class="font-medium text-gray-900">-</span>
                         </div>
                         <div class="flex justify-between border-b pb-2">
-                            <span class="text-gray-500" data-translate="color">Color</span>
-                            <span class="font-medium text-gray-900">Red</span>
-                        </div>
-                        <div class="flex justify-between border-b pb-2">
-                            <span class="text-gray-500" data-translate="doors">Doors</span>
-                            <span class="font-medium text-gray-900">4 door</span>
-                        </div>
-                        <div class="flex justify-between border-b pb-2">
-                            <span class="text-gray-500" data-translate="warranty">Warranty</span>
-                            <span class="font-medium text-gray-900">Yes</span>
-                        </div>
-                        <div class="flex justify-between border-b pb-2">
-                            <span class="text-gray-500" data-translate="bodyType">Body Type</span>
-                            <span class="font-medium text-gray-900">Sedan</span>
+                            <span class="text-gray-500" data-translate="condition">Condition</span>
+                            <span id="detail-condition" class="font-medium text-gray-900">-</span>
                         </div>
                     </div>
                 </div>
@@ -649,6 +645,13 @@
 
                 // Update City
                 document.querySelectorAll('.city-label').forEach(el => el.textContent = ad.city);
+
+                // Update Details Section
+                if (document.getElementById('detail-category')) document.getElementById('detail-category').textContent = ad.category || '-';
+                if (document.getElementById('detail-city')) document.getElementById('detail-city').textContent = ad.city || '-';
+                if (document.getElementById('detail-year')) document.getElementById('detail-year').textContent = ad.year || 'N/A';
+                if (document.getElementById('detail-kilometers')) document.getElementById('detail-kilometers').textContent = ad.kilometers ? ad.kilometers.toLocaleString() : 'N/A';
+                if (document.getElementById('detail-condition')) document.getElementById('detail-condition').textContent = ad.itemCondition || 'N/A';
 
                 // Load Initial Image
                 if (currentImages.length > 0) {

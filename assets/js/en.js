@@ -287,6 +287,7 @@ const enTranslations = {
     backToSearch: "Back to Search",
     year: "Year",
     kilometers: "Kilometers",
+    condition: "Condition",
     color: "Color",
     doors: "Doors",
     warranty: "Warranty",

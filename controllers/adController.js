@@ -72,22 +72,22 @@ exports.getAdById = async (req, res) => {
 // @route   POST /api/ads
 exports.createAd = async (req, res) => {
     try {
-        const { title, description, price, category, subCategory, city, area } = req.body;
+        const {
+            title, description, price, category, subCategory,
+            city, area, year, kilometers, itemCondition
+        } = req.body;
 
         let images = [];
         if (req.files && req.files.length > 0) {
             images = req.files.map(file => {
-                // If it's a Cloudinary upload, the URL is in 'path' or 'secure_url'
                 if (file.path && file.path.startsWith('http')) {
                     return file.path;
                 }
-                // Fallback for local storage
                 const protocol = req.protocol;
                 const host = req.get('host');
                 return `${protocol}://${host}/uploads/${file.filename}`;
             });
         } else if (req.body.images) {
-            // Fallback for cases where images are sent as JSON strings/arrays (like in manual tests)
             images = Array.isArray(req.body.images) ? req.body.images : JSON.parse(req.body.images);
         }
 
@@ -99,6 +99,9 @@ exports.createAd = async (req, res) => {
             subCategory,
             city,
             area,
+            year: year ? Number(year) : null,
+            kilometers: kilometers ? Number(kilometers) : null,
+            itemCondition,
             images: Array.isArray(images) ? images : [],
             userId: req.user ? req.user.id : null
         });
