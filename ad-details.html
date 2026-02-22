@@ -507,20 +507,22 @@
                 </div>
 
                 <!-- Seller Card -->
-                <div class="bg-white rounded-xl shadow-sm p-6">
-                    <h2 class="font-bold text-gray-900 mb-4" data-translate="sellerInfo">Seller Information</h2>
+                <div class="bg-white rounded-xl shadow-sm p-6 border dark:border-gray-700 dark:bg-gray-800">
+                    <h2 class="font-bold text-gray-900 dark:text-white mb-4" data-translate="sellerInfo">Seller
+                        Information</h2>
                     <div class="flex items-center mb-4">
-                        <div
+                        <div id="seller-avatar"
                             class="w-12 h-12 bg-gray-300 rounded-full flex items-center justify-center text-xl font-bold text-gray-600">
-                            AH</div>
+                            ??</div>
                         <div class="ml-4 rtl:mr-4 rtl:ml-0">
-                            <div class="font-bold text-primary">Ahmed Hassan</div>
-                            <div class="text-sm text-gray-500"><span data-translate="memberSince">Member since</span>
-                                2020</div>
+                            <div id="seller-name" class="font-bold text-primary dark:text-white">Loading...</div>
+                            <div id="seller-joined" class="text-sm text-gray-500"><span
+                                    data-translate="memberSince">Member since</span>
+                                ...</div>
                         </div>
                     </div>
-                    <a href="dashboard.html"
-                        class="block text-center w-full border border-gray-300 py-2 rounded-lg text-sm text-gray-600 hover:bg-gray-50 transition"
+                    <a href="#" id="view-seller-profile"
+                        class="block text-center w-full border border-gray-300 dark:border-gray-600 py-2 rounded-lg text-sm text-gray-600 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700 transition"
                         data-translate="viewProfile">View
                         Profile</a>
                 </div>
@@ -655,25 +657,28 @@
 
                 // Update Seller Info
                 if (ad.user) {
-                    const avatarContainer = document.querySelector('.w-12.h-12');
+                    const avatarContainer = document.getElementById('seller-avatar');
+                    const nameContainer = document.getElementById('seller-name');
+                    const joinedContainer = document.getElementById('seller-joined');
 
                     // Show Avatar or Initials
-                    if (ad.user.avatar && !ad.user.avatar.includes('gravatar.com/avatar/00000000000000000000000000000000')) {
-                        avatarContainer.innerHTML = `<img src="${ad.user.avatar}" class="w-full h-full rounded-full object-cover">`;
-                        avatarContainer.classList.remove('bg-gray-300', 'flex', 'items-center', 'justify-center', 'text-xl', 'font-bold', 'text-gray-600');
-                    } else {
-                        avatarContainer.textContent = ad.user.name.split(' ').map(n => n[0]).join('').toUpperCase();
+                    if (avatarContainer) {
+                        if (ad.user.avatar && !ad.user.avatar.includes('gravatar.com/avatar/00000000000000000000000000000000')) {
+                            avatarContainer.innerHTML = `<img src="${ad.user.avatar}" class="w-full h-full rounded-full object-cover">`;
+                            avatarContainer.classList.remove('bg-gray-300', 'flex', 'items-center', 'justify-center', 'text-xl', 'font-bold', 'text-gray-600');
+                        } else {
+                            const initials = ad.user.name ? ad.user.name.split(' ').map(n => n[0]).join('').toUpperCase() : '??';
+                            avatarContainer.textContent = initials;
+                        }
                     }
 
-                    document.querySelector('.font-bold.text-primary').textContent = ad.user.name;
+                    if (nameContainer) nameContainer.textContent = ad.user.name || 'Anonymous';
 
                     // Join Date
-                    if (ad.user.createdAt) {
+                    if (ad.user.createdAt && joinedContainer) {
                         const joinDate = new Date(ad.user.createdAt);
-                        const memberSinceEl = document.querySelector('.text-sm.text-gray-500');
-                        if (memberSinceEl) {
-                            memberSinceEl.innerHTML = `<span data-translate="memberSince">Member since</span> ${joinDate.getFullYear()}`;
-                        }
+                        const year = joinDate.getFullYear();
+                        joinedContainer.innerHTML = `<span data-translate="memberSince">Member since</span> ${year}`;
                     }
                 }
 
