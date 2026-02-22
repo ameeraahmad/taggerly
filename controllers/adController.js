@@ -88,7 +88,12 @@ exports.createAd = async (req, res) => {
                 return `${protocol}://${host}/uploads/${file.filename}`;
             });
         } else if (req.body.images) {
-            images = Array.isArray(req.body.images) ? req.body.images : JSON.parse(req.body.images);
+            try {
+                images = Array.isArray(req.body.images) ? req.body.images : JSON.parse(req.body.images);
+            } catch (pErr) {
+                console.error('Failed to parse images:', pErr);
+                images = [];
+            }
         }
 
         const ad = await Ad.create({

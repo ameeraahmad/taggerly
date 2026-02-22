@@ -36,6 +36,23 @@ const connectDB = async () => {
             // Enable alter: true to sync new fields (bio, location) and new chat tables
             const syncOptions = isTest ? { force: true } : { alter: true };
             await sequelize.sync(syncOptions);
+
+            // Manual fallback for SQLite column additions if 'alter' failed
+            if (!databaseUrl && !isTest) {
+                const queryInterface = sequelize.getQueryInterface();
+                const tableInfo = await queryInterface.describeTable('Ads');
+
+                if (!tableInfo.year) {
+                    await queryInterface.addColumn('Ads', 'year', { type: Sequelize.INTEGER, allowNull: true });
+                }
+                if (!tableInfo.kilometers) {
+                    await queryInterface.addColumn('Ads', 'kilometers', { type: Sequelize.INTEGER, allowNull: true });
+                }
+                if (!tableInfo.itemCondition) {
+                    await queryInterface.addColumn('Ads', 'itemCondition', { type: Sequelize.STRING, allowNull: true });
+                }
+            }
+
             isSynced = true;
             console.log(`✅ ${databaseUrl ? 'PostgreSQL' : 'SQLite'} Database connected and synced.`);
         } catch (error) {
