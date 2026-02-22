@@ -178,7 +178,7 @@
             </div>
 
             <!-- Additional Details (Conditional/Optional) -->
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <div id="additional-details" class="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <div>
                     <label class="block text-sm font-medium text-gray-700 mb-2" data-translate="year">Year</label>
                     <input type="number" id="ad-year"
@@ -327,6 +327,23 @@
             const form = document.querySelector('form');
             const fileInput = document.getElementById('file-upload');
             const previewContainer = document.getElementById('preview-container');
+            const categorySelect = document.getElementById('ad-category');
+            const additionalDetails = document.getElementById('additional-details');
+
+            // Handle Category Change (Show/Hide Year & Kms)
+            const toggleAdditionalFields = () => {
+                if (categorySelect.value === 'Motors') {
+                    additionalDetails.style.display = 'grid';
+                } else {
+                    additionalDetails.style.display = 'none';
+                    // Clear values if hidden
+                    document.getElementById('ad-year').value = '';
+                    document.getElementById('ad-kilometers').value = '';
+                }
+            };
+
+            categorySelect.addEventListener('change', toggleAdditionalFields);
+            toggleAdditionalFields(); // Initialize on load
 
             // Handle Preview
             fileInput.addEventListener('change', () => {

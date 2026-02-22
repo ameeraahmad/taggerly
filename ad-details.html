@@ -421,15 +421,15 @@
                             <span class="text-gray-500" data-translate="locationLabel">Location</span>
                             <span id="detail-city" class="font-medium text-gray-900">-</span>
                         </div>
-                        <div class="flex justify-between border-b pb-2">
+                        <div id="item-year" class="flex justify-between border-b pb-2">
                             <span class="text-gray-500" data-translate="year">Year</span>
                             <span id="detail-year" class="font-medium text-gray-900">-</span>
                         </div>
-                        <div class="flex justify-between border-b pb-2">
+                        <div id="item-kilometers" class="flex justify-between border-b pb-2">
                             <span class="text-gray-500" data-translate="kilometers">Kilometers</span>
                             <span id="detail-kilometers" class="font-medium text-gray-900">-</span>
                         </div>
-                        <div class="flex justify-between border-b pb-2">
+                        <div id="item-condition" class="flex justify-between border-b pb-2">
                             <span class="text-gray-500" data-translate="condition">Condition</span>
                             <span id="detail-condition" class="font-medium text-gray-900">-</span>
                         </div>
@@ -649,9 +649,30 @@
                 // Update Details Section
                 if (document.getElementById('detail-category')) document.getElementById('detail-category').textContent = ad.category || '-';
                 if (document.getElementById('detail-city')) document.getElementById('detail-city').textContent = ad.city || '-';
-                if (document.getElementById('detail-year')) document.getElementById('detail-year').textContent = ad.year || 'N/A';
-                if (document.getElementById('detail-kilometers')) document.getElementById('detail-kilometers').textContent = ad.kilometers ? ad.kilometers.toLocaleString() : 'N/A';
-                if (document.getElementById('detail-condition')) document.getElementById('detail-condition').textContent = ad.itemCondition || 'N/A';
+
+                // Show/Hide Year
+                if (ad.year) {
+                    document.getElementById('detail-year').textContent = ad.year;
+                    if (document.getElementById('item-year')) document.getElementById('item-year').style.display = 'flex';
+                } else {
+                    if (document.getElementById('item-year')) document.getElementById('item-year').style.display = 'none';
+                }
+
+                // Show/Hide Kilometers
+                if (ad.kilometers) {
+                    document.getElementById('detail-kilometers').textContent = ad.kilometers.toLocaleString();
+                    if (document.getElementById('item-kilometers')) document.getElementById('item-kilometers').style.display = 'flex';
+                } else {
+                    if (document.getElementById('item-kilometers')) document.getElementById('item-kilometers').style.display = 'none';
+                }
+
+                // Show/Hide Condition
+                if (ad.itemCondition) {
+                    document.getElementById('detail-condition').textContent = ad.itemCondition;
+                    if (document.getElementById('item-condition')) document.getElementById('item-condition').style.display = 'flex';
+                } else {
+                    if (document.getElementById('item-condition')) document.getElementById('item-condition').style.display = 'none';
+                }
 
                 // Load Initial Image
                 if (currentImages.length > 0) {
