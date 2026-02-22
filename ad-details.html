@@ -727,7 +727,7 @@
                         try {
                             chatBtn.disabled = true;
                             chatBtn.textContent = 'Starting chat...';
-                            const response = await apiClient.startConversation(adId);
+                            const response = await apiClient.startConversation(id);
                             if (response.success) {
                                 window.location.href = `messages.html?conversationId=${response.data.id}`;
                             }
