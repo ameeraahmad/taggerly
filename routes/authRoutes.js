@@ -2,12 +2,13 @@ const express = require('express');
 const router = express.Router();
 const {
     register, login, getMe, updateProfile, googleLogin, facebookLogin,
-    forgotPassword, resetPassword, verifyEmail
+    forgotPassword, resetPassword, verifyEmail, resendVerification
 } = require('../controllers/authController');
 const { protect } = require('../middleware/authMiddleware');
 
 router.post('/register', register);
 router.post('/login', login);
+router.post('/resend-verification', protect, resendVerification);
 router.post('/google', googleLogin);
 router.post('/facebook', facebookLogin);
 router.post('/forgot-password', forgotPassword);

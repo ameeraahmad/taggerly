@@ -11,12 +11,23 @@ exports.createReview = async (req, res) => {
             return res.status(400).json({ success: false, message: 'You cannot rate yourself' });
         }
 
+        const { createNotification } = require('../utils/notifications');
         const review = await Review.create({
             reviewerId,
             sellerId,
             adId,
             rating,
             comment
+        });
+
+        // Notify Seller
+        await createNotification(req.io, {
+            userId: sellerId,
+            type: 'review',
+            title: 'New Review!',
+            message: `${req.user.name} gave you a ${rating}-star rating.`,
+            link: `ad-details.html?id=${adId}`,
+            relatedId: review.id
         });
 
         res.status(201).json({ success: true, data: review });

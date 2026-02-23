@@ -196,6 +196,16 @@ const enTranslations = {
     notifications: "Notifications",
     markAllRead: "Mark all as read",
     noNotifications: "No notifications",
+    verifyEmailWarning: "Your email is not verified. Verify now to get the Verified Seller badge!",
+    resendBtn: "Resend Link",
+    emailVerified: "Email verified successfully!",
+    invalidToken: "Invalid or expired token",
+    detectLocation: "Detect My Location",
+    detecting: "Detecting...",
+    locationDenied: "Location permission denied. Please select manually.",
+    locationError: "Could not detect location.",
+    locationActive: "Location Aware",
+    allUAECities: ["Dubai", "Abu Dhabi", "Sharjah", "Ajman", "Umm Al Quwain", "Ras Al Khaimah", "Fujairah"],
 
     // Search
     filters: "Filters",

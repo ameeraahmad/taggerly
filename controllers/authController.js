@@ -94,9 +94,9 @@ exports.verifyEmail = async (req, res) => {
         user.emailVerificationToken = null;
         await user.save();
 
-        res.status(200).json({ success: true, message: 'Email verified successfully!' });
+        res.redirect('/index.html?verified=success');
     } catch (err) {
-        res.status(500).json({ success: false, message: err.message });
+        res.redirect('/index.html?verified=error');
     }
 };
 
@@ -106,8 +106,6 @@ const generateToken = (id) => {
     });
 };
 
-// @desc    Register
-// @route   POST /api/auth/register
 exports.register = async (req, res) => {
     try {
         const { name, email, password, phone } = req.body;
@@ -121,12 +119,41 @@ exports.register = async (req, res) => {
             return res.status(400).json({ success: false, message: 'Email already registered' });
         }
 
-        const user = await User.create({ name, email, password, phone });
+        const crypto = require('crypto');
+        const verificationToken = crypto.randomBytes(32).toString('hex');
+
+        const user = await User.create({
+            name,
+            email,
+            password,
+            phone,
+            emailVerificationToken: verificationToken
+        });
+
+        // Send Verification Email
+        try {
+            const verifyURL = `${req.protocol}://${req.get('host')}/api/auth/verify-email/${verificationToken}`;
+            await sendEmail({
+                email: user.email,
+                subject: 'Verify your email - Dubizzle Clone',
+                message: `Welcome to Dubizzle Clone, ${user.name}!\n\nPlease verify your email by clicking the link below:\n${verifyURL}\n\nIf you didn't create an account, please ignore this email.`
+            });
+        } catch (err) {
+            console.error('Email sending failed during registration:', err);
+            // We don't block registration if email fails, but user won't be verified
+        }
+
         const token = generateToken(user.id);
 
         res.status(201).json({
             success: true, token,
-            data: { id: user.id, name: user.name, email: user.email, role: user.role }
+            data: {
+                id: user.id,
+                name: user.name,
+                email: user.email,
+                role: user.role,
+                isEmailVerified: user.isEmailVerified
+            }
         });
     } catch (err) {
         res.status(400).json({ success: false, message: err.message });
@@ -301,5 +328,31 @@ exports.facebookLogin = async (req, res) => {
     } catch (err) {
         console.error('Facebook Auth Error:', err);
         res.status(400).json({ success: false, message: 'Facebook authentication failed' });
+    }
+};
+// @desc    Resend Verification Email
+// @route   POST /api/auth/resend-verification
+exports.resendVerification = async (req, res) => {
+    try {
+        const user = await User.findByPk(req.user.id);
+        if (user.isEmailVerified) {
+            return res.status(400).json({ success: false, message: 'Email already verified' });
+        }
+
+        const crypto = require('crypto');
+        const verificationToken = crypto.randomBytes(32).toString('hex');
+        user.emailVerificationToken = verificationToken;
+        await user.save();
+
+        const verifyURL = `${req.protocol}://${req.get('host')}/api/auth/verify-email/${verificationToken}`;
+        await sendEmail({
+            email: user.email,
+            subject: 'Verify your email - Dubizzle Clone',
+            message: `Please verify your email by clicking the link below:\n${verifyURL}`
+        });
+
+        res.status(200).json({ success: true, message: 'Verification email sent!' });
+    } catch (err) {
+        res.status(500).json({ success: false, message: err.message });
     }
 };

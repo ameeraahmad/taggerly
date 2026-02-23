@@ -200,6 +200,16 @@ const arTranslations = {
     notifications: "الإشعارات",
     markAllRead: "تحديد الكل كمقروء",
     noNotifications: "لا توجد إشعارات",
+    verifyEmailWarning: "بريدك الإلكتروني غير موثق. وثقه الآن للحصول على شارة بائع موثق!",
+    resendBtn: "إعادة إرسال الرابط",
+    emailVerified: "تم توثيق البريد الإلكتروني بنجاح!",
+    invalidToken: "رابط التوثيق غير صالح أو منتهي الصلاحية",
+    detectLocation: "تحديد موقعي التلقائي",
+    detecting: "جاري التحديد...",
+    locationDenied: "تم رفض الوصول للموقع. يرجى الاختيار يدوياً.",
+    locationError: "تعذر تحديد الموقع الجغرافي.",
+    locationActive: "تحديد الموقع مفعل",
+    allUAECities: ["دبي", "أبوظبي", "الشارقة", "عجمان", "أم القيوين", "رأس الخيمة", "الفجيرة"],
 
     // Search
     filters: "تصفية",

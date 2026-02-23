@@ -28,6 +28,26 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     });
 
+    // --- Email Verification Check ---
+    const urlParams = new URLSearchParams(window.location.search);
+    const verifiedStatus = urlParams.get('verified');
+    if (verifiedStatus === 'success') {
+        const lang = window.currentLang || 'en';
+        alert(translations[lang].emailVerified || 'Email verified successfully!');
+        const user = JSON.parse(localStorage.getItem('user'));
+        if (user) {
+            user.isEmailVerified = true;
+            localStorage.setItem('user', JSON.stringify(user));
+            if (window.updateAuthState) window.updateAuthState();
+        }
+        // Clean URL
+        window.history.replaceState({}, document.title, window.location.pathname);
+    } else if (verifiedStatus === 'error') {
+        const lang = window.currentLang || 'en';
+        alert(translations[lang].invalidToken || 'Invalid or expired verification link');
+        window.history.replaceState({}, document.title, window.location.pathname);
+    }
+
     // --- Country & Currency Dropdown Logic ---
     const countryOptions = document.querySelectorAll('.country-option');
     const currentCountryFlag = document.getElementById('current-country-flag');
@@ -125,56 +145,6 @@ document.addEventListener('DOMContentLoaded', () => {
     window.updateDynamicContent = function (country, lang) {
         const countryName = translations[lang][country] || translations['en'][country] || country;
 
-        // --- 1. Update Currencies ---
-        const currencyLabels = document.querySelectorAll('.currency-label');
-        const currencyKey = `currency_${country}`;
-        const currencyText = translations[lang][currencyKey] || translations['en'][currencyKey] || "AED";
-
-        currencyLabels.forEach(el => {
-            el.textContent = currencyText;
-        });
-
-        // Update Price Label in search filters if exists
-        const priceLabel = document.querySelector('[data-translate="priceLabel"]');
-        if (priceLabel) {
-            priceLabel.textContent = `${translations[lang].priceLabel.split('(')[0]} (${currencyText})`;
-        }
-
-        // --- 2. Update Country Labels ---
-        const countryLabels = document.querySelectorAll('.country-label');
-        countryLabels.forEach(el => {
-            el.textContent = countryName;
-        });
-
-        // --- 3. Update City Labels ---
-        const cityLabels = document.querySelectorAll('.city-label');
-        const cityKey = `city_${country}`;
-        const cityName = translations[lang][cityKey] || translations['en'][cityKey] || "Dubai";
-        cityLabels.forEach(el => {
-            el.textContent = cityName;
-        });
-
-        // --- 4. Update Header Country Name ---
-        if (currentCountryName) {
-            currentCountryName.textContent = countryName;
-            currentCountryName.setAttribute('data-translate', country);
-        }
-
-        // --- 5. Update Footer & Community Labels ---
-        const footerTemplate = translations[lang].footerText || translations['en'].footerText;
-        const footerTextElements = document.querySelectorAll('[data-translate="footerText"]');
-        footerTextElements.forEach(el => {
-            // Replace "UAE" or "الإمارات" with the current country name
-            el.textContent = footerTemplate.replace('UAE', countryName).replace('الإمارات', countryName);
-        });
-
-        const allUAELabels = document.querySelectorAll('[data-translate="allUAE"]');
-        allUAELabels.forEach(el => {
-            const prefix = lang === 'ar' ? 'كل ' : 'All ';
-            el.textContent = prefix + countryName;
-        });
-
-        // --- 6. Update Dynamic Location Dropdowns (e.g., post-ad.html) ---
         const countryCities = {
             uae: ['dubai', 'abuDhabi', 'sharjah', 'ajman'],
             egypt: ['cairo', 'alexandria', 'giza', 'sharm'],
@@ -182,33 +152,147 @@ document.addEventListener('DOMContentLoaded', () => {
             qatar: ['doha', 'wakrah', 'rayyan', 'khor']
         };
 
+        // --- 1. Update Currencies ---
+        const currencyLabels = document.querySelectorAll('.currency-label');
+        const currencyKey = `currency_${country}`;
+        const currencyText = translations[lang][currencyKey] || translations['en'][currencyKey] || "AED";
+        currencyLabels.forEach(el => el.textContent = currencyText);
+
+        // Update Price Label in search filters if exists
+        const priceLabel = document.querySelector('[data-translate="priceLabel"]');
+        if (priceLabel) {
+            priceLabel.textContent = `${translations[lang].priceLabel?.split('(')[0] || 'Price'} (${currencyText})`;
+        }
+
+        // --- 2. Update Country Labels ---
+        const countryLabels = document.querySelectorAll('.country-label');
+        countryLabels.forEach(el => el.textContent = countryName);
+
+        // --- 3. Update City Labels ---
+        const cityLabels = document.querySelectorAll('.city-label');
+        const cityKey = `city_${country}`;
+        const cityName = translations[lang][cityKey] || translations['en'][cityKey] || (country === 'uae' ? "Dubai" : "");
+        cityLabels.forEach(el => el.textContent = cityName);
+
+        // --- 4. Update Header Country Name ---
+        const currentCountryName = document.getElementById('current-country-name');
+        if (currentCountryName) {
+            currentCountryName.textContent = countryName;
+            currentCountryName.setAttribute('data-translate', country);
+        }
+
+        // --- 5. Update Footer & Community Labels ---
+        const footerTemplate = translations[lang].footerText || translations['en'].footerText;
+        if (footerTemplate) {
+            const footerTextElements = document.querySelectorAll('[data-translate="footerText"]');
+            footerTextElements.forEach(el => {
+                el.textContent = footerTemplate.replace('UAE', countryName).replace('الإمارات', countryName);
+            });
+        }
+
+        const allUAELabels = document.querySelectorAll('[data-translate="allUAE"]');
+        allUAELabels.forEach(el => {
+            const prefix = lang === 'ar' ? 'كل ' : 'All ';
+            el.textContent = prefix + countryName;
+        });
+
+        // --- 6. Update Dynamic Location Dropdowns ---
         const dynamicDropdowns = document.querySelectorAll('[data-dynamic-location="true"]');
         dynamicDropdowns.forEach(dropdown => {
             const cities = countryCities[country] || countryCities['uae'];
             const includeAll = dropdown.getAttribute('data-include-all') === 'true';
-
-            dropdown.innerHTML = ''; // Clear current options
-
+            dropdown.innerHTML = '';
             if (includeAll) {
                 const allOpt = document.createElement('option');
                 allOpt.value = `all_${country}`;
-                const prefix = lang === 'ar' ? 'كل ' : 'All ';
-                allOpt.textContent = prefix + countryName;
-                allOpt.setAttribute('data-translate', `all_${country}`); // Optional: for future use
+                allOpt.textContent = (lang === 'ar' ? 'كل ' : 'All ') + countryName;
                 dropdown.appendChild(allOpt);
             }
-
-            cities.forEach(cityKey => {
+            cities.forEach(c => {
                 const opt = document.createElement('option');
-                opt.value = cityKey;
-                opt.textContent = translations[lang][cityKey] || translations['en'][cityKey] || cityKey;
-                opt.setAttribute('data-translate', cityKey);
+                opt.value = c;
+                opt.textContent = translations[lang][c] || translations['en'][c] || c;
+                opt.setAttribute('data-translate', c);
                 dropdown.appendChild(opt);
             });
         });
-    }
+
+        // --- 7. Update Header Cities List ---
+        const headerCitiesList = document.getElementById('header-cities-list');
+        if (headerCitiesList) {
+            const cities = countryCities[country] || countryCities['uae'];
+            headerCitiesList.innerHTML = '';
+            cities.forEach(c => {
+                const cityName = translations[lang][c] || translations['en'][c] || c;
+                const link = document.createElement('a');
+                link.href = `search.html?city=${c}`;
+                link.className = 'text-gray-500 dark:text-gray-400 hover:text-accent text-sm font-medium transition';
+                link.textContent = cityName;
+                link.setAttribute('data-translate', c);
+                headerCitiesList.appendChild(link);
+            });
+        }
+    };
+
+    window.detectLocation = function () {
+        const btn = document.getElementById('detect-location-btn');
+        const lang = window.currentLang || 'en';
+        if (!navigator.geolocation) {
+            alert(translations[lang].locationError || 'Geolocation not supported');
+            return;
+        }
+
+        const span = btn?.querySelector('span');
+        const originalText = span ? span.textContent : '';
+        if (span) span.textContent = translations[lang].detecting;
+        if (btn) btn.disabled = true;
+
+        navigator.geolocation.getCurrentPosition(async (position) => {
+            const { latitude, longitude } = position.coords;
+            try {
+                const response = await fetch(`https://nominatim.openstreetmap.org/reverse?format=json&lat=${latitude}&lon=${longitude}&accept-language=${lang}`);
+                const data = await response.json();
+                const city = data.address.city || data.address.town || data.address.suburb || data.address.state;
+                const countryCode = data.address?.country_code?.toLowerCase();
+
+                // Map country code to our keys
+                const countryMap = { 'ae': 'uae', 'eg': 'egypt', 'sa': 'ksa', 'qa': 'qatar' };
+                const detectedCountry = countryMap[countryCode];
+
+                if (detectedCountry && detectedCountry !== window.selectedCountry) {
+                    // Ask user to switch 
+                    const switchConfirm = confirm(lang === 'ar' ? `هل تود الانتقال إلى موقعنا في ${data.address.country}؟` : `Would you like to switch to our ${data.address.country} site?`);
+                    if (switchConfirm) {
+                        const flags = { 'uae': '🇦🇪', 'egypt': '🇪🇬', 'ksa': '🇸🇦', 'qatar': '🇶🇦' };
+                        window.setCountry(detectedCountry, flags[detectedCountry], data.address.country);
+                    }
+                }
+
+                if (city) {
+                    alert(`${translations[lang].locationActive}: ${city}`);
+                    window.location.href = `search.html?search=${encodeURIComponent(city)}`;
+                } else {
+                    alert(translations[lang].locationError);
+                }
+            } catch (err) {
+                console.error('Location detection failed:', err);
+                alert(translations[lang].locationError);
+            } finally {
+                if (span) span.textContent = originalText;
+                if (btn) btn.disabled = false;
+            }
+        }, (err) => {
+            alert(translations[lang].locationDenied);
+            if (span) span.textContent = originalText;
+            if (btn) btn.disabled = false;
+        });
+    };
 
     window.setCountry = function (country, flag, name) {
+        // currentCountryFlag is defined inside DOMContentLoaded, so it might be null here.
+        // Re-querying it or making it global would be a more robust solution.
+        // For now, assuming it's accessible or initCountryDropdown handles it.
+        const currentCountryFlag = document.getElementById('current-country-flag');
         if (currentCountryFlag) currentCountryFlag.textContent = flag;
 
         window.selectedCountry = country;
@@ -543,6 +627,51 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 
     // --- Global Auth State Logic ---
+    function showVerificationBanner(user) {
+        if (document.getElementById('verification-banner')) return;
+
+        const banner = document.createElement('div');
+        banner.id = 'verification-banner';
+        banner.className = 'bg-yellow-100 dark:bg-yellow-900/30 border-b border-yellow-200 dark:border-yellow-900/50 py-2';
+        banner.innerHTML = `
+            <div class="max-w-7xl mx-auto px-4 flex justify-between items-center text-xs sm:text-sm text-yellow-800 dark:text-yellow-200">
+                <div class="flex items-center gap-2">
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"></path></svg>
+                    <span data-translate="verifyEmailWarning">Your email is not verified. Verify now to get the Verified Seller badge!</span>
+                </div>
+                <button id="resend-verification-btn" class="font-bold underline hover:text-yellow-950 dark:hover:text-yellow-100 transition whitespace-nowrap" data-translate="resendBtn">Resend Link</button>
+            </div>
+        `;
+
+        const header = document.querySelector('header');
+        if (header) {
+            header.insertAdjacentElement('afterend', banner);
+        } else {
+            document.body.prepend(banner);
+        }
+
+        const resendBtn = document.getElementById('resend-verification-btn');
+        if (resendBtn) {
+            resendBtn.onclick = async () => {
+                try {
+                    resendBtn.disabled = true;
+                    resendBtn.textContent = 'Sending...';
+                    const res = await apiClient.fetch('/auth/resend-verification', { method: 'POST' });
+                    if (res.success) {
+                        alert('Verification link sent to your email!');
+                        resendBtn.textContent = 'Sent ✅';
+                    }
+                } catch (err) {
+                    alert(err.message);
+                    resendBtn.disabled = false;
+                    resendBtn.textContent = 'Resend Link';
+                }
+            };
+        }
+
+        if (window.updateLanguage) window.updateLanguage(window.currentLang);
+    }
+
     window.updateAuthState = function () {
         const user = JSON.parse(localStorage.getItem('user'));
         const token = localStorage.getItem('token');
@@ -569,6 +698,13 @@ document.addEventListener('DOMContentLoaded', () => {
             // User is logged in
             if (notifWrapper) notifWrapper.classList.remove('hidden');
             loadNotifications();
+
+            if (!user.isEmailVerified) {
+                showVerificationBanner(user);
+            } else {
+                const banner = document.getElementById('verification-banner');
+                if (banner) banner.remove();
+            }
             // ... (rest of existing login logic)
             if (userDropdown) {
                 userDropdown.innerHTML = `
@@ -598,6 +734,8 @@ document.addEventListener('DOMContentLoaded', () => {
             }
         } else {
             // User is NOT logged in
+            const banner = document.getElementById('verification-banner');
+            if (banner) banner.remove();
             if (notifWrapper) notifWrapper.classList.add('hidden');
             if (userDropdown) {
                 userDropdown.innerHTML = `
@@ -645,33 +783,32 @@ document.addEventListener('DOMContentLoaded', () => {
     // --- Dynamic Ads Loading (Home Page) ---
     const adsContainer = document.querySelector('.featured-ads .grid');
     if (adsContainer && window.apiClient) {
-        loadFeaturedAds(adsContainer);
+        populateAdsGrid(adsContainer);
         loadCategorySliders();
     }
-});
 
-async function loadFeaturedAds(container) {
-    try {
-        const response = await apiClient.getAds({ limit: 8 });
-        const ads = response.data;
+    async function populateAdsGrid(container) {
+        try {
+            const response = await apiClient.getAds({ limit: 8 });
+            const ads = response.data;
 
-        if (ads.length === 0) return; // Keep static ads if none in DB
+            if (ads.length === 0) return; // Keep static ads if none in DB
 
-        container.innerHTML = ''; // Clear static ads
-        ads.forEach(ad => {
-            container.insertAdjacentHTML('beforeend', createAdCard(ad));
-        });
-    } catch (err) {
-        console.error('Error loading ads:', err);
+            container.innerHTML = ''; // Clear static ads
+            ads.forEach(ad => {
+                container.insertAdjacentHTML('beforeend', createAdCard(ad));
+            });
+        } catch (err) {
+            console.error('Error loading ads:', err);
+        }
     }
-}
 
-function createAdCard(ad, isSlider = false) {
-    const cardClass = isSlider
-        ? "min-w-[280px] w-[280px] md:min-w-[320px] md:w-[320px] bg-white dark:bg-gray-800 rounded-xl shadow border dark:border-gray-700 snap-center flex-shrink-0 cursor-pointer"
-        : "ad-card-main bg-white dark:bg-gray-800 border dark:border-gray-700 rounded-xl overflow-hidden shadow-sm hover:shadow-lg transition group cursor-pointer";
+    function createAdCard(ad, isSlider = false) {
+        const cardClass = isSlider
+            ? "min-w-[280px] w-[280px] md:min-w-[320px] md:w-[320px] bg-white dark:bg-gray-800 rounded-xl shadow border dark:border-gray-700 snap-center flex-shrink-0 cursor-pointer"
+            : "ad-card-main bg-white dark:bg-gray-800 border dark:border-gray-700 rounded-xl overflow-hidden shadow-sm hover:shadow-lg transition group cursor-pointer";
 
-    return `
+        return `
         <div class="${cardClass}" onclick="window.location.href='ad-details.html?id=${ad.id}'">
             <div class="relative h-48 bg-gray-200 dark:bg-gray-700 overflow-hidden ${!isSlider ? 'rounded-t-xl' : ''}">
                 <img src="${ad.images[0] || 'https://via.placeholder.com/300x200'}" alt="${ad.title}" class="w-full h-full object-cover transition duration-300 group-hover:scale-105">
@@ -702,104 +839,104 @@ function createAdCard(ad, isSlider = false) {
             </div>
         </div>
     `;
-}
+    }
 
-async function loadCategorySliders() {
-    const configs = [
-        { category: 'Motors', sliderId: 'motors-used-slider' },
-        { category: 'Motors', sliderId: 'motors-bikes-slider' },
-        { category: 'Electronics', sliderId: 'motors-electronics-slider' },
-        { category: 'Mobiles', sliderId: 'motors-mobiles-slider' },
-        { category: 'Property', sliderId: 'prop-sale-slider' },
-        { category: 'Property', sliderId: 'prop-rent-slider' },
-        { category: 'Furniture', sliderId: 'classifieds-furniture-slider' },
-        { category: 'Classifieds', sliderId: 'classifieds-hobbies-slider' }
-    ];
+    async function loadCategorySliders() {
+        const configs = [
+            { category: 'Motors', sliderId: 'motors-used-slider' },
+            { category: 'Motors', sliderId: 'motors-bikes-slider' },
+            { category: 'Electronics', sliderId: 'motors-electronics-slider' },
+            { category: 'Mobiles', sliderId: 'motors-mobiles-slider' },
+            { category: 'Property', sliderId: 'prop-sale-slider' },
+            { category: 'Property', sliderId: 'prop-rent-slider' },
+            { category: 'Furniture', sliderId: 'classifieds-furniture-slider' },
+            { category: 'Classifieds', sliderId: 'classifieds-hobbies-slider' }
+        ];
 
-    // Load Featured Ads first
-    await loadFeaturedAds();
+        // Load Featured Ads first
+        await loadFeaturedAds();
 
-    for (const config of configs) {
-        const slider = document.getElementById(config.sliderId);
-        if (slider) {
-            try {
-                const response = await apiClient.getAds({ category: config.category, limit: 12 });
-                const ads = response.data;
-                if (ads.length > 0) {
-                    if (!slider.hasAttribute('data-loaded')) {
-                        slider.innerHTML = '';
-                        slider.setAttribute('data-loaded', 'true');
+        for (const config of configs) {
+            const slider = document.getElementById(config.sliderId);
+            if (slider) {
+                try {
+                    const response = await apiClient.getAds({ category: config.category, limit: 12 });
+                    const ads = response.data;
+                    if (ads.length > 0) {
+                        if (!slider.hasAttribute('data-loaded')) {
+                            slider.innerHTML = '';
+                            slider.setAttribute('data-loaded', 'true');
+                        }
+                        ads.forEach(ad => {
+                            slider.insertAdjacentHTML('beforeend', createAdCard(ad, true));
+                        });
                     }
-                    ads.forEach(ad => {
-                        slider.insertAdjacentHTML('beforeend', createAdCard(ad, true));
-                    });
+                } catch (err) {
+                    console.warn(`Failed to load slider for ${config.category}:`, err);
                 }
-            } catch (err) {
-                console.warn(`Failed to load slider for ${config.category}:`, err);
             }
         }
     }
-}
 
-async function loadFeaturedAds() {
-    const slider = document.getElementById('featured-ads-slider');
-    const section = document.getElementById('featured-ads-section');
-    if (!slider) return;
+    async function loadFeaturedAds() {
+        const slider = document.getElementById('featured-ads-slider');
+        const section = document.getElementById('featured-ads-section');
+        if (!slider) return;
 
-    try {
-        const response = await apiClient.getAds({ isFeatured: true, limit: 12 });
-        const ads = response.data;
-        if (ads.length > 0) {
-            section.classList.remove('hidden');
-            slider.innerHTML = '';
-            ads.forEach(ad => {
-                slider.insertAdjacentHTML('beforeend', createAdCard(ad, true));
+        try {
+            const response = await apiClient.getAds({ isFeatured: true, limit: 12 });
+            const ads = response.data;
+            if (ads.length > 0) {
+                section.classList.remove('hidden');
+                slider.innerHTML = '';
+                ads.forEach(ad => {
+                    slider.insertAdjacentHTML('beforeend', createAdCard(ad, true));
+                });
+            }
+        } catch (err) {
+            console.warn('Failed to load featured ads:', err);
+        }
+    }
+
+    window.toggleFav = async function (adId, btn) {
+        if (!localStorage.getItem('token')) {
+            window.location.href = 'login.html';
+            return;
+        }
+        try {
+            const res = await apiClient.toggleFavorite(adId);
+            const svg = btn.querySelector('svg');
+            if (res.isFavorite) {
+                svg.setAttribute('fill', 'currentColor');
+                svg.classList.add('text-red-500');
+            } else {
+                svg.setAttribute('fill', 'none');
+                svg.classList.remove('text-red-500');
+            }
+        } catch (err) {
+            alert(err.message);
+        }
+    };
+
+    // Horizontal Slider Scroll Function (Global)
+    window.scrollSlider = function (elementId, scrollAmount) {
+        const container = document.getElementById(elementId);
+        if (container) {
+            // Adjust scroll direction for RTL
+            const isRTL = document.documentElement.dir === 'rtl';
+            const finalScrollAmount = isRTL ? -scrollAmount : scrollAmount;
+
+            container.scrollBy({
+                left: finalScrollAmount,
+                behavior: 'smooth'
             });
         }
-    } catch (err) {
-        console.warn('Failed to load featured ads:', err);
-    }
-}
+    };
 
-window.toggleFav = async function (adId, btn) {
-    if (!localStorage.getItem('token')) {
-        window.location.href = 'login.html';
-        return;
-    }
-    try {
-        const res = await apiClient.toggleFavorite(adId);
-        const svg = btn.querySelector('svg');
-        if (res.isFavorite) {
-            svg.setAttribute('fill', 'currentColor');
-            svg.classList.add('text-red-500');
-        } else {
-            svg.setAttribute('fill', 'none');
-            svg.classList.remove('text-red-500');
-        }
-    } catch (err) {
-        alert(err.message);
-    }
-};
-
-// Horizontal Slider Scroll Function (Global)
-window.scrollSlider = function (elementId, scrollAmount) {
-    const container = document.getElementById(elementId);
-    if (container) {
-        // Adjust scroll direction for RTL
-        const isRTL = document.documentElement.dir === 'rtl';
-        const finalScrollAmount = isRTL ? -scrollAmount : scrollAmount;
-
-        container.scrollBy({
-            left: finalScrollAmount,
-            behavior: 'smooth'
-        });
-    }
-};
-
-// --- Chat Widget Initialization ---
-function initChatWidget() {
-    const lang = localStorage.getItem('lang') || 'en';
-    const widgetHtml = `
+    // --- Chat Widget Initialization ---
+    function initChatWidget() {
+        const lang = localStorage.getItem('lang') || 'en';
+        const widgetHtml = `
         <div class="chat-widget" id="chatWidget">
             <div class="chat-window" id="chatWindow">
                 <div class="chat-header">
@@ -830,254 +967,255 @@ function initChatWidget() {
         </div>
     `;
 
-    document.body.insertAdjacentHTML('beforeend', widgetHtml);
+        document.body.insertAdjacentHTML('beforeend', widgetHtml);
 
-    const toggle = document.getElementById('chatToggle');
-    const windowChat = document.getElementById('chatWindow');
-    const closeBtn = document.getElementById('closeChat');
-    const sendBtn = document.getElementById('sendMessage');
-    const input = document.getElementById('chatInput');
-    const messages = document.getElementById('chatMessages');
+        const toggle = document.getElementById('chatToggle');
+        const windowChat = document.getElementById('chatWindow');
+        const closeBtn = document.getElementById('closeChat');
+        const sendBtn = document.getElementById('sendMessage');
+        const input = document.getElementById('chatInput');
+        const messages = document.getElementById('chatMessages');
 
-    if (toggle) {
-        toggle.addEventListener('click', () => {
-            windowChat.classList.toggle('active');
-        });
-    }
+        if (toggle) {
+            toggle.addEventListener('click', () => {
+                windowChat.classList.toggle('active');
+            });
+        }
 
-    if (closeBtn) {
-        closeBtn.addEventListener('click', () => {
-            windowChat.classList.remove('active');
-        });
-    }
+        if (closeBtn) {
+            closeBtn.addEventListener('click', () => {
+                windowChat.classList.remove('active');
+            });
+        }
 
-    function addMessage(text, type) {
-        const msgDiv = document.createElement('div');
-        msgDiv.className = `message ${type}`;
-        msgDiv.textContent = text;
-        messages.appendChild(msgDiv);
-        messages.scrollTop = messages.scrollHeight;
-    }
+        function addMessage(text, type) {
+            const msgDiv = document.createElement('div');
+            msgDiv.className = `message ${type}`;
+            msgDiv.textContent = text;
+            messages.appendChild(msgDiv);
+            messages.scrollTop = messages.scrollHeight;
+        }
 
-    function handleSend() {
-        const text = input.value.trim();
-        if (text) {
-            addMessage(text, 'user');
-            input.value = '';
+        function handleSend() {
+            const text = input.value.trim();
+            if (text) {
+                addMessage(text, 'user');
+                input.value = '';
 
-            // Simulate support response
-            setTimeout(() => {
-                const currentLang = localStorage.getItem('lang') || 'en';
-                const response = currentLang === 'ar' ? 'شكراً لتواصلك معنا. سنرد عليك في أقرب وقت ممكن.' : 'Thank you for reaching out. We will get back to you shortly.';
-                addMessage(response, 'support');
-            }, 1000);
+                // Simulate support response
+                setTimeout(() => {
+                    const currentLang = localStorage.getItem('lang') || 'en';
+                    const response = currentLang === 'ar' ? 'شكراً لتواصلك معنا. سنرد عليك في أقرب وقت ممكن.' : 'Thank you for reaching out. We will get back to you shortly.';
+                    addMessage(response, 'support');
+                }, 1000);
+            }
+        }
+
+        if (sendBtn) {
+            sendBtn.addEventListener('click', handleSend);
+        }
+
+        if (input) {
+            input.addEventListener('keypress', (e) => {
+                if (e.key === 'Enter') handleSend();
+            });
         }
     }
 
-    if (sendBtn) {
-        sendBtn.addEventListener('click', handleSend);
-    }
-
-    if (input) {
-        input.addEventListener('keypress', (e) => {
-            if (e.key === 'Enter') handleSend();
+    // Ensure the widget is initialized
+    if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', () => {
+            initChatWidget();
+            initNewFeatures();
         });
-    }
-}
-
-// Ensure the widget is initialized
-if (document.readyState === 'loading') {
-    document.addEventListener('DOMContentLoaded', () => {
+    } else {
         initChatWidget();
         initNewFeatures();
-    });
-} else {
-    initChatWidget();
-    initNewFeatures();
-}
+    }
 
-// --- New Features Initialization ---
-function initNewFeatures() {
-    const lang = localStorage.getItem('lang') || 'en';
+    // --- New Features Initialization ---
+    function initNewFeatures() {
+        const lang = localStorage.getItem('lang') || 'en';
 
-    // 1. Inject Back to Top Button
-    const bttHtml = `
+        // 1. Inject Back to Top Button
+        const bttHtml = `
         <button class="back-to-top" id="backToTop" aria-label="Back to Top" title="${translations[lang].backToTop}">
             <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 10l7-7m0 0l7 7m-7-7v18"></path>
             </svg>
         </button>
     `;
-    document.body.insertAdjacentHTML('beforeend', bttHtml);
+        document.body.insertAdjacentHTML('beforeend', bttHtml);
 
-    const bttBtn = document.getElementById('backToTop');
-    if (bttBtn) {
-        window.addEventListener('scroll', () => {
-            if (window.scrollY > 300) {
-                bttBtn.classList.add('show');
-            } else {
-                bttBtn.classList.remove('show');
-            }
-        });
+        const bttBtn = document.getElementById('backToTop');
+        if (bttBtn) {
+            window.addEventListener('scroll', () => {
+                if (window.scrollY > 300) {
+                    bttBtn.classList.add('show');
+                } else {
+                    bttBtn.classList.remove('show');
+                }
+            });
 
-        bttBtn.addEventListener('click', () => {
-            window.scrollTo({ top: 0, behavior: 'smooth' });
-        });
-    }
+            bttBtn.addEventListener('click', () => {
+                window.scrollTo({ top: 0, behavior: 'smooth' });
+            });
+        }
 
-    // 2. Inject Cookie Consent Banner
-    if (!localStorage.getItem('cookieConsent')) {
-        const cookieHtml = `
+        // 2. Inject Cookie Consent Banner
+        if (!localStorage.getItem('cookieConsent')) {
+            const cookieHtml = `
             <div class="cookie-consent" id="cookieConsent">
                 <p class="text-sm" data-translate="cookieNotice">${translations[lang].cookieNotice}</p>
                 <button class="cookie-btn" id="acceptCookies" data-translate="acceptCookies">${translations[lang].acceptCookies}</button>
             </div>
         `;
-        document.body.insertAdjacentHTML('beforeend', cookieHtml);
+            document.body.insertAdjacentHTML('beforeend', cookieHtml);
 
-        const cookieBanner = document.getElementById('cookieConsent');
-        const acceptBtn = document.getElementById('acceptCookies');
+            const cookieBanner = document.getElementById('cookieConsent');
+            const acceptBtn = document.getElementById('acceptCookies');
 
-        setTimeout(() => { if (cookieBanner) cookieBanner.classList.add('show'); }, 1000);
+            setTimeout(() => { if (cookieBanner) cookieBanner.classList.add('show'); }, 1000);
 
-        if (acceptBtn) {
-            acceptBtn.addEventListener('click', () => {
-                localStorage.setItem('cookieConsent', 'true');
-                cookieBanner.classList.remove('show');
-                setTimeout(() => { cookieBanner.remove(); }, 500);
-            });
-        }
-    }
-
-    // 3. Password Visibility Toggle Logic
-    initPasswordToggles();
-}
-
-function initPasswordToggles() {
-    const lang = localStorage.getItem('lang') || 'en';
-    const passwordFields = document.querySelectorAll('input[type="password"]');
-
-    passwordFields.forEach(field => {
-        // Wrap the field if not already wrapped
-        if (!field.parentElement.classList.contains('password-wrapper')) {
-            const wrapper = document.createElement('div');
-            wrapper.className = 'password-wrapper mt-1';
-            field.parentNode.insertBefore(wrapper, field);
-            wrapper.appendChild(field);
-
-            const toggle = document.createElement('span');
-            toggle.className = 'password-toggle text-xs font-bold text-accent select-none';
-            toggle.setAttribute('data-translate-target', 'toggle');
-            toggle.textContent = translations[lang].showPassword;
-            wrapper.appendChild(toggle);
-
-            toggle.addEventListener('click', () => {
-                const isPassword = field.getAttribute('type') === 'password';
-                field.setAttribute('type', isPassword ? 'text' : 'password');
-                const currLang = localStorage.getItem('lang') || 'en';
-                toggle.textContent = isPassword ? translations[currLang].hidePassword : translations[currLang].showPassword;
-            });
-        }
-    });
-}
-
-// Global function to update translations for new dynamically injected elements
-const originalUpdateLanguage = window.updateLanguage;
-window.updateLanguage = function (lang) {
-    if (typeof originalUpdateLanguage === 'function') {
-        originalUpdateLanguage(lang);
-    }
-
-    // Update newly injected elements
-    const btt = document.getElementById('backToTop');
-    if (btt) {
-        const titleKey = 'backToTop';
-        if (translations[lang] && translations[lang][titleKey]) {
-            btt.setAttribute('title', translations[lang][titleKey]);
-        }
-    }
-
-    const toggles = document.querySelectorAll('.password-toggle');
-    toggles.forEach(t => {
-        const field = t.previousElementSibling;
-        if (field) {
-            const isVisible = field.getAttribute('type') === 'text';
-            const key = isVisible ? 'hidePassword' : 'showPassword';
-            if (translations[lang] && translations[lang][key]) {
-                t.textContent = translations[lang][key];
+            if (acceptBtn) {
+                acceptBtn.addEventListener('click', () => {
+                    localStorage.setItem('cookieConsent', 'true');
+                    cookieBanner.classList.remove('show');
+                    setTimeout(() => { cookieBanner.remove(); }, 500);
+                });
             }
         }
-    });
-};
 
-// --- Notification System ---
-window.loadNotifications = async function () {
-    if (!localStorage.getItem('token')) return;
-    try {
-        const res = await apiClient.fetch('/notifications');
-        if (res.success) {
-            updateNotifUI(res.data);
+        // 3. Password Visibility Toggle Logic
+        initPasswordToggles();
+    }
+
+    function initPasswordToggles() {
+        const lang = localStorage.getItem('lang') || 'en';
+        const passwordFields = document.querySelectorAll('input[type="password"]');
+
+        passwordFields.forEach(field => {
+            // Wrap the field if not already wrapped
+            if (!field.parentElement.classList.contains('password-wrapper')) {
+                const wrapper = document.createElement('div');
+                wrapper.className = 'password-wrapper mt-1';
+                field.parentNode.insertBefore(wrapper, field);
+                wrapper.appendChild(field);
+
+                const toggle = document.createElement('span');
+                toggle.className = 'password-toggle text-xs font-bold text-accent select-none';
+                toggle.setAttribute('data-translate-target', 'toggle');
+                toggle.textContent = translations[lang].showPassword;
+                wrapper.appendChild(toggle);
+
+                toggle.addEventListener('click', () => {
+                    const isPassword = field.getAttribute('type') === 'password';
+                    field.setAttribute('type', isPassword ? 'text' : 'password');
+                    const currLang = localStorage.getItem('lang') || 'en';
+                    toggle.textContent = isPassword ? translations[currLang].hidePassword : translations[currLang].showPassword;
+                });
+            }
+        });
+    }
+
+    // Global function to update translations for new dynamically injected elements
+    const originalUpdateLanguage = window.updateLanguage;
+    window.updateLanguage = function (lang) {
+        if (typeof originalUpdateLanguage === 'function') {
+            originalUpdateLanguage(lang);
         }
-    } catch (err) {
-        console.error('Failed to load notifications:', err);
-    }
-};
 
-function updateNotifUI(notifications) {
-    const list = document.getElementById('notif-list');
-    const badge = document.getElementById('notif-badge');
-    if (!list) return;
-
-    const unreadCount = notifications.filter(n => !n.isRead).length;
-
-    if (badge) {
-        if (unreadCount > 0) {
-            badge.textContent = unreadCount > 9 ? '9+' : unreadCount;
-            badge.classList.remove('hidden');
-        } else {
-            badge.classList.add('hidden');
+        // Update newly injected elements
+        const btt = document.getElementById('backToTop');
+        if (btt) {
+            const titleKey = 'backToTop';
+            if (translations[lang] && translations[lang][titleKey]) {
+                btt.setAttribute('title', translations[lang][titleKey]);
+            }
         }
-    }
 
-    if (notifications.length === 0) {
-        list.innerHTML = `<p class="text-center py-4 text-sm text-gray-500" data-translate="noNotifications">${translations[currentLang].noNotifications || 'No notifications'}</p>`;
-        return;
-    }
+        const toggles = document.querySelectorAll('.password-toggle');
+        toggles.forEach(t => {
+            const field = t.previousElementSibling;
+            if (field) {
+                const isVisible = field.getAttribute('type') === 'text';
+                const key = isVisible ? 'hidePassword' : 'showPassword';
+                if (translations[lang] && translations[lang][key]) {
+                    t.textContent = translations[lang][key];
+                }
+            }
+        });
+    };
 
-    list.innerHTML = notifications.map(n => `
+    // --- Notification System ---
+    window.loadNotifications = async function () {
+        if (!localStorage.getItem('token')) return;
+        try {
+            const res = await apiClient.fetch('/notifications');
+            if (res.success) {
+                updateNotifUI(res.data);
+            }
+        } catch (err) {
+            console.error('Failed to load notifications:', err);
+        }
+    };
+
+    function updateNotifUI(notifications) {
+        const list = document.getElementById('notif-list');
+        const badge = document.getElementById('notif-badge');
+        if (!list) return;
+
+        const unreadCount = notifications.filter(n => !n.isRead).length;
+
+        if (badge) {
+            if (unreadCount > 0) {
+                badge.textContent = unreadCount > 9 ? '9+' : unreadCount;
+                badge.classList.remove('hidden');
+            } else {
+                badge.classList.add('hidden');
+            }
+        }
+
+        if (notifications.length === 0) {
+            list.innerHTML = `<p class="text-center py-4 text-sm text-gray-500" data-translate="noNotifications">${translations[currentLang].noNotifications || 'No notifications'}</p>`;
+            return;
+        }
+
+        list.innerHTML = notifications.map(n => `
         <div class="px-4 py-3 hover:bg-gray-50 dark:hover:bg-gray-700 transition cursor-pointer ${!n.isRead ? 'bg-blue-50/50 dark:bg-blue-900/10' : ''}" onclick="handleNotifClick(${n.id}, '${n.link}')">
             <p class="text-sm font-bold text-gray-900 dark:text-white">${n.title}</p>
             <p class="text-xs text-gray-600 dark:text-gray-400 mt-0.5">${n.message}</p>
             <p class="text-[10px] text-gray-400 mt-1">${new Date(n.createdAt).toLocaleString()}</p>
         </div>
     `).join('');
-}
-
-window.handleNotifClick = async function (id, link) {
-    try {
-        await apiClient.fetch(`/notifications/${id}/read`, { method: 'PUT' });
-        if (link) window.location.href = link;
-        else loadNotifications();
-    } catch (err) {
-        console.error(err);
     }
-};
 
-const markReadBtn = document.getElementById('mark-notifs-read');
-if (markReadBtn) {
-    markReadBtn.onclick = async () => {
+    window.handleNotifClick = async function (id, link) {
         try {
-            await apiClient.fetch('/notifications/read-all', { method: 'PUT' });
-            loadNotifications();
+            await apiClient.fetch(`/notifications/${id}/read`, { method: 'PUT' });
+            if (link) window.location.href = link;
+            else loadNotifications();
         } catch (err) {
             console.error(err);
         }
     };
-}
 
-// Socket listener for real-time notifications
-if (window.socket) {
-    window.socket.on('new_notification', (notification) => {
-        loadNotifications();
-    });
-}
+    const markReadBtn = document.getElementById('mark-notifs-read');
+    if (markReadBtn) {
+        markReadBtn.onclick = async () => {
+            try {
+                await apiClient.fetch('/notifications/read-all', { method: 'PUT' });
+                loadNotifications();
+            } catch (err) {
+                console.error(err);
+            }
+        };
+    }
+
+    // Socket listener for real-time notifications
+    if (window.socket) {
+        window.socket.on('new_notification', (notification) => {
+            loadNotifications();
+        });
+    }
+});
