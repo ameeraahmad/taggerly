@@ -46,6 +46,27 @@ const User = sequelize.define('User', {
     lastActive: {
         type: DataTypes.DATE,
         defaultValue: DataTypes.NOW
+    },
+    emailNotifications: {
+        type: DataTypes.BOOLEAN,
+        defaultValue: true
+    },
+    chatNotifications: {
+        type: DataTypes.BOOLEAN,
+        defaultValue: true
+    },
+    isEmailVerified: {
+        type: DataTypes.BOOLEAN,
+        defaultValue: false
+    },
+    emailVerificationToken: {
+        type: DataTypes.STRING
+    },
+    passwordResetToken: {
+        type: DataTypes.STRING
+    },
+    passwordResetExpires: {
+        type: DataTypes.DATE
     }
 }, {
     timestamps: true,
@@ -60,6 +81,20 @@ const User = sequelize.define('User', {
         }
     }
 });
+
+User.prototype.createPasswordResetToken = function () {
+    const crypto = require('crypto');
+    const resetToken = crypto.randomBytes(32).toString('hex');
+
+    this.passwordResetToken = crypto
+        .createHash('sha256')
+        .update(resetToken)
+        .digest('hex');
+
+    this.passwordResetExpires = Date.now() + 10 * 60 * 1000; // 10 minutes
+
+    return resetToken;
+};
 
 // Method to check password
 User.prototype.correctPassword = async function (candidatePassword) {

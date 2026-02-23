@@ -14,6 +14,7 @@ const { connectDB } = require('./config/db');
 // Load associations
 require('./models/associations');
 
+
 const app = express();
 const PORT = process.env.PORT || 5000;
 
@@ -21,10 +22,22 @@ const PORT = process.env.PORT || 5000;
 connectDB().catch(err => console.error('Delayed DB Connection Error:', err));
 
 
+const rateLimit = require('express-rate-limit');
+
 // Middleware
 app.use(cors());
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
+
+// Rate Limiting
+const limiter = rateLimit({
+    windowMs: 15 * 60 * 1000, // 15 minutes
+    max: 100, // Limit each IP to 100 requests per `window` (here, per 15 minutes)
+    message: { success: false, message: 'Too many requests from this IP, please try again after 15 minutes' }
+});
+
+// Apply rate limiting to all requests
+app.use('/api', limiter);
 
 // Pass io to controllers (lazy load)
 app.use((req, res, next) => {
@@ -39,6 +52,9 @@ const messageRoutes = require('./routes/messageRoutes');
 const userRoutes = require('./routes/userRoutes');
 const chatRoutes = require('./routes/chatRoutes');
 const reviewRoutes = require('./routes/reviewRoutes');
+const adminRoutes = require('./routes/adminRoutes');
+const reportRoutes = require('./routes/reportRoutes');
+const notificationRoutes = require('./routes/notificationRoutes');
 
 app.use('/api/ads', adRoutes);
 app.use('/api/auth', authRoutes);
@@ -46,6 +62,9 @@ app.use('/api/messages', messageRoutes);
 app.use('/api/users', userRoutes);
 app.use('/api/chat', chatRoutes);
 app.use('/api/reviews', reviewRoutes);
+app.use('/api/admin', adminRoutes);
+app.use('/api/reports', reportRoutes);
+app.use('/api/notifications', notificationRoutes);
 
 // Health check
 app.get('/api/health', (req, res) => {
@@ -103,6 +122,10 @@ const io = new Server(server, {
 const ChatMessage = require('./models/ChatMessage');
 const Conversation = require('./models/Conversation');
 const User = require('./models/User');
+
+// Initialize Cron Jobs
+const initCronJobs = require('./utils/cronJobs');
+initCronJobs(io);
 
 io.on('connection', (socket) => {
     console.log('👤 User connected:', socket.id);

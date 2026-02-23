@@ -123,6 +123,8 @@ exports.getUnreadCount = async (req, res) => {
     }
 };
 
+const { createNotification } = require('../utils/notifications');
+
 // @desc    Send a message
 // @route   POST /api/chat/message
 exports.sendMessage = async (req, res) => {
@@ -130,14 +132,14 @@ exports.sendMessage = async (req, res) => {
         const { conversationId, message } = req.body;
         const senderId = req.user.id;
 
-        const conversation = await Conversation.findByPk(conversationId);
+        const conversation = await Conversation.findByPk(conversationId, {
+            include: [{ model: Ad, as: 'ad', attributes: ['title'] }]
+        });
         if (!conversation) return res.status(404).json({ success: false, message: 'Conversation not found' });
 
-        // Security: Ensure user is part of conversation
-        if (conversation.buyerId !== senderId && conversation.sellerId !== senderId) {
-            return res.status(403).json({ success: false, message: 'Not authorized' });
-        }
+        const recipientId = conversation.buyerId === senderId ? conversation.sellerId : conversation.buyerId;
 
+        // ... (image processing logic remains same)
         let imageUrl = null;
         if (req.file) {
             const protocol = req.protocol;
@@ -148,25 +150,32 @@ exports.sendMessage = async (req, res) => {
         const chatMessage = await ChatMessage.create({
             conversationId,
             senderId,
-            message: message || '', // Use empty string to satisfy DB NOT NULL constraint (image carries the content)
+            message: message || '',
             image: imageUrl
         });
 
-        // Update conversation's updatedAt timestamp
-        await conversation.changed('updatedAt', true);
-        await conversation.save();
+        // 1) Persistent Notification
+        await createNotification(req.io, {
+            userId: recipientId,
+            type: 'message',
+            title: 'New Message',
+            message: `You have a new message regarding "${conversation.ad.title}"`,
+            link: `messages.html?convoId=${conversationId}`,
+            relatedId: conversationId
+        });
 
-        // Emit via Socket
+        // 2) Real-time Socket Emits
         if (req.io) {
             req.io.to(`convo_${conversationId}`).emit('receive_message', chatMessage);
-
-            // Notify recipient globally
-            const recipientId = conversation.buyerId === senderId ? conversation.sellerId : conversation.buyerId;
             req.io.to(`user_${recipientId}`).emit('new_message_notification', {
                 ...chatMessage.get({ plain: true }),
                 recipientId
             });
         }
+
+        // Update conversation's updatedAt timestamp
+        await conversation.changed('updatedAt', true);
+        await conversation.save();
 
         res.status(201).json({ success: true, data: chatMessage });
     } catch (err) {

@@ -12,6 +12,9 @@ if (process.env.CLOUDINARY_CLOUD_NAME) {
     });
 }
 
+const sharp = require('sharp');
+const fs = require('fs');
+
 let storage;
 
 if (process.env.CLOUDINARY_CLOUD_NAME) {
@@ -21,27 +24,46 @@ if (process.env.CLOUDINARY_CLOUD_NAME) {
         params: {
             folder: 'taggerly_ads',
             allowed_formats: ['jpg', 'png', 'jpeg', 'webp'],
-            transformation: [{ width: 1000, height: 1000, crop: 'limit' }]
+            transformation: [{ width: 1200, height: 1200, crop: 'limit', quality: 'auto' }]
         },
     });
 } else {
-    // Local Disk Storage
-    storage = multer.diskStorage({
-        destination: './uploads/',
-        filename: function (req, file, cb) {
-            cb(null, file.fieldname + '-' + Date.now() + path.extname(file.originalname));
-        }
-    });
+    // Local Memory Storage for processing
+    storage = multer.memoryStorage();
 }
 
 // Init upload
 const upload = multer({
     storage: storage,
-    limits: { fileSize: 5000000 }, // 5MB
+    limits: { fileSize: 10 * 1024 * 1024 }, // 10MB
     fileFilter: function (req, file, cb) {
         checkFileType(file, cb);
     }
 });
+
+// Image Processing Middleware (Only for Local)
+const resizeImages = async (req, res, next) => {
+    if (!req.files || process.env.CLOUDINARY_CLOUD_NAME) return next();
+
+    req.body.images = [];
+
+    await Promise.all(
+        req.files.map(async (file, i) => {
+            const filename = `ad-${Date.now()}-${i + 1}.webp`;
+
+            await sharp(file.buffer)
+                .resize(1200, 1200, { fit: 'inside', withoutEnlargement: true })
+                .toFormat('webp')
+                .webp({ quality: 80 })
+                .toFile(path.join(__dirname, '../uploads', filename));
+
+            req.body.images.push(filename);
+            // Optionally update the original file object if needed, but we'll use req.body.images
+        })
+    );
+
+    next();
+};
 
 // Check file type
 function checkFileType(file, cb) {
@@ -56,5 +78,5 @@ function checkFileType(file, cb) {
     }
 }
 
-module.exports = upload;
+module.exports = { upload, resizeImages };
 

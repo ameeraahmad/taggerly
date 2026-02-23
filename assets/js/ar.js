@@ -194,8 +194,12 @@ const arTranslations = {
     passwordPlaceholder: "كلمة المرور",
     rememberMe: "تذكرني",
     forgotPassword: "نسيت كلمة المرور؟",
+    forgotSubtitle: "أدخل بريدك الإلكتروني وسنرسل لك رابطاً لإعادة تعيين كلمة المرور.",
     signIn: "تسجيل الدخول",
     continueWith: "أو الاستمرار بواسطة",
+    notifications: "الإشعارات",
+    markAllRead: "تحديد الكل كمقروء",
+    noNotifications: "لا توجد إشعارات",
 
     // Search
     filters: "تصفية",
@@ -471,7 +475,17 @@ const arTranslations = {
     close: "إغلاق",
     phoneLabel: "رقم هاتف التواصل",
     phonePlaceholder: "مثال: +971 50 123 4567",
-    phoneInfo: "سيظهر هذا الرقم للمشترين. اتركه فارغاً لإخفائه."
+    phoneInfo: "سيظهر هذا الرقم للمشترين. اتركه فارغاً لإخفائه.",
+    notificationSettings: "إعدادات الإشعارات",
+    emailNotifications: "إشعارات البريد الإلكتروني",
+    emailNotificationsDesc: "تلقي تحديثات حول إعلاناتك عبر البريد الإلكتروني.",
+    chatNotifications: "إشعارات الدردشة",
+    chatNotificationsDesc: "تلقي تنبيهات للرسائل الجديدة.",
+    changePassword: "تغيير كلمة المرور",
+    currentPassword: "كلمة المرور الحالية",
+    newPassword: "كلمة المرور الجديدة",
+    confirmNewPassword: "تأكيد كلمة المرور الجديدة",
+    updatePassword: "تحديث كلمة المرور"
 };
 
 

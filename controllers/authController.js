@@ -1,6 +1,104 @@
 const User = require('../models/User');
 const jwt = require('jsonwebtoken');
 const bcrypt = require('bcryptjs');
+const crypto = require('crypto');
+const sendEmail = require('../utils/email');
+
+// @desc    Forgot Password
+// @route   POST /api/auth/forgot-password
+exports.forgotPassword = async (req, res) => {
+    try {
+        // 1) Get user based on POSTed email
+        const user = await User.findOne({ where: { email: req.body.email } });
+        if (!user) {
+            return res.status(404).json({ success: false, message: 'There is no user with that email address.' });
+        }
+
+        // 2) Generate the random reset token
+        const resetToken = user.createPasswordResetToken();
+        await user.save(); // Save tokens to DB
+
+        // 3) Send it to user's email
+        const resetURL = `${req.protocol}://${req.get('host')}/reset-password.html?token=${resetToken}`;
+        const message = `Forgot your password? Submit a PATCH request with your new password and passwordConfirm to: ${resetURL}.\nIf you didn't forget your password, please ignore this email!`;
+
+        try {
+            await sendEmail({
+                email: user.email,
+                subject: 'Your password reset token (valid for 10 min)',
+                message
+            });
+
+            res.status(200).json({
+                success: true,
+                message: 'Token sent to email!'
+            });
+        } catch (err) {
+            user.passwordResetToken = null;
+            user.passwordResetExpires = null;
+            await user.save();
+
+            return res.status(500).json({ success: false, message: 'There was an error sending the email. Try again later!' });
+        }
+    } catch (err) {
+        res.status(500).json({ success: false, message: err.message });
+    }
+};
+
+// @desc    Reset Password
+// @route   PATCH /api/auth/reset-password/:token
+exports.resetPassword = async (req, res) => {
+    try {
+        // 1) Get user based on the token
+        const hashedToken = crypto
+            .createHash('sha256')
+            .update(req.params.token)
+            .digest('hex');
+
+        const user = await User.findOne({
+            where: {
+                passwordResetToken: hashedToken,
+                passwordResetExpires: { [require('sequelize').Op.gt]: Date.now() }
+            }
+        });
+
+        // 2) If token has not expired, and there is user, set the new password
+        if (!user) {
+            return res.status(400).json({ success: false, message: 'Token is invalid or has expired' });
+        }
+
+        user.password = req.body.password;
+        user.passwordResetToken = null;
+        user.passwordResetExpires = null;
+        await user.save();
+
+        // 3) Log the user in, send JWT
+        const token = generateToken(user.id);
+        res.status(200).json({ success: true, token });
+    } catch (err) {
+        res.status(500).json({ success: false, message: err.message });
+    }
+};
+
+// @desc    Verify Email
+// @route   GET /api/auth/verify-email/:token
+exports.verifyEmail = async (req, res) => {
+    try {
+        const user = await User.findOne({ where: { emailVerificationToken: req.params.token } });
+
+        if (!user) {
+            return res.status(400).json({ success: false, message: 'Invalid or expired verification token' });
+        }
+
+        user.isEmailVerified = true;
+        user.emailVerificationToken = null;
+        await user.save();
+
+        res.status(200).json({ success: true, message: 'Email verified successfully!' });
+    } catch (err) {
+        res.status(500).json({ success: false, message: err.message });
+    }
+};
 
 const generateToken = (id) => {
     return jwt.sign({ id }, process.env.JWT_SECRET || 'dubizzle_secret_key', {

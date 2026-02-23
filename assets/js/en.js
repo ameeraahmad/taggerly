@@ -190,8 +190,12 @@ const enTranslations = {
     passwordPlaceholder: "Password",
     rememberMe: "Remember me",
     forgotPassword: "Forgot your password?",
+    forgotSubtitle: "Enter your email and we'll send you a link to reset your password.",
     signIn: "Sign in",
     continueWith: "Or continue with",
+    notifications: "Notifications",
+    markAllRead: "Mark all as read",
+    noNotifications: "No notifications",
 
     // Search
     filters: "Filters",
@@ -470,7 +474,17 @@ const enTranslations = {
     close: "Close",
     phoneLabel: "Contact Phone Number",
     phonePlaceholder: "e.g. +971 50 123 4567",
-    phoneInfo: "This number will be shown to buyers. Leave blank to hide."
+    phoneInfo: "This number will be shown to buyers. Leave blank to hide.",
+    notificationSettings: "Notification Settings",
+    emailNotifications: "Email Notifications",
+    emailNotificationsDesc: "Receive updates about your ads via email.",
+    chatNotifications: "Chat Notifications",
+    chatNotificationsDesc: "Receive alerts for new messages.",
+    changePassword: "Change Password",
+    currentPassword: "Current Password",
+    newPassword: "New Password",
+    confirmNewPassword: "Confirm New Password",
+    updatePassword: "Update Password"
 };
 
 

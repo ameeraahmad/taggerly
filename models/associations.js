@@ -5,10 +5,16 @@ const Message = require('./Message');
 const Conversation = require('./Conversation');
 const ChatMessage = require('./ChatMessage');
 const Review = require('./Review');
+const Report = require('./Report');
+const Notification = require('./Notification');
 
 // User - Ad
 User.hasMany(Ad, { foreignKey: 'userId', as: 'ads' });
 Ad.belongsTo(User, { foreignKey: 'userId', as: 'user' });
+
+// User - Notification
+User.hasMany(Notification, { foreignKey: 'userId', as: 'notifications' });
+Notification.belongsTo(User, { foreignKey: 'userId', as: 'user' });
 
 // User - Favorite - Ad
 User.belongsToMany(Ad, { through: Favorite, foreignKey: 'userId', as: 'favoriteAds' });
@@ -37,6 +43,12 @@ Review.belongsTo(User, { foreignKey: 'reviewerId', as: 'reviewer' });
 Review.belongsTo(Ad, { foreignKey: 'adId', as: 'ad' });
 Ad.hasMany(Review, { foreignKey: 'adId', as: 'reviews' });
 
+// Report Associations
+User.hasMany(Report, { foreignKey: 'reporterId', as: 'reports' });
+Report.belongsTo(User, { foreignKey: 'reporterId', as: 'reporter' });
+Ad.hasMany(Report, { foreignKey: 'adId', as: 'reports' });
+Report.belongsTo(Ad, { foreignKey: 'adId', as: 'ad' });
+
 module.exports = {
     User,
     Ad,
@@ -44,5 +56,7 @@ module.exports = {
     Message,
     Conversation,
     ChatMessage,
-    Review
+    Review,
+    Report,
+    Notification
 };

@@ -54,7 +54,7 @@ const Ad = sequelize.define('Ad', {
         }
     },
     status: {
-        type: DataTypes.ENUM('active', 'sold', 'deleted'),
+        type: DataTypes.ENUM('active', 'sold', 'deleted', 'expired'),
         defaultValue: 'active'
     },
     userId: {
@@ -67,6 +67,13 @@ const Ad = sequelize.define('Ad', {
     phone: {
         type: DataTypes.STRING,
         allowNull: true
+    },
+    isFeatured: {
+        type: DataTypes.BOOLEAN,
+        defaultValue: false
+    },
+    featuredUntil: {
+        type: DataTypes.DATE
     }
 }, {
     timestamps: true

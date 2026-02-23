@@ -7,6 +7,27 @@ const translations = {
 document.addEventListener('DOMContentLoaded', () => {
     const htmlToUpdate = document.documentElement;
 
+    // --- Global Search Logic ---
+    const searchInputs = document.querySelectorAll('.search-input');
+    searchInputs.forEach(input => {
+        const btn = input.nextElementSibling;
+        const handleSearch = () => {
+            const query = input.value.trim();
+            if (query) {
+                window.location.href = `search.html?search=${encodeURIComponent(query)}`;
+            }
+        };
+        input.addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') handleSearch();
+        });
+        if (btn && (btn.tagName === 'BUTTON' || btn.querySelector('svg'))) {
+            btn.onclick = (e) => {
+                e.preventDefault();
+                handleSearch();
+            };
+        }
+    });
+
     // --- Country & Currency Dropdown Logic ---
     const countryOptions = document.querySelectorAll('.country-option');
     const currentCountryFlag = document.getElementById('current-country-flag');
@@ -542,9 +563,13 @@ document.addEventListener('DOMContentLoaded', () => {
             }
         });
 
+        const notifWrapper = document.getElementById('notif-wrapper');
+
         if (token && user) {
             // User is logged in
-            // Update User Dropdown with profile info and logout
+            if (notifWrapper) notifWrapper.classList.remove('hidden');
+            loadNotifications();
+            // ... (rest of existing login logic)
             if (userDropdown) {
                 userDropdown.innerHTML = `
                     <div class="px-4 py-3 border-b dark:border-gray-700">
@@ -552,6 +577,7 @@ document.addEventListener('DOMContentLoaded', () => {
                         <p class="text-xs text-gray-500 truncate">${user.email}</p>
                     </div>
                     <a href="profile.html" class="block px-4 py-2 text-sm text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-700 hover:text-accent font-bold" data-translate="myProfile">My Profile</a>
+                    ${user.role === 'admin' ? '<a href="admin.html" class="block px-4 py-2 text-sm text-purple-600 hover:bg-gray-100 dark:hover:bg-gray-700 font-bold">Admin Dashboard</a>' : ''}
                     <div class="border-t dark:border-gray-700 my-1"></div>
                     <a href="dashboard.html" class="block px-4 py-2 text-sm text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-700 hover:text-accent" data-translate="myDashboard">My Dashboard</a>
                     <a href="messages.html" class="flex items-center justify-between px-4 py-2 text-sm text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-700 hover:text-accent" data-translate="messages">
@@ -572,6 +598,7 @@ document.addEventListener('DOMContentLoaded', () => {
             }
         } else {
             // User is NOT logged in
+            if (notifWrapper) notifWrapper.classList.add('hidden');
             if (userDropdown) {
                 userDropdown.innerHTML = `
                     <a href="login.html" class="block px-4 py-2 text-sm text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-700 hover:text-accent" data-translate="login">Log in</a>
@@ -657,7 +684,14 @@ function createAdCard(ad, isSlider = false) {
             </div>
             <div class="p-4">
                 <div class="text-sm text-gray-500 dark:text-gray-400 mb-1">${ad.category}</div>
-                <h3 class="font-bold text-lg text-gray-900 dark:text-white mb-2 truncate">${ad.title}</h3>
+                <h3 class="font-bold text-lg text-gray-900 dark:text-white mb-2 truncate flex items-center gap-1">
+                    <span>${ad.title}</span>
+                    ${ad.user && ad.user.isEmailVerified ? `
+                        <svg class="w-4 h-4 text-green-500 shrink-0" fill="currentColor" viewBox="0 0 20 20">
+                            <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"></path>
+                        </svg>
+                    ` : ''}
+                </h3>
                 <div class="font-bold text-accent text-xl mb-2">${ad.price} <span class="currency-label">AED</span></div>
                 <div class="flex items-center text-gray-500 dark:text-gray-400 text-sm">
                     <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -672,21 +706,26 @@ function createAdCard(ad, isSlider = false) {
 
 async function loadCategorySliders() {
     const configs = [
-        { category: 'Motors', sliderId: 'motors-electronics-slider' }, // Using the first tab for demo
-        { category: 'Electronics', sliderId: 'motors-electronics-slider' }, // Reusing for electronics
+        { category: 'Motors', sliderId: 'motors-used-slider' },
+        { category: 'Motors', sliderId: 'motors-bikes-slider' },
+        { category: 'Electronics', sliderId: 'motors-electronics-slider' },
         { category: 'Mobiles', sliderId: 'motors-mobiles-slider' },
-        { category: 'Property', sliderId: 'property-sale-slider' },
-        { category: 'Furniture', sliderId: 'classifieds-furniture-slider' }
+        { category: 'Property', sliderId: 'prop-sale-slider' },
+        { category: 'Property', sliderId: 'prop-rent-slider' },
+        { category: 'Furniture', sliderId: 'classifieds-furniture-slider' },
+        { category: 'Classifieds', sliderId: 'classifieds-hobbies-slider' }
     ];
+
+    // Load Featured Ads first
+    await loadFeaturedAds();
 
     for (const config of configs) {
         const slider = document.getElementById(config.sliderId);
         if (slider) {
             try {
-                const response = await apiClient.getAds({ category: config.category, limit: 10 });
+                const response = await apiClient.getAds({ category: config.category, limit: 12 });
                 const ads = response.data;
                 if (ads.length > 0) {
-                    // Only clear if we have data to replace with
                     if (!slider.hasAttribute('data-loaded')) {
                         slider.innerHTML = '';
                         slider.setAttribute('data-loaded', 'true');
@@ -699,6 +738,26 @@ async function loadCategorySliders() {
                 console.warn(`Failed to load slider for ${config.category}:`, err);
             }
         }
+    }
+}
+
+async function loadFeaturedAds() {
+    const slider = document.getElementById('featured-ads-slider');
+    const section = document.getElementById('featured-ads-section');
+    if (!slider) return;
+
+    try {
+        const response = await apiClient.getAds({ isFeatured: true, limit: 12 });
+        const ads = response.data;
+        if (ads.length > 0) {
+            section.classList.remove('hidden');
+            slider.innerHTML = '';
+            ads.forEach(ad => {
+                slider.insertAdjacentHTML('beforeend', createAdCard(ad, true));
+            });
+        }
+    } catch (err) {
+        console.warn('Failed to load featured ads:', err);
     }
 }
 
@@ -950,3 +1009,75 @@ window.updateLanguage = function (lang) {
         }
     });
 };
+
+// --- Notification System ---
+window.loadNotifications = async function () {
+    if (!localStorage.getItem('token')) return;
+    try {
+        const res = await apiClient.fetch('/notifications');
+        if (res.success) {
+            updateNotifUI(res.data);
+        }
+    } catch (err) {
+        console.error('Failed to load notifications:', err);
+    }
+};
+
+function updateNotifUI(notifications) {
+    const list = document.getElementById('notif-list');
+    const badge = document.getElementById('notif-badge');
+    if (!list) return;
+
+    const unreadCount = notifications.filter(n => !n.isRead).length;
+
+    if (badge) {
+        if (unreadCount > 0) {
+            badge.textContent = unreadCount > 9 ? '9+' : unreadCount;
+            badge.classList.remove('hidden');
+        } else {
+            badge.classList.add('hidden');
+        }
+    }
+
+    if (notifications.length === 0) {
+        list.innerHTML = `<p class="text-center py-4 text-sm text-gray-500" data-translate="noNotifications">${translations[currentLang].noNotifications || 'No notifications'}</p>`;
+        return;
+    }
+
+    list.innerHTML = notifications.map(n => `
+        <div class="px-4 py-3 hover:bg-gray-50 dark:hover:bg-gray-700 transition cursor-pointer ${!n.isRead ? 'bg-blue-50/50 dark:bg-blue-900/10' : ''}" onclick="handleNotifClick(${n.id}, '${n.link}')">
+            <p class="text-sm font-bold text-gray-900 dark:text-white">${n.title}</p>
+            <p class="text-xs text-gray-600 dark:text-gray-400 mt-0.5">${n.message}</p>
+            <p class="text-[10px] text-gray-400 mt-1">${new Date(n.createdAt).toLocaleString()}</p>
+        </div>
+    `).join('');
+}
+
+window.handleNotifClick = async function (id, link) {
+    try {
+        await apiClient.fetch(`/notifications/${id}/read`, { method: 'PUT' });
+        if (link) window.location.href = link;
+        else loadNotifications();
+    } catch (err) {
+        console.error(err);
+    }
+};
+
+const markReadBtn = document.getElementById('mark-notifs-read');
+if (markReadBtn) {
+    markReadBtn.onclick = async () => {
+        try {
+            await apiClient.fetch('/notifications/read-all', { method: 'PUT' });
+            loadNotifications();
+        } catch (err) {
+            console.error(err);
+        }
+    };
+}
+
+// Socket listener for real-time notifications
+if (window.socket) {
+    window.socket.on('new_notification', (notification) => {
+        loadNotifications();
+    });
+}

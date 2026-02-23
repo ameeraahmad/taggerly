@@ -310,7 +310,7 @@
                                 alt="John Doe" class="w-full h-full object-cover">
                         </div>
                         <div>
-                            <h1 class="text-3xl font-extrabold text-gray-900 dark:text-white"
+                            <h1 id="profile-name-display" class="text-3xl font-extrabold text-gray-900 dark:text-white"
                                 data-translate="dummyName">John Doe</h1>
                             <p class="text-gray-500 dark:text-gray-400 flex items-center mt-1">
                                 <svg class="w-4 h-4 mr-1 rtl:ml-1 rtl:mr-0 text-accent" fill="currentColor"
@@ -319,11 +319,11 @@
                                         d="M5.05 4.05a7 7 0 119.9 9.9L10 18.9l-4.95-4.95a7 7 0 010-9.9zM10 11a2 2 0 100-4 2 2 0 000 4z"
                                         clip-rule="evenodd"></path>
                                 </svg>
-                                <span class="city-label">Dubai</span>, <span class="country-label">UAE</span>
+                                <span id="profile-location-display" class="city-label">Dubai, UAE</span>
                             </p>
                         </div>
                     </div>
-                    <button
+                    <button id="edit-profile-btn"
                         class="bg-accent text-white px-6 py-3 rounded-xl font-bold hover:bg-orange-600 transition shadow-lg hover:shadow-orange-200 dark:hover:shadow-none flex items-center gap-2">
                         <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
@@ -352,22 +352,21 @@
                             <div>
                                 <p class="text-sm text-gray-500 dark:text-gray-400 font-medium"
                                     data-translate="fullName">Full Name</p>
-                                <p class="text-lg text-gray-900 dark:text-white font-semibold"
+                                <p id="profile-name-info" class="text-lg text-gray-900 dark:text-white font-semibold"
                                     data-translate="dummyName">John Doe</p>
                             </div>
                             <div>
                                 <p class="text-sm text-gray-500 dark:text-gray-400 font-medium" data-translate="bio">Bio
                                 </p>
-                                <p class="text-base text-gray-700 dark:text-gray-300 leading-relaxed"
-                                    data-translate="dummyBio">Software Engineer
-                                    and car enthusiast. Obsessed with findind the best deals on Dubizzle. Feel free to
-                                    contact me for any electronics hardware inquiries.</p>
+                                <p id="profile-bio-info"
+                                    class="text-base text-gray-700 dark:text-gray-300 leading-relaxed"
+                                    data-translate="dummyBio">No bio provided.</p>
                             </div>
                             <div>
                                 <p class="text-sm text-gray-500 dark:text-gray-400 font-medium"
                                     data-translate="location">Location</p>
-                                <p class="text-lg text-gray-900 dark:text-white font-semibold"><span
-                                        class="city-label">Dubai</span>, <span class="country-label">UAE</span></p>
+                                <p id="profile-location-info"
+                                    class="text-lg text-gray-900 dark:text-white font-semibold">Dubai, UAE</p>
                             </div>
                         </div>
                     </div>
@@ -398,8 +397,9 @@
                                 <div>
                                     <p class="text-sm text-gray-500 dark:text-gray-400 font-medium"
                                         data-translate="email">Email Address</p>
-                                    <p class="text-base text-gray-900 dark:text-white font-semibold">
-                                        john.doe@example.com</p>
+                                    <p id="profile-email-info"
+                                        class="text-base text-gray-900 dark:text-white font-semibold">
+                                        -</p>
                                 </div>
                             </div>
                             <div class="flex items-start gap-4">
@@ -414,8 +414,8 @@
                                 <div>
                                     <p class="text-sm text-gray-500 dark:text-gray-400 font-medium"
                                         data-translate="phone">Phone Number</p>
-                                    <p class="text-base text-gray-900 dark:text-white font-semibold">+971 50 123 4567
-                                    </p>
+                                    <p id="profile-phone-info"
+                                        class="text-base text-gray-900 dark:text-white font-semibold">-</p>
                                 </div>
                             </div>
                         </div>
@@ -498,6 +498,180 @@
                             </a>
                         </div>
                     </div>
+
+                    <!-- Notification Settings -->
+                    <div
+                        class="bg-white dark:bg-gray-800 p-8 rounded-xl shadow-sm border border-gray-100 dark:border-gray-700">
+                        <h3
+                            class="text-xl font-bold text-gray-900 dark:text-white mb-6 border-b dark:border-gray-700 pb-4 flex items-center gap-2">
+                            <svg class="w-6 h-6 text-primary dark:text-blue-400" fill="none" stroke="currentColor"
+                                viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9">
+                                </path>
+                            </svg>
+                            <span data-translate="notificationSettings">Notification Settings</span>
+                        </h3>
+                        <div class="space-y-4">
+                            <div class="flex items-center justify-between">
+                                <div>
+                                    <p class="font-semibold text-gray-900 dark:text-white"
+                                        data-translate="emailNotifications">Email Notifications</p>
+                                    <p class="text-sm text-gray-500" data-translate="emailNotificationsDesc">Receive
+                                        updates about your ads via email.</p>
+                                </div>
+                                <label class="relative inline-flex items-center cursor-pointer">
+                                    <input type="checkbox" id="email-notif-toggle" class="sr-only peer">
+                                    <div
+                                        class="w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-orange-300 dark:peer-focus:ring-orange-800 rounded-full peer dark:bg-gray-700 peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all dark:border-gray-600 peer-checked:bg-accent">
+                                    </div>
+                                </label>
+                            </div>
+                            <div class="flex items-center justify-between pt-4 border-t dark:border-gray-700">
+                                <div>
+                                    <p class="font-semibold text-gray-900 dark:text-white"
+                                        data-translate="chatNotifications">Chat Notifications</p>
+                                    <p class="text-sm text-gray-500" data-translate="chatNotificationsDesc">Receive
+                                        alerts for new messages.</p>
+                                </div>
+                                <label class="relative inline-flex items-center cursor-pointer">
+                                    <input type="checkbox" id="chat-notif-toggle" class="sr-only peer">
+                                    <div
+                                        class="w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-orange-300 dark:peer-focus:ring-orange-800 rounded-full peer dark:bg-gray-700 peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all dark:border-gray-600 peer-checked:bg-accent">
+                                    </div>
+                                </label>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Change Password -->
+                    <div
+                        class="bg-white dark:bg-gray-800 p-8 rounded-xl shadow-sm border border-gray-100 dark:border-gray-700">
+                        <h3
+                            class="text-xl font-bold text-gray-900 dark:text-white mb-6 border-b dark:border-gray-700 pb-4 flex items-center gap-2">
+                            <svg class="w-6 h-6 text-primary dark:text-blue-400" fill="none" stroke="currentColor"
+                                viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z">
+                                </path>
+                            </svg>
+                            <span data-translate="changePassword">Change Password</span>
+                        </h3>
+                        <form id="change-password-form" class="space-y-4">
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 dark:text-gray-300"
+                                    data-translate="currentPassword">Current Password</label>
+                                <input type="password" id="current-password" required
+                                    class="block w-full px-3 py-2 mt-1 border border-gray-300 rounded-md shadow-sm dark:bg-gray-700 dark:border-gray-600 dark:text-white focus:ring-accent focus:border-accent">
+                            </div>
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 dark:text-gray-300"
+                                    data-translate="newPassword">New Password</label>
+                                <input type="password" id="new-password" required
+                                    class="block w-full px-3 py-2 mt-1 border border-gray-300 rounded-md shadow-sm dark:bg-gray-700 dark:border-gray-600 dark:text-white focus:ring-accent focus:border-accent">
+                            </div>
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 dark:text-gray-300"
+                                    data-translate="confirmNewPassword">Confirm New Password</label>
+                                <input type="password" id="confirm-new-password" required
+                                    class="block w-full px-3 py-2 mt-1 border border-gray-300 rounded-md shadow-sm dark:bg-gray-700 dark:border-gray-600 dark:text-white focus:ring-accent focus:border-accent">
+                            </div>
+                            <div class="pt-2">
+                                <button type="submit"
+                                    class="w-full bg-primary text-white px-6 py-3 rounded-lg font-bold hover:bg-opacity-90 transition shadow-lg">
+                                    <span data-translate="updatePassword">Update Password</span>
+                                </button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    </div>
+
+    <!-- Edit Profile Modal -->
+    <div id="edit-modal" class="fixed inset-0 z-[100] hidden overflow-y-auto">
+        <div class="flex items-center justify-center min-h-screen px-4 pt-4 pb-20 text-center sm:block sm:p-0">
+            <div class="fixed inset-0 transition-opacity bg-gray-500 bg-opacity-75" onclick="closeEditModal()"></div>
+            <span class="hidden sm:inline-block sm:align-middle sm:h-screen">&#8203;</span>
+            <div
+                class="inline-block px-4 pt-5 pb-4 overflow-hidden text-left align-bottom transition-all transform bg-white dark:bg-gray-800 rounded-lg shadow-xl sm:my-8 sm:align-middle sm:max-w-lg sm:w-full sm:p-6">
+                <div class="absolute top-0 right-0 pt-4 pr-4 rtl:left-0 rtl:right-auto rtl:pl-4 rtl:pr-0">
+                    <button onclick="closeEditModal()" class="text-gray-400 hover:text-gray-500 focus:outline-none">
+                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                d="M6 18L18 6M6 6l12 12"></path>
+                        </svg>
+                    </button>
+                </div>
+                <div class="sm:flex sm:items-start">
+                    <div class="w-full mt-3 text-center sm:mt-0 sm:text-left rtl:sm:text-right">
+                        <h3 class="text-lg font-bold leading-6 text-gray-900 dark:text-white"
+                            data-translate="editProfile">Edit Profile</h3>
+                        <form id="edit-profile-form" class="mt-6 space-y-4">
+                            <!-- Avatar Upload -->
+                            <div class="flex flex-col items-center mb-6">
+                                <div class="relative group">
+                                    <div id="modal-avatar-preview"
+                                        class="w-24 h-24 rounded-full bg-gray-200 dark:bg-gray-700 overflow-hidden border-2 border-accent">
+                                        <img src="" id="curr-modal-avatar" class="w-full h-full object-cover hidden">
+                                        <div id="avatar-initials"
+                                            class="w-full h-full flex items-center justify-center text-3xl font-bold text-gray-400">
+                                            ?</div>
+                                    </div>
+                                    <label for="avatar-input"
+                                        class="absolute bottom-0 right-0 bg-accent text-white p-1.5 rounded-full cursor-pointer shadow-lg hover:bg-orange-600 transition">
+                                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                                d="M3 9a2 2 0 012-2h.93a2 2 0 001.664-.89l.812-1.22A2 2 0 0110.07 4h3.86a2 2 0 011.664.89l.812 1.22A2 2 0 0018.07 7H19a2 2 0 012 2v9a2 2 0 01-2 2H5a2 2 0 01-2-2V9z">
+                                            </path>
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                                d="M15 13a3 3 0 11-6 0 3 3 0 016 0z"></path>
+                                        </svg>
+                                    </label>
+                                    <input type="file" id="avatar-input" class="hidden" accept="image/*">
+                                </div>
+                            </div>
+
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 dark:text-gray-300"
+                                    data-translate="fullName">Full Name</label>
+                                <input type="text" id="edit-name"
+                                    class="block w-full px-3 py-2 mt-1 border border-gray-300 rounded-md shadow-sm dark:bg-gray-700 dark:border-gray-600 dark:text-white focus:ring-accent focus:border-accent">
+                            </div>
+
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 dark:text-gray-300"
+                                    data-translate="phone">Phone Number</label>
+                                <input type="text" id="edit-phone"
+                                    class="block w-full px-3 py-2 mt-1 border border-gray-300 rounded-md shadow-sm dark:bg-gray-700 dark:border-gray-600 dark:text-white focus:ring-accent focus:border-accent">
+                            </div>
+
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 dark:text-gray-300"
+                                    data-translate="location">Location</label>
+                                <input type="text" id="edit-location"
+                                    class="block w-full px-3 py-2 mt-1 border border-gray-300 rounded-md shadow-sm dark:bg-gray-700 dark:border-gray-600 dark:text-white focus:ring-accent focus:border-accent"
+                                    placeholder="e.g. Dubai, UAE">
+                            </div>
+
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 dark:text-gray-300"
+                                    data-translate="bio">Bio</label>
+                                <textarea id="edit-bio" rows="3"
+                                    class="block w-full px-3 py-2 mt-1 border border-gray-300 rounded-md shadow-sm dark:bg-gray-700 dark:border-gray-600 dark:text-white focus:ring-accent focus:border-accent"></textarea>
+                            </div>
+
+                            <div class="mt-8 flex gap-3">
+                                <button type="button" onclick="closeEditModal()"
+                                    class="flex-1 px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-md shadow-sm dark:bg-gray-800 dark:text-gray-300 dark:border-gray-600 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-accent">Cancel</button>
+                                <button type="submit"
+                                    class="flex-1 px-4 py-2 text-sm font-medium text-white bg-accent border border-transparent rounded-md shadow-sm hover:bg-orange-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-accent">Save
+                                    Changes</button>
+                            </div>
+                        </form>
+                    </div>
                 </div>
             </div>
         </div>
@@ -555,39 +729,198 @@
     <script src="assets/js/api-client.js"></script>
     <script src="assets/js/main.js"></script>
     <script>
-        document.addEventListener('DOMContentLoaded', () => {
-            const user = JSON.parse(localStorage.getItem('user'));
-            const token = localStorage.getItem('token');
-
-            if (!token || !user) {
+        document.addEventListener('DOMContentLoaded', async () => {
+            if (!localStorage.getItem('token')) {
                 window.location.href = 'login.html';
                 return;
             }
 
-            // Update UI with user data
-            const nameElements = document.querySelectorAll('[data-translate="dummyName"]');
-            nameElements.forEach(el => el.textContent = user.name);
+            loadProfile();
 
-            const emailElement = document.querySelector('.text-base.text-gray-900.dark:text-white.font-semibold:not(.city-label):not(.country-label)');
-            // Note: The selector above might be tricky due to similar structures. 
-            // Let's use a more direct approach if possible, or just look for the text.
-            const contactInfoDivs = document.querySelectorAll('.flex.items-start.gap-4');
-            if (contactInfoDivs[0]) {
-                contactInfoDivs[0].querySelector('p.text-base').textContent = user.email;
+            // Edit Profile Modal logic
+            const modal = document.getElementById('edit-modal');
+            const editBtn = document.getElementById('edit-profile-btn');
+            const form = document.getElementById('edit-profile-form');
+            const avatarInput = document.getElementById('avatar-input');
+            const modalAvatarPreview = document.getElementById('curr-modal-avatar');
+            const modalAvatarInitials = document.getElementById('avatar-initials');
+
+            if (editBtn) {
+                editBtn.onclick = () => {
+                    const user = JSON.parse(localStorage.getItem('user'));
+                    document.getElementById('edit-name').value = user.name || '';
+                    document.getElementById('edit-phone').value = user.phone || '';
+                    document.getElementById('edit-location').value = user.location || '';
+                    document.getElementById('edit-bio').value = user.bio || '';
+
+                    if (user.avatar) {
+                        modalAvatarPreview.src = user.avatar;
+                        modalAvatarPreview.classList.remove('hidden');
+                        modalAvatarInitials.classList.add('hidden');
+                    } else {
+                        modalAvatarPreview.classList.add('hidden');
+                        modalAvatarInitials.classList.remove('hidden');
+                        modalAvatarInitials.textContent = user.name.split(' ').map(n => n[0]).join('').toUpperCase();
+                    }
+
+                    modal.classList.remove('hidden');
+                };
             }
 
-            // Update sidebar avatar initials if no image
-            const avatarContainer = document.querySelector('.w-24.h-24.bg-white.rounded-full');
-            if (avatarContainer && !user.avatar) {
-                avatarContainer.innerHTML = `<div class="w-full h-full flex items-center justify-center text-4xl font-bold text-primary">${user.name.split(' ').map(n => n[0]).join('').toUpperCase()}</div>`;
+            window.closeEditModal = () => {
+                modal.classList.add('hidden');
+            };
+
+            if (avatarInput) {
+                avatarInput.onchange = (e) => {
+                    const file = e.target.files[0];
+                    if (file) {
+                        const reader = new FileReader();
+                        reader.onload = (event) => {
+                            modalAvatarPreview.src = event.target.result;
+                            modalAvatarPreview.classList.remove('hidden');
+                            modalAvatarInitials.classList.add('hidden');
+                        };
+                        reader.readAsDataURL(file);
+                    }
+                };
             }
 
-            // Update header profile img if needed
-            const headerProfileImg = document.getElementById('header-profile-img');
-            if (headerProfileImg && !user.avatar) {
-                headerProfileImg.parentElement.innerHTML = `<div class="w-full h-full flex items-center justify-center text-xs font-bold bg-gray-200 dark:bg-gray-600">${user.name.split(' ').map(n => n[0]).join('').toUpperCase()}</div>`;
+            if (form) {
+                form.onsubmit = async (e) => {
+                    e.preventDefault();
+                    const submitBtn = e.target.querySelector('button[type="submit"]');
+                    submitBtn.disabled = true;
+                    submitBtn.textContent = 'Saving...';
+
+                    try {
+                        const formData = new FormData();
+                        formData.append('name', document.getElementById('edit-name').value);
+                        formData.append('phone', document.getElementById('edit-phone').value);
+                        formData.append('location', document.getElementById('edit-location').value);
+                        formData.append('bio', document.getElementById('edit-bio').value);
+
+                        if (avatarInput.files[0]) {
+                            formData.append('avatar', avatarInput.files[0]);
+                        }
+
+                        const response = await apiClient.updateProfile(formData);
+                        localStorage.setItem('user', JSON.stringify(response.data));
+
+                        alert('Profile updated successfully!');
+                        closeEditModal();
+                        loadProfile();
+
+                        if (window.updateAuthState) window.updateAuthState();
+
+                    } catch (err) {
+                        alert(err.message);
+                    } finally {
+                        submitBtn.disabled = false;
+                        submitBtn.textContent = 'Save Changes';
+                    }
+                };
             }
+
+            // Change Password logic
+            const passwordForm = document.getElementById('change-password-form');
+            if (passwordForm) {
+                passwordForm.onsubmit = async (e) => {
+                    e.preventDefault();
+                    const currentPassword = document.getElementById('current-password').value;
+                    const newPassword = document.getElementById('new-password').value;
+                    const confirmNewPassword = document.getElementById('confirm-new-password').value;
+
+                    if (newPassword !== confirmNewPassword) {
+                        alert('New passwords do not match');
+                        return;
+                    }
+
+                    const submitBtn = e.target.querySelector('button[type="submit"]');
+                    submitBtn.disabled = true;
+                    submitBtn.textContent = 'Updating...';
+
+                    try {
+                        await apiClient.updatePassword({ currentPassword, newPassword });
+                        alert('Password updated successfully!');
+                        passwordForm.reset();
+                    } catch (err) {
+                        alert(err.message);
+                    } finally {
+                        submitBtn.disabled = false;
+                        submitBtn.textContent = 'Update Password';
+                    }
+                };
+            }
+
+            // Notification Toggles logic
+            const emailToggle = document.getElementById('email-notif-toggle');
+            const chatToggle = document.getElementById('chat-notif-toggle');
+
+            const handleToggle = async (e) => {
+                try {
+                    const response = await apiClient.updateProfile({
+                        emailNotifications: emailToggle.checked,
+                        chatNotifications: chatToggle.checked
+                    });
+                    localStorage.setItem('user', JSON.stringify(response.data));
+                } catch (err) {
+                    console.error('Error updating notifications:', err);
+                }
+            };
+
+            emailToggle.onchange = handleToggle;
+            chatToggle.onchange = handleToggle;
+
         });
+
+        async function loadProfile() {
+            try {
+                const response = await apiClient.getProfile();
+                const user = response.data;
+                localStorage.setItem('user', JSON.stringify(user));
+
+                const initials = user.name.split(' ').map(n => n[0]).join('').toUpperCase();
+                const sidebarAvatar = document.querySelector('.w-24.h-24.bg-white.rounded-full');
+                if (user.avatar) {
+                    sidebarAvatar.innerHTML = `<img src="${user.avatar}" class="w-full h-full rounded-full object-cover">`;
+                } else {
+                    sidebarAvatar.innerHTML = `<div class="w-full h-full flex items-center justify-center text-4xl font-bold text-primary">${initials}</div>`;
+                }
+
+                document.getElementById('profile-name-display').textContent = user.name;
+                document.getElementById('profile-location-display').textContent = user.location || 'Location not set';
+
+                document.getElementById('profile-name-info').textContent = user.name;
+                document.getElementById('profile-bio-info').textContent = user.bio || 'No bio provided.';
+                document.getElementById('profile-location-info').textContent = user.location || 'Location not set';
+
+                document.getElementById('profile-email-info').textContent = user.email;
+                document.getElementById('profile-phone-info').textContent = user.phone || 'Not provided';
+
+                // Notifications
+                document.getElementById('email-notif-toggle').checked = user.emailNotifications;
+                document.getElementById('chat-notif-toggle').checked = user.chatNotifications;
+
+                const sidebarName = document.querySelector('h2.font-bold.text-xl');
+                if (sidebarName) sidebarName.textContent = user.name;
+
+                const headerImg = document.getElementById('header-profile-img');
+                if (headerImg) {
+                    if (user.avatar) {
+                        headerImg.src = user.avatar;
+                        headerImg.classList.remove('hidden');
+                    } else {
+                        if (window.updateAuthState) window.updateAuthState();
+                    }
+                }
+
+                if (window.translatePage) window.translatePage();
+
+            } catch (err) {
+                console.error('Error loading profile:', err);
+            }
+        }
     </script>
 </body>
 

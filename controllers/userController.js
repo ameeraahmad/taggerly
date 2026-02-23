@@ -19,18 +19,19 @@ exports.getProfile = async (req, res) => {
 // @access  Private
 exports.updateProfile = async (req, res) => {
     try {
-        const { name, phone, bio, location } = req.body;
+        const { name, phone, bio, location, emailNotifications, chatNotifications } = req.body;
         const user = await User.findByPk(req.user.id);
 
         if (req.file) {
-            // If Cloudinary is used, req.file.path contains the URL
             user.avatar = req.file.path || req.file.secure_url || user.avatar;
         }
 
-        user.name = name || user.name;
-        user.phone = phone || user.phone;
-        user.bio = bio || user.bio;
-        user.location = location || user.location;
+        user.name = name !== undefined ? name : user.name;
+        user.phone = phone !== undefined ? phone : user.phone;
+        user.bio = bio !== undefined ? bio : user.bio;
+        user.location = location !== undefined ? location : user.location;
+        user.emailNotifications = emailNotifications !== undefined ? emailNotifications === 'true' || emailNotifications === true : user.emailNotifications;
+        user.chatNotifications = chatNotifications !== undefined ? chatNotifications === 'true' || chatNotifications === true : user.chatNotifications;
 
         await user.save();
 
@@ -44,8 +45,35 @@ exports.updateProfile = async (req, res) => {
                 phone: user.phone,
                 avatar: user.avatar,
                 bio: user.bio,
-                location: user.location
+                location: user.location,
+                emailNotifications: user.emailNotifications,
+                chatNotifications: user.chatNotifications
             }
+        });
+    } catch (err) {
+        res.status(400).json({ success: false, message: err.message });
+    }
+};
+
+// @desc    Update password
+// @route   PUT /api/users/update-password
+// @access  Private
+exports.updatePassword = async (req, res) => {
+    try {
+        const { currentPassword, newPassword } = req.body;
+        const user = await User.findByPk(req.user.id);
+
+        // Check current password
+        if (!(await user.correctPassword(currentPassword))) {
+            return res.status(401).json({ success: false, message: 'Current password is incorrect' });
+        }
+
+        user.password = newPassword;
+        await user.save();
+
+        res.status(200).json({
+            success: true,
+            message: 'Password updated successfully'
         });
     } catch (err) {
         res.status(400).json({ success: false, message: err.message });

@@ -5,21 +5,58 @@ const { Op } = require('sequelize');
 // @route   GET /api/ads
 exports.getAllAds = async (req, res) => {
     try {
-        const { category, city, minPrice, maxPrice, search } = req.query;
+        const {
+            category, city, minPrice, maxPrice, search,
+            condition, minYear, maxYear, minKm, maxKm,
+            isFeatured
+        } = req.query;
         let where = { status: 'active' };
 
         if (category) where.category = category;
         if (city) where.city = city;
+        if (condition) where.itemCondition = condition;
+        if (isFeatured) where.isFeatured = isFeatured === 'true';
+
         if (minPrice || maxPrice) {
             where.price = {};
             if (minPrice) where.price[Op.gte] = Number(minPrice);
             if (maxPrice) where.price[Op.lte] = Number(maxPrice);
         }
+
+        if (minYear || maxYear) {
+            where.year = {};
+            if (minYear) where.year[Op.gte] = Number(minYear);
+            if (maxYear) where.year[Op.lte] = Number(maxYear);
+        }
+
+        if (minKm || maxKm) {
+            where.kilometers = {};
+            if (minKm) where.kilometers[Op.gte] = Number(minKm);
+            if (maxKm) where.kilometers[Op.lte] = Number(maxKm);
+        }
+
         if (search) {
-            where[Op.or] = [
-                { title: { [Op.like]: `%${search}%` } },
-                { description: { [Op.like]: `%${search}%` } }
-            ];
+            const words = search.split(' ').filter(word => word.length > 0);
+            const searchConditions = words.map(word => ({
+                [Op.or]: [
+                    { title: { [Op.like]: `%${word}%` } },
+                    { description: { [Op.like]: `%${word}%` } }
+                ]
+            }));
+
+            // If there's already an [Op.or] for multiple fields, we wrap it
+            if (where[Op.or]) {
+                where = {
+                    [Op.and]: [
+                        { [Op.or]: where[Op.or] },
+                        ...searchConditions
+                    ],
+                    ...where
+                };
+                delete where[Op.or];
+            } else {
+                where[Op.and] = searchConditions;
+            }
         }
 
         const page = Number(req.query.page) || 1;
@@ -49,11 +86,17 @@ exports.getAllAds = async (req, res) => {
             }
         }
 
+        const User = require('../models/User');
         const { count, rows: ads } = await Ad.findAndCountAll({
             where,
             order,
             limit,
-            offset
+            offset,
+            include: [{
+                model: User,
+                as: 'user',
+                attributes: ['id', 'name', 'isEmailVerified']
+            }]
         });
 
         res.status(200).json({
@@ -77,7 +120,7 @@ exports.getAdById = async (req, res) => {
             include: [{
                 model: User,
                 as: 'user',
-                attributes: ['id', 'name', 'avatar', 'createdAt']
+                attributes: ['id', 'name', 'avatar', 'createdAt', 'isEmailVerified']
             }]
         });
         if (!ad) return res.status(404).json({ success: false, message: 'Ad not found' });
@@ -101,20 +144,22 @@ exports.createAd = async (req, res) => {
         } = req.body;
 
         let images = [];
-        if (req.files && req.files.length > 0) {
-            images = req.files.map(file => {
-                if (file.path && file.path.startsWith('http')) {
-                    return file.path;
-                }
-                const protocol = req.protocol;
-                const host = req.get('host');
-                return `${protocol}://${host}/uploads/${file.filename}`;
-            });
-        } else if (req.body.images) {
+
+        // 1) Handle Cloudinary files
+        if (req.files && req.files.length > 0 && process.env.CLOUDINARY_CLOUD_NAME) {
+            images = req.files.map(file => file.path);
+        }
+        // 2) Handle Sharp-processed local files (set in req.body.images by middleware)
+        else if (req.body.images && Array.isArray(req.body.images)) {
+            const protocol = req.protocol;
+            const host = req.get('host');
+            images = req.body.images.map(filename => `${protocol}://${host}/uploads/${filename}`);
+        }
+        // 3) Handle existing images or fallback
+        else if (req.body.images) {
             try {
-                images = Array.isArray(req.body.images) ? req.body.images : JSON.parse(req.body.images);
+                images = typeof req.body.images === 'string' ? JSON.parse(req.body.images) : req.body.images;
             } catch (pErr) {
-                console.error('Failed to parse images:', pErr);
                 images = [];
             }
         }
@@ -154,19 +199,21 @@ exports.updateAd = async (req, res) => {
         }
 
         // Handle new images if uploaded
-        if (req.files && req.files.length > 0) {
-            const newImages = req.files.map(file => {
-                const protocol = req.protocol;
-                const host = req.get('host');
-                return `${protocol}://${host}/uploads/${file.filename}`;
-            });
-            // If images already exist in body (passed as string/JSON), parse them
+        let newImages = [];
+        if (req.files && req.files.length > 0 && process.env.CLOUDINARY_CLOUD_NAME) {
+            newImages = req.files.map(file => file.path);
+        } else if (req.body.images && Array.isArray(req.body.images)) {
+            const protocol = req.protocol;
+            const host = req.get('host');
+            newImages = req.body.images.map(filename => `${protocol}://${host}/uploads/${filename}`);
+        }
+
+        if (newImages.length > 0) {
             let currentImages = ad.images || [];
-            if (req.body.images) {
-                try {
-                    currentImages = Array.isArray(req.body.images) ? req.body.images : JSON.parse(req.body.images);
-                } catch (e) { }
-            }
+            // If the user sent existing images in the request (e.g. they kept some old ones)
+            // Note: In createAd we usually replace, in update we might append.
+            // But if resizeImages already processed them, req.body.images contains ONLY the new ones.
+            // We should check if req.body.existingImages exists or similar, or just replace if provided.
             req.body.images = [...currentImages, ...newImages];
         }
 

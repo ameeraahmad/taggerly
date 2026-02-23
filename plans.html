@@ -466,7 +466,51 @@
 
     <script src="assets/js/en.js"></script>
     <script src="assets/js/ar.js"></script>
+    <script src="assets/js/api-client.js"></script>
     <script src="assets/js/main.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const urlParams = new URLSearchParams(window.location.search);
+            const adId = urlParams.get('adId');
+
+            // Attach listeners to all "Get Started" buttons
+            document.querySelectorAll('button[data-translate="getStarted"]').forEach(btn => {
+                btn.onclick = async () => {
+                    if (!localStorage.getItem('token')) {
+                        window.location.href = 'login.html';
+                        return;
+                    }
+
+                    if (adId) {
+                        // Simulate Payment & Boost Ad
+                        btn.disabled = true;
+                        btn.textContent = 'Processing...';
+
+                        try {
+                            // In a real app, this would call a payment gateway
+                            // Then update the ad status on the server
+                            const res = await apiClient.fetch(`/ads/${adId}`, {
+                                method: 'PUT',
+                                body: JSON.stringify({ isFeatured: true })
+                            });
+
+                            if (res.success) {
+                                alert('Payment Successful! Your ad is now featured.');
+                                window.location.href = 'dashboard.html';
+                            }
+                        } catch (err) {
+                            alert(err.message);
+                            btn.disabled = false;
+                            btn.textContent = 'Get Started';
+                        }
+                    } else {
+                        // Regular subscription flow
+                        alert('Subscription feature coming soon!');
+                    }
+                };
+            });
+        });
+    </script>
 </body>
 
 </html>

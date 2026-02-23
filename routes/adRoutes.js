@@ -21,12 +21,12 @@ router.get('/my-ads', protect, getUserAds);
 router.get('/stats/dashboard', protect, getDashboardStats);
 router.get('/:id', getAdById);
 
-const upload = require('../middleware/upload');
+const { upload, resizeImages } = require('../middleware/upload');
 
 // Private routes
-router.post('/', protect, upload.array('images', 5), createAd);
+router.post('/', protect, upload.array('images', 5), resizeImages, createAd);
 router.post('/:id/favorite', protect, toggleFavorite);
-router.put('/:id', protect, upload.array('images', 5), updateAd);
+router.put('/:id', protect, upload.array('images', 5), resizeImages, updateAd);
 router.delete('/:id', protect, deleteAd);
 
 module.exports = router;

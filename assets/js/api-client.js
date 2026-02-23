@@ -178,6 +178,25 @@ const apiClient = {
 
     async getSellerReviews(sellerId) {
         return this.fetch(`/reviews/seller/${sellerId}`);
+    },
+
+    // User Profile
+    async getProfile() {
+        return this.fetch('/users/profile');
+    },
+
+    async updateProfile(profileData) {
+        return this.fetch('/users/profile', {
+            method: 'PUT',
+            body: profileData instanceof FormData ? profileData : JSON.stringify(profileData)
+        });
+    },
+
+    async updatePassword(passwordData) {
+        return this.fetch('/users/update-password', {
+            method: 'PUT',
+            body: JSON.stringify(passwordData)
+        });
     }
 };
 
