@@ -26,6 +26,7 @@ const enTranslations = {
     contactUs: "Contact Us",
     followUs: "Follow Us",
     rights: "© 2026 DubizzleClone. All rights reserved.",
+    plansTitle: "Pricing Plans",
 
     // Header New
     myAccount: "My Account",

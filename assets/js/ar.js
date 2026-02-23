@@ -25,6 +25,7 @@ const arTranslations = {
     contactUs: "اتصل بنا",
     followUs: "تابعنا",
     rights: "© 2026 دوبيزل كلون. جميع الحقوق محفوظة.",
+    plansTitle: "خطط الأسعار",
 
     // Header New
     myAccount: "حسابي",

@@ -166,10 +166,17 @@
                 const parser = new DOMParser();
                 const doc = parser.parseFromString(html, 'text/html');
                 const header = doc.querySelector('header');
+                // Transfer all attributes from the source header to our placeholder
+                Array.from(header.attributes).forEach(attr => {
+                    headerPlaceholder.setAttribute(attr.name, attr.value);
+                });
                 headerPlaceholder.innerHTML = header.innerHTML;
 
-                // Re-run scripts for theme/lang toggles
+                // Re-run scripts for theme/lang/auth/country
                 if (window.initTheme) window.initTheme();
+                if (window.initCountryDropdown) window.initCountryDropdown();
+                if (window.updateLanguage) window.updateLanguage(localStorage.getItem('lang') || 'en');
+                if (window.updateAuthState) window.updateAuthState();
             } catch (err) { console.error('Error loading header:', err); }
 
             // Check if conversationId is in URL

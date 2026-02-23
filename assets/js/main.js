@@ -198,23 +198,32 @@ document.addEventListener('DOMContentLoaded', () => {
         window.updateDynamicContent(window.selectedCountry, window.currentLang);
     }
 
-    if (countryOptions.length > 0) {
-        countryOptions.forEach(opt => {
-            opt.addEventListener('click', (e) => {
-                e.preventDefault();
-                const country = opt.getAttribute('data-country') || 'uae';
-                const flag = opt.getAttribute('data-flag');
-                const name = opt.getAttribute('data-name');
-                setCountry(country, flag, name);
-            });
-        });
+    window.initCountryDropdown = function () {
+        const countryOptions = document.querySelectorAll('.country-option');
+        const currentCountryFlag = document.getElementById('current-country-flag');
+        const currentCountryName = document.getElementById('current-country-name');
 
-        // Initialize from storage or defaults
-        const storedCountry = localStorage.getItem('selectedCountry') || 'uae';
-        const storedFlag = localStorage.getItem('selectedCountryFlag') || '🇦🇪';
-        const storedName = localStorage.getItem('selectedCountryName') || 'uae';
-        window.setCountry(storedCountry, storedFlag, storedName);
-    }
+        if (countryOptions.length > 0) {
+            countryOptions.forEach(opt => {
+                // Remove existing to avoid duplicates if re-initialized
+                opt.onclick = (e) => {
+                    e.preventDefault();
+                    const country = opt.getAttribute('data-country') || 'uae';
+                    const flag = opt.getAttribute('data-flag');
+                    const name = opt.getAttribute('data-name');
+                    window.setCountry(country, flag, name);
+                };
+            });
+
+            // Initialize from storage or defaults
+            const storedCountry = localStorage.getItem('selectedCountry') || 'uae';
+            const storedFlag = localStorage.getItem('selectedCountryFlag') || '🇦🇪';
+            const storedName = localStorage.getItem('selectedCountryName') || 'uae';
+            window.setCountry(storedCountry, storedFlag, storedName);
+        }
+    };
+
+    initCountryDropdown();
 
     // --- Global Unread Count Logic ---
     window.refreshUnreadCount = async function () {
@@ -297,32 +306,35 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     // --- Dark Mode Logic ---
-    const themeBtn = document.getElementById('theme-toggle');
-    const themeIcon = document.getElementById('theme-icon');
-    let isDark = localStorage.getItem('theme') === 'dark';
+    window.initTheme = function () {
+        const themeBtn = document.getElementById('theme-toggle');
+        const themeIcon = document.getElementById('theme-icon');
+        let isDark = localStorage.getItem('theme') === 'dark' ||
+            (!('theme' in localStorage) && window.matchMedia('(prefers-color-scheme: dark)').matches);
 
-    function updateTheme(dark) {
-        if (dark) {
-            htmlToUpdate.classList.add('dark');
-            localStorage.setItem('theme', 'dark');
-            // Change Icon to Sun
-            if (themeIcon) themeIcon.innerHTML = `<svg class="w-5 h-5 text-yellow-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z"></path></svg>`;
-        } else {
-            htmlToUpdate.classList.remove('dark');
-            localStorage.setItem('theme', 'light');
-            // Change Icon to Moon
-            if (themeIcon) themeIcon.innerHTML = `<svg class="w-5 h-5 text-gray-700 dark:text-gray-200" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z"></path></svg>`;
+        function updateTheme(dark) {
+            if (dark) {
+                document.documentElement.classList.add('dark');
+                localStorage.setItem('theme', 'dark');
+                if (themeIcon) themeIcon.innerHTML = `<svg class="w-5 h-5 text-yellow-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z"></path></svg>`;
+            } else {
+                document.documentElement.classList.remove('dark');
+                localStorage.setItem('theme', 'light');
+                if (themeIcon) themeIcon.innerHTML = `<svg class="w-5 h-5 text-gray-700 dark:text-gray-200" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z"></path></svg>`;
+            }
         }
-    }
 
-    if (themeBtn) {
-        themeBtn.addEventListener('click', () => {
-            isDark = !isDark;
-            updateTheme(isDark);
-        });
-        // Init
-        updateTheme(isDark);
-    }
+        if (themeBtn) {
+            themeBtn.onclick = () => {
+                isDark = !document.documentElement.classList.contains('dark');
+                updateTheme(isDark);
+            };
+            // Sync icon on load
+            updateTheme(document.documentElement.classList.contains('dark'));
+        }
+    };
+
+    initTheme();
 
     // Mobile Menu Toggle
     const mobileMenuBtn = document.getElementById('mobile-menu-btn');
@@ -510,7 +522,7 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 
     // --- Global Auth State Logic ---
-    function updateAuthState() {
+    window.updateAuthState = function () {
         const user = JSON.parse(localStorage.getItem('user'));
         const token = localStorage.getItem('token');
 
@@ -540,12 +552,14 @@ document.addEventListener('DOMContentLoaded', () => {
                         <p class="text-xs text-gray-500 truncate">${user.email}</p>
                     </div>
                     <a href="profile.html" class="block px-4 py-2 text-sm text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-700 hover:text-accent font-bold" data-translate="myProfile">My Profile</a>
+                    <div class="border-t dark:border-gray-700 my-1"></div>
                     <a href="dashboard.html" class="block px-4 py-2 text-sm text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-700 hover:text-accent" data-translate="myDashboard">My Dashboard</a>
                     <a href="messages.html" class="flex items-center justify-between px-4 py-2 text-sm text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-700 hover:text-accent" data-translate="messages">
                         <span data-translate="messages">Messages</span>
                         <span class="unread-badge ml-2 bg-red-500 text-white text-[10px] font-bold px-1.5 py-0.5 rounded-full hidden">0</span>
                     </a>
                     <a href="favorites.html" class="block px-4 py-2 text-sm text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-700 hover:text-accent" data-translate="myFavorites">My Favorites</a>
+                    <a href="plans.html" class="block px-4 py-2 text-sm text-orange-500 hover:bg-gray-100 dark:hover:bg-gray-700 hover:text-accent font-bold" data-translate="plansTitle">Pricing Plans</a>
                     <div class="border-t dark:border-gray-700 my-1"></div>
                     <a href="#" class="logout-action-btn block px-4 py-2 text-sm text-red-600 hover:bg-gray-100 dark:hover:bg-gray-700 font-bold" data-translate="logout">Logout</a>
                 `;
@@ -562,6 +576,8 @@ document.addEventListener('DOMContentLoaded', () => {
                 userDropdown.innerHTML = `
                     <a href="login.html" class="block px-4 py-2 text-sm text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-700 hover:text-accent" data-translate="login">Log in</a>
                     <a href="login.html?mode=signup" class="block px-4 py-2 text-sm text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-700 hover:text-accent" data-translate="createAccount">Sign Up</a>
+                    <div class="border-t dark:border-gray-700 my-1"></div>
+                    <a href="plans.html" class="block px-4 py-2 text-sm text-orange-500 hover:bg-gray-100 dark:hover:bg-gray-700 hover:text-accent font-bold" data-translate="plansTitle">Pricing Plans</a>
                 `;
             }
 
