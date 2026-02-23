@@ -5,22 +5,21 @@ description: Real-time Chat Implementation Status and Next Steps
 
 ## Current Status (Completed)
 1. **Socket.io Integration**: Backend server is now configured for real-time communication.
-2. **Messaging Page**: Created `messages.html` with a dual-pane layout (conversations and chat).
+2. **Messaging Page**: Created `messages.html` with a dual-pane layout.
 3. **Frontend API**: `api-client.js` extended with chat methods.
-4. **Navigation**: Linked "Messages" in header dropdown and dashboard sidebar.
-5. **Localization**: Added Arabic and English translations for all chat-related UI.
-6. **Controller Logic**: `chatController.js` now emits messages via sockets when a new message is sent.
+4. **Media Sharing**: Users can now send images 📷 via chat. Fixed validation errors for empty text messages.
+5. **Real-time Notifications**: Added sound alerts and Toast notifications 🔔 when messages arrive while on other pages.
+6. **Online Status**: Added "Online/Offline" indicators 🟢 and "Last Seen" logic.
+7. **Phone Integration**: Added per-ad phone number field and a premium contact modal with WhatsApp/Call links 📞.
+8. **UI Sync**: Synchronized the user dropdown menu across all pages, including the dynamic header in `messages.html`.
 
 ## Next Steps for Tomorrow
-1. **Unread Badges**: Implement logical checking of unread messages to update the badges in the header and sidebar.
-2. **Real-time Notifications**: Add toast notifications or sound alerts when a message is received while the user is on a different page.
-3. **Media Sharing**: (Optional) Allow users to send images via chat.
-4. **Online Status**: Show if the other party is currently online or when they were last active.
+1. **Delete Conversations**: Allow users to delete or archive chats.
+2. **Typing Indicators**: Show "User is typing..." in real-time.
+3. **Ad Edit/Delete**: Implement full management for ads in the dashboard.
+4. **Seller Ratings**: System for buyers to leave reviews on seller profiles.
 
 ## How to resume
-1. Run the server:
-   ```bash
-   npm run dev
-   ```
-2. Login with two different accounts in two browser windows.
-3. Start a chat from an ad details page and check for real-time updates.
+1. Run the server: `npm run dev`
+2. Open `messages.html` to check the updated header consistency and image sharing.
+3. Test the "Call Seller" modal on `ad-details.html`.
