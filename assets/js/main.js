@@ -98,6 +98,23 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     }
 
+    // --- Global Logout Handler ---
+    document.addEventListener('click', (e) => {
+        const logoutSelector = '#logout-btn, #logout-btn-header, #logout-btn-sidebar, #mobile-logout-btn, .logout-action-btn, [data-translate="logout"]';
+        const btn = e.target.closest(logoutSelector);
+
+        if (btn) {
+            e.preventDefault();
+            if (window.apiClient) {
+                window.apiClient.logout();
+            } else {
+                localStorage.removeItem('token');
+                localStorage.removeItem('user');
+                window.location.href = 'login.html';
+            }
+        }
+    });
+
     function playNotificationSound() {
         const audio = new Audio('https://assets.mixkit.co/active_storage/sfx/2354/2354-preview.mp3');
         audio.volume = 0.5;
@@ -738,25 +755,34 @@ document.addEventListener('DOMContentLoaded', () => {
             }
         }
 
+        // --- Mobile Menu Refresh ---
+        const mobileMenu = document.getElementById('mobile-menu');
+        if (mobileMenu) {
+            const menuContent = mobileMenu.querySelector('.space-y-1');
+            if (menuContent) {
+                if (token && user) {
+                    menuContent.innerHTML = `
+                        <a href="profile.html" data-translate="myProfile" class="block px-3 py-2 rounded-md text-base font-medium text-accent hover:bg-gray-50 dark:hover:bg-gray-700">My Profile</a>
+                        <a href="categories.html" data-translate="mobileMenuCategories" class="block px-3 py-2 rounded-md text-base font-medium text-gray-700 dark:text-gray-300 hover:text-accent hover:bg-gray-50 dark:hover:bg-gray-700">Categories</a>
+                        <a href="dashboard.html" data-translate="myDashboard" class="block px-3 py-2 rounded-md text-base font-medium text-gray-700 dark:text-gray-300 hover:text-accent hover:bg-gray-50 dark:hover:bg-gray-700">My Dashboard</a>
+                        <a href="messages.html" data-translate="messages" class="block px-3 py-2 rounded-md text-base font-medium text-gray-700 dark:text-gray-300 hover:text-accent hover:bg-gray-50 dark:hover:bg-gray-700">Messages</a>
+                        <a href="#" class="logout-action-btn block px-3 py-2 rounded-md text-base font-medium text-red-600 hover:bg-gray-50 dark:hover:bg-gray-700" data-translate="logout">Logout</a>
+                        <a href="post-ad.html" data-translate="mobileMenuPostAd" class="block px-3 py-2 mt-4 text-center text-white bg-accent rounded-md font-bold">Post an Ad</a>
+                    `;
+                } else {
+                    menuContent.innerHTML = `
+                        <a href="categories.html" data-translate="mobileMenuCategories" class="block px-3 py-2 rounded-md text-base font-medium text-gray-700 dark:text-gray-300 hover:text-accent hover:bg-gray-50 dark:hover:bg-gray-700">Categories</a>
+                        <a href="login.html" data-translate="mobileMenuLogin" class="block px-3 py-2 rounded-md text-base font-medium text-primary dark:text-white hover:bg-gray-50 dark:hover:bg-gray-700">Log in / Sign up</a>
+                        <a href="post-ad.html" data-translate="mobileMenuPostAd" class="block px-3 py-2 mt-4 text-center text-white bg-accent rounded-md font-bold">Post an Ad</a>
+                    `;
+                }
+            }
+        }
+
+
         // Re-apply translations for the new dynamic elements
         window.updateLanguage(window.currentLang);
 
-        // Attach event listeners to all logout buttons (dynamic or static)
-        const logoutBtns = document.querySelectorAll('#logout-btn, #logout-btn-header, #logout-btn-sidebar, #mobile-logout-btn, .logout-action-btn, [data-translate="logout"]');
-        logoutBtns.forEach(btn => {
-            // Avoid multiple listeners if function runs again
-            btn.onclick = (e) => {
-                e.preventDefault();
-                if (window.apiClient) {
-                    window.apiClient.logout();
-                } else {
-                    // Fallback if apiClient not initialized
-                    localStorage.removeItem('token');
-                    localStorage.removeItem('user');
-                    window.location.href = 'login.html';
-                }
-            };
-        });
     }
 
     updateAuthState();
