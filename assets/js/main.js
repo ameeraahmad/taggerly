@@ -706,20 +706,15 @@ document.addEventListener('DOMContentLoaded', () => {
                 const banner = document.getElementById('verification-banner');
                 if (banner) banner.remove();
             }
-            // ... (rest of existing login logic)
+
             if (userDropdown) {
                 userDropdown.innerHTML = `
-                    <div class="px-4 py-3 border-b dark:border-gray-700">
-                        <p class="text-sm font-bold text-gray-900 dark:text-white">${user.name}</p>
-                        <p class="text-xs text-gray-500 truncate">${user.email}</p>
-                    </div>
                     <a href="profile.html" class="block px-4 py-2 text-sm text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-700 hover:text-accent font-bold" data-translate="myProfile">My Profile</a>
-                    ${user.role === 'admin' ? '<a href="admin.html" class="block px-4 py-2 text-sm text-purple-600 hover:bg-gray-100 dark:hover:bg-gray-700 font-bold">Admin Dashboard</a>' : ''}
                     <div class="border-t dark:border-gray-700 my-1"></div>
                     <a href="dashboard.html" class="block px-4 py-2 text-sm text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-700 hover:text-accent" data-translate="myDashboard">My Dashboard</a>
                     <a href="messages.html" class="flex items-center justify-between px-4 py-2 text-sm text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-700 hover:text-accent" data-translate="messages">
-                        <span data-translate="messages">Messages</span>
-                        <span class="unread-badge ml-2 bg-red-500 text-white text-[10px] font-bold px-1.5 py-0.5 rounded-full hidden">0</span>
+                        <span>Messages</span>
+                        <span class="unread-badge bg-red-500 text-white text-[10px] font-bold px-1.5 py-0.5 rounded-full hidden">0</span>
                     </a>
                     <a href="favorites.html" class="block px-4 py-2 text-sm text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-700 hover:text-accent" data-translate="myFavorites">My Favorites</a>
                     <a href="plans.html" class="block px-4 py-2 text-sm text-orange-500 hover:bg-gray-100 dark:hover:bg-gray-700 hover:text-accent font-bold" data-translate="plansTitle">Pricing Plans</a>
@@ -728,32 +723,37 @@ document.addEventListener('DOMContentLoaded', () => {
                 `;
             }
 
-            // Update user button label if it exists
             const userBtnText = document.getElementById('user-btn-text');
-            if (userBtnText && user) {
+            if (userBtnText) {
                 userBtnText.textContent = user.name;
             }
         } else {
             // User is NOT logged in
+            if (notifWrapper) notifWrapper.classList.add('hidden');
             const banner = document.getElementById('verification-banner');
             if (banner) banner.remove();
-            if (notifWrapper) notifWrapper.classList.add('hidden');
+
             if (userDropdown) {
                 userDropdown.innerHTML = `
+                    <a href="profile.html" class="block px-4 py-2 text-sm text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-700 hover:text-accent font-bold" data-translate="myProfile">My Profile</a>
+                    <div class="border-t dark:border-gray-700 my-1"></div>
                     <a href="login.html" class="block px-4 py-2 text-sm text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-700 hover:text-accent" data-translate="login">Log in</a>
                     <a href="login.html?mode=signup" class="block px-4 py-2 text-sm text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-700 hover:text-accent" data-translate="createAccount">Sign Up</a>
                     <div class="border-t dark:border-gray-700 my-1"></div>
+                    <a href="dashboard.html" class="block px-4 py-2 text-sm text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-700 hover:text-accent" data-translate="myDashboard">My Dashboard</a>
+                    <a href="messages.html" class="block px-4 py-2 text-sm text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-700 hover:text-accent" data-translate="messages">Messages</a>
+                    <a href="favorites.html" class="block px-4 py-2 text-sm text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-700 hover:text-accent" data-translate="myFavorites">My Favorites</a>
                     <a href="plans.html" class="block px-4 py-2 text-sm text-orange-500 hover:bg-gray-100 dark:hover:bg-gray-700 hover:text-accent font-bold" data-translate="plansTitle">Pricing Plans</a>
                 `;
             }
 
-            // Ensure button text is "Log in"
             const userBtnText = document.getElementById('user-btn-text');
             if (userBtnText) {
                 userBtnText.textContent = translations[window.currentLang].login || 'Log in';
                 userBtnText.setAttribute('data-translate', 'login');
             }
         }
+
 
         // --- Mobile Menu Refresh ---
         const mobileMenu = document.getElementById('mobile-menu');
@@ -764,6 +764,7 @@ document.addEventListener('DOMContentLoaded', () => {
                     menuContent.innerHTML = `
                         <a href="profile.html" data-translate="myProfile" class="block px-3 py-2 rounded-md text-base font-medium text-accent hover:bg-gray-50 dark:hover:bg-gray-700">My Profile</a>
                         <a href="categories.html" data-translate="mobileMenuCategories" class="block px-3 py-2 rounded-md text-base font-medium text-gray-700 dark:text-gray-300 hover:text-accent hover:bg-gray-50 dark:hover:bg-gray-700">Categories</a>
+                        <a href="search.html" data-translate="mobileMenuForSale" class="block px-3 py-2 rounded-md text-base font-medium text-gray-700 dark:text-gray-300 hover:text-accent hover:bg-gray-50 dark:hover:bg-gray-700">For Sale</a>
                         <a href="dashboard.html" data-translate="myDashboard" class="block px-3 py-2 rounded-md text-base font-medium text-gray-700 dark:text-gray-300 hover:text-accent hover:bg-gray-50 dark:hover:bg-gray-700">My Dashboard</a>
                         <a href="messages.html" data-translate="messages" class="block px-3 py-2 rounded-md text-base font-medium text-gray-700 dark:text-gray-300 hover:text-accent hover:bg-gray-50 dark:hover:bg-gray-700">Messages</a>
                         <a href="#" class="logout-action-btn block px-3 py-2 rounded-md text-base font-medium text-red-600 hover:bg-gray-50 dark:hover:bg-gray-700" data-translate="logout">Logout</a>
@@ -772,10 +773,12 @@ document.addEventListener('DOMContentLoaded', () => {
                 } else {
                     menuContent.innerHTML = `
                         <a href="categories.html" data-translate="mobileMenuCategories" class="block px-3 py-2 rounded-md text-base font-medium text-gray-700 dark:text-gray-300 hover:text-accent hover:bg-gray-50 dark:hover:bg-gray-700">Categories</a>
+                        <a href="search.html" data-translate="mobileMenuForSale" class="block px-3 py-2 rounded-md text-base font-medium text-gray-700 dark:text-gray-300 hover:text-accent hover:bg-gray-50 dark:hover:bg-gray-700">For Sale</a>
                         <a href="login.html" data-translate="mobileMenuLogin" class="block px-3 py-2 rounded-md text-base font-medium text-primary dark:text-white hover:bg-gray-50 dark:hover:bg-gray-700">Log in / Sign up</a>
                         <a href="post-ad.html" data-translate="mobileMenuPostAd" class="block px-3 py-2 mt-4 text-center text-white bg-accent rounded-md font-bold">Post an Ad</a>
                     `;
                 }
+
             }
         }
 
