@@ -204,7 +204,7 @@ const arTranslations = {
     resendBtn: "إعادة إرسال الرابط",
     emailVerified: "تم توثيق البريد الإلكتروني بنجاح!",
     invalidToken: "رابط التوثيق غير صالح أو منتهي الصلاحية",
-    detectLocation: "تحديد موقعي التلقائي",
+    detectLocation: "تحديد موقعي",
     detecting: "جاري التحديد...",
     locationDenied: "تم رفض الوصول للموقع. يرجى الاختيار يدوياً.",
     locationError: "تعذر تحديد الموقع الجغرافي.",

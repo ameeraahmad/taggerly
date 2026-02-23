@@ -402,6 +402,24 @@
                             </div>
                         </div>
 
+                        <!-- Detect Location Button -->
+                        <div class="h-full flex items-center">
+                            <button onclick="window.detectLocation()" id="detect-location-btn"
+                                class="flex items-center gap-1.5 text-accent font-bold text-xs bg-accent/5 px-3 py-1.5 rounded-full hover:bg-accent/10 transition group">
+                                <svg class="w-3.5 h-3.5 group-hover:animate-bounce" fill="none" stroke="currentColor"
+                                    viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                        d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z">
+                                    </path>
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                        d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"></path>
+                                </svg>
+                                <span data-translate="detectLocation" class="hidden lg:inline">Detect My Location</span>
+                                <span data-translate="detectLocation" class="lg:hidden text-[10px]">Location</span>
+                            </button>
+                        </div>
+
+
                         <!-- Property Dropdown -->
                         <div class="group relative h-full flex items-center">
                             <a href="categories.html"
@@ -477,34 +495,6 @@
             </div>
         </nav>
 
-        <!-- Smart Location Selection -->
-        <div class="bg-white dark:bg-gray-800 border-b dark:border-gray-700 py-2.5 transition-colors duration-300">
-            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex items-center justify-between">
-                <div class="flex items-center gap-4 overflow-x-auto hide-scrollbar whitespace-nowrap flex-grow">
-                    <button onclick="window.detectLocation()" id="detect-location-btn"
-                        class="flex items-center gap-1.5 text-accent font-bold text-sm bg-accent/5 px-3 py-1.5 rounded-full hover:bg-accent/10 transition shrink-0">
-                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z">
-                            </path>
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"></path>
-                        </svg>
-                        <span data-translate="detectLocation">Detect My Location</span>
-                    </button>
-                    <div class="h-4 w-px bg-gray-200 dark:bg-gray-700 mx-1 shrink-0"></div>
-                    <!-- Cities will be injected here dynamically -->
-                    <div id="header-cities-list" class="flex items-center gap-4">
-                        <!-- Loading or default cities -->
-                    </div>
-                </div>
-                <div
-                    class="hidden md:flex items-center text-[10px] uppercase tracking-wider text-gray-400 dark:text-gray-500 gap-1.5 shrink-0 ml-4">
-                    <div class="w-1.5 h-1.5 rounded-full bg-green-500 animate-pulse"></div>
-                    <span data-translate="locationActive">Location Aware</span>
-                </div>
-            </div>
-        </div>
     </header>
 
     <!-- Mobile Menu -->

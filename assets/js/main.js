@@ -216,22 +216,6 @@ document.addEventListener('DOMContentLoaded', () => {
                 dropdown.appendChild(opt);
             });
         });
-
-        // --- 7. Update Header Cities List ---
-        const headerCitiesList = document.getElementById('header-cities-list');
-        if (headerCitiesList) {
-            const cities = countryCities[country] || countryCities['uae'];
-            headerCitiesList.innerHTML = '';
-            cities.forEach(c => {
-                const cityName = translations[lang][c] || translations['en'][c] || c;
-                const link = document.createElement('a');
-                link.href = `search.html?city=${c}`;
-                link.className = 'text-gray-500 dark:text-gray-400 hover:text-accent text-sm font-medium transition';
-                link.textContent = cityName;
-                link.setAttribute('data-translate', c);
-                headerCitiesList.appendChild(link);
-            });
-        }
     };
 
     window.detectLocation = function () {
