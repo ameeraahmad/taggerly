@@ -5,7 +5,8 @@ const {
     getConversations,
     sendMessage,
     getMessages,
-    getUnreadCount
+    getUnreadCount,
+    deleteConversation
 } = require('../controllers/chatController');
 const { protect } = require('../middleware/authMiddleware');
 
@@ -16,5 +17,6 @@ router.get('/conversations', protect, getConversations);
 router.get('/unread-count', protect, getUnreadCount);
 router.post('/message', protect, upload.single('image'), sendMessage);
 router.get('/messages/:conversationId', protect, getMessages);
+router.delete('/conversation/:conversationId', protect, deleteConversation);
 
 module.exports = router;

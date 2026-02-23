@@ -379,16 +379,15 @@
                     <div
                         class="flex items-center space-x-2 text-sm text-gray-600 dark:text-gray-400 rtl:space-x-reverse">
                         <span data-translate="sortBy">Sort by:</span>
-                        <select
+                        <select id="sort-by" onchange="applyFilters()"
                             class="border-none bg-transparent font-medium focus:ring-0 cursor-pointer dark:text-white">
-                            <option value="recommended" class="dark:bg-gray-800" data-translate="recommended">
-                                Recommended</option>
-                            <option value="newest" class="dark:bg-gray-800" data-translate="newest">Newest to Oldest
-                            </option>
+                            <option value="newest" class="dark:bg-gray-800" data-translate="newest" selected>Newest to
+                                Oldest</option>
                             <option value="lowHigh" class="dark:bg-gray-800" data-translate="lowHigh">Price: Low to High
                             </option>
                             <option value="highLow" class="dark:bg-gray-800" data-translate="highLow">Price: High to Low
                             </option>
+                            <option value="oldest" class="dark:bg-gray-800">Oldest to Newest</option>
                         </select>
                     </div>
                 </div>
@@ -703,6 +702,7 @@
                 const minPrice = document.querySelector('input[data-translate="minPrice"]').value;
                 const maxPrice = document.querySelector('input[data-translate="maxPrice"]').value;
                 const city = document.querySelector('select[data-dynamic-location="true"]').value;
+                const sortBy = document.getElementById('sort-by').value;
                 const search = document.querySelector('.search-input')?.value || '';
 
                 const params = {
@@ -710,6 +710,7 @@
                     minPrice,
                     maxPrice,
                     city: (city.toLowerCase().includes('all') || city === '') ? '' : city,
+                    sortBy,
                     search
                 };
 

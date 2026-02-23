@@ -1,13 +1,13 @@
 const { DataTypes } = require('sequelize');
 const { sequelize } = require('../config/db');
 
-const Conversation = sequelize.define('Conversation', {
+const Review = sequelize.define('Review', {
     id: {
         type: DataTypes.INTEGER,
         autoIncrement: true,
         primaryKey: true
     },
-    buyerId: {
+    reviewerId: {
         type: DataTypes.INTEGER,
         allowNull: false,
         references: { model: 'Users', key: 'id' }
@@ -19,19 +19,20 @@ const Conversation = sequelize.define('Conversation', {
     },
     adId: {
         type: DataTypes.INTEGER,
-        allowNull: false,
+        allowNull: true,
         references: { model: 'Ads', key: 'id' }
     },
-    deletedByBuyer: {
-        type: DataTypes.BOOLEAN,
-        defaultValue: false
+    rating: {
+        type: DataTypes.INTEGER,
+        allowNull: false,
+        validate: { min: 1, max: 5 }
     },
-    deletedBySeller: {
-        type: DataTypes.BOOLEAN,
-        defaultValue: false
+    comment: {
+        type: DataTypes.TEXT,
+        allowNull: true
     }
 }, {
     timestamps: true
 });
 
-module.exports = Conversation;
+module.exports = Review;

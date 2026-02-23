@@ -26,9 +26,32 @@ exports.getAllAds = async (req, res) => {
         const limit = Number(req.query.limit) || 12;
         const offset = (page - 1) * limit;
 
+        // Sorting
+        let order = [['createdAt', 'DESC']]; // default newest
+        if (req.query.sortBy) {
+            switch (req.query.sortBy) {
+                case 'price_asc':
+                case 'lowHigh':
+                    order = [['price', 'ASC']];
+                    break;
+                case 'price_desc':
+                case 'highLow':
+                    order = [['price', 'DESC']];
+                    break;
+                case 'oldest':
+                    order = [['createdAt', 'ASC']];
+                    break;
+                case 'newest':
+                    order = [['createdAt', 'DESC']];
+                    break;
+                default:
+                    order = [['createdAt', 'DESC']];
+            }
+        }
+
         const { count, rows: ads } = await Ad.findAndCountAll({
             where,
-            order: [['createdAt', 'DESC']],
+            order,
             limit,
             offset
         });
@@ -130,6 +153,23 @@ exports.updateAd = async (req, res) => {
             return res.status(403).json({ success: false, message: 'Not authorized' });
         }
 
+        // Handle new images if uploaded
+        if (req.files && req.files.length > 0) {
+            const newImages = req.files.map(file => {
+                const protocol = req.protocol;
+                const host = req.get('host');
+                return `${protocol}://${host}/uploads/${file.filename}`;
+            });
+            // If images already exist in body (passed as string/JSON), parse them
+            let currentImages = ad.images || [];
+            if (req.body.images) {
+                try {
+                    currentImages = Array.isArray(req.body.images) ? req.body.images : JSON.parse(req.body.images);
+                } catch (e) { }
+            }
+            req.body.images = [...currentImages, ...newImages];
+        }
+
         await ad.update(req.body);
         res.status(200).json({ success: true, data: ad });
     } catch (err) {
@@ -160,11 +200,21 @@ exports.deleteAd = async (req, res) => {
 // @route   GET /api/ads/my-ads
 exports.getUserAds = async (req, res) => {
     try {
+        const { Conversation } = require('../models/associations');
         const ads = await Ad.findAll({
             where: { userId: req.user.id },
+            include: [{ model: Conversation, as: 'conversations', attributes: ['id'] }],
             order: [['createdAt', 'DESC']]
         });
-        res.status(200).json({ success: true, count: ads.length, data: ads });
+
+        const enrichedAds = ads.map(ad => {
+            const plainAd = ad.get({ plain: true });
+            plainAd.inquiryCount = ad.conversations ? ad.conversations.length : 0;
+            delete plainAd.conversations;
+            return plainAd;
+        });
+
+        res.status(200).json({ success: true, count: enrichedAds.length, data: enrichedAds });
     } catch (err) {
         res.status(500).json({ success: false, message: err.message });
     }

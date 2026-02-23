@@ -26,7 +26,7 @@ const upload = require('../middleware/upload');
 // Private routes
 router.post('/', protect, upload.array('images', 5), createAd);
 router.post('/:id/favorite', protect, toggleFavorite);
-router.put('/:id', protect, updateAd);
+router.put('/:id', protect, upload.array('images', 5), updateAd);
 router.delete('/:id', protect, deleteAd);
 
 module.exports = router;

@@ -33,6 +33,11 @@ exports.startConversation = async (req, res) => {
                 buyerId,
                 sellerId
             });
+        } else {
+            // If it exists but was deleted by someone, reset the flag
+            if (conversation.buyerId === buyerId) conversation.deletedByBuyer = false;
+            if (conversation.sellerId === buyerId) conversation.deletedBySeller = false;
+            await conversation.save();
         }
 
         res.status(200).json({ success: true, data: conversation });
@@ -48,7 +53,10 @@ exports.getConversations = async (req, res) => {
         const userId = req.user.id;
         const conversations = await Conversation.findAll({
             where: {
-                [Op.or]: [{ buyerId: userId }, { sellerId: userId }]
+                [Op.or]: [
+                    { buyerId: userId, deletedByBuyer: false },
+                    { sellerId: userId, deletedBySeller: false }
+                ]
             },
             include: [
                 { model: User, as: 'buyer', attributes: ['id', 'name', 'avatar', 'isOnline', 'lastActive'] },
@@ -194,7 +202,43 @@ exports.getMessages = async (req, res) => {
             }
         });
 
+        // Notify sender via socket that messages were read
+        if (req.io) {
+            req.io.to(`convo_${conversationId}`).emit('messages_read', {
+                conversationId,
+                readBy: userId
+            });
+        }
+
         res.status(200).json({ success: true, data: messages });
+    } catch (err) {
+        res.status(500).json({ success: false, message: err.message });
+    }
+};
+
+// @desc    Delete/Archive a conversation
+// @route   DELETE /api/chat/conversation/:conversationId
+exports.deleteConversation = async (req, res) => {
+    try {
+        const { conversationId } = req.params;
+        const userId = req.user.id;
+
+        const conversation = await Conversation.findByPk(conversationId);
+        if (!conversation) return res.status(404).json({ success: false, message: 'Conversation not found' });
+
+        if (conversation.buyerId !== userId && conversation.sellerId !== userId) {
+            return res.status(403).json({ success: false, message: 'Not authorized' });
+        }
+
+        if (conversation.buyerId === userId) {
+            conversation.deletedByBuyer = true;
+        } else {
+            conversation.deletedBySeller = true;
+        }
+
+        await conversation.save();
+
+        res.status(200).json({ success: true, message: 'Conversation deleted' });
     } catch (err) {
         res.status(500).json({ success: false, message: err.message });
     }

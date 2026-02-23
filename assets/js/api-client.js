@@ -102,6 +102,19 @@ const apiClient = {
         });
     },
 
+    async updateAd(id, adData) {
+        return this.fetch(`/ads/${id}`, {
+            method: 'PUT',
+            body: adData instanceof FormData ? adData : JSON.stringify(adData),
+        });
+    },
+
+    async deleteAd(id) {
+        return this.fetch(`/ads/${id}`, {
+            method: 'DELETE',
+        });
+    },
+
     async toggleFavorite(adId) {
         return this.fetch(`/ads/${adId}/favorite`, {
             method: 'POST',
@@ -153,6 +166,18 @@ const apiClient = {
 
     async getUnreadCount() {
         return this.fetch('/chat/unread-count');
+    },
+
+    // Reviews
+    async createReview(reviewData) {
+        return this.fetch('/reviews', {
+            method: 'POST',
+            body: JSON.stringify(reviewData)
+        });
+    },
+
+    async getSellerReviews(sellerId) {
+        return this.fetch(`/reviews/seller/${sellerId}`);
     }
 };
 

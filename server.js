@@ -26,7 +26,7 @@ app.use(cors());
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
-// Pass io to controllers
+// Pass io to controllers (lazy load)
 app.use((req, res, next) => {
     req.io = io;
     next();
@@ -38,12 +38,14 @@ const authRoutes = require('./routes/authRoutes');
 const messageRoutes = require('./routes/messageRoutes');
 const userRoutes = require('./routes/userRoutes');
 const chatRoutes = require('./routes/chatRoutes');
+const reviewRoutes = require('./routes/reviewRoutes');
 
 app.use('/api/ads', adRoutes);
 app.use('/api/auth', authRoutes);
 app.use('/api/messages', messageRoutes);
 app.use('/api/users', userRoutes);
 app.use('/api/chat', chatRoutes);
+app.use('/api/reviews', reviewRoutes);
 
 // Health check
 app.get('/api/health', (req, res) => {
@@ -123,6 +125,11 @@ io.on('connection', (socket) => {
     socket.on('join_conversation', (conversationId) => {
         socket.join(`convo_${conversationId}`);
         console.log(`📂 User joined conversation: convo_${conversationId}`);
+    });
+
+    socket.on('typing', (data) => {
+        // data: { conversationId, senderId, isTyping }
+        socket.to(`convo_${data.conversationId}`).emit('display_typing', data);
     });
 
     // Note: send_message is now handled via HTTP API (POST /api/chat/message)
