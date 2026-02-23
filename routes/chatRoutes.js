@@ -10,7 +10,7 @@ const {
 } = require('../controllers/chatController');
 const { protect } = require('../middleware/authMiddleware');
 
-const upload = require('../middleware/upload');
+const { upload } = require('../middleware/upload');
 
 router.post('/conversation', protect, startConversation);
 router.get('/conversations', protect, getConversations);

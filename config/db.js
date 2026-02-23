@@ -58,6 +58,14 @@ const connectDB = async () => {
                             console.log('➕ Adding "phone" column to Ads...');
                             await queryInterface.addColumn('Ads', 'phone', { type: Sequelize.STRING, allowNull: true });
                         }
+                        if (!tableInfo.isFeatured) {
+                            console.log('➕ Adding "isFeatured" column to Ads...');
+                            await queryInterface.addColumn('Ads', 'isFeatured', { type: Sequelize.BOOLEAN, defaultValue: false });
+                        }
+                        if (!tableInfo.featuredUntil) {
+                            console.log('➕ Adding "featuredUntil" column to Ads...');
+                            await queryInterface.addColumn('Ads', 'featuredUntil', { type: Sequelize.DATE, allowNull: true });
+                        }
                     } catch (mErr) {
                         console.log('ℹ️ SQLite columns for Ads might already exist.');
                     }
@@ -75,8 +83,48 @@ const connectDB = async () => {
                             console.log('➕ Adding "lastActive" column to Users...');
                             await queryInterface.addColumn('Users', 'lastActive', { type: Sequelize.DATE, defaultValue: Sequelize.NOW });
                         }
+                        if (!userTableInfo.isEmailVerified) {
+                            console.log('➕ Adding "isEmailVerified" column to Users...');
+                            await queryInterface.addColumn('Users', 'isEmailVerified', { type: Sequelize.BOOLEAN, defaultValue: false });
+                        }
+                        if (!userTableInfo.emailVerificationToken) {
+                            console.log('➕ Adding "emailVerificationToken" column to Users...');
+                            await queryInterface.addColumn('Users', 'emailVerificationToken', { type: Sequelize.STRING, allowNull: true });
+                        }
+                        if (!userTableInfo.passwordResetToken) {
+                            console.log('➕ Adding "passwordResetToken" column to Users...');
+                            await queryInterface.addColumn('Users', 'passwordResetToken', { type: Sequelize.STRING, allowNull: true });
+                        }
+                        if (!userTableInfo.passwordResetExpires) {
+                            console.log('➕ Adding "passwordResetExpires" column to Users...');
+                            await queryInterface.addColumn('Users', 'passwordResetExpires', { type: Sequelize.DATE, allowNull: true });
+                        }
+                        if (!userTableInfo.bio) {
+                            console.log('➕ Adding "bio" column to Users...');
+                            await queryInterface.addColumn('Users', 'bio', { type: Sequelize.TEXT, allowNull: true });
+                        }
+                        if (!userTableInfo.location) {
+                            console.log('➕ Adding "location" column to Users...');
+                            await queryInterface.addColumn('Users', 'location', { type: Sequelize.STRING, allowNull: true });
+                        }
                     } catch (mErr) {
                         console.log('ℹ️ SQLite columns for Users might already exist.');
+                    }
+                }
+
+                // Check Ads table for additional columns
+                if (tableInfo.id) {
+                    try {
+                        if (!tableInfo.subCategory) {
+                            console.log('➕ Adding "subCategory" column to Ads...');
+                            await queryInterface.addColumn('Ads', 'subCategory', { type: Sequelize.STRING, allowNull: true });
+                        }
+                        if (!tableInfo.area) {
+                            console.log('➕ Adding "area" column to Ads...');
+                            await queryInterface.addColumn('Ads', 'area', { type: Sequelize.STRING, allowNull: true });
+                        }
+                    } catch (mErr) {
+                        console.log('ℹ️ Additional SQLite columns for Ads might already exist.');
                     }
                 }
 
@@ -94,8 +142,9 @@ const connectDB = async () => {
                 }
             }
 
-            // Enable alter: true to sync new fields (bio, location) and new chat tables
-            const syncOptions = isTest ? { force: true } : { alter: true };
+            // Disable alter: true for SQLite as it's buggy with column additions
+            // Use manual migrations above instead. For Postgres, alter: true is fine.
+            const syncOptions = isTest ? { force: true } : (databaseUrl ? { alter: true } : { alter: false });
             await sequelize.sync(syncOptions);
 
             isSynced = true;
