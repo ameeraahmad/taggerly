@@ -316,7 +316,8 @@
                         <p class="text-sm text-blue-200" data-translate="memberSince">Member since 2024</p>
                     </div>
                     <nav class="p-4 space-y-1">
-                        <a href="#" class="flex items-center px-4 py-3 bg-blue-50 text-accent font-medium rounded-lg">
+                        <a href="#" onclick="showSection('ads')" id="nav-ads"
+                            class="sidebar-nav-link flex items-center px-4 py-3 bg-blue-50 text-accent font-medium rounded-lg">
                             <svg class="w-5 h-5 mr-3 rtl:ml-3 rtl:mr-0" fill="none" stroke="currentColor"
                                 viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
@@ -325,8 +326,18 @@
                             </svg>
                             <span data-translate="myDashboard">My Dashboard</span>
                         </a>
+                        <a href="#" onclick="showSection('payments')" id="nav-payments"
+                            class="sidebar-nav-link flex items-center px-4 py-3 text-gray-600 hover:bg-gray-50 hover:text-primary rounded-lg transition">
+                            <svg class="w-5 h-5 mr-3 rtl:ml-3 rtl:mr-0" fill="none" stroke="currentColor"
+                                viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M3 10h18M7 15h1m4 0h1m-7 4h12a3 3 0 003-3V8a3 3 0 00-3-3H6a3 3 0 00-3 3v8a3 3 0 003 3z">
+                                </path>
+                            </svg>
+                            <span data-translate="myPayments">My Payments</span>
+                        </a>
                         <a href="favorites.html"
-                            class="flex items-center px-4 py-3 text-gray-600 hover:bg-gray-50 hover:text-primary rounded-lg transition">
+                            class="sidebar-nav-link flex items-center px-4 py-3 text-gray-600 hover:bg-gray-50 hover:text-primary rounded-lg transition">
                             <svg class="w-5 h-5 mr-3 rtl:ml-3 rtl:mr-0" fill="none" stroke="currentColor"
                                 viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
@@ -336,7 +347,7 @@
                             <span data-translate="myFavorites">Favorites</span>
                         </a>
                         <a href="messages.html"
-                            class="flex items-center px-4 py-3 text-gray-600 hover:bg-gray-50 hover:text-primary rounded-lg transition">
+                            class="sidebar-nav-link flex items-center px-4 py-3 text-gray-600 hover:bg-gray-50 hover:text-primary rounded-lg transition">
                             <svg class="w-5 h-5 mr-3 rtl:ml-3 rtl:mr-0" fill="none" stroke="currentColor"
                                 viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
@@ -347,8 +358,8 @@
                             <span
                                 class="unread-badge ml-auto bg-red-500 text-white text-xs font-bold px-2 py-0.5 rounded-full rtl:mr-auto rtl:ml-0 hidden">0</span>
                         </a>
-                        <a href="#"
-                            class="flex items-center px-4 py-3 text-gray-600 hover:bg-gray-50 hover:text-primary rounded-lg transition">
+                        <a href="profile.html"
+                            class="sidebar-nav-link flex items-center px-4 py-3 text-gray-600 hover:bg-gray-50 hover:text-primary rounded-lg transition">
                             <svg class="w-5 h-5 mr-3 rtl:ml-3 rtl:mr-0" fill="none" stroke="currentColor"
                                 viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
@@ -359,8 +370,8 @@
                             </svg>
                             <span data-translate="settings">Settings</span>
                         </a>
-                        <a href="#"
-                            class="flex items-center px-4 py-3 text-red-500 hover:bg-red-50 rounded-lg transition mt-4">
+                        <a href="#" onclick="apiClient.logout()"
+                            class="sidebar-nav-link flex items-center px-4 py-3 text-red-500 hover:bg-red-50 rounded-lg transition mt-4">
                             <svg class="w-5 h-5 mr-3 rtl:ml-3 rtl:mr-0" fill="none" stroke="currentColor"
                                 viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
@@ -394,66 +405,52 @@
                     </div>
                 </div>
 
-                <!-- My Ads -->
-                <div class="bg-white rounded-xl shadow-sm overflow-hidden">
-                    <div class="px-6 py-4 border-b flex justify-between items-center">
+                <!-- My Ads Section -->
+                <div id="section-ads"
+                    class="dashboard-section bg-white rounded-xl shadow-sm overflow-hidden anim-fade-in">
+                    <div class="px-6 py-4 border-b flex justify-between items-center bg-gray-50/50">
                         <h3 class="font-bold text-gray-900" data-translate="myAds">My Ads</h3>
-                        <a href="post-ad.html" class="text-sm text-accent hover:underline" data-translate="postNew">Post
-                            New</a>
+                        <a href="post-ad.html"
+                            class="text-xs bg-accent text-white px-3 py-1.5 rounded-full font-bold hover:shadow-md transition"
+                            data-translate="postNew">Post New</a>
                     </div>
-                    <div class="divide-y">
-                        <!-- Ad Item -->
-                        <div class="p-6 flex items-center hover:bg-gray-50 transition">
-                            <img src="https://images.unsplash.com/photo-1517336714731-489689fd1ca4?ixlib=rb-1.2.1&auto=format&fit=crop&w=150&q=150"
-                                class="w-16 h-16 rounded object-cover mr-4 rtl:ml-4 rtl:mr-0">
-                            <div class="flex-grow">
-                                <h4 class="font-bold text-gray-900 mb-1"><a href="ad-details.html">MacBook Air M2</a>
-                                </h4>
-                                <div class="text-sm text-gray-500">Electronics • Posted 2 days ago</div>
-                            </div>
-                            <div class="flex items-center space-x-2 rtl:space-x-reverse">
-                                <span class="bg-green-100 text-green-800 text-xs px-2 py-1 rounded-full font-bold"
-                                    data-translate="active">Active</span>
-                                <button class="p-2 text-gray-400 hover:text-accent"><svg class="w-5 h-5" fill="none"
-                                        stroke="currentColor" viewBox="0 0 24 24">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                            d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z">
-                                        </path>
-                                    </svg></button>
-                                <button class="p-2 text-gray-400 hover:text-red-500"><svg class="w-5 h-5" fill="none"
-                                        stroke="currentColor" viewBox="0 0 24 24">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                            d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16">
-                                        </path>
-                                    </svg></button>
-                            </div>
+                    <div id="ads-container" class="divide-y divide-gray-100 dark:divide-gray-700">
+                        <!-- Spinner while loading -->
+                        <div class="p-12 text-center text-gray-400">
+                            <svg class="animate-spin h-8 w-8 mx-auto mb-2" fill="none" viewBox="0 0 24 24">
+                                <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor"
+                                    stroke-width="4"></circle>
+                                <path class="opacity-75" fill="currentColor"
+                                    d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z">
+                                </path>
+                            </svg>
+                            Loading ads...
                         </div>
-                        <!-- Ad Item -->
-                        <div class="p-6 flex items-center hover:bg-gray-50 transition">
-                            <img src="https://images.unsplash.com/photo-1581539250439-c923cd27b48f?ixlib=rb-1.2.1&auto=format&fit=crop&w=150&q=150"
-                                class="w-16 h-16 rounded object-cover mr-4 rtl:ml-4 rtl:mr-0">
-                            <div class="flex-grow">
-                                <h4 class="font-bold text-gray-900 mb-1"><a href="ad-details.html">IKEA Sofa
-                                        3-seater</a></h4>
-                                <div class="text-sm text-gray-500">Furniture • Posted 1 week ago</div>
-                            </div>
-                            <div class="flex items-center space-x-2 rtl:space-x-reverse">
-                                <span class="bg-yellow-100 text-yellow-800 text-xs px-2 py-1 rounded-full font-bold"
-                                    data-translate="pending">Pending</span>
-                                <button class="p-2 text-gray-400 hover:text-accent"><svg class="w-5 h-5" fill="none"
-                                        stroke="currentColor" viewBox="0 0 24 24">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                            d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z">
-                                        </path>
-                                    </svg></button>
-                                <button class="p-2 text-gray-400 hover:text-red-500"><svg class="w-5 h-5" fill="none"
-                                        stroke="currentColor" viewBox="0 0 24 24">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                            d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16">
-                                        </path>
-                                    </svg></button>
-                            </div>
-                        </div>
+                    </div>
+                </div>
+
+                <!-- My Payments Section -->
+                <div id="section-payments"
+                    class="dashboard-section hidden bg-white rounded-xl shadow-sm overflow-hidden anim-fade-in">
+                    <div class="px-6 py-4 border-b bg-gray-50/50">
+                        <h3 class="font-bold text-gray-900" data-translate="myPayments">Payment History</h3>
+                    </div>
+                    <div id="payments-container" class="overflow-x-auto">
+                        <table class="w-full text-left text-sm">
+                            <thead
+                                class="bg-gray-50 dark:bg-gray-800 text-gray-500 uppercase text-[10px] font-bold tracking-wider">
+                                <tr>
+                                    <th class="px-6 py-3">Plan / Purpose</th>
+                                    <th class="px-6 py-3">Amount</th>
+                                    <th class="px-6 py-3">Date</th>
+                                    <th class="px-6 py-3">Status</th>
+                                    <th class="px-6 py-3">Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody id="payments-list" class="divide-y divide-gray-100 dark:divide-gray-700">
+                                <!-- Loaded via JS -->
+                            </tbody>
+                        </table>
                     </div>
                 </div>
 
@@ -531,25 +528,57 @@
             const user = JSON.parse(localStorage.getItem('user'));
             // Update Sidebar Profile
             if (user) {
-                document.querySelector('.w-20.h-20').textContent = user.name.split(' ').map(n => n[0]).join('').toUpperCase();
+                const initials = user.name.split(' ').map(n => n[0]).join('').toUpperCase();
+                document.querySelector('.w-20.h-20').textContent = initials;
                 document.querySelector('h2.font-bold.text-lg').textContent = user.name;
             }
 
+            // Initial load
+            loadAds();
+        });
+
+        function showSection(sectionId) {
+            // Hide all sections
+            document.querySelectorAll('.dashboard-section').forEach(s => s.classList.add('hidden'));
+            // Show target section
+            document.getElementById(`section-${sectionId}`).classList.remove('hidden');
+
+            // Update sidebar links
+            document.querySelectorAll('.sidebar-nav-link').forEach(link => {
+                link.classList.remove('bg-blue-50', 'text-accent', 'font-medium');
+                link.classList.add('text-gray-600');
+            });
+
+            const activeLink = document.getElementById(`nav-${sectionId}`);
+            if (activeLink) {
+                activeLink.classList.add('bg-blue-50', 'text-accent', 'font-medium');
+                activeLink.classList.remove('text-gray-600');
+            }
+
+            // Load data if needed
+            if (sectionId === 'ads') loadAds();
+            if (sectionId === 'payments') loadPayments();
+        }
+
+        async function loadAds() {
             try {
                 const response = await apiClient.getMyAds();
                 const ads = response.data;
 
                 // Update Stats
                 const stats = document.querySelectorAll('.text-3xl.font-bold.text-gray-900');
-                stats[0].textContent = ads.length;
-                stats[1].textContent = ads.reduce((acc, ad) => acc + (ad.views || 0), 0);
+                if (stats.length >= 2) {
+                    stats[0].textContent = ads.length;
+                    stats[1].textContent = ads.reduce((acc, ad) => acc + (ad.views || 0), 0);
+                }
 
                 // Update Ad List
-                const container = document.querySelector('.divide-y');
+                const container = document.getElementById('ads-container');
                 container.innerHTML = '';
 
                 if (ads.length === 0) {
-                    container.innerHTML = '<div class="p-6 text-center text-gray-500">You haven\'t posted any ads yet.</div>';
+                    container.innerHTML = '<div class="p-12 text-center text-gray-500">You haven\'t posted any ads yet.</div>';
+                    return;
                 }
 
                 ads.forEach(ad => {
@@ -561,42 +590,87 @@
                                 <div class="flex flex-wrap items-center gap-y-1 gap-x-4 text-xs text-gray-500">
                                     <span>${ad.category} • Posted ${new Date(ad.createdAt).toLocaleDateString()}</span>
                                     <span class="flex items-center gap-1"><svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/><path d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"/></svg> ${ad.views || 0} views</span>
-                                    <span class="flex items-center gap-1"><svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M8 10h.01M12 10h.01M16 10h.01M9 16H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-5l-5 5v-5z"/></svg> ${ad.inquiryCount || 0} inquiries</span>
                                 </div>
                             </div>
                             <div class="flex items-center space-x-2 rtl:space-x-reverse">
                                 ${ad.status !== 'sold' && ad.status !== 'deleted' ? `
-                                    <button onclick="markAsSold(${ad.id})" class="text-xs bg-gray-100 dark:bg-gray-700 hover:bg-gray-200 dark:hover:bg-gray-600 text-gray-700 dark:text-gray-300 px-2 py-1 rounded font-bold transition">Mark as Sold</button>
-                                    ${!ad.isFeatured ? `<a href="plans.html?adId=${ad.id}" class="text-xs bg-accent/10 hover:bg-accent hover:text-white text-accent px-2 py-1 rounded font-bold transition">Promote</a>` : '<span class="text-xs bg-accent text-white px-2 py-1 rounded font-bold">Featured</span>'}
+                                    <button onclick="markAsSold(${ad.id})" class="text-[10px] bg-gray-100 dark:bg-gray-700 hover:bg-gray-200 dark:hover:bg-gray-600 text-gray-700 dark:text-gray-300 px-2.5 py-1.5 rounded font-bold transition">Sold</button>
+                                    ${!ad.isFeatured ? `<a href="plans.html?adId=${ad.id}" class="text-[10px] bg-accent/10 hover:bg-accent hover:text-white text-accent px-2.5 py-1.5 rounded font-bold transition">Promote</a>` : '<span class="text-[10px] bg-accent text-white px-2.5 py-1.5 rounded font-bold">Featured</span>'}
                                 ` : ''}
                                 
-                                <div class="flex flex-col items-end gap-1">
-                                    <span class="px-2 py-1 rounded-full font-bold text-[10px] uppercase ${ad.status === 'active' ? 'bg-green-100 text-green-700' :
-                            ad.status === 'pending' ? 'bg-yellow-100 text-yellow-700' :
-                                ad.status === 'rejected' ? 'bg-red-100 text-red-700' :
-                                    'bg-gray-100 text-gray-700'
+                                <div class="flex flex-col items-end gap-1 px-2">
+                                    <span class="px-2 py-0.5 rounded-full font-bold text-[9px] border uppercase ${ad.status === 'active' ? 'bg-green-50 text-green-700 border-green-200' :
+                            ad.status === 'pending' ? 'bg-yellow-50 text-yellow-700 border-yellow-200' :
+                                ad.status === 'rejected' ? 'bg-red-50 text-red-700 border-red-200' :
+                                    'bg-gray-50 text-gray-700 border-gray-200'
                         }">${ad.status}</span>
-                                    
-                                    ${ad.status === 'rejected' && ad.rejectionReason ? `
-                                        <span class="text-[9px] text-red-500 font-medium max-w-[120px] text-right">Reason: ${ad.rejectionReason}</span>
-                                    ` : ''}
                                 </div>
 
-                                <a href="edit-ad.html?id=${ad.id}" class="p-2 text-gray-400 hover:text-accent" title="Edit Ad">
-                                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"></path></svg>
-                                </a>
-                                <button class="p-2 text-gray-400 hover:text-red-500" onclick="deleteAd(${ad.id})" title="Delete Ad">
-                                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path></svg>
-                                </button>
+                                <div class="flex items-center border-l dark:border-gray-700 ml-2 pl-2">
+                                    <a href="edit-ad.html?id=${ad.id}" class="p-1.5 text-gray-400 hover:text-accent transition" title="Edit">
+                                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"></path></svg>
+                                    </a>
+                                    <button class="p-1.5 text-gray-400 hover:text-red-500 transition" onclick="deleteAd(${ad.id})" title="Delete">
+                                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path></svg>
+                                    </button>
+                                </div>
                             </div>
                         </div>
                     `;
                     container.insertAdjacentHTML('beforeend', adItem);
                 });
             } catch (err) {
-                console.error('Error loading dashboard:', err);
+                console.error('Error loading ads:', err);
+                document.getElementById('ads-container').innerHTML = `<div class="p-12 text-center text-red-500">${err.message}</div>`;
             }
-        });
+        }
+
+        async function loadPayments() {
+            const list = document.getElementById('payments-list');
+            list.innerHTML = '<tr><td colspan="5" class="p-12 text-center text-gray-400"><svg class="animate-spin h-5 w-5 mx-auto mb-2" fill="none" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path></svg> Loading history...</td></tr>';
+
+            try {
+                const res = await apiClient.getMyPayments();
+                const payments = res.data;
+
+                if (payments.length === 0) {
+                    list.innerHTML = '<tr><td colspan="5" class="p-12 text-center text-gray-500">No payment records found.</td></tr>';
+                    return;
+                }
+
+                list.innerHTML = '';
+                payments.forEach(p => {
+                    const row = `
+                        <tr class="hover:bg-gray-50 dark:hover:bg-gray-800/50 transition">
+                            <td class="px-6 py-4">
+                                <div class="font-bold text-gray-900 dark:text-white capitalize">${p.plan}</div>
+                                <div class="text-[10px] text-gray-400">ID: ${p.stripePaymentIntentId || 'Pending'}</div>
+                            </td>
+                            <td class="px-6 py-4 font-medium text-gray-700 dark:text-gray-300">
+                                ${p.amount} ${p.currency.toUpperCase()}
+                            </td>
+                            <td class="px-6 py-4 text-gray-500">
+                                ${new Date(p.createdAt).toLocaleDateString()}
+                            </td>
+                            <td class="px-6 py-4">
+                                <span class="px-2.5 py-1 rounded-full text-[10px] font-bold uppercase border ${p.status === 'completed' ? 'bg-green-50 text-green-700 border-green-200' :
+                            p.status === 'failed' ? 'bg-red-50 text-red-700 border-red-200' :
+                                'bg-yellow-50 text-yellow-700 border-yellow-200'
+                        }">
+                                    ${p.status}
+                                </span>
+                            </td>
+                            <td class="px-6 py-4">
+                                <button class="text-accent hover:underline font-bold text-xs">Receipt</button>
+                            </td>
+                        </tr>
+                    `;
+                    list.insertAdjacentHTML('beforeend', row);
+                });
+            } catch (err) {
+                list.innerHTML = `<tr><td colspan="5" class="p-12 text-center text-red-500">${err.message}</td></tr>`;
+            }
+        }
 
         async function deleteAd(id) {
             if (confirm('Are you sure you want to delete this ad?')) {

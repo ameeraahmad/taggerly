@@ -133,11 +133,17 @@ exports.sendMessage = async (req, res) => {
         const senderId = req.user.id;
 
         const conversation = await Conversation.findByPk(conversationId, {
-            include: [{ model: Ad, as: 'ad', attributes: ['title'] }]
+            include: [
+                { model: Ad, as: 'ad', attributes: ['title'] },
+                { model: User, as: 'buyer', attributes: ['id', 'name', 'email', 'isOnline', 'chatNotifications'] },
+                { model: User, as: 'seller', attributes: ['id', 'name', 'email', 'isOnline', 'chatNotifications'] }
+            ]
         });
         if (!conversation) return res.status(404).json({ success: false, message: 'Conversation not found' });
 
-        const recipientId = conversation.buyerId === senderId ? conversation.sellerId : conversation.buyerId;
+        const recipient = conversation.buyerId === senderId ? conversation.sellerId : conversation.buyerId;
+        const recipientUser = conversation.buyerId === senderId ? conversation.seller : conversation.buyer;
+        const senderUser = conversation.buyerId === senderId ? conversation.buyer : conversation.seller;
 
         // ... (image processing logic remains same)
         let imageUrl = null;
@@ -154,9 +160,12 @@ exports.sendMessage = async (req, res) => {
             image: imageUrl
         });
 
+        const sendEmail = require('../utils/email');
+        const { newMessageEmail } = require('../utils/emailTemplates');
+
         // 1) Persistent Notification
         await createNotification(req.io, {
-            userId: recipientId,
+            userId: recipientUser.id,
             type: 'message',
             title: 'New Message',
             message: `You have a new message regarding "${conversation.ad.title}"`,
@@ -164,12 +173,31 @@ exports.sendMessage = async (req, res) => {
             relatedId: conversationId
         });
 
-        // 2) Real-time Socket Emits
+        // 2) Email Notification (if offline and enabled)
+        if (!recipientUser.isOnline && recipientUser.chatNotifications) {
+            const protocol = req.protocol;
+            const host = req.get('host');
+            const chatUrl = `${protocol}://${host}/messages.html?conversationId=${conversationId}`;
+
+            sendEmail({
+                email: recipientUser.email,
+                subject: `💬 New message from ${senderUser.name} on Dubizzle Clone`,
+                message: `${senderUser.name} sent you a message: ${message || '(Image)'}`,
+                html: newMessageEmail({
+                    userName: recipientUser.name,
+                    senderName: senderUser.name,
+                    messageText: message || '(Sent an image)',
+                    chatUrl
+                })
+            }).catch(err => console.error('Chat email notification failed:', err));
+        }
+
+        // 3) Real-time Socket Emits
         if (req.io) {
             req.io.to(`convo_${conversationId}`).emit('receive_message', chatMessage);
-            req.io.to(`user_${recipientId}`).emit('new_message_notification', {
+            req.io.to(`user_${recipientUser.id}`).emit('new_message_notification', {
                 ...chatMessage.get({ plain: true }),
-                recipientId
+                recipientId: recipientUser.id
             });
         }
 

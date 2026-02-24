@@ -189,6 +189,10 @@ const apiClient = {
         return this.fetch(`/users/public/${id}`);
     },
 
+    async getMyPayments() {
+        return this.fetch('/payments/my-payments');
+    },
+
     async updateProfile(profileData) {
         return this.fetch('/users/profile', {
             method: 'PUT',

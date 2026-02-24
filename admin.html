@@ -395,6 +395,12 @@
                             <canvas id="viewsChart"></canvas>
                         </div>
                     </div>
+                    <div class="stat-card md:col-span-2">
+                        <h3 class="font-bold text-sm mb-4 text-gray-700 dark:text-gray-300">Revenue (Last 30 Days)</h3>
+                        <div class="h-64">
+                            <canvas id="revenueChart"></canvas>
+                        </div>
+                    </div>
                 </div>
             </div>
 
@@ -1131,7 +1137,7 @@
         }
 
         // ===================== ANALYTICS =====================
-        let usersChart, viewsChart;
+        let usersChart, viewsChart, revenueChart;
 
         async function loadAnalytics() {
             try {
@@ -1140,6 +1146,7 @@
 
                 renderUsersChart(users);
                 renderViewsChart(ads);
+                renderRevenueChart(revenue);
             } catch (err) {
                 console.error('Analytics load error:', err);
             }
@@ -1196,6 +1203,40 @@
                     plugins: { legend: { display: false } },
                     scales: {
                         y: { beginAtZero: true, grid: { display: false } },
+                        x: { grid: { display: false } }
+                    }
+                }
+            });
+        }
+
+        function renderRevenueChart(data) {
+            const ctx = document.getElementById('revenueChart').getContext('2d');
+            if (revenueChart) revenueChart.destroy();
+
+            revenueChart = new Chart(ctx, {
+                type: 'line',
+                data: {
+                    labels: data.map(d => d.day),
+                    datasets: [{
+                        label: 'Revenue ($)',
+                        data: data.map(d => d.total || 0),
+                        borderColor: '#00C853',
+                        backgroundColor: 'rgba(0, 200, 83, 0.1)',
+                        fill: true,
+                        tension: 0.4,
+                        borderWidth: 2
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: { legend: { display: false } },
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            grid: { display: false },
+                            ticks: { callback: (val) => '$' + val }
+                        },
                         x: { grid: { display: false } }
                     }
                 }
