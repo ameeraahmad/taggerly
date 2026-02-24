@@ -632,8 +632,11 @@
                             <p class="mt-1 text-sm text-gray-500">Try adjusting your filters or search terms.</p>
                         </div>
                     `;
+                    document.querySelector('nav[aria-label="Pagination"]')?.parentElement?.classList.add('hidden');
                     return;
                 }
+
+                document.querySelector('nav[aria-label="Pagination"]')?.parentElement?.classList.remove('hidden');
 
                 results.forEach(ad => {
                     const adCard = `
@@ -673,6 +676,8 @@
                     container.insertAdjacentHTML('beforeend', adCard);
                 });
 
+                renderPagination(response.page, response.totalPages, params);
+
                 // Update dynamic content (currencies, locations) for newly added search results
                 if (window.updateDynamicContent) {
                     window.updateDynamicContent(window.selectedCountry, window.currentLang);
@@ -680,6 +685,50 @@
             } catch (err) {
                 console.error('Error loading search results:', err);
             }
+        }
+
+        function renderPagination(currentPage, totalPages, params) {
+            const nav = document.querySelector('nav[aria-label="Pagination"]');
+            if (!nav) return;
+            nav.innerHTML = '';
+
+            if (totalPages <= 1) {
+                nav.parentElement.classList.add('hidden');
+                return;
+            }
+
+            const createPageLink = (page, text, active = false, disabled = false) => {
+                const a = document.createElement('a');
+                a.href = '#';
+                a.className = `relative inline-flex items-center px-4 py-2 border text-sm font-medium ${active
+                        ? 'z-10 bg-accent/10 border-accent text-accent'
+                        : 'bg-white dark:bg-gray-800 border-gray-300 dark:border-gray-600 text-gray-500 dark:text-gray-400 hover:bg-gray-50 dark:hover:bg-gray-700'
+                    } ${disabled ? 'opacity-50 cursor-not-allowed' : ''}`;
+                a.textContent = text;
+                if (!disabled && !active) {
+                    a.onclick = (e) => {
+                        e.preventDefault();
+                        loadSearchResults({ ...params, page });
+                        window.scrollTo({ top: 0, behavior: 'smooth' });
+                    };
+                }
+                return a;
+            };
+
+            // Previous
+            nav.appendChild(createPageLink(currentPage - 1, 'Previous', false, currentPage === 1));
+
+            // Page numbers (showing max 5)
+            let start = Math.max(1, currentPage - 2);
+            let end = Math.min(totalPages, start + 4);
+            if (end - start < 4) start = Math.max(1, end - 4);
+
+            for (let i = start; i <= end; i++) {
+                nav.appendChild(createPageLink(i, i, i === currentPage));
+            }
+
+            // Next
+            nav.appendChild(createPageLink(currentPage + 1, 'Next', false, currentPage === totalPages));
         }
 
         document.addEventListener('DOMContentLoaded', () => {

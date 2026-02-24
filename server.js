@@ -1,6 +1,7 @@
 require('dotenv').config();
 const express = require('express');
 const cors = require('cors');
+const helmet = require('helmet');
 const path = require('path');
 const fs = require('fs');
 
@@ -28,9 +29,12 @@ const rateLimit = require('express-rate-limit');
 app.use('/api/payments/webhook', express.raw({ type: 'application/json' }));
 
 // Middleware
+app.use(helmet({
+    contentSecurityPolicy: false, // Disable CSP to allow CDN scripts like Tailwind/Google Fonts easily, or configure it specifically if needed
+}));
 app.use(cors());
-app.use(express.json());
-app.use(express.urlencoded({ extended: true }));
+app.use(express.json({ limit: '10mb' })); // Limit JSON size
+app.use(express.urlencoded({ extended: true, limit: '10mb' })); // Limit URL encoded size
 
 // Rate Limiting
 const limiter = rateLimit({
@@ -80,6 +84,37 @@ app.get('/api/ping', (req, res) => {
     res.send('pong');
 });
 
+// Dynamic Sitemap for SEO
+app.get('/sitemap.xml', async (req, res) => {
+    try {
+        const Ad = require('./models/Ad');
+        const ads = await Ad.findAll({ where: { status: 'active' } });
+        const host = `${req.protocol}://${req.get('host')}`;
+
+        let sitemap = '<?xml version="1.0" encoding="UTF-8"?>\n';
+        sitemap += '<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n';
+
+        // Static pages
+        const staticPages = ['', 'categories.html', 'search.html', 'plans.html', 'login.html'];
+        staticPages.forEach(page => {
+            sitemap += `  <url>\n    <loc>${host}/${page}</loc>\n    <changefreq>daily</changefreq>\n    <priority>0.8</priority>\n  </url>\n`;
+        });
+
+        // Dynamic Ad pages
+        ads.forEach(ad => {
+            sitemap += `  <url>\n    <loc>${host}/ad-details.html?id=${ad.id}</loc>\n    <lastmod>${ad.updatedAt.toISOString().split('T')[0]}</lastmod>\n    <changefreq>weekly</changefreq>\n    <priority>0.6</priority>\n  </url>\n`;
+        });
+
+        sitemap += '</urlset>';
+
+        res.header('Content-Type', 'application/xml');
+        res.status(200).send(sitemap);
+    } catch (err) {
+        console.error('Sitemap error:', err);
+        res.status(500).end();
+    }
+});
+
 // Serve static files (After API routes)
 app.use(express.static(path.join(__dirname)));
 app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
@@ -93,6 +128,40 @@ app.use((req, res, next) => {
     // you might want to serve a client-side app's index.html here,
     // or a generic 404 page. For now, we'll just send a simple text 404.
     res.status(404).send('Not Found');
+});
+
+// SSR for Ad Details (SEO & Social Sharing)
+app.get('/ad-details.html', async (req, res) => {
+    const adId = req.query.id;
+    const filePath = path.join(__dirname, 'ad-details.html');
+
+    if (!adId || !fs.existsSync(filePath)) {
+        return res.sendFile(filePath);
+    }
+
+    try {
+        const Ad = require('./models/Ad');
+        const ad = await Ad.findByPk(adId);
+
+        if (!ad) return res.sendFile(filePath);
+
+        let content = fs.readFileSync(filePath, 'utf8');
+        const images = JSON.parse(ad.images || '[]');
+        const ogImage = images[0] || '';
+        const description = ad.description ? ad.description.substring(0, 160).replace(/"/g, '&quot;') : '';
+
+        // Simple string replacement for meta tags
+        content = content.replace(/<title>.*?<\/title>/, `<title>${ad.title} - Taggerly</title>`);
+        content = content.replace(/property="og:title" content=".*?"/, `property="og:title" content="${ad.title}"`);
+        content = content.replace(/name="description" content=".*?"/, `name="description" content="${description}"`);
+        content = content.replace(/property="og:description" content=".*?"/, `property="og:description" content="${description}"`);
+        content = content.replace(/property="og:image" content=".*?"/, `property="og:image" content="${ogImage}"`);
+
+        res.send(content);
+    } catch (err) {
+        console.error('SSR Error:', err);
+        res.sendFile(filePath);
+    }
 });
 
 // Global Error Handler

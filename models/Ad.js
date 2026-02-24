@@ -74,6 +74,10 @@ const Ad = sequelize.define('Ad', {
     },
     featuredUntil: {
         type: DataTypes.DATE
+    },
+    rejectionReason: {
+        type: DataTypes.TEXT,
+        allowNull: true
     }
 }, {
     timestamps: true

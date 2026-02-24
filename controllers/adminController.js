@@ -32,7 +32,6 @@ exports.getStats = async (req, res) => {
         const thisMonth = new Date();
         thisMonth.setDate(1);
         const newUsersThisMonth = await User.count({ where: { createdAt: { [Op.gte]: thisMonth } } });
-        const newAdsThisMonth = await Ad.count({ where: { createdAt: { [Op.gte]: thisMonth } } });
 
         res.status(200).json({
             success: true,
@@ -45,8 +44,63 @@ exports.getStats = async (req, res) => {
                 totalRevenue: totalRevenue.toFixed(2),
                 monthlyRevenue: monthlyRevenue.toFixed(2),
                 newUsersThisMonth,
-                newAdsThisMonth,
                 totalTransactions: completedPayments.length
+            }
+        });
+    } catch (err) {
+        res.status(500).json({ success: false, message: err.message });
+    }
+};
+
+// @desc    Get analytics for charts
+// @route   GET /api/admin/analytics
+exports.getAnalytics = async (req, res) => {
+    try {
+        const thirtyDaysAgo = new Date();
+        thirtyDaysAgo.setDate(thirtyDaysAgo.getDate() - 30);
+
+        // Daily Users
+        const usersData = await User.findAll({
+            where: { createdAt: { [Op.gte]: thirtyDaysAgo } },
+            attributes: [
+                [require('sequelize').fn('date', require('sequelize').col('createdAt')), 'day'],
+                [require('sequelize').fn('count', require('sequelize').col('id')), 'count']
+            ],
+            group: ['day'],
+            order: [['day', 'ASC']]
+        });
+
+        // Daily Ad Views
+        const adsData = await Ad.findAll({
+            where: { createdAt: { [Op.gte]: thirtyDaysAgo } },
+            attributes: [
+                [require('sequelize').fn('date', require('sequelize').col('createdAt')), 'day'],
+                [require('sequelize').fn('sum', require('sequelize').col('views')), 'views']
+            ],
+            group: ['day'],
+            order: [['day', 'ASC']]
+        });
+
+        // Daily Revenue
+        const revenueData = await Payment.findAll({
+            where: {
+                status: 'completed',
+                createdAt: { [Op.gte]: thirtyDaysAgo }
+            },
+            attributes: [
+                [require('sequelize').fn('date', require('sequelize').col('createdAt')), 'day'],
+                [require('sequelize').fn('sum', require('sequelize').col('amount')), 'total']
+            ],
+            group: ['day'],
+            order: [['day', 'ASC']]
+        });
+
+        res.status(200).json({
+            success: true,
+            data: {
+                users: usersData,
+                ads: adsData,
+                revenue: revenueData
             }
         });
     } catch (err) {
@@ -178,7 +232,7 @@ exports.approveAd = async (req, res) => {
         });
         if (!ad) return res.status(404).json({ success: false, message: 'Ad not found' });
 
-        await ad.update({ status: 'active' });
+        await ad.update({ status: 'active', rejectionReason: null });
 
         await createNotification(req.io, {
             userId: ad.userId,
@@ -215,7 +269,7 @@ exports.rejectAd = async (req, res) => {
         if (!ad) return res.status(404).json({ success: false, message: 'Ad not found' });
 
         const reason = req.body.reason || 'Your ad did not comply with our platform policies.';
-        await ad.update({ status: 'rejected' });
+        await ad.update({ status: 'rejected', rejectionReason: reason });
 
         await createNotification(req.io, {
             userId: ad.userId,

@@ -8,7 +8,7 @@ exports.getAllAds = async (req, res) => {
         const {
             category, city, minPrice, maxPrice, search,
             condition, minYear, maxYear, minKm, maxKm,
-            isFeatured
+            isFeatured, userId
         } = req.query;
         let where = { status: 'active' };
 
@@ -16,6 +16,7 @@ exports.getAllAds = async (req, res) => {
         if (city) where.city = city;
         if (condition) where.itemCondition = condition;
         if (isFeatured) where.isFeatured = isFeatured === 'true';
+        if (userId) where.userId = userId;
 
         if (minPrice || maxPrice) {
             where.price = {};
@@ -248,10 +249,16 @@ exports.deleteAd = async (req, res) => {
 exports.getUserAds = async (req, res) => {
     try {
         const { Conversation } = require('../models/associations');
-        const ads = await Ad.findAll({
+        const page = Number(req.query.page) || 1;
+        const limit = Number(req.query.limit) || 10;
+        const offset = (page - 1) * limit;
+
+        const { count, rows: ads } = await Ad.findAndCountAll({
             where: { userId: req.user.id },
             include: [{ model: Conversation, as: 'conversations', attributes: ['id'] }],
-            order: [['createdAt', 'DESC']]
+            order: [['createdAt', 'DESC']],
+            limit,
+            offset
         });
 
         const enrichedAds = ads.map(ad => {
@@ -261,7 +268,13 @@ exports.getUserAds = async (req, res) => {
             return plainAd;
         });
 
-        res.status(200).json({ success: true, count: enrichedAds.length, data: enrichedAds });
+        res.status(200).json({
+            success: true,
+            count,
+            page,
+            totalPages: Math.ceil(count / limit),
+            data: enrichedAds
+        });
     } catch (err) {
         res.status(500).json({ success: false, message: err.message });
     }
@@ -311,10 +324,27 @@ exports.toggleFavorite = async (req, res) => {
 // @route   GET /api/ads/favorites
 exports.getFavorites = async (req, res) => {
     try {
-        const favorites = await Favorite.findAll({ where: { userId: req.user.id } });
+        const page = Number(req.query.page) || 1;
+        const limit = Number(req.query.limit) || 12;
+        const offset = (page - 1) * limit;
+
+        const { count, rows: favorites } = await Favorite.findAndCountAll({
+            where: { userId: req.user.id },
+            limit,
+            offset,
+            order: [['createdAt', 'DESC']]
+        });
+
         const adIds = favorites.map(f => f.adId);
         const ads = await Ad.findAll({ where: { id: adIds, status: 'active' } });
-        res.status(200).json({ success: true, count: ads.length, data: ads });
+
+        res.status(200).json({
+            success: true,
+            count,
+            page,
+            totalPages: Math.ceil(count / limit),
+            data: ads
+        });
     } catch (err) {
         res.status(500).json({ success: false, message: err.message });
     }

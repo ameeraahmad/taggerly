@@ -185,6 +185,10 @@ const apiClient = {
         return this.fetch('/users/profile');
     },
 
+    async getPublicProfile(id) {
+        return this.fetch(`/users/public/${id}`);
+    },
+
     async updateProfile(profileData) {
         return this.fetch('/users/profile', {
             method: 'PUT',

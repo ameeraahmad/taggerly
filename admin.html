@@ -23,6 +23,7 @@
     </script>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap"
         rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <style>
         body {
             font-family: 'Inter', sans-serif;
@@ -375,6 +376,23 @@
                                 <span class="text-sm text-gray-600 dark:text-gray-400">Monthly Revenue</span>
                                 <span id="stat-monthly" class="font-bold text-blue-600">—</span>
                             </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Charts Section -->
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
+                    <div class="stat-card">
+                        <h3 class="font-bold text-sm mb-4 text-gray-700 dark:text-gray-300">New Users (Last 30 Days)
+                        </h3>
+                        <div class="h-64">
+                            <canvas id="usersChart"></canvas>
+                        </div>
+                    </div>
+                    <div class="stat-card">
+                        <h3 class="font-bold text-sm mb-4 text-gray-700 dark:text-gray-300">Daily Ad Views</h3>
+                        <div class="h-64">
+                            <canvas id="viewsChart"></canvas>
                         </div>
                     </div>
                 </div>
@@ -1112,9 +1130,82 @@
             } catch (e) { alert(e.message); }
         }
 
+        // ===================== ANALYTICS =====================
+        let usersChart, viewsChart;
+
+        async function loadAnalytics() {
+            try {
+                const res = await apiClient.fetch('/admin/analytics');
+                const { users, ads, revenue } = res.data;
+
+                renderUsersChart(users);
+                renderViewsChart(ads);
+            } catch (err) {
+                console.error('Analytics load error:', err);
+            }
+        }
+
+        function renderUsersChart(data) {
+            const ctx = document.getElementById('usersChart').getContext('2d');
+            if (usersChart) usersChart.destroy();
+
+            usersChart = new Chart(ctx, {
+                type: 'line',
+                data: {
+                    labels: data.map(d => d.day),
+                    datasets: [{
+                        label: 'New Users',
+                        data: data.map(d => d.count),
+                        borderColor: '#FF6B00',
+                        backgroundColor: 'rgba(255, 107, 0, 0.1)',
+                        fill: true,
+                        tension: 0.4,
+                        borderWidth: 2
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: { legend: { display: false } },
+                    scales: {
+                        y: { beginAtZero: true, grid: { display: false } },
+                        x: { grid: { display: false } }
+                    }
+                }
+            });
+        }
+
+        function renderViewsChart(data) {
+            const ctx = document.getElementById('viewsChart').getContext('2d');
+            if (viewsChart) viewsChart.destroy();
+
+            viewsChart = new Chart(ctx, {
+                type: 'bar',
+                data: {
+                    labels: data.map(d => d.day),
+                    datasets: [{
+                        label: 'Ad Views',
+                        data: data.map(d => d.views || 0),
+                        backgroundColor: '#0B2447',
+                        borderRadius: 4
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: { legend: { display: false } },
+                    scales: {
+                        y: { beginAtZero: true, grid: { display: false } },
+                        x: { grid: { display: false } }
+                    }
+                }
+            });
+        }
+
         // ===================== INIT =====================
         document.addEventListener('DOMContentLoaded', () => {
             loadStats();
+            loadAnalytics();
         });
     </script>
 </body>

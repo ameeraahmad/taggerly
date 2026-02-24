@@ -4,7 +4,14 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Toyota Camry 2024 - Ad Details - Dubizzle Clone</title>
+    <title>Ad Details - Taggerly</title>
+    <!-- Dynamic Meta Tags for SEO & Social Sharing -->
+    <meta name="description" content="Check out this ad on Taggerly - The best marketplace.">
+    <meta property="og:title" content="Ad Details - Taggerly">
+    <meta property="og:description" content="Check out this luxury item on Taggerly.">
+    <meta property="og:image" content="assets/img/og-placeholder.png">
+    <meta property="og:type" content="website">
+    <meta name="twitter:card" content="summary_large_image">
     <script src="https://cdn.tailwindcss.com"></script>
     <script>
         tailwind.config = {
@@ -570,8 +577,7 @@
                     </div>
                     <a href="#" id="view-seller-profile"
                         class="block text-center w-full border border-gray-300 dark:border-gray-600 py-2 rounded-lg text-sm text-gray-600 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700 transition"
-                        data-translate="viewProfile">View
-                        Profile</a>
+                        data-translate="viewProfile">View Profile</a>
                 </div>
 
                 <!-- Map Location (Placeholder) -->
@@ -810,6 +816,12 @@
                         const joinDate = new Date(ad.user.createdAt);
                         const year = joinDate.getFullYear();
                         joinedContainer.innerHTML = `<span data-translate="memberSince">Member since</span> ${year}`;
+                    }
+
+                    // Profile Link
+                    const profileLink = document.getElementById('view-seller-profile');
+                    if (profileLink) {
+                        profileLink.href = `seller-profile.html?id=${ad.userId}`;
                     }
                 }
 

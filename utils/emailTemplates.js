@@ -10,52 +10,56 @@ const BASE_STYLES = `
   padding: 0;
 `;
 
-const BRAND_COLOR = '#e74c3c';
-const BRAND_COLOR_DARK = '#c0392b';
-const TEXT_COLOR = '#2d3748';
-const MUTED_COLOR = '#718096';
+const BRAND_COLOR = '#FF6B00'; // Match site accent color
+const BRAND_COLOR_DARK = '#e66000';
+const TEXT_COLOR = '#1a202c';
+const MUTED_COLOR = '#4a5568';
+const BG_COLOR = '#f7fafc';
 
-function baseLayout(content, previewText = '') {
-    return `<!DOCTYPE html>
-<html lang="en" dir="ltr">
+function baseLayout(content, previewText = '', isRTL = false) {
+  return `<!DOCTYPE html>
+<html lang="${isRTL ? 'ar' : 'en'}" dir="${isRTL ? 'rtl' : 'ltr'}">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Dubizzle Clone</title>
+  <title>Taggerly</title>
   <!--[if mso]><noscript><xml><o:OfficeDocumentSettings><o:PixelsPerInch>96</o:PixelsPerInch></o:OfficeDocumentSettings></xml></noscript><![endif]-->
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;700&family=Noto+Sans+Arabic:wght@400;700&display=swap');
+    * { font-family: 'Inter', 'Noto Sans Arabic', Segoe UI, sans-serif; }
+  </style>
 </head>
-<body style="${BASE_STYLES}">
-  ${previewText ? `<div style="display:none;max-height:0;overflow:hidden;font-size:1px;color:#f4f6f9;">${previewText}</div>` : ''}
-  <table width="100%" cellpadding="0" cellspacing="0" border="0" style="background-color:#f4f6f9; padding: 40px 20px;">
+<body style="margin:0; padding:0; background-color:${BG_COLOR};">
+  ${previewText ? `<div style="display:none;max-height:0;overflow:hidden;font-size:1px;color:${BG_COLOR};">${previewText}</div>` : ''}
+  <table width="100%" cellpadding="0" cellspacing="0" border="0" style="background-color:${BG_COLOR}; padding: 32px 16px;">
     <tr>
       <td align="center">
-        <table width="600" cellpadding="0" cellspacing="0" border="0" style="max-width:600px; width:100%;">
-
+        <table width="600" cellpadding="0" cellspacing="0" border="0" style="max-width:600px; width:100%; background:#ffffff; border-radius:16px; overflow:hidden; box-shadow: 0 4px 6px rgba(0,0,0,0.05);">
+          
           <!-- HEADER -->
           <tr>
-            <td style="background: linear-gradient(135deg, ${BRAND_COLOR} 0%, ${BRAND_COLOR_DARK} 100%); border-radius: 12px 12px 0 0; padding: 32px 40px; text-align: center;">
-              <h1 style="margin:0; color:#ffffff; font-size:28px; font-weight:800; letter-spacing:-0.5px;">
-                🏪 Dubizzle Clone
+            <td style="background-color: #0B2447; padding: 32px; text-align: center;">
+              <h1 style="margin:0; color:#ffffff; font-size:24px; font-weight:800; letter-spacing:-0.5px;">
+                <span style="color:${BRAND_COLOR};">T</span>aggerly
               </h1>
-              <p style="margin:8px 0 0; color:rgba(255,255,255,0.85); font-size:14px;">Your trusted marketplace</p>
             </td>
           </tr>
 
-          <!-- BODY -->
+          <!-- CONTENT -->
           <tr>
-            <td style="background:#ffffff; padding: 40px 40px 32px; border-left: 1px solid #e2e8f0; border-right: 1px solid #e2e8f0;">
+            <td style="padding: 40px;">
               ${content}
             </td>
           </tr>
 
           <!-- FOOTER -->
           <tr>
-            <td style="background:#f8fafc; border: 1px solid #e2e8f0; border-top: none; border-radius: 0 0 12px 12px; padding: 24px 40px; text-align:center;">
-              <p style="margin:0 0 8px; color:${MUTED_COLOR}; font-size:13px;">
-                You received this email because you have an account on Dubizzle Clone.
+            <td style="background:#f1f5f9; padding: 24px; text-align:center; border-top: 1px solid #e2e8f0;">
+              <p style="margin:0 0 8px; color:${MUTED_COLOR}; font-size:12px;">
+                You're receiving this because you're a registered user of Taggerly.
               </p>
-              <p style="margin:0; color:${MUTED_COLOR}; font-size:12px;">
-                © ${new Date().getFullYear()} Dubizzle Clone. All rights reserved.
+              <p style="margin:0; color:${MUTED_COLOR}; font-size:11px;">
+                © ${new Date().getFullYear()} Taggerly. All rights reserved.
               </p>
             </td>
           </tr>
@@ -69,249 +73,168 @@ function baseLayout(content, previewText = '') {
 }
 
 function buttonStyle(color = BRAND_COLOR) {
-    return `display:inline-block; background:${color}; color:#ffffff; text-decoration:none; padding:14px 32px; border-radius:8px; font-size:15px; font-weight:700; letter-spacing:0.3px; margin: 24px 0;`;
+  return `display:inline-block; background-color:${color}; color:#ffffff; text-decoration:none; padding:12px 28px; border-radius:10px; font-size:15px; font-weight:700; margin: 20px 0;`;
 }
 
-function dividerStyle() {
-    return `border:none; border-top: 1px solid #e2e8f0; margin: 24px 0;`;
-}
-
-// ─────────────────────────────────────────────
-// 1. Welcome Email
-// ─────────────────────────────────────────────
 function welcomeEmail({ name, verifyURL }) {
-    const content = `
-      <h2 style="margin:0 0 8px; color:${TEXT_COLOR}; font-size:24px; font-weight:700;">Welcome, ${name}! 🎉</h2>
-      <p style="margin:0 0 20px; color:${MUTED_COLOR}; font-size:15px; line-height:1.6;">
-        We're excited to have you on board. Dubizzle Clone is your go-to platform for buying and selling anything — from cars to electronics, properties, and more.
-      </p>
-      <hr style="${dividerStyle()}" />
-      <p style="margin:0 0 8px; color:${TEXT_COLOR}; font-size:15px; font-weight:600;">✅ First step: Verify your email</p>
-      <p style="margin:0 0 20px; color:${MUTED_COLOR}; font-size:14px; line-height:1.6;">
-        Please confirm your email address to activate all features of your account.
-      </p>
+  const content = `
       <div style="text-align:center;">
-        <a href="${verifyURL}" style="${buttonStyle()}">Verify My Email</a>
+        <h2 style="color:${TEXT_COLOR}; font-size:22px; margin-bottom:12px;">Welcome to Taggerly, ${name}! 🎉</h2>
+        <p style="color:${MUTED_COLOR}; font-size:15px; margin-bottom:24px; line-height:1.5;">
+          Your account has been successfully created. Please verify your email to start posting ads.
+        </p>
+        
+        <a href="${verifyURL}" style="${buttonStyle()}">Verify Email Address</a>
+
+        <hr style="border:none; border-top:1px solid #edf2f7; margin:32px 0;" />
+        
+        <h2 style="color:${TEXT_COLOR}; font-size:22px; margin-bottom:12px; direction:rtl;">أهلاً بك في تاجرلي، ${name}! 🎉</h2>
+        <p style="color:${MUTED_COLOR}; font-size:15px; margin-bottom:24px; line-height:1.5; direction:rtl;">
+          تم إنشاء حسابك بنجاح. يرجى تفعيل بريدك الإلكتروني لتبدأ في نشر إعلاناتك.
+        </p>
+        
+        <a href="${verifyURL}" style="${buttonStyle()}">تفعيل البريد الإلكتروني</a>
       </div>
-      <p style="margin:16px 0 0; color:${MUTED_COLOR}; font-size:12px; text-align:center;">
-        This link expires in 24 hours. If you didn't create an account, please ignore this email.
-      </p>
-      <hr style="${dividerStyle()}" />
-      <table width="100%" cellpadding="0" cellspacing="0">
-        <tr>
-          <td width="33%" style="text-align:center; padding:8px;">
-            <div style="font-size:24px;">📢</div>
-            <p style="margin:4px 0 0; color:${TEXT_COLOR}; font-size:13px; font-weight:600;">Post Ads</p>
-          </td>
-          <td width="33%" style="text-align:center; padding:8px;">
-            <div style="font-size:24px;">💬</div>
-            <p style="margin:4px 0 0; color:${TEXT_COLOR}; font-size:13px; font-weight:600;">Live Chat</p>
-          </td>
-          <td width="33%" style="text-align:center; padding:8px;">
-            <div style="font-size:24px;">🛡️</div>
-            <p style="margin:4px 0 0; color:${TEXT_COLOR}; font-size:13px; font-weight:600;">Safe & Secure</p>
-          </td>
-        </tr>
-      </table>
     `;
-    return baseLayout(content, `Welcome to Dubizzle Clone, ${name}! Verify your email to get started.`);
+  return baseLayout(content, 'Welcome to Taggerly! / أهلاً بك في تاجرلي');
 }
 
-// ─────────────────────────────────────────────
-// 2. Reset Password Email
-// ─────────────────────────────────────────────
 function resetPasswordEmail({ name, resetURL }) {
-    const content = `
-      <div style="text-align:center; margin-bottom:24px;">
-        <div style="display:inline-block; background:#fff5f5; border-radius:50%; width:64px; height:64px; line-height:64px; font-size:28px;">🔐</div>
-      </div>
-      <h2 style="margin:0 0 8px; color:${TEXT_COLOR}; font-size:24px; font-weight:700; text-align:center;">Reset Your Password</h2>
-      <p style="margin:0 0 20px; color:${MUTED_COLOR}; font-size:15px; line-height:1.6; text-align:center;">
-        Hi ${name}, we received a request to reset your password. Click the button below to choose a new password.
-      </p>
+  const content = `
       <div style="text-align:center;">
-        <a href="${resetURL}" style="${buttonStyle()}">Reset Password</a>
+        <h2 style="color:${TEXT_COLOR}; font-size:22px; margin-bottom:12px;">Reset Your Password</h2>
+        <p style="color:${MUTED_COLOR}; font-size:15px; margin-bottom:24px; line-height:1.5;">
+          Hello ${name}, click the button below to reset your password. This link is valid for 10 minutes.
+        </p>
+        <a href="${resetURL}" style="${buttonStyle('#e53e3e')}">Reset Password</a>
+
+        <hr style="border:none; border-top:1px solid #edf2f7; margin:32px 0;" />
+        
+        <h2 style="color:${TEXT_COLOR}; font-size:22px; margin-bottom:12px; direction:rtl;">إعادة تعيين كلمة المرور</h2>
+        <p style="color:${MUTED_COLOR}; font-size:15px; margin-bottom:24px; line-height:1.5; direction:rtl;">
+          مرحباً ${name}، اضغط على الزر أدناه لإعادة تعيين كلمة مرورك. هذا الرابط صالح لمدة 10 دقائق فقط.
+        </p>
+        <a href="${resetURL}" style="${buttonStyle('#e53e3e')}">إعادة تعيين كلمة المرور</a>
       </div>
-      <hr style="${dividerStyle()}" />
-      <p style="margin:0; color:${MUTED_COLOR}; font-size:13px; line-height:1.6;">
-        ⏰ This link is valid for <strong>10 minutes</strong> only.<br/>
-        🔒 If you didn't request a password reset, please ignore this email — your account is safe.<br/>
-        🛡️ Never share this link with anyone.
-      </p>
     `;
-    return baseLayout(content, 'Password reset requested for your Dubizzle Clone account.');
+  return baseLayout(content, 'Reset password requested for Taggerly / طلب إعادة تعيين كلمة المرور');
 }
 
-// ─────────────────────────────────────────────
-// 3. Email Verification (standalone)
-// ─────────────────────────────────────────────
-function emailVerificationEmail({ name, verifyURL }) {
-    const content = `
-      <div style="text-align:center; margin-bottom:24px;">
-        <div style="display:inline-block; background:#f0fff4; border-radius:50%; width:64px; height:64px; line-height:64px; font-size:28px;">✉️</div>
-      </div>
-      <h2 style="margin:0 0 8px; color:${TEXT_COLOR}; font-size:24px; font-weight:700; text-align:center;">Verify Your Email Address</h2>
-      <p style="margin:0 0 20px; color:${MUTED_COLOR}; font-size:15px; line-height:1.6; text-align:center;">
-        Hi ${name}, please click the button below to verify your email address and activate your account.
-      </p>
+function adApprovedEmail({ userName, adTitle, adURL }) {
+  const content = `
       <div style="text-align:center;">
-        <a href="${verifyURL}" style="${buttonStyle('#27ae60')}">Verify Email Address</a>
+        <div style="font-size:40px; margin-bottom:16px;">✅</div>
+        <h2 style="color:${TEXT_COLOR}; font-size:22px; margin-bottom:12px;">Your Ad is Live!</h2>
+        <p style="color:${MUTED_COLOR}; font-size:15px; margin-bottom:12px; line-height:1.5;">
+          Good news, ${userName}! Your ad <strong>"${adTitle}"</strong> has been approved.
+        </p>
+        <a href="${adURL}" style="${buttonStyle('#38a169')}">View Ad</a>
+
+        <hr style="border:none; border-top:1px solid #edf2f7; margin:32px 0;" />
+        
+        <h2 style="color:${TEXT_COLOR}; font-size:22px; margin-bottom:12px; direction:rtl;">تمت الموافقة على إعلانك!</h2>
+        <p style="color:${MUTED_COLOR}; font-size:15px; margin-bottom:12px; line-height:1.5; direction:rtl;">
+          أخبار سارة يا ${userName}! لقد تمت مراجعة إعلانك <strong>"${adTitle}"</strong> والموافقة على نشره.
+        </p>
+        <a href="${adURL}" style="${buttonStyle('#38a169')}">مشاهدة الإعلان</a>
       </div>
-      <hr style="${dividerStyle()}" />
-      <p style="margin:0; color:${MUTED_COLOR}; font-size:13px; line-height:1.6; text-align:center;">
-        This link expires in 24 hours. If you didn't create an account, please ignore this email.
-      </p>
     `;
-    return baseLayout(content, `Verify your email for Dubizzle Clone.`);
+  return baseLayout(content, `Ad Approved: ${adTitle} / تمت الموافقة على إعلانك`);
 }
 
-// ─────────────────────────────────────────────
-// 4. New Message Notification
-// ─────────────────────────────────────────────
+function adRejectedEmail({ userName, adTitle, reason }) {
+  const content = `
+      <div style="text-align:center;">
+        <div style="font-size:40px; margin-bottom:16px;">❌</div>
+        <h2 style="color:${TEXT_COLOR}; font-size:22px; margin-bottom:12px;">Action Required: Ad Rejected</h2>
+        <p style="color:${MUTED_COLOR}; font-size:14px; margin-bottom:12px; line-height:1.5;">
+          Hello ${userName}, unfortunately your ad <strong>"${adTitle}"</strong> was not approved.
+        </p>
+        <div style="background:#fff5f5; border-radius:8px; padding:16px; margin:16px 0; text-align:left;">
+            <p style="color:#c53030; font-size:13px; margin:0;"><strong>Reason:</strong> ${reason}</p>
+        </div>
+
+        <hr style="border:none; border-top:1px solid #edf2f7; margin:32px 0;" />
+        
+        <h2 style="color:${TEXT_COLOR}; font-size:22px; margin-bottom:12px; direction:rtl;">تنبيه: لم يتم قبول الإعلان</h2>
+        <p style="color:${MUTED_COLOR}; font-size:14px; margin-bottom:12px; line-height:1.5; direction:rtl;">
+          مرحباً ${userName}، للأسف لم تتم الموافقة على نشر إعلانك <strong>"${adTitle}"</strong>.
+        </p>
+        <div style="background:#fff5f5; border-radius:8px; padding:16px; margin:16px 0; text-align:right; direction:rtl;">
+            <p style="color:#c53030; font-size:13px; margin:0;"><strong>السبب:</strong> ${reason}</p>
+        </div>
+      </div>
+    `;
+  return baseLayout(content, `Ad Rejected: ${adTitle} / لم يتم قبول الإعلان`);
+}
+
 function newMessageEmail({ recipientName, senderName, adTitle, messagePreview, chatURL }) {
-    const content = `
-      <div style="text-align:center; margin-bottom:24px;">
-        <div style="display:inline-block; background:#eff6ff; border-radius:50%; width:64px; height:64px; line-height:64px; font-size:28px;">💬</div>
+  const content = `
+      <div>
+        <h2 style="color:${TEXT_COLOR}; font-size:20px; margin-bottom:12px;">New Message!</h2>
+        <p style="color:${MUTED_COLOR}; font-size:15px; line-height:1.5;">
+          You have a new message from <strong>${senderName}</strong> regarding "<strong>${adTitle}</strong>".
+        </p>
+        <div style="background:#f7fafc; padding:16px; border-radius:8px; margin:16px 0; font-style:italic;">
+          "${messagePreview}"
+        </div>
+        <div style="text-align:center;">
+            <a href="${chatURL}" style="${buttonStyle()}">Reply Now</a>
+        </div>
+
+        <hr style="border:none; border-top:1px solid #edf2f7; margin:32px 0;" />
+        
+        <div style="direction:rtl; text-align:right;">
+            <h2 style="color:${TEXT_COLOR}; font-size:20px; margin-bottom:12px;">رسالة جديدة!</h2>
+            <p style="color:${MUTED_COLOR}; font-size:15px; line-height:1.5;">
+              لديك رسالة جديدة من <strong>${senderName}</strong> بخصوص "<strong>${adTitle}</strong>".
+            </p>
+            <div style="background:#f7fafc; padding:16px; border-radius:8px; margin:16px 0; font-style:italic;">
+              "${messagePreview}"
+            </div>
+            <div style="text-align:center;">
+                <a href="${chatURL}" style="${buttonStyle()}">الرد الآن</a>
+            </div>
+        </div>
       </div>
-      <h2 style="margin:0 0 8px; color:${TEXT_COLOR}; font-size:24px; font-weight:700;">New Message From ${senderName}</h2>
-      <p style="margin:0 0 20px; color:${MUTED_COLOR}; font-size:15px; line-height:1.6;">
-        Hi ${recipientName}, you have a new message regarding your ad <strong>"${adTitle}"</strong>.
-      </p>
-      <div style="background:#f8fafc; border-left: 4px solid ${BRAND_COLOR}; border-radius: 0 8px 8px 0; padding: 16px 20px; margin-bottom:24px;">
-        <p style="margin:0 0 4px; color:${MUTED_COLOR}; font-size:12px; text-transform:uppercase; letter-spacing:1px;">Message Preview</p>
-        <p style="margin:0; color:${TEXT_COLOR}; font-size:15px; font-style:italic;">"${messagePreview}"</p>
-      </div>
-      <div style="text-align:center;">
-        <a href="${chatURL}" style="${buttonStyle()}">View & Reply</a>
-      </div>
-      <hr style="${dividerStyle()}" />
-      <p style="margin:0; color:${MUTED_COLOR}; font-size:13px; text-align:center;">
-        Reply quickly to increase your chances of a successful sale!
-      </p>
     `;
-    return baseLayout(content, `${senderName} sent you a message about "${adTitle}"`);
+  return baseLayout(content, `New message from ${senderName} / رسالة جديدة`);
 }
 
-// ─────────────────────────────────────────────
-// 5. Payment Receipt
-// ─────────────────────────────────────────────
-function paymentReceiptEmail({ userName, plan, amount, currency = 'USD', transactionId, date, features = [] }) {
-    const featuresList = features.map(f => `
-      <tr>
-        <td style="padding: 8px 0; color:${TEXT_COLOR}; font-size:14px; border-bottom: 1px solid #f0f0f0;">
-          ✅ ${f}
-        </td>
-      </tr>
-    `).join('');
+function emailVerificationEmail({ name, verifyURL }) {
+  return welcomeEmail({ name, verifyURL }); // Re-use welcome logic
+}
 
-    const content = `
-      <div style="text-align:center; margin-bottom:24px;">
-        <div style="display:inline-block; background:#f0fff4; border-radius:50%; width:64px; height:64px; line-height:64px; font-size:28px;">🎉</div>
-      </div>
-      <h2 style="margin:0 0 8px; color:${TEXT_COLOR}; font-size:24px; font-weight:700; text-align:center;">Payment Successful!</h2>
-      <p style="margin:0 0 24px; color:${MUTED_COLOR}; font-size:15px; line-height:1.6; text-align:center;">
-        Hi ${userName}, thank you for your purchase. Your payment has been processed successfully.
-      </p>
+function paymentReceiptEmail({ userName, plan, amount, currency = 'USD', transactionId, date }) {
+  const content = `
+      <div style="text-align:center;">
+        <h2 style="color:${TEXT_COLOR}; font-size:22px; margin-bottom:12px;">Payment Receipt</h2>
+        <table width="100%" style="text-align:left; border-collapse:collapse; margin:20px 0; font-size:14px;">
+            <tr><td style="padding:8px 0; border-bottom:1px solid #edf2f7;">Plan:</td><td style="padding:8px 0; border-bottom:1px solid #edf2f7; text-align:right;">${plan}</td></tr>
+            <tr><td style="padding:8px 0; border-bottom:1px solid #edf2f7;">Amount:</td><td style="padding:8px 0; border-bottom:1px solid #edf2f7; text-align:right;">${amount} ${currency}</td></tr>
+            <tr><td style="padding:8px 0; border-bottom:1px solid #edf2f7;">Transaction:</td><td style="padding:8px 0; border-bottom:1px solid #edf2f7; text-align:right;">${transactionId}</td></tr>
+        </table>
+        <a href="#" style="${buttonStyle()}">Download Invoice</a>
 
-      <!-- Receipt Box -->
-      <div style="background:#f8fafc; border: 1px solid #e2e8f0; border-radius:10px; padding: 24px; margin-bottom:24px;">
-        <h3 style="margin:0 0 16px; color:${TEXT_COLOR}; font-size:16px; font-weight:700; text-align:center; text-transform:uppercase; letter-spacing:1px;">Payment Receipt</h3>
-        <table width="100%" cellpadding="0" cellspacing="0">
-          <tr>
-            <td style="padding:8px 0; color:${MUTED_COLOR}; font-size:13px;">Plan</td>
-            <td style="padding:8px 0; color:${TEXT_COLOR}; font-size:14px; font-weight:600; text-align:right;">${plan}</td>
-          </tr>
-          <tr>
-            <td style="padding:8px 0; color:${MUTED_COLOR}; font-size:13px; border-top:1px solid #e2e8f0;">Amount</td>
-            <td style="padding:8px 0; color:${TEXT_COLOR}; font-size:14px; font-weight:600; text-align:right; border-top:1px solid #e2e8f0;">${amount} ${currency.toUpperCase()}</td>
-          </tr>
-          <tr>
-            <td style="padding:8px 0; color:${MUTED_COLOR}; font-size:13px; border-top:1px solid #e2e8f0;">Transaction ID</td>
-            <td style="padding:8px 0; color:${TEXT_COLOR}; font-size:12px; font-weight:600; text-align:right; border-top:1px solid #e2e8f0; word-break:break-all;">${transactionId}</td>
-          </tr>
-          <tr>
-            <td style="padding:8px 0; color:${MUTED_COLOR}; font-size:13px; border-top:1px solid #e2e8f0;">Date</td>
-            <td style="padding:8px 0; color:${TEXT_COLOR}; font-size:14px; font-weight:600; text-align:right; border-top:1px solid #e2e8f0;">${date}</td>
-          </tr>
+        <hr style="border:none; border-top:1px solid #edf2f7; margin:32px 0;" />
+        
+        <h2 style="color:${TEXT_COLOR}; font-size:22px; margin-bottom:12px; direction:rtl;">إيصال الدفع</h2>
+        <table width="100%" style="text-align:right; direction:rtl; border-collapse:collapse; margin:20px 0; font-size:14px;">
+            <tr><td style="padding:8px 0; border-bottom:1px solid #edf2f7;">الباقة:</td><td style="padding:8px 0; border-bottom:1px solid #edf2f7; text-align:left;">${plan}</td></tr>
+            <tr><td style="padding:8px 0; border-bottom:1px solid #edf2f7;">المبلغ:</td><td style="padding:8px 0; border-bottom:1px solid #edf2f7; text-align:left;">${amount} ${currency}</td></tr>
+            <tr><td style="padding:8px 0; border-bottom:1px solid #edf2f7;">رقم العملية:</td><td style="padding:8px 0; border-bottom:1px solid #edf2f7; text-align:left;">${transactionId}</td></tr>
         </table>
       </div>
-
-      ${featuresList ? `
-      <h3 style="margin:0 0 8px; color:${TEXT_COLOR}; font-size:15px; font-weight:700;">What's Included:</h3>
-      <table width="100%" cellpadding="0" cellspacing="0">
-        ${featuresList}
-      </table>
-      ` : ''}
-
-      <div style="text-align:center; margin-top:24px;">
-        <a href="/dashboard.html" style="${buttonStyle()}">Go to Dashboard</a>
-      </div>
     `;
-    return baseLayout(content, `Payment confirmed! Your ${plan} is now active.`);
-}
-
-// ─────────────────────────────────────────────
-// 6. Ad Approved
-// ─────────────────────────────────────────────
-function adApprovedEmail({ userName, adTitle, adURL }) {
-    const content = `
-      <div style="text-align:center; margin-bottom:24px;">
-        <div style="display:inline-block; background:#f0fff4; border-radius:50%; width:64px; height:64px; line-height:64px; font-size:28px;">✅</div>
-      </div>
-      <h2 style="margin:0 0 8px; color:${TEXT_COLOR}; font-size:24px; font-weight:700; text-align:center;">Your Ad is Now Live!</h2>
-      <p style="margin:0 0 20px; color:${MUTED_COLOR}; font-size:15px; line-height:1.6; text-align:center;">
-        Hi ${userName}, great news! Your ad has been reviewed and approved by our team.
-      </p>
-      <div style="background:#f0fff4; border: 1px solid #c6f6d5; border-radius:10px; padding:16px 20px; margin-bottom:24px; text-align:center;">
-        <p style="margin:0; color:#276749; font-size:16px; font-weight:700;">"${adTitle}"</p>
-        <p style="margin:4px 0 0; color:#48bb78; font-size:13px;">is now visible to all users</p>
-      </div>
-      <div style="text-align:center;">
-        <a href="${adURL}" style="${buttonStyle('#27ae60')}">View My Ad</a>
-      </div>
-      <hr style="${dividerStyle()}" />
-      <p style="margin:0; color:${MUTED_COLOR}; font-size:13px; text-align:center;">
-        💡 Tip: Share your ad on social media to get more visibility and sell faster!
-      </p>
-    `;
-    return baseLayout(content, `Your ad "${adTitle}" has been approved and is now live!`);
-}
-
-// ─────────────────────────────────────────────
-// 7. Ad Rejected
-// ─────────────────────────────────────────────
-function adRejectedEmail({ userName, adTitle, reason }) {
-    const content = `
-      <div style="text-align:center; margin-bottom:24px;">
-        <div style="display:inline-block; background:#fff5f5; border-radius:50%; width:64px; height:64px; line-height:64px; font-size:28px;">❌</div>
-      </div>
-      <h2 style="margin:0 0 8px; color:${TEXT_COLOR}; font-size:24px; font-weight:700; text-align:center;">Ad Requires Attention</h2>
-      <p style="margin:0 0 20px; color:${MUTED_COLOR}; font-size:15px; line-height:1.6; text-align:center;">
-        Hi ${userName}, unfortunately your ad <strong>"${adTitle}"</strong> was not approved.
-      </p>
-      ${reason ? `
-      <div style="background:#fff5f5; border: 1px solid #feb2b2; border-radius:10px; padding:16px 20px; margin-bottom:24px;">
-        <p style="margin:0 0 4px; color:#c53030; font-size:12px; text-transform:uppercase; letter-spacing:1px; font-weight:700;">Reason</p>
-        <p style="margin:0; color:#742a2a; font-size:14px; line-height:1.6;">${reason}</p>
-      </div>
-      ` : ''}
-      <div style="text-align:center;">
-        <a href="/post-ad.html" style="${buttonStyle()}">Post a New Ad</a>
-      </div>
-      <hr style="${dividerStyle()}" />
-      <p style="margin:0; color:${MUTED_COLOR}; font-size:13px; text-align:center;">
-        If you believe this was a mistake, please contact our support team.
-      </p>
-    `;
-    return baseLayout(content, `Action required: Your ad "${adTitle}" was not approved.`);
+  return baseLayout(content, 'Payment Receipt / إيصال الدفع');
 }
 
 module.exports = {
-    welcomeEmail,
-    resetPasswordEmail,
-    emailVerificationEmail,
-    newMessageEmail,
-    paymentReceiptEmail,
-    adApprovedEmail,
-    adRejectedEmail
+  welcomeEmail,
+  resetPasswordEmail,
+  emailVerificationEmail,
+  newMessageEmail,
+  paymentReceiptEmail,
+  adApprovedEmail,
+  adRejectedEmail
 };

@@ -1,0 +1,433 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title id="page-title">Seller Profile - Dubizzle Clone</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: {
+                        primary: '#0B2447',
+                        secondary: '#F5F5F5',
+                        accent: '#FF6B00',
+                    }
+                }
+            }
+        }
+    </script>
+    <script>
+        if (localStorage.getItem('theme') === 'dark' || (!('theme' in localStorage) && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
+            document.documentElement.classList.add('dark');
+        } else {
+            document.documentElement.classList.remove('dark');
+        }
+    </script>
+    <link href="assets/css/style.css" rel="stylesheet">
+</head>
+
+<body class="bg-gray-50 dark:bg-gray-900 text-gray-800 dark:text-gray-100 transition-colors duration-300">
+
+    <!-- Header -->
+    <header id="main-header"></header>
+
+    <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10 animate-fade-in">
+        <!-- Hero Section -->
+        <div class="bg-white dark:bg-gray-800 rounded-3xl shadow-xl overflow-hidden mb-12 border dark:border-gray-700">
+            <div class="h-32 bg-gradient-to-r from-primary to-accent opacity-90"></div>
+            <div
+                class="px-8 pb-8 -mt-12 relative flex flex-col md:flex-row items-center md:items-end gap-6 text-center md:text-left">
+                <div class="w-32 h-32 rounded-3xl bg-white dark:bg-gray-700 p-1 shadow-2xl relative overflow-hidden">
+                    <img id="seller-large-avatar" src="" alt="Seller Avatar"
+                        class="w-full h-full object-cover rounded-2xl hidden">
+                    <div id="seller-large-initials"
+                        class="w-full h-full flex items-center justify-center text-4xl font-black text-gray-300">?</div>
+                </div>
+                <div class="flex-grow pb-2">
+                    <div class="flex flex-col md:flex-row md:items-center gap-2 items-center">
+                        <h1 id="seller-name-heading" class="text-4xl font-black text-gray-900 dark:text-white">
+                            Loading...</h1>
+                        <span id="verified-badge"
+                            class="hidden bg-green-100 text-green-700 text-[10px] uppercase font-black px-2 py-0.5 rounded-full flex items-center gap-1">
+                            <svg class="w-3 h-3" fill="currentColor" viewBox="0 0 20 20">
+                                <path fill-rule="evenodd"
+                                    d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z"
+                                    clip-rule="evenodd"></path>
+                            </svg>
+                            Verified
+                        </span>
+                    </div>
+                    <p id="seller-location-text"
+                        class="text-gray-500 dark:text-gray-400 font-medium flex items-center gap-1 justify-center md:justify-start">
+                        <svg class="w-4 h-4 text-accent" fill="currentColor" viewBox="0 0 20 20">
+                            <path fill-rule="evenodd"
+                                d="M5.05 4.05a7 7 0 119.9 9.9L10 18.9l-4.95-4.95a7 7 0 010-9.9zM10 11a2 2 0 100-4 2 2 0 000 4z"
+                                clip-rule="evenodd"></path>
+                        </svg>
+                        <span>-</span>
+                    </p>
+                </div>
+                <div class="flex gap-3 pb-2">
+                    <button
+                        class="bg-primary text-white px-6 py-3 rounded-2xl font-bold hover:bg-slate-800 transition shadow-lg shadow-primary/20 flex items-center gap-2">
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z">
+                            </path>
+                        </svg>
+                        Chat
+                    </button>
+                    <button
+                        class="bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-200 px-6 py-3 rounded-2xl font-bold hover:bg-gray-200 dark:hover:bg-gray-600 transition">
+                        Share
+                    </button>
+                </div>
+            </div>
+
+            <div
+                class="px-8 py-6 bg-gray-50 dark:bg-gray-800/50 border-t dark:border-gray-700 flex flex-wrap gap-12 justify-center md:justify-start">
+                <div>
+                    <span
+                        class="block text-xs uppercase font-black text-gray-400 dark:text-gray-500 tracking-widest mb-1">Success
+                        Rate</span>
+                    <span class="text-xl font-black text-gray-900 dark:text-white">98%</span>
+                </div>
+                <div>
+                    <span
+                        class="block text-xs uppercase font-black text-gray-400 dark:text-gray-500 tracking-widest mb-1">Active
+                        Ads</span>
+                    <span id="active-ads-count" class="text-xl font-black text-gray-900 dark:text-white">-</span>
+                </div>
+                <div>
+                    <span
+                        class="block text-xs uppercase font-black text-gray-400 dark:text-gray-500 tracking-widest mb-1">Sold
+                        Items</span>
+                    <span class="text-xl font-black text-gray-900 dark:text-white">24</span>
+                </div>
+                <div>
+                    <span
+                        class="block text-xs uppercase font-black text-gray-400 dark:text-gray-500 tracking-widest mb-1">Joined</span>
+                    <span id="member-since" class="text-xl font-black text-gray-900 dark:text-white">-</span>
+                </div>
+            </div>
+        </div>
+
+        <div class="grid grid-cols-1 lg:grid-cols-3 gap-12">
+            <!-- Left: Ads -->
+            <div class="lg:col-span-2 space-y-8">
+                <div class="flex justify-between items-center">
+                    <h2 class="text-2xl font-black text-gray-900 dark:text-white">Active Listings</h2>
+                    <div class="text-sm font-bold text-accent">Latest First</div>
+                </div>
+
+                <div id="seller-ads-grid" class="grid grid-cols-1 sm:grid-cols-2 gap-6">
+                    <!-- Ads injected via JS -->
+                    <div
+                        class="text-center py-20 bg-white dark:bg-gray-800 rounded-3xl border border-dashed dark:border-gray-700 col-span-full">
+                        <div class="animate-pulse text-gray-400">Loading listings...</div>
+                    </div>
+                </div>
+
+                <!-- Pagination -->
+                <div id="pagination-container" class="hidden flex justify-center mt-12">
+                    <nav class="inline-flex rounded-2xl shadow-sm -space-x-px bg-white dark:bg-gray-800 p-1 border dark:border-gray-700"
+                        aria-label="Pagination">
+                    </nav>
+                </div>
+            </div>
+
+            <!-- Right: About & Reviews -->
+            <div class="space-y-8">
+                <!-- About -->
+                <div class="bg-white dark:bg-gray-800 rounded-3xl shadow-sm p-8 border dark:border-gray-700">
+                    <h2 class="text-xl font-black mb-4 dark:text-white">About Seller</h2>
+                    <p id="seller-bio" class="text-gray-600 dark:text-gray-400 leading-relaxed italic">
+                        No bio available.
+                    </p>
+                </div>
+
+                <!-- Reviews -->
+                <div class="bg-white dark:bg-gray-800 rounded-3xl shadow-sm p-8 border dark:border-gray-700">
+                    <div class="flex justify-between items-center mb-6">
+                        <h2 class="text-xl font-black dark:text-white">Reviews</h2>
+                        <span id="avg-rating"
+                            class="bg-accent/10 text-accent font-black px-3 py-1 rounded-full text-sm">★ 0.0</span>
+                    </div>
+
+                    <div id="reviews-list" class="space-y-6">
+                        <!-- Reviews injected via JS -->
+                        <div class="text-center py-10 text-gray-400 text-sm">No reviews yet.</div>
+                    </div>
+
+                    <button id="add-review-btn"
+                        class="w-full mt-8 border border-gray-200 dark:border-gray-700 py-3 rounded-2xl font-bold hover:bg-gray-50 dark:hover:bg-gray-700 transition dark:text-white">
+                        Write a Review
+                    </button>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- Review Modal -->
+    <div id="review-modal"
+        class="fixed inset-0 z-[100] hidden items-center justify-center bg-black/50 backdrop-blur-sm p-4">
+        <div class="bg-white dark:bg-gray-800 w-full max-w-md rounded-3xl shadow-2xl p-8 animate-fade-in">
+            <h2 class="text-2xl font-black mb-6 dark:text-white">Rate your experience</h2>
+            <form id="review-form" class="space-y-6">
+                <div>
+                    <label class="block text-sm font-black uppercase tracking-widest text-gray-400 mb-2">Rating</label>
+                    <div class="flex gap-2 text-3xl" id="star-rating">
+                        <button type="button" data-rating="1"
+                            class="text-gray-300 hover:text-accent transition">★</button>
+                        <button type="button" data-rating="2"
+                            class="text-gray-300 hover:text-accent transition">★</button>
+                        <button type="button" data-rating="3"
+                            class="text-gray-300 hover:text-accent transition">★</button>
+                        <button type="button" data-rating="4"
+                            class="text-gray-300 hover:text-accent transition">★</button>
+                        <button type="button" data-rating="5"
+                            class="text-gray-300 hover:text-accent transition">★</button>
+                    </div>
+                </div>
+                <div>
+                    <label class="block text-sm font-black uppercase tracking-widest text-gray-400 mb-2">Your
+                        Comment</label>
+                    <textarea id="review-comment" rows="4"
+                        class="w-full border dark:border-gray-700 dark:bg-gray-900 rounded-2xl p-4 focus:ring-2 focus:ring-accent outline-none dark:text-white"
+                        placeholder="What stood out about this seller?" required></textarea>
+                </div>
+                <div class="flex gap-4">
+                    <button type="button" onclick="closeReviewModal()"
+                        class="flex-1 py-4 font-bold text-gray-500 hover:text-gray-700">Cancel</button>
+                    <button type="submit"
+                        class="flex-1 bg-accent text-white py-4 rounded-2xl font-bold hover:bg-orange-600 transition shadow-lg shadow-accent/20">Submit</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <footer id="main-footer"></footer>
+
+    <script src="assets/js/api-client.js"></script>
+    <script src="assets/js/main.js"></script>
+    <script>
+        let selectedRating = 0;
+        let sellerId = new URLSearchParams(window.location.search).get('id');
+
+        document.addEventListener('DOMContentLoaded', () => {
+            if (!sellerId) {
+                window.location.href = 'index.html';
+                return;
+            }
+
+            loadSellerProfile();
+            loadSellerAds();
+            loadSellerReviews();
+
+            // Star rating logic
+            document.querySelectorAll('#star-rating button').forEach(btn => {
+                btn.addEventListener('click', () => {
+                    selectedRating = parseInt(btn.dataset.rating);
+                    updateStars();
+                });
+            });
+
+            document.getElementById('review-form').onsubmit = handleReviewSubmit;
+            document.getElementById('add-review-btn').onclick = () => {
+                if (!localStorage.getItem('token')) {
+                    window.location.href = 'login.html';
+                    return;
+                }
+                document.getElementById('review-modal').classList.replace('hidden', 'flex');
+            };
+        });
+
+        async function loadSellerProfile() {
+            try {
+                const response = await apiClient.getPublicProfile(sellerId);
+                const user = response.data;
+
+                document.getElementById('page-title').textContent = `${user.name}'s Profile - Dubizzle Clone`;
+                document.getElementById('seller-name-heading').textContent = user.name;
+                document.getElementById('seller-location-text').querySelector('span').textContent = user.location || 'UAE';
+                document.getElementById('seller-bio').textContent = user.bio || `Passionate seller since ${new Date(user.createdAt).getFullYear()}. Dealing in high quality items.`;
+                document.getElementById('member-since').textContent = new Date(user.createdAt).toLocaleDateString(undefined, { month: 'long', year: 'numeric' });
+
+                if (user.isEmailVerified) {
+                    document.getElementById('verified-badge').classList.remove('hidden');
+                }
+
+                const avatarImg = document.getElementById('seller-large-avatar');
+                const avatarInitials = document.getElementById('seller-large-initials');
+                if (user.avatar) {
+                    avatarImg.src = user.avatar;
+                    avatarImg.classList.remove('hidden');
+                    avatarInitials.classList.add('hidden');
+                } else {
+                    avatarInitials.textContent = user.name.split(' ').map(n => n[0]).join('').toUpperCase();
+                }
+            } catch (err) {
+                console.error(err);
+            }
+        }
+
+        async function loadSellerAds(page = 1) {
+            try {
+                // We don't have a direct "getSellerAds" in apiClient yet, 
+                // but getAds supports filters.
+                const response = await apiClient.getAds({ userId: sellerId, page, limit: 6 });
+                const ads = response.data;
+                const grid = document.getElementById('seller-ads-grid');
+                grid.innerHTML = '';
+
+                document.getElementById('active-ads-count').textContent = response.count;
+
+                if (ads.length === 0) {
+                    grid.innerHTML = '<div class="col-span-full py-10 text-center text-gray-500">No active listings yet.</div>';
+                    return;
+                }
+
+                ads.forEach(ad => {
+                    const adCard = `
+                        <div class="bg-white dark:bg-gray-800 rounded-2xl overflow-hidden shadow-sm hover:shadow-xl transition-all border dark:border-gray-700 cursor-pointer" onclick="window.location.href='ad-details.html?id=${ad.id}'">
+                            <div class="h-40 overflow-hidden">
+                                <img src="${ad.images[0] || 'https://via.placeholder.com/400'}" class="w-full h-full object-cover">
+                            </div>
+                            <div class="p-4">
+                                <h3 class="font-bold text-gray-900 dark:text-white truncate">${ad.title}</h3>
+                                <div class="text-accent font-black mt-1">${ad.price.toLocaleString()} AED</div>
+                                <div class="text-[10px] text-gray-400 mt-2 uppercase flex justify-between">
+                                    <span>${ad.city}</span>
+                                    <span>${new Date(ad.createdAt).toLocaleDateString()}</span>
+                                </div>
+                            </div>
+                        </div>
+                    `;
+                    grid.insertAdjacentHTML('beforeend', adCard);
+                });
+
+                renderPagination(response.page, response.totalPages);
+            } catch (err) {
+                console.error(err);
+            }
+        }
+
+        async function loadSellerReviews() {
+            try {
+                const response = await apiClient.getSellerReviews(sellerId);
+                const reviews = response.data;
+                const list = document.getElementById('reviews-list');
+                list.innerHTML = '';
+
+                if (reviews.length === 0) {
+                    list.innerHTML = '<div class="text-center py-10 text-gray-400 text-sm">No reviews yet.</div>';
+                    return;
+                }
+
+                let totalRating = 0;
+                reviews.forEach(review => {
+                    totalRating += review.rating;
+                    const reviewItem = `
+                        <div class="border-b dark:border-gray-700 pb-6 last:border-0">
+                            <div class="flex items-center gap-3 mb-2">
+                                <div class="w-8 h-8 rounded-full bg-gray-100 dark:bg-gray-700 flex items-center justify-center text-xs font-bold dark:text-white">
+                                    ${review.reviewer ? review.reviewer.name[0] : '?'}
+                                </div>
+                                <div>
+                                    <div class="text-sm font-bold dark:text-white">${review.reviewer ? review.reviewer.name : 'Unknown User'}</div>
+                                    <div class="text-accent text-xs">${'★'.repeat(review.rating)}${'☆'.repeat(5 - review.rating)}</div>
+                                </div>
+                                <div class="ml-auto text-[10px] text-gray-400">${new Date(review.createdAt).toLocaleDateString()}</div>
+                            </div>
+                            <p class="text-sm text-gray-600 dark:text-gray-400 line-clamp-2">${review.comment}</p>
+                        </div>
+                    `;
+                    list.insertAdjacentHTML('beforeend', reviewItem);
+                });
+
+                document.getElementById('avg-rating').textContent = `★ ${(totalRating / reviews.length).toFixed(1)}`;
+            } catch (err) {
+                console.error(err);
+            }
+        }
+
+        function updateStars() {
+            document.querySelectorAll('#star-rating button').forEach((btn, i) => {
+                if (i < selectedRating) {
+                    btn.classList.add('text-accent');
+                    btn.classList.remove('text-gray-300');
+                } else {
+                    btn.classList.remove('text-accent');
+                    btn.classList.add('text-gray-300');
+                }
+            });
+        }
+
+        function closeReviewModal() {
+            document.getElementById('review-modal').classList.replace('flex', 'hidden');
+            selectedRating = 0;
+            updateStars();
+            document.getElementById('review-form').reset();
+        }
+
+        async function handleReviewSubmit(e) {
+            e.preventDefault();
+            if (selectedRating === 0) return alert('Please select a rating');
+
+            const comment = document.getElementById('review-comment').value;
+            const submitBtn = e.target.querySelector('button[type="submit"]');
+
+            try {
+                submitBtn.disabled = true;
+                submitBtn.textContent = 'Submitting...';
+                await apiClient.createReview({ sellerId, rating: selectedRating, comment });
+                closeReviewModal();
+                loadSellerReviews();
+            } catch (err) {
+                alert(err.message);
+                submitBtn.disabled = false;
+                submitBtn.textContent = 'Submit';
+            }
+        }
+
+        function renderPagination(currentPage, totalPages) {
+            const container = document.getElementById('pagination-container');
+            const nav = container.querySelector('nav');
+            nav.innerHTML = '';
+
+            if (totalPages <= 1) {
+                container.classList.add('hidden');
+                return;
+            }
+
+            container.classList.remove('hidden');
+
+            const createLink = (page, text, active = false, disabled = false) => {
+                const a = document.createElement('a');
+                a.href = '#';
+                a.className = `px-4 py-2 text-sm font-bold transition rounded-xl ${active ? 'bg-accent text-white shadow-lg shadow-accent/20' : 'text-gray-500 hover:text-accent'} ${disabled ? 'opacity-30 cursor-not-allowed' : ''}`;
+                a.textContent = text;
+                if (!disabled && !active) {
+                    a.onclick = (e) => {
+                        e.preventDefault();
+                        loadSellerAds(page);
+                        window.scrollTo({ top: container.offsetTop - 100, behavior: 'smooth' });
+                    };
+                }
+                return a;
+            };
+
+            nav.appendChild(createLink(currentPage - 1, 'Previous', false, currentPage === 1));
+            for (let i = 1; i <= totalPages; i++) {
+                nav.appendChild(createLink(i, i, i === currentPage));
+            }
+            nav.appendChild(createLink(currentPage + 1, 'Next', false, currentPage === totalPages));
+        }
+    </script>
+</body>
+
+</html>

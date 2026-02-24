@@ -142,10 +142,18 @@ exports.handleWebhook = async (req, res) => {
     res.json({ received: true });
 };
 
+const { sendEmail } = require('../utils/email'); // Ensure this is exported or imported correctly
+const { paymentReceiptEmail } = require('../utils/emailTemplates');
+
+// ... (existing fulfillOrder function) ...
+
 async function fulfillOrder(session, io) {
     try {
-        const payment = await Payment.findOne({ where: { stripeSessionId: session.id } });
-        if (!payment) return;
+        const payment = await Payment.findOne({
+            where: { stripeSessionId: session.id },
+            include: [{ model: User, as: 'user', attributes: ['name', 'email'] }]
+        });
+        if (!payment || payment.status === 'completed') return;
 
         // Mark payment as completed
         await payment.update({
@@ -153,7 +161,7 @@ async function fulfillOrder(session, io) {
             stripePaymentIntentId: session.payment_intent
         });
 
-        const { userId, plan, adId } = payment.metadata;
+        const { userId, plan, adId } = payment.metadata || {};
         const featuredUntil = new Date();
         featuredUntil.setDate(featuredUntil.getDate() + payment.durationDays);
 
@@ -186,6 +194,24 @@ async function fulfillOrder(session, io) {
                 title: '✅ Payment Successful!',
                 message: `Your ${plan.charAt(0).toUpperCase() + plan.slice(1)} plan is now active for ${payment.durationDays} days.`,
             });
+        }
+
+        // Send Email Receipt
+        const user = payment.user || await User.findByPk(userId);
+        if (user && user.email) {
+            const planName = PLANS[plan]?.name || 'Taggerly Plan';
+            require('../utils/email')({
+                email: user.email,
+                subject: '🧾 Payment Receipt - Taggerly',
+                html: paymentReceiptEmail({
+                    userName: user.name,
+                    plan: planName,
+                    amount: payment.amount,
+                    currency: payment.currency,
+                    transactionId: session.payment_intent || session.id,
+                    date: new Date().toLocaleDateString()
+                })
+            }).catch(err => console.error('Receipt email failed:', err));
         }
 
         console.log(`✅ Payment fulfilled for user ${userId}, plan: ${plan}`);
@@ -244,17 +270,28 @@ exports.getPlans = async (req, res) => {
     res.status(200).json({ success: true, data: PLANS });
 };
 
-// @desc    Verify session after redirect
+
+// @desc    Verify session after redirect (polling fallback if webhook is slow)
 // @route   GET /api/payments/verify-session/:sessionId  
 // @access  Private
 exports.verifySession = async (req, res) => {
+    const stripe = getStripe();
     try {
-        const payment = await Payment.findOne({
+        let payment = await Payment.findOne({
             where: { stripeSessionId: req.params.sessionId }
         });
 
         if (!payment) {
-            return res.status(404).json({ success: false, message: 'Payment not found' });
+            return res.status(404).json({ success: false, message: 'Payment record not found' });
+        }
+
+        // If not completed yet, check directly with Stripe (fallback for webhooks)
+        if (payment.status === 'pending' && stripe) {
+            const session = await stripe.checkout.sessions.retrieve(req.params.sessionId);
+            if (session.payment_status === 'paid') {
+                await fulfillOrder(session, req.io);
+                payment = await payment.reload(); // get updated status
+            }
         }
 
         res.status(200).json({ success: true, data: { status: payment.status, plan: payment.plan } });

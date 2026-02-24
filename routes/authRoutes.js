@@ -6,8 +6,10 @@ const {
 } = require('../controllers/authController');
 const { protect } = require('../middleware/authMiddleware');
 
-router.post('/register', register);
-router.post('/login', login);
+const { registerValidation, loginValidation, validate } = require('../middleware/validator');
+
+router.post('/register', registerValidation, validate, register);
+router.post('/login', loginValidation, validate, login);
 router.post('/resend-verification', protect, resendVerification);
 router.post('/google', googleLogin);
 router.post('/facebook', facebookLogin);

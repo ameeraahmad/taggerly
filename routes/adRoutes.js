@@ -23,10 +23,12 @@ router.get('/:id', getAdById);
 
 const { upload, resizeImages } = require('../middleware/upload');
 
+const { adValidation, validate } = require('../middleware/validator');
+
 // Private routes
-router.post('/', protect, upload.array('images', 5), resizeImages, createAd);
+router.post('/', protect, upload.array('images', 5), resizeImages, adValidation, validate, createAd);
 router.post('/:id/favorite', protect, toggleFavorite);
-router.put('/:id', protect, upload.array('images', 5), resizeImages, updateAd);
+router.put('/:id', protect, upload.array('images', 5), resizeImages, adValidation, validate, updateAd);
 router.delete('/:id', protect, deleteAd);
 
 module.exports = router;

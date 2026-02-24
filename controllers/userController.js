@@ -79,3 +79,21 @@ exports.updatePassword = async (req, res) => {
         res.status(400).json({ success: false, message: err.message });
     }
 };
+// @desc    Get public profile
+// @route   GET /api/users/public/:id
+// @access  Public
+exports.getPublicProfile = async (req, res) => {
+    try {
+        const user = await User.findByPk(req.params.id, {
+            attributes: ['id', 'name', 'avatar', 'bio', 'location', 'createdAt', 'isEmailVerified']
+        });
+
+        if (!user) {
+            return res.status(404).json({ success: false, message: 'User not found' });
+        }
+
+        res.status(200).json({ success: true, data: user });
+    } catch (err) {
+        res.status(500).json({ success: false, message: err.message });
+    }
+};

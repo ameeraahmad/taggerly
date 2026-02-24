@@ -14,7 +14,8 @@ const {
     toggleFeatureAd,
     getAllReports,
     reviewReport,
-    getRevenue
+    getRevenue,
+    getAnalytics
 } = require('../controllers/adminController');
 const { protect, restrictTo } = require('../middleware/authMiddleware');
 
@@ -24,6 +25,7 @@ router.use(restrictTo('admin'));
 
 // Dashboard
 router.get('/stats', getStats);
+router.get('/analytics', getAnalytics);
 router.get('/revenue', getRevenue);
 
 // Users
