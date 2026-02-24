@@ -107,6 +107,18 @@ const connectDB = async () => {
                             console.log('➕ Adding "location" column to Users...');
                             await queryInterface.addColumn('Users', 'location', { type: Sequelize.STRING, allowNull: true });
                         }
+                        if (!userTableInfo.emailNotifications) {
+                            console.log('➕ Adding "emailNotifications" column to Users...');
+                            await queryInterface.addColumn('Users', 'emailNotifications', { type: Sequelize.BOOLEAN, defaultValue: true });
+                        }
+                        if (!userTableInfo.chatNotifications) {
+                            console.log('➕ Adding "chatNotifications" column to Users...');
+                            await queryInterface.addColumn('Users', 'chatNotifications', { type: Sequelize.BOOLEAN, defaultValue: true });
+                        }
+                        if (!userTableInfo.isBanned) {
+                            console.log('➕ Adding "isBanned" column to Users...');
+                            await queryInterface.addColumn('Users', 'isBanned', { type: Sequelize.BOOLEAN, defaultValue: false });
+                        }
                     } catch (mErr) {
                         console.log('ℹ️ SQLite columns for Users might already exist.');
                     }
@@ -122,6 +134,10 @@ const connectDB = async () => {
                         if (!tableInfo.area) {
                             console.log('➕ Adding "area" column to Ads...');
                             await queryInterface.addColumn('Ads', 'area', { type: Sequelize.STRING, allowNull: true });
+                        }
+                        if (!tableInfo.views) {
+                            console.log('➕ Adding "views" column to Ads...');
+                            await queryInterface.addColumn('Ads', 'views', { type: Sequelize.INTEGER, defaultValue: 0 });
                         }
                     } catch (mErr) {
                         console.log('ℹ️ Additional SQLite columns for Ads might already exist.');
