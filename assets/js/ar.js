@@ -291,7 +291,7 @@ const arTranslations = {
     medical: "طبي",
 
     // Dashboard/Favorites
-    myProfile: "ملفي الشخصي",
+    myProfile: "الملف الشخصي",
     myDashboard: "لوحة التحكم",
     messages: "الرسائل",
     settings: "الإعدادات",

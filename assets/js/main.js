@@ -677,21 +677,20 @@ document.addEventListener('DOMContentLoaded', () => {
         const user = JSON.parse(localStorage.getItem('user'));
         const token = localStorage.getItem('token');
 
-        // Find the user dropdown - look for the one containing relevant links
-        const allDropdowns = document.querySelectorAll('.absolute, div[class*="absolute"]');
-        let userDropdown = null;
-        allDropdowns.forEach(d => {
-            // Check for any of the common user-related translation keys
-            if (d.querySelector('[data-translate="myProfile"]') ||
-                d.querySelector('[data-translate="login"]') ||
-                d.querySelector('[data-translate="myDashboard"]')) {
-
-                // Ensure it's inside a header action area (heuristic)
-                if (d.closest('.header-actions') || d.closest('.relative.group')) {
-                    userDropdown = d;
+        // Find the user dropdown - look for ID first, then heuristic
+        let userDropdown = document.getElementById('user-dropdown');
+        if (!userDropdown) {
+            const allDropdowns = document.querySelectorAll('.absolute, div[class*="absolute"]');
+            allDropdowns.forEach(d => {
+                if (d.querySelector('[data-translate="myProfile"]') ||
+                    d.querySelector('[data-translate="login"]') ||
+                    d.querySelector('[data-translate="myDashboard"]')) {
+                    if (d.closest('.header-actions') || d.closest('.relative.group')) {
+                        userDropdown = d;
+                    }
                 }
-            }
-        });
+            });
+        }
 
         const notifWrapper = document.getElementById('notif-wrapper');
 
@@ -709,27 +708,39 @@ document.addEventListener('DOMContentLoaded', () => {
 
             if (userDropdown) {
                 let dropdownHtml = `
-                    <a href="profile.html" class="block px-4 py-2 text-sm text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-700 hover:text-accent font-bold" data-translate="myProfile">My Profile</a>
+                    <a href="profile.html" class="block px-4 py-2 text-sm text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-700 hover:text-accent font-bold">
+                        <span data-translate="myProfile">${translations[window.currentLang].myProfile || 'My Profile'}</span>
+                    </a>
                     <div class="border-t dark:border-gray-700 my-1"></div>
-                    <a href="dashboard.html" class="block px-4 py-2 text-sm text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-700 hover:text-accent" data-translate="myDashboard">My Dashboard</a>
+                    <a href="dashboard.html" class="block px-4 py-2 text-sm text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-700 hover:text-accent">
+                        <span data-translate="myDashboard">${translations[window.currentLang].myDashboard || 'My Dashboard'}</span>
+                    </a>
                 `;
 
                 // Add Admin Panel link if user is admin
                 if (user.role === 'admin') {
                     dropdownHtml += `
-                        <a href="admin.html" class="block px-4 py-2 text-sm text-blue-600 hover:bg-blue-50 dark:hover:bg-gray-700 font-bold border-l-4 border-blue-600" data-translate="adminPanel">Admin Panel</a>
+                        <a href="admin.html" class="block px-4 py-2 text-sm text-blue-600 hover:bg-blue-50 dark:hover:bg-gray-700 font-bold border-l-4 border-blue-600">
+                            <span data-translate="adminPanel">${translations[window.currentLang].adminPanel || 'Admin Panel'}</span>
+                        </a>
                     `;
                 }
 
                 dropdownHtml += `
-                    <a href="messages.html" class="flex items-center justify-between px-4 py-2 text-sm text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-700 hover:text-accent" data-translate="messages">
-                        <span>Messages</span>
+                    <a href="messages.html" class="flex items-center justify-between px-4 py-2 text-sm text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-700 hover:text-accent">
+                        <span data-translate="messages">${translations[window.currentLang].messages || 'Messages'}</span>
                         <span class="unread-badge bg-red-500 text-white text-[10px] font-bold px-1.5 py-0.5 rounded-full hidden">0</span>
                     </a>
-                    <a href="favorites.html" class="block px-4 py-2 text-sm text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-700 hover:text-accent" data-translate="myFavorites">My Favorites</a>
-                    <a href="plans.html" class="block px-4 py-2 text-sm text-orange-500 hover:bg-gray-100 dark:hover:bg-gray-700 hover:text-accent font-bold" data-translate="plansTitle">Pricing Plans</a>
+                    <a href="favorites.html" class="block px-4 py-2 text-sm text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-700 hover:text-accent">
+                        <span data-translate="myFavorites">${translations[window.currentLang].myFavorites || 'My Favorites'}</span>
+                    </a>
+                    <a href="plans.html" class="block px-4 py-2 text-sm text-orange-500 hover:bg-gray-100 dark:hover:bg-gray-700 hover:text-accent font-bold">
+                        <span data-translate="plansTitle">${translations[window.currentLang].plansTitle || 'Pricing Plans'}</span>
+                    </a>
                     <div class="border-t dark:border-gray-700 my-1"></div>
-                    <a href="#" class="logout-action-btn block px-4 py-2 text-sm text-red-600 hover:bg-gray-100 dark:hover:bg-gray-700 font-bold" data-translate="logout">Logout</a>
+                    <a href="#" class="logout-action-btn block px-4 py-2 text-sm text-red-600 hover:bg-gray-100 dark:hover:bg-gray-700 font-bold">
+                        <span data-translate="logout">${translations[window.currentLang].logout || 'Logout'}</span>
+                    </a>
                 `;
                 userDropdown.innerHTML = dropdownHtml;
             }
@@ -737,6 +748,7 @@ document.addEventListener('DOMContentLoaded', () => {
             const userBtnText = document.getElementById('user-btn-text');
             if (userBtnText) {
                 userBtnText.textContent = user.name;
+                userBtnText.removeAttribute('data-translate'); // Don't translate the user name
             }
         } else {
             // User is NOT logged in
@@ -746,10 +758,16 @@ document.addEventListener('DOMContentLoaded', () => {
 
             if (userDropdown) {
                 userDropdown.innerHTML = `
-                    <a href="login.html" class="block px-4 py-2 text-sm text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-700 hover:text-accent" data-translate="login">Log in</a>
-                    <a href="login.html?mode=signup" class="block px-4 py-2 text-sm text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-700 hover:text-accent" data-translate="createAccount">Sign Up</a>
+                    <a href="login.html" class="block px-4 py-2 text-sm text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-700 hover:text-accent" data-translate="login">
+                        ${translations[window.currentLang].login || 'Log in'}
+                    </a>
+                    <a href="login.html?mode=signup" class="block px-4 py-2 text-sm text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-700 hover:text-accent" data-translate="createAccount">
+                        ${translations[window.currentLang].createAccount || 'Sign Up'}
+                    </a>
                     <div class="border-t dark:border-gray-700 my-1"></div>
-                    <a href="plans.html" class="block px-4 py-2 text-sm text-orange-500 hover:bg-gray-100 dark:hover:bg-gray-700 hover:text-accent font-bold" data-translate="plansTitle">Pricing Plans</a>
+                    <a href="plans.html" class="block px-4 py-2 text-sm text-orange-500 hover:bg-gray-100 dark:hover:bg-gray-700 hover:text-accent font-bold" data-translate="plansTitle">
+                        ${translations[window.currentLang].plansTitle || 'Pricing Plans'}
+                    </a>
                 `;
             }
 
@@ -760,6 +778,13 @@ document.addEventListener('DOMContentLoaded', () => {
             }
         }
 
+        // Attach logout listener
+        document.querySelectorAll('.logout-action-btn').forEach(btn => {
+            btn.onclick = (e) => {
+                e.preventDefault();
+                apiClient.logout();
+            };
+        });
 
         // --- Mobile Menu Refresh ---
         const mobileMenu = document.getElementById('mobile-menu');
@@ -768,32 +793,29 @@ document.addEventListener('DOMContentLoaded', () => {
             if (menuContent) {
                 if (token && user) {
                     menuContent.innerHTML = `
-                        <a href="profile.html" data-translate="myProfile" class="block px-3 py-2 rounded-md text-base font-medium text-accent hover:bg-gray-50 dark:hover:bg-gray-700">My Profile</a>
-                        <a href="categories.html" data-translate="mobileMenuCategories" class="block px-3 py-2 rounded-md text-base font-medium text-gray-700 dark:text-gray-300 hover:text-accent hover:bg-gray-50 dark:hover:bg-gray-700">Categories</a>
-                        <a href="search.html" data-translate="mobileMenuForSale" class="block px-3 py-2 rounded-md text-base font-medium text-gray-700 dark:text-gray-300 hover:text-accent hover:bg-gray-50 dark:hover:bg-gray-700">For Sale</a>
-                        <a href="dashboard.html" data-translate="myDashboard" class="block px-3 py-2 rounded-md text-base font-medium text-gray-700 dark:text-gray-300 hover:text-accent hover:bg-gray-50 dark:hover:bg-gray-700">My Dashboard</a>
-                        ${user.role === 'admin' ? '<a href="admin.html" data-translate="adminPanel" class="block px-3 py-2 rounded-md text-base font-bold text-blue-600 bg-blue-50 dark:bg-gray-700/50 border-l-4 border-blue-600">Admin Panel</a>' : ''}
-                        <a href="messages.html" data-translate="messages" class="block px-3 py-2 rounded-md text-base font-medium text-gray-700 dark:text-gray-300 hover:text-accent hover:bg-gray-50 dark:hover:bg-gray-700">Messages</a>
-                        <a href="#" class="logout-action-btn block px-3 py-2 rounded-md text-base font-medium text-red-600 hover:bg-gray-50 dark:hover:bg-gray-700" data-translate="logout">Logout</a>
-                        <a href="post-ad.html" data-translate="mobileMenuPostAd" class="block px-3 py-2 mt-4 text-center text-white bg-accent rounded-md font-bold">Post an Ad</a>
+                        <a href="profile.html" data-translate="myProfile" class="block px-3 py-2 rounded-md text-base font-medium text-accent hover:bg-gray-50 dark:hover:bg-gray-700">${translations[window.currentLang].myProfile || 'My Profile'}</a>
+                        <a href="categories.html" data-translate="mobileMenuCategories" class="block px-3 py-2 rounded-md text-base font-medium text-gray-700 dark:text-gray-300 hover:text-accent hover:bg-gray-50 dark:hover:bg-gray-700">${translations[window.currentLang].mobileMenuCategories || 'Categories'}</a>
+                        <a href="search.html" data-translate="mobileMenuForSale" class="block px-3 py-2 rounded-md text-base font-medium text-gray-700 dark:text-gray-300 hover:text-accent hover:bg-gray-50 dark:hover:bg-gray-700">${translations[window.currentLang].forSale || 'For Sale'}</a>
+                        <a href="dashboard.html" data-translate="myDashboard" class="block px-3 py-2 rounded-md text-base font-medium text-gray-700 dark:text-gray-300 hover:text-accent hover:bg-gray-50 dark:hover:bg-gray-700">${translations[window.currentLang].myDashboard || 'My Dashboard'}</a>
+                        ${user.role === 'admin' ? `<a href="admin.html" data-translate="adminPanel" class="block px-3 py-2 rounded-md text-base font-bold text-blue-600 bg-blue-50 dark:bg-gray-700/50 border-l-4 border-blue-600">${translations[window.currentLang].adminPanel || 'Admin Panel'}</a>` : ''}
+                        <a href="messages.html" data-translate="messages" class="block px-3 py-2 rounded-md text-base font-medium text-gray-700 dark:text-gray-300 hover:text-accent hover:bg-gray-50 dark:hover:bg-gray-700">${translations[window.currentLang].messages || 'Messages'}</a>
+                        <a href="#" class="logout-action-btn block px-3 py-2 rounded-md text-base font-medium text-red-600 hover:bg-gray-50 dark:hover:bg-gray-700" data-translate="logout">${translations[window.currentLang].logout || 'Logout'}</a>
+                        <a href="post-ad.html" data-translate="mobileMenuPostAd" class="block px-3 py-2 mt-4 text-center text-white bg-accent rounded-md font-bold">${translations[window.currentLang].postAd || 'Post Ad'}</a>
                     `;
                 } else {
                     menuContent.innerHTML = `
-                        <a href="categories.html" data-translate="mobileMenuCategories" class="block px-3 py-2 rounded-md text-base font-medium text-gray-700 dark:text-gray-300 hover:text-accent hover:bg-gray-50 dark:hover:bg-gray-700">Categories</a>
-                        <a href="search.html" data-translate="mobileMenuForSale" class="block px-3 py-2 rounded-md text-base font-medium text-gray-700 dark:text-gray-300 hover:text-accent hover:bg-gray-50 dark:hover:bg-gray-700">For Sale</a>
-                        <a href="login.html" data-translate="mobileMenuLogin" class="block px-3 py-2 rounded-md text-base font-medium text-primary dark:text-white hover:bg-gray-50 dark:hover:bg-gray-700">Log in / Sign up</a>
-                        <a href="post-ad.html" data-translate="mobileMenuPostAd" class="block px-3 py-2 mt-4 text-center text-white bg-accent rounded-md font-bold">Post an Ad</a>
+                        <a href="categories.html" data-translate="mobileMenuCategories" class="block px-3 py-2 rounded-md text-base font-medium text-gray-700 dark:text-gray-300 hover:text-accent hover:bg-gray-50 dark:hover:bg-gray-700">${translations[window.currentLang].mobileMenuCategories || 'Categories'}</a>
+                        <a href="search.html" data-translate="mobileMenuForSale" class="block px-3 py-2 rounded-md text-base font-medium text-gray-700 dark:text-gray-300 hover:text-accent hover:bg-gray-50 dark:hover:bg-gray-700">${translations[window.currentLang].forSale || 'For Sale'}</a>
+                        <a href="login.html" data-translate="mobileMenuLogin" class="block px-3 py-2 rounded-md text-base font-medium text-primary dark:text-white hover:bg-gray-50 dark:hover:bg-gray-700">${translations[window.currentLang].login || 'Log in / Sign up'}</a>
+                        <a href="post-ad.html" data-translate="mobileMenuPostAd" class="block px-3 py-2 mt-4 text-center text-white bg-accent rounded-md font-bold">${translations[window.currentLang].postAd || 'Post Ad'}</a>
                     `;
                 }
-
             }
         }
 
-
         // Re-apply translations for the new dynamic elements
-        window.updateLanguage(window.currentLang);
-
-    }
+        if (window.updateLanguage) window.updateLanguage(window.currentLang);
+    };
 
     updateAuthState();
     refreshUnreadCount();
