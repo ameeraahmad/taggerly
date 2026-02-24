@@ -24,6 +24,9 @@ connectDB().catch(err => console.error('Delayed DB Connection Error:', err));
 
 const rateLimit = require('express-rate-limit');
 
+// Stripe webhook needs raw body - MUST be before express.json()
+app.use('/api/payments/webhook', express.raw({ type: 'application/json' }));
+
 // Middleware
 app.use(cors());
 app.use(express.json());
@@ -55,6 +58,7 @@ const reviewRoutes = require('./routes/reviewRoutes');
 const adminRoutes = require('./routes/adminRoutes');
 const reportRoutes = require('./routes/reportRoutes');
 const notificationRoutes = require('./routes/notificationRoutes');
+const paymentRoutes = require('./routes/paymentRoutes');
 
 app.use('/api/ads', adRoutes);
 app.use('/api/auth', authRoutes);
@@ -65,6 +69,7 @@ app.use('/api/reviews', reviewRoutes);
 app.use('/api/admin', adminRoutes);
 app.use('/api/reports', reportRoutes);
 app.use('/api/notifications', notificationRoutes);
+app.use('/api/payments', paymentRoutes);
 
 // Health check
 app.get('/api/health', (req, res) => {

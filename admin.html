@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Admin Dashboard - Dubizzle Clone</title>
+    <title>Admin Dashboard - Taggerly</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script>
         tailwind.config = {
@@ -13,323 +13,945 @@
                 extend: {
                     colors: {
                         primary: '#0B2447',
-                        secondary: '#F5F5F5',
                         accent: '#FF6B00',
                     }
                 }
             }
         }
+        // Apply theme early
+        if (localStorage.getItem('theme') === 'dark') document.documentElement.classList.add('dark');
     </script>
-    <link href="assets/css/style.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap"
+        rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+        }
+
+        .sidebar-link {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            padding: 0.75rem 1rem;
+            border-radius: 0.75rem;
+            color: rgba(255, 255, 255, 0.7);
+            transition: all 0.2s;
+            cursor: pointer;
+        }
+
+        .sidebar-link:hover {
+            color: #fff;
+            background: rgba(255, 255, 255, 0.1);
+        }
+
+        .sidebar-link.active {
+            background: rgba(255, 255, 255, 0.15);
+            color: #fff;
+            font-weight: 600;
+        }
+
+        .sidebar-link svg {
+            flex-shrink: 0;
+        }
+
+        .stat-card {
+            background: white;
+            border-radius: 1rem;
+            padding: 1.5rem;
+            border: 1px solid #f3f4f6;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+            transition: box-shadow 0.2s;
+        }
+
+        .dark .stat-card {
+            background: #1f2937;
+            border-color: #374151;
+        }
+
+        .stat-card:hover {
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+        }
+
+        .tab-content {
+            display: none;
+        }
+
+        .tab-content.active {
+            display: block;
+        }
+
+        .badge {
+            display: inline-flex;
+            align-items: center;
+            padding: 0.125rem 0.625rem;
+            border-radius: 9999px;
+            font-size: 0.75rem;
+            font-weight: 500;
+        }
+
+        .btn-sm {
+            padding: 0.375rem 0.75rem;
+            border-radius: 0.5rem;
+            font-size: 0.75rem;
+            font-weight: 600;
+            transition: all 0.15s;
+        }
+
+        .table-row {
+            transition: background 0.15s;
+        }
+
+        .table-row:hover {
+            background: #f9fafb;
+        }
+
+        .dark .table-row:hover {
+            background: rgba(55, 65, 81, 0.5);
+        }
+    </style>
 </head>
 
 <body class="bg-gray-50 dark:bg-gray-900 text-gray-900 dark:text-gray-100 min-h-screen">
 
+    <!-- Mobile Overlay -->
+    <div id="sidebar-overlay" class="fixed inset-0 bg-black/50 z-40 hidden md:hidden" onclick="toggleSidebar()"></div>
+
     <!-- Sidebar -->
-    <aside
-        class="fixed inset-y-0 left-0 w-64 bg-primary text-white transition-transform transform -translate-x-full md:translate-x-0 z-50">
-        <div class="p-6">
-            <h1 class="text-2xl font-bold mb-8">Admin Panel</h1>
-            <nav class="space-y-4">
-                <button
-                    class="w-full flex items-center space-x-3 p-3 rounded-lg bg-white/10 hover:bg-white/20 transition"
-                    onclick="showTab('dashboard')">
-                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                            d="M4 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2V6zM14 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2V6zM4 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2v-2zM14 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2v-2z">
-                        </path>
-                    </svg>
-                    <span>Dashboard</span>
-                </button>
-                <button class="w-full flex items-center space-x-3 p-3 rounded-lg hover:bg-white/10 transition"
-                    onclick="showTab('users')">
-                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                            d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z">
-                        </path>
-                    </svg>
-                    <span>Users</span>
-                </button>
-                <button class="w-full flex items-center space-x-3 p-3 rounded-lg hover:bg-white/10 transition"
-                    onclick="showTab('ads')">
-                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                            d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10">
-                        </path>
-                    </svg>
-                    <span>Ads</span>
-                </button>
-                <button class="w-full flex items-center space-x-3 p-3 rounded-lg hover:bg-white/10 transition"
-                    onclick="showTab('reports')">
-                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                            d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z">
-                        </path>
-                    </svg>
-                    <span>Reports</span>
-                </button>
-                <div class="pt-10 border-t border-white/10">
-                    <a href="index.html"
-                        class="w-full flex items-center space-x-3 p-3 rounded-lg hover:bg-white/10 transition">
-                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6">
-                            </path>
-                        </svg>
-                        <span>Back to Site</span>
-                    </a>
+    <aside id="sidebar"
+        class="fixed inset-y-0 left-0 w-64 bg-primary z-50 flex flex-col transition-transform duration-300 -translate-x-full md:translate-x-0">
+
+        <!-- Logo -->
+        <div class="p-6 border-b border-white/10">
+            <div class="flex items-center gap-3">
+                <div class="w-9 h-9 bg-accent rounded-xl flex items-center justify-center text-white font-bold text-lg">
+                    T</div>
+                <div>
+                    <p class="font-bold text-white text-lg leading-none">Taggerly</p>
+                    <p class="text-white/50 text-xs mt-0.5">Admin Panel</p>
                 </div>
-            </nav>
+            </div>
+        </div>
+
+        <!-- Navigation -->
+        <nav class="flex-1 p-4 space-y-1 overflow-y-auto">
+            <p class="text-white/30 text-xs font-semibold uppercase tracking-wider px-4 mb-2">Overview</p>
+            <div class="sidebar-link active" onclick="showTab('dashboard')" id="nav-dashboard">
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                        d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6" />
+                </svg>
+                <span>Dashboard</span>
+            </div>
+            <div class="sidebar-link" onclick="showTab('revenue')" id="nav-revenue">
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                        d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                </svg>
+                <span>Revenue</span>
+                <span class="ml-auto bg-green-500 text-white text-[10px] px-1.5 py-0.5 rounded-full">$</span>
+            </div>
+
+            <p class="text-white/30 text-xs font-semibold uppercase tracking-wider px-4 mt-4 mb-2">Management</p>
+            <div class="sidebar-link" onclick="showTab('users')" id="nav-users">
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                        d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z" />
+                </svg>
+                <span>Users</span>
+                <span id="users-count-badge" class="ml-auto text-white/50 text-xs"></span>
+            </div>
+            <div class="sidebar-link" onclick="showTab('ads')" id="nav-ads">
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                        d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10" />
+                </svg>
+                <span>Ads</span>
+                <span id="ads-count-badge" class="ml-auto text-white/50 text-xs"></span>
+            </div>
+            <div class="sidebar-link" onclick="showTab('reports')" id="nav-reports">
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                        d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
+                </svg>
+                <span>Reports</span>
+                <span id="reports-badge"
+                    class="ml-auto bg-red-500 text-white text-[10px] px-1.5 py-0.5 rounded-full hidden">0</span>
+            </div>
+        </nav>
+
+        <!-- Bottom -->
+        <div class="p-4 border-t border-white/10 space-y-1">
+            <a href="index.html" class="sidebar-link">
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                        d="M10 19l-7-7m0 0l7-7m-7 7h18" />
+                </svg>
+                <span>Back to Site</span>
+            </a>
+            <div class="sidebar-link" onclick="handleLogout()">
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                        d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" />
+                </svg>
+                <span>Logout</span>
+            </div>
         </div>
     </aside>
 
     <!-- Main Content -->
-    <main class="md:ml-64 p-8">
-        <header class="flex justify-between items-center mb-8">
-            <h2 id="tab-title" class="text-3xl font-bold">Dashboard</h2>
-            <div class="flex items-center space-x-4">
-                <button id="theme-toggle" class="p-2 rounded-lg bg-gray-200 dark:bg-gray-800">
+    <main class="md:ml-64 min-h-screen">
+
+        <!-- Top Header -->
+        <header
+            class="bg-white dark:bg-gray-800 border-b border-gray-200 dark:border-gray-700 px-6 py-4 flex items-center justify-between sticky top-0 z-30">
+            <div class="flex items-center gap-4">
+                <button onclick="toggleSidebar()"
+                    class="md:hidden p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700">
                     <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                            d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z">
-                        </path>
+                            d="M4 6h16M4 12h16M4 18h16" />
                     </svg>
                 </button>
-                <div class="flex items-center space-x-2">
-                    <img id="admin-avatar" src="https://via.placeholder.com/40"
-                        class="w-10 h-10 rounded-full border-2 border-primary">
-                    <span id="admin-name" class="font-bold">Admin</span>
+                <div>
+                    <h1 id="page-title" class="text-xl font-bold">Dashboard</h1>
+                    <p class="text-xs text-gray-500 dark:text-gray-400" id="page-subtitle">Overview & Statistics</p>
+                </div>
+            </div>
+            <div class="flex items-center gap-3">
+                <!-- Theme Toggle -->
+                <button onclick="toggleTheme()"
+                    class="p-2 rounded-xl hover:bg-gray-100 dark:hover:bg-gray-700 transition">
+                    <svg class="w-5 h-5 dark:hidden" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                            d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z" />
+                    </svg>
+                    <svg class="w-5 h-5 hidden dark:block" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                            d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z" />
+                    </svg>
+                </button>
+                <!-- Admin Profile -->
+                <div class="flex items-center gap-2 bg-gray-100 dark:bg-gray-700 rounded-xl px-3 py-2">
+                    <img id="admin-avatar" src="https://www.gravatar.com/avatar/?d=mp"
+                        class="w-7 h-7 rounded-full object-cover">
+                    <span id="admin-name" class="text-sm font-semibold">Admin</span>
+                    <span
+                        class="badge bg-purple-100 text-purple-700 dark:bg-purple-900/50 dark:text-purple-300 ml-1">admin</span>
                 </div>
             </div>
         </header>
 
-        <!-- Stats Section -->
-        <div id="tab-dashboard" class="tab-content space-y-8">
-            <div class="grid grid-cols-1 md:grid-cols-4 gap-6">
-                <!-- Stat Card -->
-                <div class="bg-white dark:bg-gray-800 p-6 rounded-2xl shadow-sm border dark:border-gray-700">
-                    <p class="text-sm text-gray-500 uppercase font-bold">Total Users</p>
-                    <p id="stat-users" class="text-3xl font-bold mt-2">0</p>
+        <div class="p-6 space-y-6">
+
+            <!-- ==================== DASHBOARD TAB ==================== -->
+            <div id="tab-dashboard" class="tab-content active">
+                <!-- Stats Grid -->
+                <div class="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
+                    <div class="stat-card">
+                        <div class="flex items-center justify-between mb-3">
+                            <p class="text-xs font-semibold text-gray-500 uppercase tracking-wider">Total Users</p>
+                            <div
+                                class="w-9 h-9 bg-blue-100 dark:bg-blue-900/30 rounded-xl flex items-center justify-center">
+                                <svg class="w-5 h-5 text-blue-600 dark:text-blue-400" fill="none" stroke="currentColor"
+                                    viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                        d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0z" />
+                                </svg>
+                            </div>
+                        </div>
+                        <p id="stat-users" class="text-3xl font-bold mb-1">—</p>
+                        <p id="stat-new-users" class="text-xs text-green-600 dark:text-green-400 font-medium">+0 this
+                            month</p>
+                    </div>
+                    <div class="stat-card">
+                        <div class="flex items-center justify-between mb-3">
+                            <p class="text-xs font-semibold text-gray-500 uppercase tracking-wider">Active Ads</p>
+                            <div
+                                class="w-9 h-9 bg-orange-100 dark:bg-orange-900/30 rounded-xl flex items-center justify-center">
+                                <svg class="w-5 h-5 text-orange-600 dark:text-orange-400" fill="none"
+                                    stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                        d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                                </svg>
+                            </div>
+                        </div>
+                        <p id="stat-ads" class="text-3xl font-bold mb-1">—</p>
+                        <p id="stat-new-ads" class="text-xs text-green-600 dark:text-green-400 font-medium">+0 this
+                            month</p>
+                    </div>
+                    <div class="stat-card">
+                        <div class="flex items-center justify-between mb-3">
+                            <p class="text-xs font-semibold text-gray-500 uppercase tracking-wider">Total Revenue</p>
+                            <div
+                                class="w-9 h-9 bg-green-100 dark:bg-green-900/30 rounded-xl flex items-center justify-center">
+                                <svg class="w-5 h-5 text-green-600 dark:text-green-400" fill="none"
+                                    stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                        d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                                </svg>
+                            </div>
+                        </div>
+                        <p id="stat-revenue" class="text-3xl font-bold mb-1">$—</p>
+                        <p id="stat-monthly-revenue" class="text-xs text-blue-600 dark:text-blue-400 font-medium">$0
+                            this month</p>
+                    </div>
+                    <div class="stat-card">
+                        <div class="flex items-center justify-between mb-3">
+                            <p class="text-xs font-semibold text-gray-500 uppercase tracking-wider">Pending Reports</p>
+                            <div
+                                class="w-9 h-9 bg-red-100 dark:bg-red-900/30 rounded-xl flex items-center justify-center">
+                                <svg class="w-5 h-5 text-red-600 dark:text-red-400" fill="none" stroke="currentColor"
+                                    viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                        d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
+                                </svg>
+                            </div>
+                        </div>
+                        <p id="stat-reports" class="text-3xl font-bold text-red-500 mb-1">—</p>
+                        <p class="text-xs text-gray-400 font-medium">Requires attention</p>
+                    </div>
                 </div>
-                <div class="bg-white dark:bg-gray-800 p-6 rounded-2xl shadow-sm border dark:border-gray-700">
-                    <p class="text-sm text-gray-500 uppercase font-bold">Active Ads</p>
-                    <p id="stat-ads" class="text-3xl font-bold mt-2">0</p>
-                </div>
-                <div class="bg-white dark:bg-gray-800 p-6 rounded-2xl shadow-sm border dark:border-gray-700">
-                    <p class="text-sm text-gray-500 uppercase font-bold">Pending Reports</p>
-                    <p id="stat-reports" class="text-3xl font-bold mt-2 text-red-500">0</p>
-                </div>
-                <div class="bg-white dark:bg-gray-800 p-6 rounded-2xl shadow-sm border dark:border-gray-700">
-                    <p class="text-sm text-gray-500 uppercase font-bold">Total Views</p>
-                    <p id="stat-views" class="text-3xl font-bold mt-2 text-indigo-500">0</p>
+
+                <!-- Second row stats -->
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
+                    <div class="stat-card">
+                        <h3 class="font-bold text-sm mb-4 text-gray-700 dark:text-gray-300">Quick Actions</h3>
+                        <div class="grid grid-cols-2 gap-3">
+                            <button onclick="showTab('users')"
+                                class="flex items-center gap-2 p-3 rounded-xl bg-blue-50 dark:bg-blue-900/20 text-blue-700 dark:text-blue-300 hover:bg-blue-100 transition text-sm font-medium">
+                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                        d="M12 4v16m8-8H4" />
+                                </svg>
+                                Manage Users
+                            </button>
+                            <button onclick="showTab('ads')"
+                                class="flex items-center gap-2 p-3 rounded-xl bg-orange-50 dark:bg-orange-900/20 text-orange-700 dark:text-orange-300 hover:bg-orange-100 transition text-sm font-medium">
+                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                        d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+                                </svg>
+                                Review Ads
+                            </button>
+                            <button onclick="showTab('reports')"
+                                class="flex items-center gap-2 p-3 rounded-xl bg-red-50 dark:bg-red-900/20 text-red-700 dark:text-red-300 hover:bg-red-100 transition text-sm font-medium">
+                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                        d="M3 21v-4m0 0V5a2 2 0 012-2h6.5l1 1H21l-3 6 3 6h-8.5l-1-1H5a2 2 0 00-2 2zm9-13.5V9" />
+                                </svg>
+                                View Reports
+                            </button>
+                            <button onclick="showTab('revenue')"
+                                class="flex items-center gap-2 p-3 rounded-xl bg-green-50 dark:bg-green-900/20 text-green-700 dark:text-green-300 hover:bg-green-100 transition text-sm font-medium">
+                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                        d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />
+                                </svg>
+                                Revenue Stats
+                            </button>
+                        </div>
+                    </div>
+                    <div class="stat-card">
+                        <h3 class="font-bold text-sm mb-3 text-gray-700 dark:text-gray-300">Site Statistics</h3>
+                        <div class="space-y-3">
+                            <div class="flex items-center justify-between">
+                                <span class="text-sm text-gray-600 dark:text-gray-400">Total Ad Views</span>
+                                <span id="stat-views" class="font-bold text-indigo-600">—</span>
+                            </div>
+                            <div class="flex items-center justify-between">
+                                <span class="text-sm text-gray-600 dark:text-gray-400">Total Transactions</span>
+                                <span id="stat-transactions" class="font-bold text-green-600">—</span>
+                            </div>
+                            <div class="flex items-center justify-between">
+                                <span class="text-sm text-gray-600 dark:text-gray-400">Monthly Revenue</span>
+                                <span id="stat-monthly" class="font-bold text-blue-600">—</span>
+                            </div>
+                        </div>
+                    </div>
                 </div>
             </div>
 
-            <div class="bg-white dark:bg-gray-800 p-6 rounded-2xl shadow-sm border dark:border-gray-700">
-                <h3 class="text-xl font-bold mb-4">Recent Activity</h3>
-                <div id="recent-activity-list" class="space-y-4">
-                    <!-- Dynamic -->
-                    <p class="text-gray-500 text-sm">Loading activity...</p>
+            <!-- ==================== REVENUE TAB ==================== -->
+            <div id="tab-revenue" class="tab-content">
+                <div class="flex items-center justify-between mb-4">
+                    <h2 class="font-bold text-lg">Revenue Analytics</h2>
+                    <select id="revenue-period" onchange="loadRevenue()"
+                        class="text-sm border border-gray-200 dark:border-gray-600 rounded-lg px-3 py-2 bg-white dark:bg-gray-800 focus:outline-none focus:ring-2 focus:ring-accent">
+                        <option value="7">Last 7 days</option>
+                        <option value="30" selected>Last 30 days</option>
+                        <option value="90">Last 90 days</option>
+                        <option value="365">Last year</option>
+                    </select>
+                </div>
+
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
+                    <div class="stat-card text-center">
+                        <p class="text-xs text-gray-500 uppercase font-bold mb-2">Total Revenue</p>
+                        <p id="rev-total" class="text-4xl font-black text-green-600">$—</p>
+                    </div>
+                    <div class="stat-card text-center">
+                        <p class="text-xs text-gray-500 uppercase font-bold mb-2">Transactions</p>
+                        <p id="rev-count" class="text-4xl font-black text-blue-600">—</p>
+                    </div>
+                    <div class="stat-card text-center">
+                        <p class="text-xs text-gray-500 uppercase font-bold mb-2">Avg. Transaction</p>
+                        <p id="rev-avg" class="text-4xl font-black text-purple-600">$—</p>
+                    </div>
+                </div>
+
+                <!-- Revenue by Plan -->
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
+                    <div class="bg-white dark:bg-gray-800 rounded-2xl border border-gray-100 dark:border-gray-700 p-6">
+                        <h3 class="font-bold mb-4">Revenue by Plan</h3>
+                        <div id="rev-by-plan" class="space-y-3"></div>
+                    </div>
+                    <div class="bg-white dark:bg-gray-800 rounded-2xl border border-gray-100 dark:border-gray-700 p-6">
+                        <h3 class="font-bold mb-4">Recent Transactions</h3>
+                        <div id="rev-recent" class="space-y-3 max-h-64 overflow-y-auto"></div>
+                    </div>
                 </div>
             </div>
+
+            <!-- ==================== USERS TAB ==================== -->
+            <div id="tab-users" class="tab-content">
+                <!-- Search & Filter Bar -->
+                <div class="flex flex-col sm:flex-row gap-3 mb-4">
+                    <div class="relative flex-1">
+                        <svg class="absolute left-3 top-2.5 w-4 h-4 text-gray-400" fill="none" stroke="currentColor"
+                            viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+                        </svg>
+                        <input type="text" id="user-search" placeholder="Search by name or email..."
+                            oninput="debounce(() => loadUsers(), 300)()"
+                            class="w-full pl-9 pr-4 py-2 text-sm border border-gray-200 dark:border-gray-600 rounded-xl bg-white dark:bg-gray-800 focus:outline-none focus:ring-2 focus:ring-accent">
+                    </div>
+                    <select id="user-role-filter" onchange="loadUsers()"
+                        class="text-sm border border-gray-200 dark:border-gray-600 rounded-xl px-3 py-2 bg-white dark:bg-gray-800 focus:outline-none focus:ring-2 focus:ring-accent">
+                        <option value="">All Roles</option>
+                        <option value="user">Users</option>
+                        <option value="admin">Admins</option>
+                    </select>
+                </div>
+
+                <div
+                    class="bg-white dark:bg-gray-800 rounded-2xl border border-gray-100 dark:border-gray-700 overflow-hidden">
+                    <div class="overflow-x-auto">
+                        <table class="w-full text-sm text-left">
+                            <thead
+                                class="bg-gray-50 dark:bg-gray-700/50 text-xs text-gray-500 uppercase font-semibold tracking-wider">
+                                <tr>
+                                    <th class="px-6 py-4">User</th>
+                                    <th class="px-6 py-4">Role</th>
+                                    <th class="px-6 py-4">Status</th>
+                                    <th class="px-6 py-4">Joined</th>
+                                    <th class="px-6 py-4 text-right">Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody id="users-table-body" class="divide-y divide-gray-100 dark:divide-gray-700">
+                                <tr>
+                                    <td colspan="5" class="px-6 py-8 text-center text-gray-400">Loading users...</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <div id="users-pagination"
+                        class="px-6 py-3 border-t border-gray-100 dark:border-gray-700 flex items-center justify-between text-sm text-gray-500">
+                    </div>
+                </div>
+            </div>
+
+            <!-- ==================== ADS TAB ==================== -->
+            <div id="tab-ads" class="tab-content">
+                <!-- Filter Bar -->
+                <div class="flex flex-col sm:flex-row gap-3 mb-4">
+                    <div class="relative flex-1">
+                        <svg class="absolute left-3 top-2.5 w-4 h-4 text-gray-400" fill="none" stroke="currentColor"
+                            viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+                        </svg>
+                        <input type="text" id="ad-search" placeholder="Search ad title..."
+                            oninput="debounce(() => loadAds(), 300)()"
+                            class="w-full pl-9 pr-4 py-2 text-sm border border-gray-200 dark:border-gray-600 rounded-xl bg-white dark:bg-gray-800 focus:outline-none focus:ring-2 focus:ring-accent">
+                    </div>
+                    <select id="ad-status-filter" onchange="loadAds()"
+                        class="text-sm border border-gray-200 dark:border-gray-600 rounded-xl px-3 py-2 bg-white dark:bg-gray-800 focus:outline-none focus:ring-2 focus:ring-accent">
+                        <option value="">All Status</option>
+                        <option value="active">Active</option>
+                        <option value="sold">Sold</option>
+                        <option value="expired">Expired</option>
+                        <option value="deleted">Deleted</option>
+                    </select>
+                    <select id="ad-featured-filter" onchange="loadAds()"
+                        class="text-sm border border-gray-200 dark:border-gray-600 rounded-xl px-3 py-2 bg-white dark:bg-gray-800 focus:outline-none focus:ring-2 focus:ring-accent">
+                        <option value="">All Ads</option>
+                        <option value="true">Featured Only</option>
+                        <option value="false">Not Featured</option>
+                    </select>
+                </div>
+
+                <div
+                    class="bg-white dark:bg-gray-800 rounded-2xl border border-gray-100 dark:border-gray-700 overflow-hidden">
+                    <div class="overflow-x-auto">
+                        <table class="w-full text-sm text-left">
+                            <thead
+                                class="bg-gray-50 dark:bg-gray-700/50 text-xs text-gray-500 uppercase font-semibold tracking-wider">
+                                <tr>
+                                    <th class="px-6 py-4">Ad</th>
+                                    <th class="px-6 py-4">Owner</th>
+                                    <th class="px-6 py-4">Status</th>
+                                    <th class="px-6 py-4">Featured</th>
+                                    <th class="px-6 py-4">Views</th>
+                                    <th class="px-6 py-4 text-right">Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody id="ads-table-body" class="divide-y divide-gray-100 dark:divide-gray-700">
+                                <tr>
+                                    <td colspan="6" class="px-6 py-8 text-center text-gray-400">Loading ads...</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <div id="ads-pagination"
+                        class="px-6 py-3 border-t border-gray-100 dark:border-gray-700 flex items-center justify-between text-sm text-gray-500">
+                    </div>
+                </div>
+            </div>
+
+            <!-- ==================== REPORTS TAB ==================== -->
+            <div id="tab-reports" class="tab-content">
+                <div class="flex gap-3 mb-4">
+                    <select id="report-status-filter" onchange="loadReports()"
+                        class="text-sm border border-gray-200 dark:border-gray-600 rounded-xl px-3 py-2 bg-white dark:bg-gray-800 focus:outline-none focus:ring-2 focus:ring-accent">
+                        <option value="">All Reports</option>
+                        <option value="pending">Pending</option>
+                        <option value="resolved">Resolved</option>
+                    </select>
+                </div>
+
+                <div
+                    class="bg-white dark:bg-gray-800 rounded-2xl border border-gray-100 dark:border-gray-700 overflow-hidden">
+                    <div class="overflow-x-auto">
+                        <table class="w-full text-sm text-left">
+                            <thead
+                                class="bg-gray-50 dark:bg-gray-700/50 text-xs text-gray-500 uppercase font-semibold tracking-wider">
+                                <tr>
+                                    <th class="px-6 py-4">Reported Ad</th>
+                                    <th class="px-6 py-4">Reporter</th>
+                                    <th class="px-6 py-4">Reason</th>
+                                    <th class="px-6 py-4">Status</th>
+                                    <th class="px-6 py-4 text-right">Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody id="reports-table-body" class="divide-y divide-gray-100 dark:divide-gray-700">
+                                <tr>
+                                    <td colspan="5" class="px-6 py-8 text-center text-gray-400">Loading reports...</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
         </div>
-
-        <!-- Users Tab -->
-        <div id="tab-users" class="tab-content hidden space-y-4">
-            <div class="bg-white dark:bg-gray-800 rounded-2xl overflow-hidden shadow-sm border dark:border-gray-700">
-                <table class="w-full text-left">
-                    <thead class="bg-gray-50 dark:bg-gray-700 text-xs uppercase font-bold text-gray-500">
-                        <tr>
-                            <th class="px-6 py-4">User</th>
-                            <th class="px-6 py-4">Role</th>
-                            <th class="px-6 py-4">Joined</th>
-                            <th class="px-6 py-4">Actions</th>
-                        </tr>
-                    </thead>
-                    <tbody id="users-table-body" class="divide-y dark:divide-gray-700">
-                        <!-- Dynamic -->
-                    </tbody>
-                </table>
-            </div>
-        </div>
-
-        <!-- Ads Tab -->
-        <div id="tab-ads" class="tab-content hidden space-y-4">
-            <div class="bg-white dark:bg-gray-800 rounded-2xl overflow-hidden shadow-sm border dark:border-gray-700">
-                <table class="w-full text-left">
-                    <thead class="bg-gray-50 dark:bg-gray-700 text-xs uppercase font-bold text-gray-500">
-                        <tr>
-                            <th class="px-6 py-4">Ad Title</th>
-                            <th class="px-6 py-4">Owner</th>
-                            <th class="px-6 py-4">Status</th>
-                            <th class="px-6 py-4">Featured</th>
-                            <th class="px-6 py-4">Actions</th>
-                        </tr>
-                    </thead>
-                    <tbody id="ads-table-body" class="divide-y dark:divide-gray-700">
-                        <!-- Dynamic -->
-                    </tbody>
-                </table>
-            </div>
-        </div>
-
-        <!-- Reports Tab -->
-        <div id="tab-reports" class="tab-content hidden space-y-4">
-            <div class="bg-white dark:bg-gray-800 rounded-2xl overflow-hidden shadow-sm border dark:border-gray-700">
-                <table class="w-full text-left">
-                    <thead class="bg-gray-50 dark:bg-gray-700 text-xs uppercase font-bold text-gray-500">
-                        <tr>
-                            <th class="px-6 py-4">Ad</th>
-                            <th class="px-6 py-4">Reporter</th>
-                            <th class="px-6 py-4">Reason</th>
-                            <th class="px-6 py-4">Status</th>
-                            <th class="px-6 py-4">Actions</th>
-                        </tr>
-                    </thead>
-                    <tbody id="reports-table-body" class="divide-y dark:divide-gray-700">
-                        <!-- Dynamic -->
-                    </tbody>
-                </table>
-            </div>
-        </div>
-
     </main>
 
     <script src="assets/js/api-client.js"></script>
     <script>
-        document.addEventListener('DOMContentLoaded', async () => {
-            const user = JSON.parse(localStorage.getItem('user'));
-            if (!user || user.role !== 'admin') {
-                window.location.href = 'index.html';
-                return;
-            }
+        // ===================== AUTH CHECK =====================
+        const adminUser = JSON.parse(localStorage.getItem('user'));
+        if (!adminUser || adminUser.role !== 'admin') {
+            window.location.href = 'login.html';
+        }
+        document.getElementById('admin-name').textContent = adminUser?.name || 'Admin';
+        if (adminUser?.avatar) document.getElementById('admin-avatar').src = adminUser.avatar;
 
-            document.getElementById('admin-name').textContent = user.name;
-            if (user.avatar) document.getElementById('admin-avatar').src = user.avatar;
-
-            loadStats();
-            loadAll();
-
-            // Theme Toggle
-            const themeBtn = document.getElementById('theme-toggle');
-            themeBtn.onclick = () => {
-                document.documentElement.classList.toggle('dark');
-            };
-        });
+        // ===================== TABS =====================
+        const TAB_CONFIG = {
+            dashboard: { title: 'Dashboard', subtitle: 'Overview & Statistics' },
+            revenue: { title: 'Revenue', subtitle: 'Financial Analytics' },
+            users: { title: 'Users', subtitle: 'Manage all registered users' },
+            ads: { title: 'Ads', subtitle: 'Manage all listings' },
+            reports: { title: 'Reports', subtitle: 'Review flagged content' }
+        };
 
         function showTab(tabId) {
-            document.querySelectorAll('.tab-content').forEach(el => el.classList.add('hidden'));
-            document.getElementById('tab-' + tabId).classList.remove('hidden');
-            document.getElementById('tab-title').textContent = tabId.charAt(0).toUpperCase() + tabId.slice(1);
+            document.querySelectorAll('.tab-content').forEach(el => el.classList.remove('active'));
+            document.querySelectorAll('.sidebar-link').forEach(el => el.classList.remove('active'));
+            document.getElementById('tab-' + tabId).classList.add('active');
+            document.getElementById('nav-' + tabId)?.classList.add('active');
+            document.getElementById('page-title').textContent = TAB_CONFIG[tabId]?.title || tabId;
+            document.getElementById('page-subtitle').textContent = TAB_CONFIG[tabId]?.subtitle || '';
+
+            // Load data for tab
+            if (tabId === 'users') loadUsers();
+            if (tabId === 'ads') loadAds();
+            if (tabId === 'reports') loadReports();
+            if (tabId === 'revenue') loadRevenue();
+
+            // Close mobile sidebar
+            if (window.innerWidth < 768) toggleSidebar(false);
         }
 
+        // ===================== SIDEBAR =====================
+        function toggleSidebar(force) {
+            const sidebar = document.getElementById('sidebar');
+            const overlay = document.getElementById('sidebar-overlay');
+            const isOpen = !sidebar.classList.contains('-translate-x-full');
+            const shouldOpen = force !== undefined ? force : !isOpen;
+
+            sidebar.classList.toggle('-translate-x-full', !shouldOpen);
+            overlay.classList.toggle('hidden', !shouldOpen);
+        }
+
+        // ===================== THEME =====================
+        function toggleTheme() {
+            const isDark = document.documentElement.classList.toggle('dark');
+            localStorage.setItem('theme', isDark ? 'dark' : 'light');
+        }
+
+        // ===================== LOGOUT =====================
+        function handleLogout() {
+            localStorage.removeItem('token');
+            localStorage.removeItem('user');
+            window.location.href = 'login.html';
+        }
+
+        // ===================== UTILS =====================
+        function debounce(fn, delay) {
+            let timer;
+            return function () {
+                clearTimeout(timer);
+                timer = setTimeout(fn, delay);
+            };
+        }
+
+        function statusBadge(status) {
+            const colors = {
+                active: 'bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-400',
+                sold: 'bg-blue-100 text-blue-700 dark:bg-blue-900/30 dark:text-blue-400',
+                deleted: 'bg-red-100 text-red-700 dark:bg-red-900/30 dark:text-red-400',
+                expired: 'bg-gray-100 text-gray-700 dark:bg-gray-900/50 dark:text-gray-400',
+                pending: 'bg-yellow-100 text-yellow-700 dark:bg-yellow-900/30 dark:text-yellow-400',
+                resolved: 'bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-400',
+                completed: 'bg-green-100 text-green-700',
+                failed: 'bg-red-100 text-red-700',
+            };
+            return `<span class="badge ${colors[status] || 'bg-gray-100 text-gray-700'}">${status}</span>`;
+        }
+
+        // ===================== DASHBOARD STATS =====================
         async function loadStats() {
             try {
                 const res = await apiClient.fetch('/admin/stats');
-                document.getElementById('stat-users').textContent = res.data.totalUsers;
-                document.getElementById('stat-ads').textContent = res.data.activeAds;
-                document.getElementById('stat-reports').textContent = res.data.totalReports;
-                document.getElementById('stat-views').textContent = res.data.totalViews || 0;
+                const d = res.data;
+
+                document.getElementById('stat-users').textContent = d.totalUsers.toLocaleString();
+                document.getElementById('stat-new-users').textContent = `+${d.newUsersThisMonth} this month`;
+                document.getElementById('stat-ads').textContent = d.activeAds.toLocaleString();
+                document.getElementById('stat-new-ads').textContent = `+${d.newAdsThisMonth} this month`;
+                document.getElementById('stat-revenue').textContent = `$${d.totalRevenue}`;
+                document.getElementById('stat-monthly-revenue').textContent = `$${d.monthlyRevenue} this month`;
+                document.getElementById('stat-reports').textContent = d.totalReports;
+                document.getElementById('stat-views').textContent = d.totalViews.toLocaleString();
+                document.getElementById('stat-transactions').textContent = d.totalTransactions;
+                document.getElementById('stat-monthly').textContent = `$${d.monthlyRevenue}`;
+
+                // Update badge
+                if (d.totalReports > 0) {
+                    const badge = document.getElementById('reports-badge');
+                    badge.textContent = d.totalReports;
+                    badge.classList.remove('hidden');
+                }
+                document.getElementById('users-count-badge').textContent = d.totalUsers;
+                document.getElementById('ads-count-badge').textContent = d.totalAds;
             } catch (err) {
                 console.error('Stats error:', err);
             }
         }
 
-        async function loadAll() {
-            loadUsers();
-            loadAds();
-            loadReports();
+        // ===================== REVENUE =====================
+        async function loadRevenue() {
+            const period = document.getElementById('revenue-period').value;
+            try {
+                const res = await apiClient.fetch(`/admin/revenue?period=${period}`);
+                const d = res.data;
+
+                document.getElementById('rev-total').textContent = `$${d.totalRevenue}`;
+                document.getElementById('rev-count').textContent = d.totalTransactions;
+                const avg = d.totalTransactions > 0 ? (parseFloat(d.totalRevenue) / d.totalTransactions).toFixed(2) : '0.00';
+                document.getElementById('rev-avg').textContent = `$${avg}`;
+
+                // By plan
+                const planEl = document.getElementById('rev-by-plan');
+                const planColors = { basic: 'blue', standard: 'orange', premium: 'purple', featured_ad: 'yellow' };
+                planEl.innerHTML = Object.entries(d.byPlan).length
+                    ? Object.entries(d.byPlan).map(([plan, amount]) => `
+                        <div class="flex items-center justify-between">
+                            <div class="flex items-center gap-2">
+                                <div class="w-2 h-2 rounded-full bg-${planColors[plan] || 'gray'}-500"></div>
+                                <span class="text-sm capitalize">${plan.replace('_', ' ')}</span>
+                            </div>
+                            <span class="font-bold text-sm text-green-600">$${amount.toFixed(2)}</span>
+                        </div>
+                    `).join('')
+                    : '<p class="text-gray-400 text-sm text-center">No revenue data for this period</p>';
+
+                // Recent payments
+                const recEl = document.getElementById('rev-recent');
+                recEl.innerHTML = d.recentPayments.length
+                    ? d.recentPayments.map(p => `
+                        <div class="flex items-center justify-between py-2 border-b border-gray-100 dark:border-gray-700 last:border-0">
+                            <div>
+                                <p class="text-xs font-semibold capitalize">${p.plan?.replace('_', ' ')} <span class="text-gray-400">• ${p.user?.name || 'Unknown'}</span></p>
+                                <p class="text-xs text-gray-400">${new Date(p.createdAt).toLocaleDateString()}</p>
+                            </div>
+                            <span class="font-bold text-sm text-green-600">$${p.amount}</span>
+                        </div>
+                    `).join('')
+                    : '<p class="text-gray-400 text-sm text-center">No recent transactions</p>';
+            } catch (err) {
+                console.error('Revenue error:', err);
+            }
         }
 
-        async function loadUsers() {
+        // ===================== USERS =====================
+        let usersPage = 1;
+        async function loadUsers(page = 1) {
+            usersPage = page;
+            const q = document.getElementById('user-search')?.value || '';
+            const role = document.getElementById('user-role-filter')?.value || '';
+            const tbody = document.getElementById('users-table-body');
+            tbody.innerHTML = '<tr><td colspan="5" class="px-6 py-8 text-center text-gray-400">Loading...</td></tr>';
+
             try {
-                const res = await apiClient.fetch('/admin/users');
-                const tbody = document.getElementById('users-table-body');
+                const params = new URLSearchParams({ page, limit: 15 });
+                if (q) params.set('q', q);
+                if (role) params.set('role', role);
+
+                const res = await apiClient.fetch(`/admin/users?${params}`);
+                if (!res.data.length) {
+                    tbody.innerHTML = '<tr><td colspan="5" class="px-6 py-8 text-center text-gray-400">No users found.</td></tr>';
+                    return;
+                }
+
                 tbody.innerHTML = res.data.map(u => `
-                    <tr>
+                    <tr class="table-row">
                         <td class="px-6 py-4">
-                            <div class="flex items-center space-x-3">
-                                <img src="${u.avatar}" class="w-8 h-8 rounded-full">
+                            <div class="flex items-center gap-3">
+                                <img src="${u.avatar}" class="w-9 h-9 rounded-full object-cover flex-shrink-0" onerror="this.src='https://www.gravatar.com/avatar/?d=mp'">
                                 <div>
-                                    <p class="font-bold">${u.name}</p>
-                                    <p class="text-xs text-gray-500">${u.email}</p>
+                                    <p class="font-semibold text-sm">${u.name}</p>
+                                    <p class="text-xs text-gray-400">${u.email}</p>
                                 </div>
                             </div>
                         </td>
-                        <td class="px-6 py-4"><span class="px-2 py-1 text-xs rounded-full ${u.role === 'admin' ? 'bg-purple-100 text-purple-700' : 'bg-gray-100 text-gray-700'}">${u.role}</span></td>
-                        <td class="px-6 py-4 text-sm">${new Date(u.createdAt).toLocaleDateString()}</td>
                         <td class="px-6 py-4">
-                            <button class="text-red-600 hover:text-red-900 font-bold text-sm">Delete</button>
+                            <span class="badge ${u.role === 'admin' ? 'bg-purple-100 text-purple-700 dark:bg-purple-900/30 dark:text-purple-300' : 'bg-gray-100 text-gray-600 dark:bg-gray-700 dark:text-gray-300'}">${u.role}</span>
+                        </td>
+                        <td class="px-6 py-4">
+                            ${u.isBanned
+                        ? '<span class="badge bg-red-100 text-red-700 dark:bg-red-900/30 dark:text-red-400">Banned</span>'
+                        : '<span class="badge bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-400">Active</span>'}
+                        </td>
+                        <td class="px-6 py-4 text-xs text-gray-500">${new Date(u.createdAt).toLocaleDateString()}</td>
+                        <td class="px-6 py-4">
+                            <div class="flex items-center justify-end gap-2">
+                                ${u.role !== 'admin' ? `
+                                    <button onclick="toggleBan(${u.id}, ${u.isBanned})" class="btn-sm ${u.isBanned ? 'bg-green-100 text-green-700 hover:bg-green-200' : 'bg-orange-100 text-orange-700 hover:bg-orange-200'}">
+                                        ${u.isBanned ? 'Unban' : 'Ban'}
+                                    </button>
+                                    <button onclick="promoteUser(${u.id})" class="btn-sm bg-purple-100 text-purple-700 hover:bg-purple-200">Promote</button>
+                                    <button onclick="deleteUser(${u.id})" class="btn-sm bg-red-100 text-red-700 hover:bg-red-200">Delete</button>
+                                ` : '<span class="text-xs text-gray-400">Admin</span>'}
+                            </div>
                         </td>
                     </tr>
                 `).join('');
-            } catch (e) { }
+
+                // Pagination
+                document.getElementById('users-pagination').innerHTML = `
+                    <span>${res.total} total users</span>
+                    <div class="flex gap-2">
+                        ${page > 1 ? `<button onclick="loadUsers(${page - 1})" class="px-3 py-1 rounded bg-gray-100 dark:bg-gray-700 hover:bg-gray-200 text-sm">← Prev</button>` : ''}
+                        <span class="px-3 py-1 text-sm">Page ${page} of ${res.pages}</span>
+                        ${page < res.pages ? `<button onclick="loadUsers(${page + 1})" class="px-3 py-1 rounded bg-gray-100 dark:bg-gray-700 hover:bg-gray-200 text-sm">Next →</button>` : ''}
+                    </div>
+                `;
+            } catch (err) {
+                tbody.innerHTML = `<tr><td colspan="5" class="px-6 py-8 text-center text-red-400">${err.message}</td></tr>`;
+            }
         }
 
-        async function loadAds() {
+        async function toggleBan(id, isBanned) {
+            if (!confirm(`Are you sure you want to ${isBanned ? 'unban' : 'ban'} this user?`)) return;
             try {
-                const res = await apiClient.fetch('/admin/ads');
-                const tbody = document.getElementById('ads-table-body');
-                tbody.innerHTML = res.data.map(ad => `
-                    <tr>
-                        <td class="px-6 py-4 truncate max-w-xs">${ad.title}</td>
-                        <td class="px-6 py-4 text-sm">${ad.user ? ad.user.name : 'Unknown'}</td>
-                        <td class="px-6 py-4"><span class="px-2 py-1 text-xs rounded-full bg-green-100 text-green-700">${ad.status}</span></td>
-                        <td class="px-6 py-4">
-                            <input type="checkbox" ${ad.isFeatured ? 'checked' : ''} onchange="toggleFeatured(${ad.id}, this.checked)">
-                        </td>
-                        <td class="px-6 py-4 space-x-2">
-                            <button class="text-red-600 hover:text-red-900 text-sm font-bold" onclick="deleteAd(${ad.id})">Delete</button>
-                        </td>
-                    </tr>
-                `).join('');
-            } catch (e) { }
+                await apiClient.fetch(`/admin/users/${id}/ban`, { method: 'PUT' });
+                loadUsers(usersPage);
+            } catch (e) { alert(e.message); }
         }
 
-        async function loadReports() {
+        async function promoteUser(id) {
+            if (!confirm('Promote this user to admin? This gives them full admin access.')) return;
             try {
-                const res = await apiClient.fetch('/reports'); // Admin can get all
-                const tbody = document.getElementById('reports-table-body');
-                tbody.innerHTML = res.data.map(r => `
-                    <tr>
-                        <td class="px-6 py-4 text-sm"><a href="ad-details.html?id=${r.adId}" class="text-accent underline">View Ad</a></td>
-                        <td class="px-6 py-4 text-sm">${r.reporter ? r.reporter.name : 'Unknown'}</td>
-                        <td class="px-6 py-4 text-sm font-medium">${r.reason}</td>
-                        <td class="px-6 py-4"><span class="px-2 py-1 text-xs rounded-full bg-orange-100 text-orange-700">${r.status}</span></td>
+                await apiClient.fetch(`/admin/users/${id}/promote`, { method: 'PUT' });
+                loadUsers(usersPage);
+            } catch (e) { alert(e.message); }
+        }
+
+        async function deleteUser(id) {
+            if (!confirm('Delete this user permanently? All their ads will also be deleted.')) return;
+            try {
+                await apiClient.fetch(`/admin/users/${id}`, { method: 'DELETE' });
+                loadUsers(usersPage);
+            } catch (e) { alert(e.message); }
+        }
+
+        // ===================== ADS =====================
+        let adsPage = 1;
+        async function loadAds(page = 1) {
+            adsPage = page;
+            const q = document.getElementById('ad-search')?.value || '';
+            const status = document.getElementById('ad-status-filter')?.value || '';
+            const featured = document.getElementById('ad-featured-filter')?.value || '';
+            const tbody = document.getElementById('ads-table-body');
+            tbody.innerHTML = '<tr><td colspan="6" class="px-6 py-8 text-center text-gray-400">Loading...</td></tr>';
+
+            try {
+                const params = new URLSearchParams({ page, limit: 15 });
+                if (q) params.set('q', q);
+                if (status) params.set('status', status);
+                if (featured !== '') params.set('featured', featured);
+
+                const res = await apiClient.fetch(`/admin/ads?${params}`);
+                if (!res.data.length) {
+                    tbody.innerHTML = '<tr><td colspan="6" class="px-6 py-8 text-center text-gray-400">No ads found.</td></tr>';
+                    return;
+                }
+
+                tbody.innerHTML = res.data.map(ad => {
+                    const img = (JSON.parse(ad.images || '[]'))[0] || 'https://via.placeholder.com/40';
+                    return `
+                    <tr class="table-row">
                         <td class="px-6 py-4">
-                            <button class="bg-primary text-white text-xs px-3 py-1 rounded" onclick="resolveReport(${r.id})">Resolve</button>
+                            <div class="flex items-center gap-3 max-w-xs">
+                                <img src="${img}" class="w-10 h-10 rounded-lg object-cover flex-shrink-0" onerror="this.src='https://via.placeholder.com/40'">
+                                <a href="ad-details.html?id=${ad.id}" target="_blank" class="font-medium text-sm hover:text-accent truncate">${ad.title}</a>
+                            </div>
+                        </td>
+                        <td class="px-6 py-4 text-sm text-gray-500">${ad.user ? ad.user.name : 'Unknown'}</td>
+                        <td class="px-6 py-4">${statusBadge(ad.status)}</td>
+                        <td class="px-6 py-4">
+                            <button onclick="toggleFeature(${ad.id})" class="badge ${ad.isFeatured ? 'bg-yellow-100 text-yellow-700 cursor-pointer hover:bg-yellow-200' : 'bg-gray-100 text-gray-500 cursor-pointer hover:bg-yellow-50'}">
+                                ${ad.isFeatured ? '⭐ Featured' : '☆ Not Featured'}
+                            </button>
+                        </td>
+                        <td class="px-6 py-4 text-sm text-gray-500">${(ad.views || 0).toLocaleString()}</td>
+                        <td class="px-6 py-4">
+                            <div class="flex items-center justify-end gap-2">
+                                ${ad.status !== 'active' ? `<button onclick="approveAd(${ad.id})" class="btn-sm bg-green-100 text-green-700 hover:bg-green-200">Approve</button>` : ''}
+                                <button onclick="deleteAd(${ad.id})" class="btn-sm bg-red-100 text-red-700 hover:bg-red-200">Delete</button>
+                            </div>
                         </td>
                     </tr>
-                `).join('');
-            } catch (e) { }
+                `}).join('');
+
+                document.getElementById('ads-pagination').innerHTML = `
+                    <span>${res.total} total ads</span>
+                    <div class="flex gap-2">
+                        ${page > 1 ? `<button onclick="loadAds(${page - 1})" class="px-3 py-1 rounded bg-gray-100 dark:bg-gray-700 hover:bg-gray-200 text-sm">← Prev</button>` : ''}
+                        <span class="px-3 py-1 text-sm">Page ${page} of ${res.pages}</span>
+                        ${page < res.pages ? `<button onclick="loadAds(${page + 1})" class="px-3 py-1 rounded bg-gray-100 dark:bg-gray-700 hover:bg-gray-200 text-sm">Next →</button>` : ''}
+                    </div>
+                `;
+            } catch (err) {
+                tbody.innerHTML = `<tr><td colspan="6" class="px-6 py-8 text-center text-red-400">${err.message}</td></tr>`;
+            }
+        }
+
+        async function approveAd(id) {
+            try {
+                await apiClient.fetch(`/admin/ads/${id}/approve`, { method: 'PUT' });
+                loadAds(adsPage);
+            } catch (e) { alert(e.message); }
         }
 
         async function deleteAd(id) {
-            if (!confirm('Are you sure you want to delete this ad?')) return;
+            if (!confirm('Delete this ad? The owner will be notified.')) return;
             try {
-                await apiClient.fetch('/admin/ads/' + id, { method: 'DELETE' });
-                loadAds();
+                await apiClient.fetch(`/admin/ads/${id}`, { method: 'DELETE' });
+                loadAds(adsPage);
             } catch (e) { alert(e.message); }
         }
 
-        async function toggleFeatured(id, featured) {
+        async function toggleFeature(id) {
             try {
-                await apiClient.fetch('/ads/' + id, {
-                    method: 'PUT',
-                    body: JSON.stringify({ isFeatured: featured })
-                });
+                await apiClient.fetch(`/admin/ads/${id}/feature`, { method: 'PUT' });
+                loadAds(adsPage);
             } catch (e) { alert(e.message); }
+        }
+
+        // ===================== REPORTS =====================
+        async function loadReports() {
+            const status = document.getElementById('report-status-filter')?.value || '';
+            const tbody = document.getElementById('reports-table-body');
+            tbody.innerHTML = '<tr><td colspan="5" class="px-6 py-8 text-center text-gray-400">Loading...</td></tr>';
+
+            try {
+                const params = new URLSearchParams({ limit: 50 });
+                if (status) params.set('status', status);
+                const res = await apiClient.fetch(`/admin/reports?${params}`);
+
+                if (!res.data.length) {
+                    tbody.innerHTML = '<tr><td colspan="5" class="px-6 py-8 text-center text-gray-400">✅ No reports found.</td></tr>';
+                    return;
+                }
+
+                tbody.innerHTML = res.data.map(r => `
+                    <tr class="table-row">
+                        <td class="px-6 py-4">
+                            <a href="ad-details.html?id=${r.adId}" target="_blank" class="text-accent underline text-sm hover:text-orange-700">${r.ad?.title || 'View Ad'}</a>
+                        </td>
+                        <td class="px-6 py-4 text-sm">${r.reporter?.name || 'Unknown'}<br><span class="text-xs text-gray-400">${r.reporter?.email || ''}</span></td>
+                        <td class="px-6 py-4"><span class="text-sm font-medium capitalize">${r.reason}</span></td>
+                        <td class="px-6 py-4">${statusBadge(r.status)}</td>
+                        <td class="px-6 py-4">
+                            <div class="flex items-center justify-end gap-2">
+                                ${r.status === 'pending' ? `
+                                    <button onclick="resolveReport(${r.id})" class="btn-sm bg-green-100 text-green-700 hover:bg-green-200">✅ Resolve</button>
+                                    <button onclick="deleteReportedAd(${r.adId}, ${r.id})" class="btn-sm bg-red-100 text-red-700 hover:bg-red-200">Delete Ad</button>
+                                ` : '<span class="text-xs text-gray-400">Resolved</span>'}
+                            </div>
+                        </td>
+                    </tr>
+                `).join('');
+            } catch (err) {
+                tbody.innerHTML = `<tr><td colspan="5" class="px-6 py-8 text-center text-red-400">${err.message}</td></tr>`;
+            }
         }
 
         async function resolveReport(id) {
             try {
-                await apiClient.fetch('/admin/reports/' + id, {
-                    method: 'PUT',
-                    body: JSON.stringify({ status: 'resolved' })
-                });
+                await apiClient.fetch(`/admin/reports/${id}`, { method: 'PUT', body: JSON.stringify({ status: 'resolved' }) });
                 loadReports();
             } catch (e) { alert(e.message); }
         }
+
+        async function deleteReportedAd(adId, reportId) {
+            if (!confirm('Delete the reported ad and resolve this report?')) return;
+            try {
+                await apiClient.fetch(`/admin/ads/${adId}`, { method: 'DELETE' });
+                await apiClient.fetch(`/admin/reports/${reportId}`, { method: 'PUT', body: JSON.stringify({ status: 'resolved' }) });
+                loadReports();
+                loadStats();
+            } catch (e) { alert(e.message); }
+        }
+
+        // ===================== INIT =====================
+        document.addEventListener('DOMContentLoaded', () => {
+            loadStats();
+        });
     </script>
 </body>
 

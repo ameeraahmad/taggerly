@@ -17,6 +17,15 @@ const protect = async (req, res, next) => {
         req.user = await User.findByPk(decoded.id, {
             attributes: { exclude: ['password'] }
         });
+
+        if (!req.user) {
+            return res.status(401).json({ success: false, message: 'User no longer exists' });
+        }
+
+        if (req.user.isBanned) {
+            return res.status(403).json({ success: false, message: 'Your account has been suspended. Please contact support.' });
+        }
+
         next();
     } catch (err) {
         return res.status(401).json({ success: false, message: 'Not authorized, token failed' });

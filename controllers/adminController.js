@@ -1,7 +1,9 @@
 const User = require('../models/User');
 const Ad = require('../models/Ad');
 const Report = require('../models/Report');
+const Payment = require('../models/Payment');
 const { Op } = require('sequelize');
+const { createNotification } = require('../utils/notifications');
 
 // @desc    Get dashboard stats for admin
 // @route   GET /api/admin/stats
@@ -10,15 +12,39 @@ exports.getStats = async (req, res) => {
         const totalUsers = await User.count();
         const totalAds = await Ad.count({ where: { status: { [Op.ne]: 'deleted' } } });
         const totalReports = await Report.count({ where: { status: 'pending' } });
+        const activeAds = await Ad.count({ where: { status: 'active' } });
+        const totalViews = await Ad.sum('views') || 0;
 
-        // Growth stats (mock or real logic based on createdAt)
+        // Revenue stats
+        const completedPayments = await Payment.findAll({ where: { status: 'completed' } });
+        const totalRevenue = completedPayments.reduce((sum, p) => sum + p.amount, 0);
+        const monthlyRevenue = completedPayments
+            .filter(p => {
+                const paymentDate = new Date(p.createdAt);
+                const now = new Date();
+                return paymentDate.getMonth() === now.getMonth() && paymentDate.getFullYear() === now.getFullYear();
+            })
+            .reduce((sum, p) => sum + p.amount, 0);
+
+        // New users this month
+        const thisMonth = new Date();
+        thisMonth.setDate(1);
+        const newUsersThisMonth = await User.count({ where: { createdAt: { [Op.gte]: thisMonth } } });
+        const newAdsThisMonth = await Ad.count({ where: { createdAt: { [Op.gte]: thisMonth } } });
+
         res.status(200).json({
             success: true,
             data: {
                 totalUsers,
                 totalAds,
+                activeAds,
                 totalReports,
-                activeAds: await Ad.count({ where: { status: 'active' } })
+                totalViews,
+                totalRevenue: totalRevenue.toFixed(2),
+                monthlyRevenue: monthlyRevenue.toFixed(2),
+                newUsersThisMonth,
+                newAdsThisMonth,
+                totalTransactions: completedPayments.length
             }
         });
     } catch (err) {
@@ -26,37 +52,143 @@ exports.getStats = async (req, res) => {
     }
 };
 
-// @desc    Get all users
+// @desc    Get all users with search & pagination
 // @route   GET /api/admin/users
 exports.getAllUsers = async (req, res) => {
     try {
-        const users = await User.findAll({
-            attributes: { exclude: ['password'] },
-            order: [['createdAt', 'DESC']]
+        const { q, page = 1, limit = 20, role } = req.query;
+        const where = {};
+        if (q) where[Op.or] = [
+            { name: { [Op.like]: `%${q}%` } },
+            { email: { [Op.like]: `%${q}%` } }
+        ];
+        if (role) where.role = role;
+
+        const users = await User.findAndCountAll({
+            where,
+            attributes: { exclude: ['password', 'emailVerificationToken', 'passwordResetToken'] },
+            order: [['createdAt', 'DESC']],
+            limit: parseInt(limit),
+            offset: (parseInt(page) - 1) * parseInt(limit)
         });
-        res.status(200).json({ success: true, data: users });
+
+        res.status(200).json({
+            success: true,
+            data: users.rows,
+            total: users.count,
+            page: parseInt(page),
+            pages: Math.ceil(users.count / parseInt(limit))
+        });
     } catch (err) {
         res.status(500).json({ success: false, message: err.message });
     }
 };
 
-// @desc    Get all ads for management
+// @desc    Ban or unban a user
+// @route   PUT /api/admin/users/:id/ban
+exports.toggleBanUser = async (req, res) => {
+    try {
+        const user = await User.findByPk(req.params.id);
+        if (!user) return res.status(404).json({ success: false, message: 'User not found' });
+        if (user.role === 'admin') return res.status(403).json({ success: false, message: 'Cannot ban an admin' });
+
+        const newStatus = !user.isBanned;
+        await user.update({ isBanned: newStatus });
+
+        res.status(200).json({
+            success: true,
+            message: newStatus ? 'User banned successfully' : 'User unbanned successfully',
+            data: { isBanned: newStatus }
+        });
+    } catch (err) {
+        res.status(500).json({ success: false, message: err.message });
+    }
+};
+
+// @desc    Promote user to admin
+// @route   PUT /api/admin/users/:id/promote
+exports.promoteUser = async (req, res) => {
+    try {
+        const user = await User.findByPk(req.params.id);
+        if (!user) return res.status(404).json({ success: false, message: 'User not found' });
+
+        await user.update({ role: 'admin' });
+        res.status(200).json({ success: true, message: 'User promoted to admin', data: user });
+    } catch (err) {
+        res.status(500).json({ success: false, message: err.message });
+    }
+};
+
+// @desc    Delete a user and all their ads
+// @route   DELETE /api/admin/users/:id
+exports.deleteUser = async (req, res) => {
+    try {
+        const user = await User.findByPk(req.params.id);
+        if (!user) return res.status(404).json({ success: false, message: 'User not found' });
+        if (user.role === 'admin') return res.status(403).json({ success: false, message: 'Cannot delete admin' });
+
+        // Soft-delete all their ads
+        await Ad.update({ status: 'deleted' }, { where: { userId: user.id } });
+        await user.destroy();
+
+        res.status(200).json({ success: true, message: 'User and all their ads deleted' });
+    } catch (err) {
+        res.status(500).json({ success: false, message: err.message });
+    }
+};
+
+// @desc    Get all ads for management with search & filter
 // @route   GET /api/admin/ads
 exports.getAllAds = async (req, res) => {
     try {
-        const ads = await Ad.findAll({
+        const { q, status, page = 1, limit = 20, featured } = req.query;
+        const where = {};
+        if (q) where.title = { [Op.like]: `%${q}%` };
+        if (status) where.status = status;
+        if (featured !== undefined) where.isFeatured = featured === 'true';
+
+        const ads = await Ad.findAndCountAll({
+            where,
             include: [{ model: User, as: 'user', attributes: ['name', 'email'] }],
-            order: [['createdAt', 'DESC']]
+            order: [['createdAt', 'DESC']],
+            limit: parseInt(limit),
+            offset: (parseInt(page) - 1) * parseInt(limit)
         });
-        res.status(200).json({ success: true, data: ads });
+
+        res.status(200).json({
+            success: true,
+            data: ads.rows,
+            total: ads.count,
+            page: parseInt(page),
+            pages: Math.ceil(ads.count / parseInt(limit))
+        });
     } catch (err) {
         res.status(500).json({ success: false, message: err.message });
     }
 };
 
-const { createNotification } = require('../utils/notifications');
+// @desc    Approve an ad
+// @route   PUT /api/admin/ads/:id/approve
+exports.approveAd = async (req, res) => {
+    try {
+        const ad = await Ad.findByPk(req.params.id);
+        if (!ad) return res.status(404).json({ success: false, message: 'Ad not found' });
 
-// ... (stats, users, ads)
+        await ad.update({ status: 'active' });
+
+        await createNotification(req.io, {
+            userId: ad.userId,
+            type: 'system',
+            title: '✅ Your ad has been approved!',
+            message: `Your ad "${ad.title}" is now live and visible to all users.`,
+            relatedId: ad.id
+        });
+
+        res.status(200).json({ success: true, message: 'Ad approved', data: ad });
+    } catch (err) {
+        res.status(500).json({ success: false, message: err.message });
+    }
+};
 
 // @desc    Delete any ad
 // @route   DELETE /api/admin/ads/:id
@@ -67,7 +199,6 @@ exports.deleteAd = async (req, res) => {
 
         await ad.update({ status: 'deleted' });
 
-        // Notify Owner
         await createNotification(req.io, {
             userId: ad.userId,
             type: 'ad_rejected',
@@ -82,6 +213,65 @@ exports.deleteAd = async (req, res) => {
     }
 };
 
+// @desc    Toggle ad featured status
+// @route   PUT /api/admin/ads/:id/feature
+exports.toggleFeatureAd = async (req, res) => {
+    try {
+        const ad = await Ad.findByPk(req.params.id);
+        if (!ad) return res.status(404).json({ success: false, message: 'Ad not found' });
+
+        const newFeatured = !ad.isFeatured;
+        const featuredUntil = newFeatured ? new Date(Date.now() + 30 * 24 * 60 * 60 * 1000) : null;
+
+        await ad.update({ isFeatured: newFeatured, featuredUntil });
+
+        if (newFeatured) {
+            await createNotification(req.io, {
+                userId: ad.userId,
+                type: 'payment',
+                title: '🌟 Your Ad is now Featured!',
+                message: `Your ad "${ad.title}" has been featured by the admin for 30 days!`,
+                relatedId: ad.id
+            });
+        }
+
+        res.status(200).json({ success: true, message: `Ad ${newFeatured ? 'featured' : 'unfeatured'}`, data: { isFeatured: newFeatured } });
+    } catch (err) {
+        res.status(500).json({ success: false, message: err.message });
+    }
+};
+
+// @desc    Get all reports with filter
+// @route   GET /api/admin/reports
+exports.getAllReports = async (req, res) => {
+    try {
+        const { status, page = 1, limit = 20 } = req.query;
+        const where = {};
+        if (status) where.status = status;
+
+        const reports = await Report.findAndCountAll({
+            where,
+            include: [
+                { model: User, as: 'reporter', attributes: ['name', 'email'] },
+                { model: Ad, as: 'ad', attributes: ['title', 'status'] }
+            ],
+            order: [['createdAt', 'DESC']],
+            limit: parseInt(limit),
+            offset: (parseInt(page) - 1) * parseInt(limit)
+        });
+
+        res.status(200).json({
+            success: true,
+            data: reports.rows,
+            total: reports.count,
+            page: parseInt(page),
+            pages: Math.ceil(reports.count / parseInt(limit))
+        });
+    } catch (err) {
+        res.status(500).json({ success: false, message: err.message });
+    }
+};
+
 // @desc    Review a report
 // @route   PUT /api/admin/reports/:id
 exports.reviewReport = async (req, res) => {
@@ -90,20 +280,66 @@ exports.reviewReport = async (req, res) => {
         if (!report) return res.status(404).json({ success: false, message: 'Report not found' });
 
         const previousStatus = report.status;
-        await report.update(req.body); // e.g., { status: 'resolved' }
+        await report.update(req.body);
 
         if (req.body.status === 'resolved' && previousStatus !== 'resolved') {
-            // Notify Reporter
             await createNotification(req.io, {
                 userId: report.reporterId,
                 type: 'system',
-                title: 'Report update',
+                title: '✅ Report resolved',
                 message: 'Your report has been reviewed and resolved by our team. Thank you for keeping the community safe.',
                 relatedId: report.adId
             });
         }
 
         res.status(200).json({ success: true, data: report });
+    } catch (err) {
+        res.status(500).json({ success: false, message: err.message });
+    }
+};
+
+// @desc    Get revenue and payment stats (admin)
+// @route   GET /api/admin/revenue
+exports.getRevenue = async (req, res) => {
+    try {
+        const { period = '30' } = req.query;
+        const since = new Date();
+        since.setDate(since.getDate() - parseInt(period));
+
+        const payments = await Payment.findAll({
+            where: {
+                status: 'completed',
+                createdAt: { [Op.gte]: since }
+            },
+            include: [{ model: User, as: 'user', attributes: ['name', 'email'] }],
+            order: [['createdAt', 'DESC']]
+        });
+
+        const totalRevenue = payments.reduce((sum, p) => sum + p.amount, 0);
+
+        // Group by plan
+        const byPlan = payments.reduce((acc, p) => {
+            acc[p.plan] = (acc[p.plan] || 0) + p.amount;
+            return acc;
+        }, {});
+
+        // Group by day (last 30 days)
+        const byDay = {};
+        payments.forEach(p => {
+            const day = new Date(p.createdAt).toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
+            byDay[day] = (byDay[day] || 0) + p.amount;
+        });
+
+        res.status(200).json({
+            success: true,
+            data: {
+                totalRevenue: totalRevenue.toFixed(2),
+                totalTransactions: payments.length,
+                recentPayments: payments.slice(0, 10),
+                byPlan,
+                byDay
+            }
+        });
     } catch (err) {
         res.status(500).json({ success: false, message: err.message });
     }

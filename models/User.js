@@ -67,6 +67,10 @@ const User = sequelize.define('User', {
     },
     passwordResetExpires: {
         type: DataTypes.DATE
+    },
+    isBanned: {
+        type: DataTypes.BOOLEAN,
+        defaultValue: false
     }
 }, {
     timestamps: true,
