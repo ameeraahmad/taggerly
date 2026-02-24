@@ -289,6 +289,7 @@ const enTranslations = {
     myDashboard: "My Dashboard",
     messages: "Messages",
     settings: "Settings",
+    adminPanel: "Admin Panel",
     logout: "Logout",
     activeAds: "Active Ads",
     totalViews: "Total Views",

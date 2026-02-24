@@ -295,6 +295,7 @@ const arTranslations = {
     myDashboard: "لوحة التحكم",
     messages: "الرسائل",
     settings: "الإعدادات",
+    adminPanel: "لوحة الإدارة",
     logout: "خروج",
     activeAds: "إعلانات نشطة",
     totalViews: "المشاهدات",

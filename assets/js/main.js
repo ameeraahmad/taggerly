@@ -708,10 +708,20 @@ document.addEventListener('DOMContentLoaded', () => {
             }
 
             if (userDropdown) {
-                userDropdown.innerHTML = `
+                let dropdownHtml = `
                     <a href="profile.html" class="block px-4 py-2 text-sm text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-700 hover:text-accent font-bold" data-translate="myProfile">My Profile</a>
                     <div class="border-t dark:border-gray-700 my-1"></div>
                     <a href="dashboard.html" class="block px-4 py-2 text-sm text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-700 hover:text-accent" data-translate="myDashboard">My Dashboard</a>
+                `;
+
+                // Add Admin Panel link if user is admin
+                if (user.role === 'admin') {
+                    dropdownHtml += `
+                        <a href="admin.html" class="block px-4 py-2 text-sm text-blue-600 hover:bg-blue-50 dark:hover:bg-gray-700 font-bold border-l-4 border-blue-600" data-translate="adminPanel">Admin Panel</a>
+                    `;
+                }
+
+                dropdownHtml += `
                     <a href="messages.html" class="flex items-center justify-between px-4 py-2 text-sm text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-700 hover:text-accent" data-translate="messages">
                         <span>Messages</span>
                         <span class="unread-badge bg-red-500 text-white text-[10px] font-bold px-1.5 py-0.5 rounded-full hidden">0</span>
@@ -721,6 +731,7 @@ document.addEventListener('DOMContentLoaded', () => {
                     <div class="border-t dark:border-gray-700 my-1"></div>
                     <a href="#" class="logout-action-btn block px-4 py-2 text-sm text-red-600 hover:bg-gray-100 dark:hover:bg-gray-700 font-bold" data-translate="logout">Logout</a>
                 `;
+                userDropdown.innerHTML = dropdownHtml;
             }
 
             const userBtnText = document.getElementById('user-btn-text');
@@ -735,14 +746,9 @@ document.addEventListener('DOMContentLoaded', () => {
 
             if (userDropdown) {
                 userDropdown.innerHTML = `
-                    <a href="profile.html" class="block px-4 py-2 text-sm text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-700 hover:text-accent font-bold" data-translate="myProfile">My Profile</a>
-                    <div class="border-t dark:border-gray-700 my-1"></div>
                     <a href="login.html" class="block px-4 py-2 text-sm text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-700 hover:text-accent" data-translate="login">Log in</a>
                     <a href="login.html?mode=signup" class="block px-4 py-2 text-sm text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-700 hover:text-accent" data-translate="createAccount">Sign Up</a>
                     <div class="border-t dark:border-gray-700 my-1"></div>
-                    <a href="dashboard.html" class="block px-4 py-2 text-sm text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-700 hover:text-accent" data-translate="myDashboard">My Dashboard</a>
-                    <a href="messages.html" class="block px-4 py-2 text-sm text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-700 hover:text-accent" data-translate="messages">Messages</a>
-                    <a href="favorites.html" class="block px-4 py-2 text-sm text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-700 hover:text-accent" data-translate="myFavorites">My Favorites</a>
                     <a href="plans.html" class="block px-4 py-2 text-sm text-orange-500 hover:bg-gray-100 dark:hover:bg-gray-700 hover:text-accent font-bold" data-translate="plansTitle">Pricing Plans</a>
                 `;
             }
@@ -766,6 +772,7 @@ document.addEventListener('DOMContentLoaded', () => {
                         <a href="categories.html" data-translate="mobileMenuCategories" class="block px-3 py-2 rounded-md text-base font-medium text-gray-700 dark:text-gray-300 hover:text-accent hover:bg-gray-50 dark:hover:bg-gray-700">Categories</a>
                         <a href="search.html" data-translate="mobileMenuForSale" class="block px-3 py-2 rounded-md text-base font-medium text-gray-700 dark:text-gray-300 hover:text-accent hover:bg-gray-50 dark:hover:bg-gray-700">For Sale</a>
                         <a href="dashboard.html" data-translate="myDashboard" class="block px-3 py-2 rounded-md text-base font-medium text-gray-700 dark:text-gray-300 hover:text-accent hover:bg-gray-50 dark:hover:bg-gray-700">My Dashboard</a>
+                        ${user.role === 'admin' ? '<a href="admin.html" data-translate="adminPanel" class="block px-3 py-2 rounded-md text-base font-bold text-blue-600 bg-blue-50 dark:bg-gray-700/50 border-l-4 border-blue-600">Admin Panel</a>' : ''}
                         <a href="messages.html" data-translate="messages" class="block px-3 py-2 rounded-md text-base font-medium text-gray-700 dark:text-gray-300 hover:text-accent hover:bg-gray-50 dark:hover:bg-gray-700">Messages</a>
                         <a href="#" class="logout-action-btn block px-3 py-2 rounded-md text-base font-medium text-red-600 hover:bg-gray-50 dark:hover:bg-gray-700" data-translate="logout">Logout</a>
                         <a href="post-ad.html" data-translate="mobileMenuPostAd" class="block px-3 py-2 mt-4 text-center text-white bg-accent rounded-md font-bold">Post an Ad</a>
