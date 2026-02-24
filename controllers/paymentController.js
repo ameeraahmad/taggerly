@@ -1,10 +1,28 @@
-const stripe = require('stripe')(process.env.STRIPE_SECRET_KEY);
 const Payment = require('../models/Payment');
 const Ad = require('../models/Ad');
 const User = require('../models/User');
 const { createNotification } = require('../utils/notifications');
 
-// Plan configurations
+// Lazy Stripe initialization - won't crash server if key is missing
+let _stripe = null;
+function getStripe() {
+    if (!_stripe) {
+        const key = process.env.STRIPE_SECRET_KEY;
+        if (!key || key.includes('YOUR_STRIPE_SECRET_KEY')) {
+            return null; // Stripe not configured yet
+        }
+        _stripe = require('stripe')(key);
+    }
+    return _stripe;
+}
+
+function stripeNotConfigured(res) {
+    return res.status(503).json({
+        success: false,
+        message: 'Payment system is not configured yet. Please add your Stripe secret key to the environment variables.'
+    });
+}
+
 const PLANS = {
     basic: {
         name: 'Basic Plan',
@@ -36,6 +54,9 @@ const PLANS = {
 // @route   POST /api/payments/create-checkout-session
 // @access  Private
 exports.createCheckoutSession = async (req, res) => {
+    const stripe = getStripe();
+    if (!stripe) return stripeNotConfigured(res);
+
     try {
         const { plan, adId } = req.body;
         const userId = req.user.id;
@@ -53,7 +74,6 @@ exports.createCheckoutSession = async (req, res) => {
             adId: adId ? String(adId) : null
         };
 
-        // Create Stripe checkout session
         const session = await stripe.checkout.sessions.create({
             payment_method_types: ['card'],
             mode: 'payment',
@@ -62,7 +82,7 @@ exports.createCheckoutSession = async (req, res) => {
                     currency: 'usd',
                     product_data: {
                         name: planConfig.name,
-                        description: planConfig.features.join(' • ')
+                        description: planConfig.features.join(' \u2022 ')
                     },
                     unit_amount: planConfig.price
                 },
@@ -73,7 +93,6 @@ exports.createCheckoutSession = async (req, res) => {
             cancel_url: `${host}/plans.html?canceled=true`
         });
 
-        // Save pending payment to DB
         await Payment.create({
             userId,
             adId: adId || null,
@@ -98,6 +117,9 @@ exports.createCheckoutSession = async (req, res) => {
 // @route   POST /api/payments/webhook
 // @access  Public (Stripe calls this)
 exports.handleWebhook = async (req, res) => {
+    const stripe = getStripe();
+    if (!stripe) return res.status(200).json({ received: true }); // silently ignore if not configured
+
     const sig = req.headers['stripe-signature'];
     let event;
 
@@ -112,7 +134,6 @@ exports.handleWebhook = async (req, res) => {
         return res.status(400).json({ message: `Webhook Error: ${err.message}` });
     }
 
-    // Handle successful payment
     if (event.type === 'checkout.session.completed') {
         const session = event.data.object;
         await fulfillOrder(session, req.io);
