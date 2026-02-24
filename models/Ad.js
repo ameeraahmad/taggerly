@@ -54,8 +54,8 @@ const Ad = sequelize.define('Ad', {
         }
     },
     status: {
-        type: DataTypes.ENUM('active', 'sold', 'deleted', 'expired'),
-        defaultValue: 'active'
+        type: DataTypes.ENUM('pending', 'active', 'sold', 'deleted', 'expired', 'rejected'),
+        defaultValue: 'pending'
     },
     userId: {
         type: DataTypes.INTEGER

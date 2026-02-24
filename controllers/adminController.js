@@ -4,6 +4,8 @@ const Report = require('../models/Report');
 const Payment = require('../models/Payment');
 const { Op } = require('sequelize');
 const { createNotification } = require('../utils/notifications');
+const sendEmail = require('../utils/email');
+const { adApprovedEmail, adRejectedEmail } = require('../utils/emailTemplates');
 
 // @desc    Get dashboard stats for admin
 // @route   GET /api/admin/stats
@@ -171,7 +173,9 @@ exports.getAllAds = async (req, res) => {
 // @route   PUT /api/admin/ads/:id/approve
 exports.approveAd = async (req, res) => {
     try {
-        const ad = await Ad.findByPk(req.params.id);
+        const ad = await Ad.findByPk(req.params.id, {
+            include: [{ model: User, as: 'user', attributes: ['name', 'email'] }]
+        });
         if (!ad) return res.status(404).json({ success: false, message: 'Ad not found' });
 
         await ad.update({ status: 'active' });
@@ -184,7 +188,79 @@ exports.approveAd = async (req, res) => {
             relatedId: ad.id
         });
 
+        // Send HTML email notification
+        if (ad.user && ad.user.email) {
+            const adURL = `${req.protocol}://${req.get('host')}/ad-details.html?id=${ad.id}`;
+            sendEmail({
+                email: ad.user.email,
+                subject: '✅ Your ad is now live on Dubizzle Clone!',
+                message: `Your ad "${ad.title}" has been approved and is now live.`,
+                html: adApprovedEmail({ userName: ad.user.name, adTitle: ad.title, adURL })
+            }).catch(err => console.error('Ad approval email failed:', err));
+        }
+
         res.status(200).json({ success: true, message: 'Ad approved', data: ad });
+    } catch (err) {
+        res.status(500).json({ success: false, message: err.message });
+    }
+};
+
+// @desc    Reject an ad (with reason)
+// @route   PUT /api/admin/ads/:id/reject
+exports.rejectAd = async (req, res) => {
+    try {
+        const ad = await Ad.findByPk(req.params.id, {
+            include: [{ model: User, as: 'user', attributes: ['name', 'email'] }]
+        });
+        if (!ad) return res.status(404).json({ success: false, message: 'Ad not found' });
+
+        const reason = req.body.reason || 'Your ad did not comply with our platform policies.';
+        await ad.update({ status: 'rejected' });
+
+        await createNotification(req.io, {
+            userId: ad.userId,
+            type: 'ad_rejected',
+            title: '❌ Your ad was not approved',
+            message: `Your ad "${ad.title}" was rejected. Reason: ${reason}`,
+            relatedId: ad.id
+        });
+
+        // Send HTML email notification
+        if (ad.user && ad.user.email) {
+            sendEmail({
+                email: ad.user.email,
+                subject: '❌ Your Dubizzle Clone ad requires attention',
+                message: `Your ad "${ad.title}" was rejected. Reason: ${reason}`,
+                html: adRejectedEmail({ userName: ad.user.name, adTitle: ad.title, reason })
+            }).catch(err => console.error('Ad rejection email failed:', err));
+        }
+
+        res.status(200).json({ success: true, message: 'Ad rejected', data: ad });
+    } catch (err) {
+        res.status(500).json({ success: false, message: err.message });
+    }
+};
+
+// @desc    Get pending ads for moderation
+// @route   GET /api/admin/ads/pending
+exports.getPendingAds = async (req, res) => {
+    try {
+        const { page = 1, limit = 20 } = req.query;
+        const ads = await Ad.findAndCountAll({
+            where: { status: 'pending' },
+            include: [{ model: User, as: 'user', attributes: ['name', 'email', 'avatar'] }],
+            order: [['createdAt', 'ASC']], // oldest first - review FIFO
+            limit: parseInt(limit),
+            offset: (parseInt(page) - 1) * parseInt(limit)
+        });
+
+        res.status(200).json({
+            success: true,
+            data: ads.rows,
+            total: ads.count,
+            page: parseInt(page),
+            pages: Math.ceil(ads.count / parseInt(limit))
+        });
     } catch (err) {
         res.status(500).json({ success: false, message: err.message });
     }

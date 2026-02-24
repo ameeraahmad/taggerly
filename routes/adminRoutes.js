@@ -8,6 +8,8 @@ const {
     deleteUser,
     getAllAds,
     approveAd,
+    rejectAd,
+    getPendingAds,
     deleteAd,
     toggleFeatureAd,
     getAllReports,
@@ -32,7 +34,9 @@ router.delete('/users/:id', deleteUser);
 
 // Ads
 router.get('/ads', getAllAds);
+router.get('/ads/pending', getPendingAds); // Moderation Queue
 router.put('/ads/:id/approve', approveAd);
+router.put('/ads/:id/reject', rejectAd);
 router.put('/ads/:id/feature', toggleFeatureAd);
 router.delete('/ads/:id', deleteAd);
 

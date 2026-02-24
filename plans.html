@@ -172,6 +172,19 @@
         </nav>
     </header>
 
+    <!-- ✅ Success / ❌ Cancel Banners -->
+    <div id="payment-success-banner"
+        class="hidden fixed top-0 left-0 right-0 z-50 bg-green-500 text-white text-center py-4 px-6 text-lg font-bold shadow-lg animate-fade-in">
+        🎉 Payment Successful! Your plan is now active. Check your <a href="dashboard.html"
+            class="underline">Dashboard</a>.
+    </div>
+    <div id="payment-cancel-banner"
+        class="hidden fixed top-0 left-0 right-0 z-50 bg-red-500 text-white text-center py-4 px-6 text-lg font-bold shadow-lg animate-fade-in">
+        ❌ Payment was cancelled. No charge was made. <button
+            onclick="document.getElementById('payment-cancel-banner').classList.add('hidden')"
+            class="ml-4 underline">Dismiss</button>
+    </div>
+
     <!-- Plans Content -->
     <main class="max-w-7xl mx-auto py-16 px-4 sm:px-6 lg:px-8 animate-fade-in">
         <div class="text-center mb-16">
@@ -227,9 +240,10 @@
                     </ul>
                 </div>
                 <div class="p-8">
-                    <button
+                    <button id="btn-free"
                         class="w-full bg-gray-200 dark:bg-gray-700 text-gray-800 dark:text-white py-4 rounded-xl font-bold hover:bg-gray-300 dark:hover:bg-gray-600 transition"
-                        data-translate="getStarted">Get Started</button>
+                        onclick="window.location.href='post-ad.html'" data-translate="getStarted">Get Started
+                        Free</button>
                 </div>
             </div>
 
@@ -240,9 +254,8 @@
                     <h3 class="text-2xl font-bold text-gray-900 dark:text-white mb-4" data-translate="basicPlan">Basic
                     </h3>
                     <div class="flex items-baseline">
-                        <span class="text-4xl font-extrabold text-primary dark:text-white currency-label">AED</span>
-                        <span class="text-6xl font-extrabold text-primary dark:text-white mx-2"
-                            data-translate="basicPrice">49</span>
+                        <span class="text-4xl font-extrabold text-primary dark:text-white currency-label">$</span>
+                        <span class="text-6xl font-extrabold text-primary dark:text-white mx-2">9.99</span>
                         <span class="text-gray-500 dark:text-gray-400" data-translate="perMonth">per month</span>
                     </div>
                 </div>
@@ -255,7 +268,7 @@
                                     d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z"
                                     clip-rule="evenodd"></path>
                             </svg>
-                            <span data-translate="planFeature4">Up to 20 active ads</span>
+                            <span>5 Ads per month</span>
                         </li>
                         <li class="flex items-center text-gray-600 dark:text-gray-300">
                             <svg class="w-5 h-5 text-success mr-3 rtl:ml-3 rtl:mr-0" fill="currentColor"
@@ -264,7 +277,7 @@
                                     d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z"
                                     clip-rule="evenodd"></path>
                             </svg>
-                            <span data-translate="planFeature5">Featured for 3 days</span>
+                            <span>Standard listing</span>
                         </li>
                         <li class="flex items-center text-gray-600 dark:text-gray-300">
                             <svg class="w-5 h-5 text-success mr-3 rtl:ml-3 rtl:mr-0" fill="currentColor"
@@ -273,27 +286,28 @@
                                     d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z"
                                     clip-rule="evenodd"></path>
                             </svg>
-                            <span data-translate="planFeature6">Priority email support</span>
+                            <span>Email support</span>
                         </li>
                     </ul>
                 </div>
                 <div class="p-8">
-                    <button class="w-full bg-primary text-white py-4 rounded-xl font-bold hover:bg-blue-900 transition"
+                    <button id="btn-basic" data-plan="basic"
+                        class="plan-btn w-full bg-primary text-white py-4 rounded-xl font-bold hover:bg-blue-900 transition"
                         data-translate="getStarted">Get Started</button>
                 </div>
             </div>
 
-            <!-- Premium Plan (Popular) -->
+            <!-- Standard Plan (Popular) -->
             <div
                 class="bg-white dark:bg-gray-800 rounded-3xl shadow-2xl overflow-hidden border-2 border-accent flex flex-col scale-110 z-10 relative">
                 <div class="absolute top-0 right-0 bg-accent text-white px-6 py-1 rounded-bl-xl text-sm font-bold"
                     data-translate="popular">Most Popular</div>
                 <div class="p-8 border-b dark:border-gray-700 pt-12">
-                    <h3 class="text-2xl font-bold text-gray-900 dark:text-white mb-4" data-translate="premiumPlan">
-                        Premium</h3>
+                    <h3 class="text-2xl font-bold text-gray-900 dark:text-white mb-4">
+                        Standard</h3>
                     <div class="flex items-baseline">
-                        <span class="text-4xl font-extrabold text-accent currency-label">AED</span>
-                        <span class="text-6xl font-extrabold text-accent mx-2" data-translate="premiumPrice">99</span>
+                        <span class="text-4xl font-extrabold text-accent currency-label">$</span>
+                        <span class="text-6xl font-extrabold text-accent mx-2">29.99</span>
                         <span class="text-gray-500 dark:text-gray-400" data-translate="perMonth">per month</span>
                     </div>
                 </div>
@@ -306,7 +320,7 @@
                                     d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z"
                                     clip-rule="evenodd"></path>
                             </svg>
-                            <span data-translate="planFeature7">Unlimited active ads</span>
+                            <span>20 Ads per month</span>
                         </li>
                         <li class="flex items-center text-gray-600 dark:text-gray-300">
                             <svg class="w-5 h-5 text-accent mr-3 rtl:ml-3 rtl:mr-0" fill="currentColor"
@@ -315,7 +329,7 @@
                                     d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z"
                                     clip-rule="evenodd"></path>
                             </svg>
-                            <span data-translate="planFeature8">Featured for 7 days</span>
+                            <span>Priority listing</span>
                         </li>
                         <li class="flex items-center text-gray-600 dark:text-gray-300">
                             <svg class="w-5 h-5 text-accent mr-3 rtl:ml-3 rtl:mr-0" fill="currentColor"
@@ -324,7 +338,7 @@
                                     d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z"
                                     clip-rule="evenodd"></path>
                             </svg>
-                            <span data-translate="planFeature9">WhatsApp support</span>
+                            <span>Chat support + 3 Featured Ads</span>
                         </li>
                         <li class="flex items-center text-gray-600 dark:text-gray-300">
                             <svg class="w-5 h-5 text-accent mr-3 rtl:ml-3 rtl:mr-0" fill="currentColor"
@@ -333,27 +347,26 @@
                                     d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z"
                                     clip-rule="evenodd"></path>
                             </svg>
-                            <span data-translate="planFeature10">Premium badge</span>
+                            <span>Verified seller badge</span>
                         </li>
                     </ul>
                 </div>
                 <div class="p-8">
-                    <button
-                        class="w-full bg-accent text-white py-4 rounded-xl font-bold hover:bg-orange-600 transition shadow-lg shadow-orange-200 dark:shadow-none"
+                    <button id="btn-standard" data-plan="standard"
+                        class="plan-btn w-full bg-accent text-white py-4 rounded-xl font-bold hover:bg-orange-600 transition shadow-lg shadow-orange-200 dark:shadow-none"
                         data-translate="getStarted">Get Started</button>
                 </div>
             </div>
 
-            <!-- Professional Plan -->
+            <!-- Premium Plan -->
             <div
                 class="bg-white dark:bg-gray-800 rounded-3xl shadow-xl overflow-hidden border border-gray-100 dark:border-gray-700 flex flex-col hover:scale-105 transition duration-300">
                 <div class="p-8 border-b dark:border-gray-700">
-                    <h3 class="text-2xl font-bold text-gray-900 dark:text-white mb-4" data-translate="professionalPlan">
-                        Professional</h3>
+                    <h3 class="text-2xl font-bold text-gray-900 dark:text-white mb-4">
+                        Premium</h3>
                     <div class="flex items-baseline">
-                        <span class="text-4xl font-extrabold text-primary dark:text-white currency-label">AED</span>
-                        <span class="text-6xl font-extrabold text-primary dark:text-white mx-2"
-                            data-translate="professionalPrice">199</span>
+                        <span class="text-4xl font-extrabold text-primary dark:text-white">$</span>
+                        <span class="text-6xl font-extrabold text-primary dark:text-white mx-2">59.99</span>
                         <span class="text-gray-500 dark:text-gray-400" data-translate="perMonth">per month</span>
                     </div>
                 </div>
@@ -366,7 +379,7 @@
                                     d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z"
                                     clip-rule="evenodd"></path>
                             </svg>
-                            <span data-translate="planFeature11">Featured for 30 days</span>
+                            <span>Unlimited Ads</span>
                         </li>
                         <li class="flex items-center text-gray-600 dark:text-gray-300">
                             <svg class="w-5 h-5 text-success mr-3 rtl:ml-3 rtl:mr-0" fill="currentColor"
@@ -375,7 +388,7 @@
                                     d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z"
                                     clip-rule="evenodd"></path>
                             </svg>
-                            <span data-translate="planFeature12">Dedicated account manager</span>
+                            <span>Top listing + Unlimited Featured</span>
                         </li>
                         <li class="flex items-center text-gray-600 dark:text-gray-300">
                             <svg class="w-5 h-5 text-success mr-3 rtl:ml-3 rtl:mr-0" fill="currentColor"
@@ -384,7 +397,7 @@
                                     d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z"
                                     clip-rule="evenodd"></path>
                             </svg>
-                            <span data-translate="planFeature13">Advanced analytics</span>
+                            <span>Dedicated support</span>
                         </li>
                         <li class="flex items-center text-gray-600 dark:text-gray-300">
                             <svg class="w-5 h-5 text-success mr-3 rtl:ml-3 rtl:mr-0" fill="currentColor"
@@ -393,12 +406,13 @@
                                     d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z"
                                     clip-rule="evenodd"></path>
                             </svg>
-                            <span data-translate="planFeature14">Verified seller status</span>
+                            <span>Analytics Dashboard</span>
                         </li>
                     </ul>
                 </div>
                 <div class="p-8">
-                    <button class="w-full bg-primary text-white py-4 rounded-xl font-bold hover:bg-blue-900 transition"
+                    <button id="btn-premium" data-plan="premium"
+                        class="plan-btn w-full bg-primary text-white py-4 rounded-xl font-bold hover:bg-blue-900 transition"
                         data-translate="getStarted">Get Started</button>
                 </div>
             </div>
@@ -469,45 +483,70 @@
     <script src="assets/js/api-client.js"></script>
     <script src="assets/js/main.js"></script>
     <script>
-        document.addEventListener('DOMContentLoaded', () => {
+        document.addEventListener('DOMContentLoaded', async () => {
             const urlParams = new URLSearchParams(window.location.search);
             const adId = urlParams.get('adId');
 
-            // Attach listeners to all "Get Started" buttons
-            document.querySelectorAll('button[data-translate="getStarted"]').forEach(btn => {
-                btn.onclick = async () => {
-                    if (!localStorage.getItem('token')) {
-                        window.location.href = 'login.html';
+            // ─── Handle redirect back from Stripe ───────────────────────────
+            if (urlParams.get('success') === 'true') {
+                const banner = document.getElementById('payment-success-banner');
+                banner.classList.remove('hidden');
+                window.scrollTo(0, 0);
+
+                // Verify payment on backend (optional: update UI based on plan)
+                const sessionId = urlParams.get('session_id');
+                if (sessionId) {
+                    try {
+                        await apiClient.fetch(`/payments/verify-session/${sessionId}`);
+                    } catch (e) { /* silent */ }
+                }
+
+                // Clean URL
+                history.replaceState({}, document.title, '/plans.html');
+            }
+
+            if (urlParams.get('canceled') === 'true') {
+                document.getElementById('payment-cancel-banner').classList.remove('hidden');
+                window.scrollTo(0, 0);
+                history.replaceState({}, document.title, '/plans.html');
+            }
+
+            // ─── Connect plan buttons to Stripe Checkout ─────────────────────
+            document.querySelectorAll('.plan-btn').forEach(btn => {
+                btn.addEventListener('click', async () => {
+                    const token = localStorage.getItem('token');
+                    if (!token) {
+                        window.location.href = 'login.html?redirect=plans.html';
                         return;
                     }
 
-                    if (adId) {
-                        // Simulate Payment & Boost Ad
-                        btn.disabled = true;
-                        btn.textContent = 'Processing...';
+                    const plan = btn.dataset.plan;
+                    if (!plan) return;
 
-                        try {
-                            // In a real app, this would call a payment gateway
-                            // Then update the ad status on the server
-                            const res = await apiClient.fetch(`/ads/${adId}`, {
-                                method: 'PUT',
-                                body: JSON.stringify({ isFeatured: true })
-                            });
+                    const originalText = btn.textContent;
+                    btn.disabled = true;
+                    btn.textContent = '⏳ Redirecting to checkout...';
 
-                            if (res.success) {
-                                alert('Payment Successful! Your ad is now featured.');
-                                window.location.href = 'dashboard.html';
-                            }
-                        } catch (err) {
-                            alert(err.message);
-                            btn.disabled = false;
-                            btn.textContent = 'Get Started';
+                    try {
+                        const body = { plan };
+                        if (adId) body.adId = adId;
+
+                        const res = await apiClient.fetch('/payments/create-checkout-session', {
+                            method: 'POST',
+                            body: JSON.stringify(body)
+                        });
+
+                        if (res.success && res.url) {
+                            window.location.href = res.url; // Redirect to Stripe
+                        } else {
+                            throw new Error(res.message || 'Failed to create checkout session');
                         }
-                    } else {
-                        // Regular subscription flow
-                        alert('Subscription feature coming soon!');
+                    } catch (err) {
+                        alert('❌ ' + err.message);
+                        btn.disabled = false;
+                        btn.textContent = originalText;
                     }
-                };
+                });
             });
         });
     </script>

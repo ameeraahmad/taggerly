@@ -177,6 +177,15 @@
                 <span id="reports-badge"
                     class="ml-auto bg-red-500 text-white text-[10px] px-1.5 py-0.5 rounded-full hidden">0</span>
             </div>
+            <div class="sidebar-link" onclick="showTab('moderation')" id="nav-moderation">
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                        d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-6 9l2 2 4-4" />
+                </svg>
+                <span>Pending Ads</span>
+                <span id="pending-ads-badge"
+                    class="ml-auto bg-yellow-500 text-white text-[10px] px-1.5 py-0.5 rounded-full hidden">0</span>
+            </div>
         </nav>
 
         <!-- Bottom -->
@@ -478,7 +487,9 @@
                     <select id="ad-status-filter" onchange="loadAds()"
                         class="text-sm border border-gray-200 dark:border-gray-600 rounded-xl px-3 py-2 bg-white dark:bg-gray-800 focus:outline-none focus:ring-2 focus:ring-accent">
                         <option value="">All Status</option>
-                        <option value="active">Active</option>
+                        <option value="pending">⏳ Pending</option>
+                        <option value="active">✅ Active</option>
+                        <option value="rejected">❌ Rejected</option>
                         <option value="sold">Sold</option>
                         <option value="expired">Expired</option>
                         <option value="deleted">Deleted</option>
@@ -554,6 +565,33 @@
                 </div>
             </div>
 
+            <!-- ==================== MODERATION QUEUE TAB ==================== -->
+            <div id="tab-moderation" class="tab-content">
+                <div class="flex items-center justify-between mb-4">
+                    <div>
+                        <h2 class="font-bold text-lg">🕐 Pending Ads - Moderation Queue</h2>
+                        <p class="text-sm text-gray-500 dark:text-gray-400">Review and approve or reject ads before they
+                            go live</p>
+                    </div>
+                    <button onclick="loadPendingAds()"
+                        class="btn-sm bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300 hover:bg-gray-200 flex items-center gap-1">
+                        🔄 Refresh
+                    </button>
+                </div>
+
+                <div id="moderation-empty" class="hidden text-center py-16">
+                    <div class="text-5xl mb-4">✅</div>
+                    <h3 class="text-lg font-bold text-gray-700 dark:text-gray-300">All caught up!</h3>
+                    <p class="text-gray-400">No pending ads at the moment.</p>
+                </div>
+
+                <div id="moderation-grid" class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4">
+                    <!-- Cards injected by JS -->
+                </div>
+
+                <div id="moderation-loading" class="text-center py-12 text-gray-400">Loading pending ads...</div>
+            </div>
+
         </div>
     </main>
 
@@ -573,7 +611,8 @@
             revenue: { title: 'Revenue', subtitle: 'Financial Analytics' },
             users: { title: 'Users', subtitle: 'Manage all registered users' },
             ads: { title: 'Ads', subtitle: 'Manage all listings' },
-            reports: { title: 'Reports', subtitle: 'Review flagged content' }
+            reports: { title: 'Reports', subtitle: 'Review flagged content' },
+            moderation: { title: 'Pending Ads', subtitle: 'Moderation queue — approve or reject ads' }
         };
 
         function showTab(tabId) {
@@ -589,6 +628,7 @@
             if (tabId === 'ads') loadAds();
             if (tabId === 'reports') loadReports();
             if (tabId === 'revenue') loadRevenue();
+            if (tabId === 'moderation') loadPendingAds();
 
             // Close mobile sidebar
             if (window.innerWidth < 768) toggleSidebar(false);
@@ -634,6 +674,7 @@
                 deleted: 'bg-red-100 text-red-700 dark:bg-red-900/30 dark:text-red-400',
                 expired: 'bg-gray-100 text-gray-700 dark:bg-gray-900/50 dark:text-gray-400',
                 pending: 'bg-yellow-100 text-yellow-700 dark:bg-yellow-900/30 dark:text-yellow-400',
+                rejected: 'bg-red-100 text-red-700 dark:bg-red-900/30 dark:text-red-400',
                 resolved: 'bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-400',
                 completed: 'bg-green-100 text-green-700',
                 failed: 'bg-red-100 text-red-700',
@@ -666,6 +707,9 @@
                 }
                 document.getElementById('users-count-badge').textContent = d.totalUsers;
                 document.getElementById('ads-count-badge').textContent = d.totalAds;
+
+                // Load pending count for moderation badge
+                loadPendingCount();
             } catch (err) {
                 console.error('Stats error:', err);
             }
@@ -850,7 +894,10 @@
                         <td class="px-6 py-4 text-sm text-gray-500">${(ad.views || 0).toLocaleString()}</td>
                         <td class="px-6 py-4">
                             <div class="flex items-center justify-end gap-2">
-                                ${ad.status !== 'active' ? `<button onclick="approveAd(${ad.id})" class="btn-sm bg-green-100 text-green-700 hover:bg-green-200">Approve</button>` : ''}
+                                ${ad.status === 'pending' ? `
+                                    <button onclick="approveAd(${ad.id})" class="btn-sm bg-green-100 text-green-700 hover:bg-green-200">✅ Approve</button>
+                                    <button onclick="rejectAdFromTable(${ad.id})" class="btn-sm bg-orange-100 text-orange-700 hover:bg-orange-200">❌ Reject</button>
+                                ` : (ad.status !== 'active' ? `<button onclick="approveAd(${ad.id})" class="btn-sm bg-green-100 text-green-700 hover:bg-green-200">Approve</button>` : '')}
                                 <button onclick="deleteAd(${ad.id})" class="btn-sm bg-red-100 text-red-700 hover:bg-red-200">Delete</button>
                             </div>
                         </td>
@@ -877,6 +924,18 @@
             } catch (e) { alert(e.message); }
         }
 
+        async function rejectAdFromTable(id) {
+            const reason = prompt('Reason for rejection (will be sent to user):', 'Does not comply with platform policies.');
+            if (reason === null) return;
+            try {
+                await apiClient.fetch(`/admin/ads/${id}/reject`, {
+                    method: 'PUT',
+                    body: JSON.stringify({ reason: reason || undefined })
+                });
+                loadAds(adsPage);
+            } catch (e) { alert(e.message); }
+        }
+
         async function deleteAd(id) {
             if (!confirm('Delete this ad? The owner will be notified.')) return;
             try {
@@ -889,6 +948,111 @@
             try {
                 await apiClient.fetch(`/admin/ads/${id}/feature`, { method: 'PUT' });
                 loadAds(adsPage);
+            } catch (e) { alert(e.message); }
+        }
+
+        // ===================== MODERATION QUEUE =====================
+        async function loadPendingCount() {
+            try {
+                const res = await apiClient.fetch('/admin/ads/pending?limit=1');
+                const count = res.total || 0;
+                const badge = document.getElementById('pending-ads-badge');
+                badge.textContent = count;
+                badge.classList.toggle('hidden', count === 0);
+            } catch (e) { /* silent */ }
+        }
+
+        async function loadPendingAds() {
+            const grid = document.getElementById('moderation-grid');
+            const loading = document.getElementById('moderation-loading');
+            const emptyState = document.getElementById('moderation-empty');
+            grid.innerHTML = '';
+            loading.classList.remove('hidden');
+            emptyState.classList.add('hidden');
+
+            try {
+                const res = await apiClient.fetch('/admin/ads/pending?limit=50');
+                loading.classList.add('hidden');
+
+                if (!res.data || !res.data.length) {
+                    emptyState.classList.remove('hidden');
+                    document.getElementById('pending-ads-badge').classList.add('hidden');
+                    return;
+                }
+
+                const count = res.total || res.data.length;
+                document.getElementById('pending-ads-badge').textContent = count;
+                document.getElementById('pending-ads-badge').classList.remove('hidden');
+
+                grid.innerHTML = res.data.map(ad => {
+                    let images = [];
+                    try { images = JSON.parse(ad.images || '[]'); } catch (e) { }
+                    const img = images[0] || 'https://via.placeholder.com/300x200?text=No+Image';
+                    const submitted = new Date(ad.createdAt).toLocaleDateString();
+                    return `
+                    <div class="bg-white dark:bg-gray-800 rounded-2xl border border-gray-100 dark:border-gray-700 overflow-hidden shadow-sm hover:shadow-md transition" id="pending-card-${ad.id}">
+                        <div class="relative">
+                            <img src="${img}" class="w-full h-40 object-cover" onerror="this.src='https://via.placeholder.com/300x200?text=No+Image'">
+                            <span class="absolute top-2 right-2 badge bg-yellow-100 text-yellow-700">⏳ Pending</span>
+                        </div>
+                        <div class="p-4">
+                            <h3 class="font-bold text-sm mb-1 truncate" title="${ad.title}">${ad.title}</h3>
+                            <div class="flex items-center gap-2 text-xs text-gray-500 mb-2">
+                                <span class="badge bg-gray-100 text-gray-600 dark:bg-gray-700">${ad.category}</span>
+                                <span>💰 ${ad.price?.toLocaleString()} ${ad.currency || ''}</span>
+                            </div>
+                            <div class="flex items-center gap-2 text-xs text-gray-400 mb-3">
+                                <img src="${ad.user?.avatar || 'https://www.gravatar.com/avatar/?d=mp'}" class="w-5 h-5 rounded-full">
+                                <span>${ad.user?.name || 'Unknown'}</span>
+                                <span class="ml-auto">📅 ${submitted}</span>
+                            </div>
+                            <p class="text-xs text-gray-500 dark:text-gray-400 mb-3 line-clamp-2">${ad.description || ''}</p>
+                            <div class="flex gap-2">
+                                <button onclick="adminApproveAd(${ad.id})" class="flex-1 btn-sm bg-green-100 text-green-700 hover:bg-green-200 text-center">✅ Approve</button>
+                                <button onclick="adminRejectAd(${ad.id}, '${ad.title.replace(/'/g, "\\'")}'  )" class="flex-1 btn-sm bg-red-100 text-red-700 hover:bg-red-200 text-center">❌ Reject</button>
+                                <a href="ad-details.html?id=${ad.id}" target="_blank" class="btn-sm bg-gray-100 text-gray-600 hover:bg-gray-200">👁️</a>
+                            </div>
+                        </div>
+                    </div>
+                    `;
+                }).join('');
+            } catch (err) {
+                loading.classList.add('hidden');
+                grid.innerHTML = `<p class="text-red-400 text-sm col-span-3">${err.message}</p>`;
+            }
+        }
+
+        async function adminApproveAd(id) {
+            try {
+                await apiClient.fetch(`/admin/ads/${id}/approve`, { method: 'PUT' });
+                document.getElementById('pending-card-' + id)?.remove();
+                // Check if grid is now empty
+                if (!document.querySelectorAll('[id^="pending-card-"]').length) {
+                    document.getElementById('moderation-empty').classList.remove('hidden');
+                    document.getElementById('pending-ads-badge').classList.add('hidden');
+                } else {
+                    const current = parseInt(document.getElementById('pending-ads-badge').textContent) || 0;
+                    if (current > 0) document.getElementById('pending-ads-badge').textContent = current - 1;
+                }
+            } catch (e) { alert(e.message); }
+        }
+
+        async function adminRejectAd(id, title) {
+            const reason = prompt(`Reject ad "${title}"\n\nReason for rejection (shown to user):`, 'Does not comply with platform policies.');
+            if (reason === null) return; // cancelled
+            try {
+                await apiClient.fetch(`/admin/ads/${id}/reject`, {
+                    method: 'PUT',
+                    body: JSON.stringify({ reason: reason || undefined })
+                });
+                document.getElementById('pending-card-' + id)?.remove();
+                if (!document.querySelectorAll('[id^="pending-card-"]').length) {
+                    document.getElementById('moderation-empty').classList.remove('hidden');
+                    document.getElementById('pending-ads-badge').classList.add('hidden');
+                } else {
+                    const current = parseInt(document.getElementById('pending-ads-badge').textContent) || 0;
+                    if (current > 0) document.getElementById('pending-ads-badge').textContent = current - 1;
+                }
             } catch (e) { alert(e.message); }
         }
 

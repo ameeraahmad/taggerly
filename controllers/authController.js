@@ -3,6 +3,7 @@ const jwt = require('jsonwebtoken');
 const bcrypt = require('bcryptjs');
 const crypto = require('crypto');
 const sendEmail = require('../utils/email');
+const { welcomeEmail, resetPasswordEmail, emailVerificationEmail } = require('../utils/emailTemplates');
 
 // @desc    Forgot Password
 // @route   POST /api/auth/forgot-password
@@ -20,13 +21,13 @@ exports.forgotPassword = async (req, res) => {
 
         // 3) Send it to user's email
         const resetURL = `${req.protocol}://${req.get('host')}/reset-password.html?token=${resetToken}`;
-        const message = `Forgot your password? Submit a PATCH request with your new password and passwordConfirm to: ${resetURL}.\nIf you didn't forget your password, please ignore this email!`;
 
         try {
             await sendEmail({
                 email: user.email,
-                subject: 'Your password reset token (valid for 10 min)',
-                message
+                subject: '🔐 Reset Your Password - Dubizzle Clone',
+                message: `Reset your password here: ${resetURL} (valid for 10 min)`,
+                html: resetPasswordEmail({ name: user.name, resetURL })
             });
 
             res.status(200).json({
@@ -135,8 +136,9 @@ exports.register = async (req, res) => {
             const verifyURL = `${req.protocol}://${req.get('host')}/api/auth/verify-email/${verificationToken}`;
             await sendEmail({
                 email: user.email,
-                subject: 'Verify your email - Dubizzle Clone',
-                message: `Welcome to Dubizzle Clone, ${user.name}!\n\nPlease verify your email by clicking the link below:\n${verifyURL}\n\nIf you didn't create an account, please ignore this email.`
+                subject: '🎉 Welcome to Dubizzle Clone - Verify Your Email',
+                message: `Welcome to Dubizzle Clone, ${user.name}! Please verify your email: ${verifyURL}`,
+                html: welcomeEmail({ name: user.name, verifyURL })
             });
         } catch (err) {
             console.error('Email sending failed during registration:', err);
@@ -347,8 +349,9 @@ exports.resendVerification = async (req, res) => {
         const verifyURL = `${req.protocol}://${req.get('host')}/api/auth/verify-email/${verificationToken}`;
         await sendEmail({
             email: user.email,
-            subject: 'Verify your email - Dubizzle Clone',
-            message: `Please verify your email by clicking the link below:\n${verifyURL}`
+            subject: '✉️ Verify Your Email - Dubizzle Clone',
+            message: `Please verify your email by clicking the link below:\n${verifyURL}`,
+            html: emailVerificationEmail({ name: user.name, verifyURL })
         });
 
         res.status(200).json({ success: true, message: 'Verification email sent!' });
