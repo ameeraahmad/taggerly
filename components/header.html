@@ -77,6 +77,39 @@
                     </span>
                 </button>
 
+                <!-- Notifications -->
+                <div id="notif-wrapper" class="relative group h-full flex items-center hidden">
+                    <button
+                        class="relative p-1.5 rounded-full hover:bg-gray-200 dark:hover:bg-gray-600 transition focus:outline-none">
+                        <svg class="w-6 h-6 text-gray-700 dark:text-gray-200" fill="none" stroke="currentColor"
+                            viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9">
+                            </path>
+                        </svg>
+                        <span id="notif-badge"
+                            class="absolute top-1 right-1 bg-red-500 text-white text-[10px] font-bold px-1.5 py-0.5 rounded-full hidden">0</span>
+                    </button>
+                    <div
+                        class="absolute top-full right-0 rtl:left-0 rtl:right-auto w-80 bg-white dark:bg-gray-800 shadow-xl rounded-md py-1 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 z-50 border dark:border-gray-700 transform origin-top scale-95 group-hover:scale-100">
+                        <div
+                            class="px-4 py-3 border-b dark:border-gray-700 flex justify-between items-center bg-gray-50 dark:bg-gray-900/50">
+                            <span class="font-bold text-sm" data-translate="notifications">Notifications</span>
+                            <button id="mark-notifs-read" class="text-[10px] text-accent font-bold hover:underline"
+                                data-translate="markAllRead">Mark all as read</button>
+                        </div>
+                        <div id="notif-list" class="max-h-80 overflow-y-auto thin-scrollbar">
+                            <!-- Dynamic Notifications -->
+                            <div class="p-4 text-center text-gray-500 text-xs" data-translate="noNotifications">No new
+                                notifications</div>
+                        </div>
+                        <div class="border-t dark:border-gray-700 p-2 text-center text-xs">
+                            <a href="dashboard.html" class="text-accent hover:underline font-bold"
+                                data-translate="viewAll">View All</a>
+                        </div>
+                    </div>
+                </div>
+
                 <!-- User Account Dropdown -->
                 <div class="relative group h-full flex items-center">
                     <button

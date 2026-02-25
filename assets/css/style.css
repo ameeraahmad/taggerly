@@ -652,3 +652,37 @@ html[dir="rtl"] .password-toggle {
 .dark .star-rating input:checked~label {
     color: #FF6B00;
 }
+
+/* Utilities */
+.thin-scrollbar::-webkit-scrollbar {
+    width: 6px;
+}
+
+.thin-scrollbar::-webkit-scrollbar-track {
+    background: transparent;
+}
+
+.thin-scrollbar::-webkit-scrollbar-thumb {
+    background: #e5e7eb;
+    border-radius: 20px;
+}
+
+.dark .thin-scrollbar::-webkit-scrollbar-thumb {
+    background: #374151;
+}
+
+.thin-scrollbar::-webkit-scrollbar-thumb:hover {
+    background: #FF6B00;
+}
+
+#notif-list div {
+    transition: all 0.2s ease;
+}
+
+#notif-list div:hover {
+    transform: translateX(4px);
+}
+
+html[dir="rtl"] #notif-list div:hover {
+    transform: translateX(-4px);
+}
