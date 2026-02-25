@@ -31,6 +31,12 @@ html[dir="rtl"] .space-x-6> :not([hidden])~ :not([hidden]) {
     margin-left: calc(1.5rem * calc(1 - var(--tw-space-x-reverse)));
 }
 
+body {
+    overflow-x: hidden;
+    padding: 0;
+    margin: 0;
+}
+
 .hidden-menu {
     display: none;
 }
@@ -108,8 +114,13 @@ html[dir="rtl"] .space-x-6> :not([hidden])~ :not([hidden]) {
 }
 
 @keyframes fadeIn {
-    from { opacity: 0; }
-    to { opacity: 1; }
+    from {
+        opacity: 0;
+    }
+
+    to {
+        opacity: 1;
+    }
 }
 
 .header-container-top {
@@ -613,9 +624,11 @@ html[dir="rtl"] .password-toggle {
     flex-direction: row-reverse;
     justify-content: flex-end;
 }
+
 .star-rating input {
     display: none;
 }
+
 .star-rating label {
     font-size: 1.5rem;
     color: #d1d5db;
@@ -623,16 +636,19 @@ html[dir="rtl"] .password-toggle {
     transition: color 0.1s;
     padding: 0 0.1rem;
 }
+
 .star-rating label:hover,
-.star-rating label:hover ~ label,
-.star-rating input:checked ~ label {
+.star-rating label:hover~label,
+.star-rating input:checked~label {
     color: #FF6B00;
 }
+
 .dark .star-rating label {
     color: #374151;
 }
+
 .dark .star-rating label:hover,
-.dark .star-rating label:hover ~ label,
-.dark .star-rating input:checked ~ label {
+.dark .star-rating label:hover~label,
+.dark .star-rating input:checked~label {
     color: #FF6B00;
 }
