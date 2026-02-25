@@ -44,8 +44,8 @@
 </head>
 
 <body class="bg-gray-100 dark:bg-gray-900 font-sans transition-colors duration-300">
-    <!-- Header (Same as index) -->
-    <header id="header-placeholder"></header>
+    <!-- Header Placeholder -->
+    <div id="global-header-placeholder"></div>
 
     <main class="max-w-7xl mx-auto py-10 px-4 sm:px-6 lg:px-8">
         <div
@@ -162,26 +162,6 @@
                 return;
             }
 
-            // Load Global Header
-            const headerPlaceholder = document.getElementById('header-placeholder');
-            try {
-                const response = await fetch('index.html');
-                const html = await response.text();
-                const parser = new DOMParser();
-                const doc = parser.parseFromString(html, 'text/html');
-                const header = doc.querySelector('header');
-                // Transfer all attributes from the source header to our placeholder
-                Array.from(header.attributes).forEach(attr => {
-                    headerPlaceholder.setAttribute(attr.name, attr.value);
-                });
-                headerPlaceholder.innerHTML = header.innerHTML;
-
-                // Re-run scripts for theme/lang/auth/country
-                if (window.initTheme) window.initTheme();
-                if (window.initCountryDropdown) window.initCountryDropdown();
-                if (window.updateLanguage) window.updateLanguage(localStorage.getItem('lang') || 'en');
-                if (window.updateAuthState) window.updateAuthState();
-            } catch (err) { console.error('Error loading header:', err); }
 
             // Check if conversationId is in URL
             const urlParams = new URLSearchParams(window.location.search);

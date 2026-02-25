@@ -4,29 +4,43 @@ const translations = {
     ar: arTranslations
 };
 
-document.addEventListener('DOMContentLoaded', () => {
+document.addEventListener('DOMContentLoaded', async () => {
+    // 1. First Load Global Header if placeholder exists
+    await loadGlobalHeader();
+
     const htmlToUpdate = document.documentElement;
 
-    // --- Global Search Logic ---
-    const searchInputs = document.querySelectorAll('.search-input');
-    searchInputs.forEach(input => {
-        const btn = input.nextElementSibling;
-        const handleSearch = () => {
-            const query = input.value.trim();
-            if (query) {
-                window.location.href = `search.html?search=${encodeURIComponent(query)}`;
-            }
-        };
-        input.addEventListener('keypress', (e) => {
-            if (e.key === 'Enter') handleSearch();
-        });
-        if (btn && (btn.tagName === 'BUTTON' || btn.querySelector('svg'))) {
-            btn.onclick = (e) => {
-                e.preventDefault();
-                handleSearch();
+    // --- Dynamic Search Logic (Update selector to work with re-loaded items) ---
+    const initSearch = () => {
+        const searchInputs = document.querySelectorAll('.search-input');
+        searchInputs.forEach(input => {
+            const btn = input.nextElementSibling;
+            const handleSearch = () => {
+                const query = input.value.trim();
+                if (query) {
+                    window.location.href = `search.html?search=${encodeURIComponent(query)}`;
+                }
             };
+            input.removeEventListener('keypress', handleKeyPress); // Prevent double attach
+            input.addEventListener('keypress', handleKeyPress);
+
+            if (btn && (btn.tagName === 'BUTTON' || btn.querySelector('svg'))) {
+                btn.onclick = (e) => {
+                    e.preventDefault();
+                    handleSearch();
+                };
+            }
+        });
+    };
+
+    function handleKeyPress(e) {
+        if (e.key === 'Enter') {
+            const query = e.target.value.trim();
+            if (query) window.location.href = `search.html?search=${encodeURIComponent(query)}`;
         }
-    });
+    }
+
+    initSearch();
 
     // --- Email Verification Check ---
     const urlParams = new URLSearchParams(window.location.search);
@@ -1275,3 +1289,25 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 });
+
+// --- Global Header Loader ---
+async function loadGlobalHeader() {
+    const placeholder = document.getElementById('global-header-placeholder');
+    if (!placeholder) return;
+
+    try {
+        const response = await fetch('components/header.html');
+        if (!response.ok) throw new Error('Header not found');
+        const html = await response.text();
+        placeholder.innerHTML = html;
+
+        // After loading, re-run initialization for header elements
+        if (window.initCountryDropdown) window.initCountryDropdown();
+        if (window.initTheme) window.initTheme();
+        if (window.initMobileMenu) window.initMobileMenu();
+        if (window.updateAuthState) window.updateAuthState();
+
+    } catch (err) {
+        console.error('Error loading global header:', err);
+    }
+}
