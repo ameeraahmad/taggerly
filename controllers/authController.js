@@ -154,6 +154,7 @@ exports.register = async (req, res) => {
                 name: user.name,
                 email: user.email,
                 role: user.role,
+                avatar: user.avatar,
                 isEmailVerified: user.isEmailVerified
             }
         });
@@ -185,7 +186,16 @@ exports.login = async (req, res) => {
         const token = generateToken(user.id);
         res.status(200).json({
             success: true, token,
-            data: { id: user.id, name: user.name, email: user.email, role: user.role }
+            data: {
+                id: user.id,
+                name: user.name,
+                email: user.email,
+                role: user.role,
+                avatar: user.avatar,
+                phone: user.phone,
+                location: user.location,
+                isEmailVerified: user.isEmailVerified
+            }
         });
     } catch (err) {
         res.status(500).json({ success: false, message: err.message });

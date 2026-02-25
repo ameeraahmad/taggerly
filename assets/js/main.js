@@ -682,7 +682,16 @@ document.addEventListener('DOMContentLoaded', () => {
         // Find the user dropdown by ID
         const userDropdown = document.getElementById('user-dropdown');
         const userBtnText = document.getElementById('user-btn-text');
+        const headerImg = document.getElementById('header-profile-img');
         const notifWrapper = document.getElementById('notif-wrapper');
+
+        if (headerImg) {
+            if (user && user.avatar) {
+                headerImg.src = user.avatar;
+            } else {
+                headerImg.src = 'https://www.gravatar.com/avatar/00000000000000000000000000000000?d=mp&f=y';
+            }
+        }
 
         if (token && user) {
             // --- LOGGED IN STATE ---

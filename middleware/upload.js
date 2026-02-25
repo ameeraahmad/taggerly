@@ -43,25 +43,45 @@ const upload = multer({
 
 // Image Processing Middleware (Only for Local)
 const resizeImages = async (req, res, next) => {
-    if (!req.files || process.env.CLOUDINARY_CLOUD_NAME) return next();
+    if (!req.files || req.files.length === 0 || process.env.CLOUDINARY_CLOUD_NAME) return next();
 
     req.body.images = [];
 
     await Promise.all(
         req.files.map(async (file, i) => {
             const filename = `ad-${Date.now()}-${i + 1}.webp`;
+            const filepath = path.join(__dirname, '../uploads', filename);
 
             await sharp(file.buffer)
                 .resize(1200, 1200, { fit: 'inside', withoutEnlargement: true })
                 .toFormat('webp')
                 .webp({ quality: 80 })
-                .toFile(path.join(__dirname, '../uploads', filename));
+                .toFile(filepath);
 
-            req.body.images.push(filename);
-            // Optionally update the original file object if needed, but we'll use req.body.images
+            req.body.images.push(`/uploads/${filename}`);
         })
     );
 
+    next();
+};
+
+const resizeAvatar = async (req, res, next) => {
+    if (!req.file || process.env.CLOUDINARY_CLOUD_NAME) return next();
+
+    const filename = `avatar-${req.user.id}-${Date.now()}.webp`;
+    const filepath = path.join(__dirname, '../uploads', filename);
+
+    if (!fs.existsSync(path.join(__dirname, '../uploads'))) {
+        fs.mkdirSync(path.join(__dirname, '../uploads'), { recursive: true });
+    }
+
+    await sharp(req.file.buffer)
+        .resize(400, 400, { fit: 'cover' })
+        .toFormat('webp')
+        .webp({ quality: 80 })
+        .toFile(filepath);
+
+    req.file.path = `/uploads/${filename}`;
     next();
 };
 
@@ -78,5 +98,5 @@ function checkFileType(file, cb) {
     }
 }
 
-module.exports = { upload, resizeImages };
+module.exports = { upload, resizeImages, resizeAvatar };
 

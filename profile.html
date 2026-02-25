@@ -223,11 +223,12 @@
                 <div class="bg-white dark:bg-gray-800 rounded-xl shadow-sm overflow-hidden border dark:border-gray-700">
                     <div class="p-6 bg-primary text-white text-center">
                         <div class="w-24 h-24 bg-white rounded-full mx-auto mb-4 p-1 shadow-lg relative group">
-                            <img src="https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?ixlib=rb-1.2.1&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80"
+                            <img id="sidebar-profile-img"
+                                src="https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?ixlib=rb-1.2.1&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80"
                                 class="w-full h-full rounded-full object-cover">
                             <button
                                 class="absolute inset-0 bg-black/40 rounded-full flex items-center justify-center opacity-0 group-hover:opacity-100 transition duration-300"
-                                title="Change Photo">
+                                title="Change Photo" onclick="document.getElementById('edit-profile-btn').click()">
                                 <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                                         d="M3 9a2 2 0 012-2h.93a2 2 0 001.664-.89l.812-1.22A2 2 0 0110.07 4h3.86a2 2 0 011.664.89l.812 1.22A2 2 0 0018.07 7H19a2 2 0 012 2v9a2 2 0 01-2 2H5a2 2 0 01-2-2V9z">
@@ -306,8 +307,9 @@
                     <div class="flex items-center gap-6">
                         <div
                             class="w-24 h-24 rounded-full overflow-hidden border-4 border-gray-50 dark:border-gray-700 shadow-md">
-                            <img src="https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?ixlib=rb-1.2.1&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80"
-                                alt="John Doe" class="w-full h-full object-cover">
+                            <img id="main-profile-img"
+                                src="https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?ixlib=rb-1.2.1&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80"
+                                alt="Profile" class="w-full h-full object-cover">
                         </div>
                         <div>
                             <h1 id="profile-name-display" class="text-3xl font-extrabold text-gray-900 dark:text-white"
@@ -881,11 +883,16 @@
                 localStorage.setItem('user', JSON.stringify(user));
 
                 const initials = user.name.split(' ').map(n => n[0]).join('').toUpperCase();
-                const sidebarAvatar = document.querySelector('.w-24.h-24.bg-white.rounded-full');
+                const sidebarImg = document.getElementById('sidebar-profile-img');
+                const mainImg = document.getElementById('main-profile-img');
+                const defaultAvatar = 'https://www.gravatar.com/avatar/00000000000000000000000000000000?d=mp&f=y';
+
                 if (user.avatar) {
-                    sidebarAvatar.innerHTML = `<img src="${user.avatar}" class="w-full h-full rounded-full object-cover">`;
+                    if (sidebarImg) sidebarImg.src = user.avatar;
+                    if (mainImg) mainImg.src = user.avatar;
                 } else {
-                    sidebarAvatar.innerHTML = `<div class="w-full h-full flex items-center justify-center text-4xl font-bold text-primary">${initials}</div>`;
+                    if (sidebarImg) sidebarImg.src = defaultAvatar;
+                    if (mainImg) mainImg.src = defaultAvatar;
                 }
 
                 document.getElementById('profile-name-display').textContent = user.name;
