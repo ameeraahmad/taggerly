@@ -1,24 +1,22 @@
-# 🎯 خطة العمل لغدٍ (تكملة اللمسات الأخيرة)
+# 📅 Plan for Tomorrow
 
-لقد قمنا اليوم بإنجاز كبير في توحيد واجهة الموقع. إليك ما سنبدأ به غداً ليكون الموقع جاهزاً تماماً:
+## Where We Stopped Today 🛑
+1. **Admin Panel Access**: We created a way to access the `Admin Panel` by updating the user roles in the database to `admin`. 
+2. **Database Sync**: We successfully synced the database and confirmed all existing users are now marked as `admin`.
+3. **Admin Dashboard Fixes**: The user attempted to log in but hasn't yet seen the completely synced `admin.html` page because they need to re-login with a freshly created account or the `test@example.com` account.
 
-### 1. 📝 التوثيق (Documentation) - حجر الأساس للبيع
-- [ ] إنشاء ملف `README.md` احترافي (شرح التنصيب، التقنيات المستخدمة، وكيفية إعداد Stripe/Cloudinary).
-- [ ] إنشاء ملف `API_DOCS.md` (توثيق الـ Endpoints لاستخدامها في تطبيقات الموبايل مستقبلاً).
+## Tasks for Tomorrow 🚀
+1. ✅ **Verify Admin Access**: First thing tomorrow, we will ensure that the user successfully logs into the dashboard as an `admin`.
+    - **Step**: Have the user log in using `test@example.com` (Password: `password123`) or create a new account and run `node make-admin.js [their_new_email]` to test the admin functionality.
+2. 🛠️ **Test Ad Moderation**: 
+    - Enter the `Admin Panel` from the account menu.
+    - Go to the **Pending Ads** section.
+    - Verify that new ads appear there and can be **Approved** or **Rejected** smoothly.
+3. 🧹 **Final Cleanup**:
+    - Delete the old, redundant TODO files to clean up the project directory (`TODO_SELLABLE.md`, `TODO_TOMORROW.md`, `tomorrow_tasks.md`, etc.).
+    - Keep only the final `PROJECT_ROADMAP.md` which summarizes everything perfectly.
+4. 📦 **Final Commit & Push**:
+    - Make the final Git commit for all the new documentation and dashboard enhancements.
+    - Push the final code to the repository.
 
-### 2. 🔑 الهوية والمصادقة (Social Auth)
-- [ ] تفعيل `FACEBOOK_APP_ID` واختبار الربط الكامل.
-- [ ] إضافة المتغيرات البيئية (Env Vars) في لوحة تحكم Railway لضمان عمل الموقع المباشر.
-
-### 3. 💬 تحسينات الدردشة (Chat Polish)
-- [ ] إضافة زر "حذف المحادثة" في واجهة المستخدم (Messages UI).
-- [ ] التأكد من ظهور مؤشر "يكتب الآن..." (Typing Indicator) بشكل مرئي للمستخدمين.
-
-### 4. 🛡️ مراجعة الأمان (Security Audit)
-- [ ] فحص حماية البيانات (تأمين الـ API بحيث لا يمكن لأي شخص الوصول لرسائل أو تعديل إعلانات غيره).
-
-### 5. 🧹 تنظيم المشروع
-- [ ] دمج ملفات الـ TODO الحالية في ملف واحد نهائي ومرتب.
-
----
-**تصبح على خير، موعدنا غداً لننهي المهمة بنجاح! 🚀**
+**Have a great night! We will pick this right back up tomorrow.** 🌙

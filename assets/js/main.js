@@ -173,7 +173,9 @@ document.addEventListener('DOMContentLoaded', async () => {
         }, 6000);
     }
 
-    window.updateDynamicContent = function (country, lang) {
+    window.updateDynamicContent = function (country, lang = window.currentLang || 'en') {
+        if (!translations[lang]) return;
+        
         const countryName = translations[lang][country] || translations['en'][country] || country;
 
         const countryCities = {
@@ -304,9 +306,6 @@ document.addEventListener('DOMContentLoaded', async () => {
     };
 
     window.setCountry = function (country, flag, name) {
-        // currentCountryFlag is defined inside DOMContentLoaded, so it might be null here.
-        // Re-querying it or making it global would be a more robust solution.
-        // For now, assuming it's accessible or initCountryDropdown handles it.
         const currentCountryFlag = document.getElementById('current-country-flag');
         if (currentCountryFlag) currentCountryFlag.textContent = flag;
 
@@ -316,7 +315,7 @@ document.addEventListener('DOMContentLoaded', async () => {
         localStorage.setItem('selectedCountryName', name);
 
         window.updateDynamicContent(window.selectedCountry, window.currentLang);
-    }
+    };
 
     window.initCountryDropdown = function () {
         const countryOptions = document.querySelectorAll('.country-option');
@@ -1306,6 +1305,10 @@ async function loadGlobalHeader() {
         if (window.initTheme) window.initTheme();
         if (window.initMobileMenu) window.initMobileMenu();
         if (window.updateAuthState) window.updateAuthState();
+        
+        // Ensure translations and dynamic content are applied after header is loaded
+        if (window.updateLanguage) window.updateLanguage(window.currentLang);
+        if (window.updateDynamicContent) window.updateDynamicContent(window.selectedCountry, window.currentLang);
 
     } catch (err) {
         console.error('Error loading global header:', err);
