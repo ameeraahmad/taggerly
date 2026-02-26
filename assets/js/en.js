@@ -497,7 +497,8 @@ const enTranslations = {
     confirmNewPassword: "Confirm New Password",
     updatePassword: "Update Password",
     analytics: "Analytics",
-    comingSoon: "Coming Soon"
+    comingSoon: "Coming Soon",
+    pendingApproval: "Pending Admin Approval"
 };
 
 

@@ -498,7 +498,8 @@ const arTranslations = {
     confirmNewPassword: "تأكيد كلمة المرور الجديدة",
     updatePassword: "تحديث كلمة المرور",
     analytics: "الإحصائيات",
-    comingSoon: "قريباً"
+    comingSoon: "قريباً",
+    pendingApproval: "في انتظار موافقة الإدارة"
 };
 
 
