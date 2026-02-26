@@ -496,7 +496,9 @@ const arTranslations = {
     currentPassword: "كلمة المرور الحالية",
     newPassword: "كلمة المرور الجديدة",
     confirmNewPassword: "تأكيد كلمة المرور الجديدة",
-    updatePassword: "تحديث كلمة المرور"
+    updatePassword: "تحديث كلمة المرور",
+    analytics: "الإحصائيات",
+    comingSoon: "قريباً"
 };
 
 

@@ -495,7 +495,9 @@ const enTranslations = {
     currentPassword: "Current Password",
     newPassword: "New Password",
     confirmNewPassword: "Confirm New Password",
-    updatePassword: "Update Password"
+    updatePassword: "Update Password",
+    analytics: "Analytics",
+    comingSoon: "Coming Soon"
 };
 
 

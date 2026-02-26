@@ -46,7 +46,7 @@
 
             <!-- Sidebar -->
             <div class="w-full md:w-64 flex-shrink-0">
-                <div class="bg-white rounded-xl shadow-sm overflow-hidden">
+                <div class="bg-white rounded-xl shadow-sm overflow-hidden border dark:border-gray-700">
                     <div class="p-6 bg-primary text-white text-center">
                         <div
                             class="w-20 h-20 bg-white rounded-full mx-auto flex items-center justify-center text-3xl font-bold text-primary mb-3 shadow-inner">
@@ -64,6 +64,16 @@
                                 </path>
                             </svg>
                             <span data-translate="myDashboard">My Dashboard</span>
+                        </a>
+                        <a href="#" onclick="showSection('analytics')" id="nav-analytics"
+                            class="sidebar-nav-link flex items-center px-4 py-3 text-gray-600 hover:bg-gray-50 hover:text-primary rounded-lg transition">
+                            <svg class="w-5 h-5 mr-3 rtl:ml-3 rtl:mr-0" fill="none" stroke="currentColor"
+                                viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2h2a2 2 0 002-2zm0 0V5a2 2 0 00-2-2H5a2 2 0 00-2 2v14a2 2 0 002 2h2a2 2 0 002-2z">
+                                </path>
+                            </svg>
+                            <span data-translate="analytics">Analytics</span>
                         </a>
                         <a href="#" onclick="showSection('payments')" id="nav-payments"
                             class="sidebar-nav-link flex items-center px-4 py-3 text-gray-600 hover:bg-gray-50 hover:text-primary rounded-lg transition">
@@ -170,14 +180,15 @@
 
                 <!-- My Payments Section -->
                 <div id="section-payments"
-                    class="dashboard-section hidden bg-white rounded-xl shadow-sm overflow-hidden anim-fade-in">
-                    <div class="px-6 py-4 border-b bg-gray-50/50">
-                        <h3 class="font-bold text-gray-900" data-translate="myPayments">Payment History</h3>
+                    class="dashboard-section hidden bg-white rounded-xl shadow-sm overflow-hidden anim-fade-in border dark:border-gray-700">
+                    <div class="px-6 py-4 border-b bg-gray-50/50 dark:bg-gray-800/50">
+                        <h3 class="font-bold text-gray-900 dark:text-white" data-translate="myPayments">Payment History
+                        </h3>
                     </div>
                     <div id="payments-container" class="overflow-x-auto">
                         <table class="w-full text-left text-sm">
                             <thead
-                                class="bg-gray-50 dark:bg-gray-800 text-gray-500 uppercase text-[10px] font-bold tracking-wider">
+                                class="bg-gray-50 dark:bg-gray-800 text-gray-500 dark:text-gray-400 uppercase text-[10px] font-bold tracking-wider">
                                 <tr>
                                     <th class="px-6 py-3">Plan / Purpose</th>
                                     <th class="px-6 py-3">Amount</th>
@@ -190,6 +201,31 @@
                                 <!-- Loaded via JS -->
                             </tbody>
                         </table>
+                    </div>
+                </div>
+
+                <!-- My Analytics Section -->
+                <div id="section-analytics"
+                    class="dashboard-section hidden bg-white rounded-xl shadow-sm overflow-hidden anim-fade-in border dark:border-gray-700">
+                    <div class="px-6 py-4 border-b bg-gray-50/50 dark:bg-gray-800/50 flex justify-between items-center">
+                        <h3 class="font-bold text-gray-900 dark:text-white" data-translate="analytics">Performance
+                            Analytics</h3>
+                        <span class="text-[10px] font-bold text-accent bg-accent/10 px-2 py-1 rounded">PRO
+                            FEATURE</span>
+                    </div>
+                    <div class="p-8 text-center">
+                        <div
+                            class="w-16 h-16 bg-blue-50 dark:bg-blue-900/20 rounded-full flex items-center justify-center mx-auto mb-4 text-primary dark:text-blue-400">
+                            <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M7 12l3-3 3 3 4-4M8 21l4-4 4 4M3 4h18M4 4h16v12a1 1 0 01-1 1H5a1 1 0 01-1-1V4z">
+                                </path>
+                            </svg>
+                        </div>
+                        <h4 class="font-bold text-lg mb-2" data-translate="comingSoon">Detailed Analytics Coming Soon!
+                        </h4>
+                        <p class="text-gray-500 text-sm max-w-sm mx-auto">We are building a powerful dashboard to show
+                            your ad impressions, click-through rates, and buyer demographic data.</p>
                     </div>
                 </div>
 
@@ -297,6 +333,7 @@
             // Load data if needed
             if (sectionId === 'ads') loadAds();
             if (sectionId === 'payments') loadPayments();
+            if (sectionId === 'analytics') console.log('Analytics section active');
         }
 
         async function loadAds() {
@@ -431,10 +468,6 @@
             }
         }
     </script>
-    <script src="assets/js/en.js"></script>
-    <script src="assets/js/ar.js"></script>
-    <script src="assets/js/api-client.js"></script>
-    <script src="assets/js/main.js"></script>
 </body>
 
 </html>
