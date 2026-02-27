@@ -416,7 +416,7 @@
 
                 results.forEach(ad => {
                     const lang = window.currentLang || 'en';
-                    const adCityStr = ad.city || "";
+                    const adCityStr = (ad.city || "").trim();
                     const cityTranslated = (translations[lang] && translations[lang][adCityStr.toLowerCase()]) || adCityStr;
 
                     const adCountryKey = ad.country || null;
@@ -427,13 +427,13 @@
                     const locationParts = [];
                     if (cityTranslated) locationParts.push(`<span class="city-label">${cityTranslated}</span>`);
                     if (adCountryTranslated) locationParts.push(`<span class="country-label" data-translate="${adCountryKey}">${adCountryTranslated}</span>`);
-                    const locationHTML = locationParts.length > 0 ? locationParts.join('<span class="text-gray-400 mx-1">,</span>') : '';
+                    const locationHTML = locationParts.length > 0 ? locationParts.join('<span class="text-gray-400">, </span>') : '';
 
                     const adCard = `
                         <div class="bg-white dark:bg-gray-800 border dark:border-gray-700 rounded-xl overflow-hidden shadow-sm hover:shadow-lg transition-all flex flex-col sm:flex-row group animate-fade-in relative cursor-pointer" onclick="window.location.href='ad-details.html?id=${ad.id}'">
                             <div class="h-48 sm:h-auto sm:w-64 bg-gray-200 dark:bg-gray-700 relative overflow-hidden flex-shrink-0">
                                 <img src="${ad.images[0] || 'https://via.placeholder.com/300'}" class="w-full h-full object-cover transition duration-500 group-hover:scale-110" alt="${ad.title}">
-                                ${ad.status === 'active' ? '<div class="absolute top-3 left-3 bg-accent text-white text-[10px] font-black px-2 py-1 rounded shadow-lg uppercase tracking-tighter">Featured</div>' : ''}
+                                ${ad.status === 'active' ? '<div class="absolute top-3 left-3 bg-accent text-white text-[10px] font-black px-2 py-1 rounded shadow-lg uppercase tracking-wider">Featured</div>' : ''}
                             </div>
                             <div class="p-6 flex flex-col justify-between flex-grow">
                                 <div class="flex-grow">
@@ -453,7 +453,7 @@
                                     <div class="text-2xl font-black text-accent mt-1 mb-3">${ad.price.toLocaleString()} <span class="text-sm font-bold">AED</span></div>
                                     <p class="text-gray-500 dark:text-gray-400 text-sm mb-4 line-clamp-2">${ad.description}</p>
                                 </div>
-                                <div class="flex justify-between items-center text-[11px] font-bold text-gray-400 dark:text-gray-500 pt-4 border-t dark:border-gray-700/50 uppercase tracking-widest leading-none">
+                                <div class="flex justify-between items-center text-[11px] font-bold text-gray-400 dark:text-gray-500 pt-4 border-t dark:border-gray-700/50 uppercase tracking-wider leading-none">
                                     <div class="flex items-center space-x-6 rtl:space-x-reverse">
                                         <span class="flex items-center"><svg class="w-3.5 h-3.5 mr-1.5 text-accent" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"></path></svg> ${locationHTML}</span>
                                         <span class="flex items-center"><svg class="w-3.5 h-3.5 mr-1.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg> <span>${new Date(ad.createdAt).toLocaleDateString()}</span></span>

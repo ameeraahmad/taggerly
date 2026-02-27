@@ -921,7 +921,7 @@ document.addEventListener('DOMContentLoaded', async () => {
             : "ad-card-main bg-white dark:bg-gray-800 border dark:border-gray-700 rounded-xl overflow-hidden shadow-sm hover:shadow-lg transition group cursor-pointer";
 
         const lang = window.currentLang || 'en';
-        const adCityStr = ad.city || "";
+        const adCityStr = (ad.city || "").trim();
         const cityTranslated = (translations[lang] && translations[lang][adCityStr.toLowerCase()]) || adCityStr;
 
         // Use ONLY the country stored in the ad itself — never inject the selected country
@@ -936,7 +936,7 @@ document.addEventListener('DOMContentLoaded', async () => {
         if (cityTranslated) locationParts.push(`<span>${cityTranslated}</span>`);
         if (adCountryTranslated) locationParts.push(`<span class="country-label" data-translate="${adCountryKey}">${adCountryTranslated}</span>`);
         const locationHTML = locationParts.length > 0
-            ? locationParts.join('<span>, </span>')
+            ? locationParts.join('<span class="text-gray-400">, </span>')
             : '';
 
         return `
