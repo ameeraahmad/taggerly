@@ -212,7 +212,7 @@
                                             </path>
                                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                                                 d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"></path>
-                                        </svg> <span class="city-label" data-translate="dubai">Dubai</span></span>
+                                        </svg> <span class="country-label" data-translate="uae">UAE</span></span>
                                     <span class="flex items-center"><svg class="w-4 h-4 mr-1 rtl:ml-1 rtl:mr-0"
                                             fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
@@ -268,8 +268,7 @@
                                             </path>
                                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                                                 d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"></path>
-                                        </svg> <span class="city-label" data-translate="abuDhabi">Abu
-                                            Dhabi</span></span>
+                                        </svg> <span class="country-label" data-translate="uae">UAE</span></span>
                                     <span class="flex items-center"><svg class="w-4 h-4 mr-1 rtl:ml-1 rtl:mr-0"
                                             fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
@@ -416,6 +415,20 @@
                 document.querySelector('nav[aria-label="Pagination"]')?.parentElement?.classList.remove('hidden');
 
                 results.forEach(ad => {
+                    const lang = window.currentLang || 'en';
+                    const adCityStr = ad.city || "";
+                    const cityTranslated = (translations[lang] && translations[lang][adCityStr.toLowerCase()]) || adCityStr;
+
+                    const adCountryKey = ad.country || null;
+                    const adCountryTranslated = adCountryKey
+                        ? ((translations[lang] && translations[lang][adCountryKey]) || adCountryKey.toUpperCase())
+                        : null;
+
+                    const locationParts = [];
+                    if (cityTranslated) locationParts.push(`<span class="city-label">${cityTranslated}</span>`);
+                    if (adCountryTranslated) locationParts.push(`<span class="country-label" data-translate="${adCountryKey}">${adCountryTranslated}</span>`);
+                    const locationHTML = locationParts.length > 0 ? locationParts.join('<span class="text-gray-400 mx-1">,</span>') : '';
+
                     const adCard = `
                         <div class="bg-white dark:bg-gray-800 border dark:border-gray-700 rounded-xl overflow-hidden shadow-sm hover:shadow-lg transition-all flex flex-col sm:flex-row group animate-fade-in relative cursor-pointer" onclick="window.location.href='ad-details.html?id=${ad.id}'">
                             <div class="h-48 sm:h-auto sm:w-64 bg-gray-200 dark:bg-gray-700 relative overflow-hidden flex-shrink-0">
@@ -442,7 +455,7 @@
                                 </div>
                                 <div class="flex justify-between items-center text-[11px] font-bold text-gray-400 dark:text-gray-500 pt-4 border-t dark:border-gray-700/50 uppercase tracking-widest leading-none">
                                     <div class="flex items-center space-x-6 rtl:space-x-reverse">
-                                        <span class="flex items-center"><svg class="w-3.5 h-3.5 mr-1.5 text-accent" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"></path></svg> <span class="city-label">${ad.city}</span></span>
+                                        <span class="flex items-center"><svg class="w-3.5 h-3.5 mr-1.5 text-accent" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"></path></svg> ${locationHTML}</span>
                                         <span class="flex items-center"><svg class="w-3.5 h-3.5 mr-1.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg> <span>${new Date(ad.createdAt).toLocaleDateString()}</span></span>
                                     </div>
                                     <span class="hidden sm:inline-block text-accent group-hover:translate-x-1 transition-transform">Details &rarr;</span>
@@ -525,6 +538,8 @@
                 if (radio) radio.checked = true;
             }
 
+            // Always use the selected country for the initial search to match the user's location setting
+            initialParams.country = window.selectedCountry || localStorage.getItem('country') || 'uae';
             loadSearchResults(initialParams);
 
             // Filter Application logic
@@ -540,6 +555,7 @@
                 const search = document.querySelector('.search-input')?.value || '';
 
                 const params = {
+                    country: window.selectedCountry || localStorage.getItem('country') || 'uae',
                     category,
                     minPrice,
                     maxPrice,
@@ -555,6 +571,14 @@
             };
 
             if (applyBtn) applyBtn.addEventListener('click', applyFilters);
+
+            // Fetch new results when the globally selected country changes 
+            document.body.addEventListener('click', (e) => {
+                if (e.target.closest('.country-option')) {
+                    // Update dropdown briefly then fire filter
+                    setTimeout(() => applyFilters(), 100);
+                }
+            });
 
             if (resetBtn) {
                 resetBtn.addEventListener('click', () => {
