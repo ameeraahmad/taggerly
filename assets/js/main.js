@@ -175,7 +175,7 @@ document.addEventListener('DOMContentLoaded', async () => {
 
     window.updateDynamicContent = function (country, lang = window.currentLang || 'en') {
         if (!translations[lang]) return;
-        
+
         const countryName = translations[lang][country] || translations['en'][country] || country;
 
         const countryCities = {
@@ -252,8 +252,9 @@ document.addEventListener('DOMContentLoaded', async () => {
 
         // --- 7. Re-populate Ads for the new country ---
         const adsContainer = document.querySelector('.featured-ads .grid');
-        if (adsContainer && window.location.pathname.endsWith('index.html') || window.location.pathname === '/') {
-            populateAdsGrid(adsContainer, country);
+        const motorsSlider = document.getElementById('motors-used-slider');
+        if (adsContainer || motorsSlider) {
+            if (adsContainer) populateAdsGrid(adsContainer, country);
             loadCategorySliders(country);
         }
     };
@@ -872,7 +873,7 @@ document.addEventListener('DOMContentLoaded', async () => {
 
             if (ads.length === 0) {
                 // container.innerHTML = '<p class="text-center col-span-full py-10 text-gray-500">No ads found for this country.</p>';
-                return; 
+                return;
             }
 
             container.innerHTML = ''; // Clear static ads
@@ -888,6 +889,12 @@ document.addEventListener('DOMContentLoaded', async () => {
         const cardClass = isSlider
             ? "min-w-[280px] w-[280px] md:min-w-[320px] md:w-[320px] bg-white dark:bg-gray-800 rounded-xl shadow border dark:border-gray-700 snap-center flex-shrink-0 cursor-pointer"
             : "ad-card-main bg-white dark:bg-gray-800 border dark:border-gray-700 rounded-xl overflow-hidden shadow-sm hover:shadow-lg transition group cursor-pointer";
+
+        const lang = window.currentLang || 'en';
+        const adCityStr = ad.city || "";
+        const cityTranslated = (translations[lang] && translations[lang][adCityStr.toLowerCase()]) || adCityStr;
+        const countryKey = ad.country || window.selectedCountry || 'uae';
+        const countryTranslated = (translations[lang] && translations[lang][countryKey]) || countryKey.toUpperCase();
 
         return `
         <div class="${cardClass}" onclick="window.location.href='ad-details.html?id=${ad.id}'">
@@ -915,7 +922,8 @@ document.addEventListener('DOMContentLoaded', async () => {
                     <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"></path>
                     </svg>
-                    <span>${ad.city}</span>
+                    <span class="city-label" data-translate="${adCityStr.toLowerCase()}">${cityTranslated}</span><span>, </span>
+                    <span class="country-label" data-translate="${countryKey}">${countryTranslated}</span>
                 </div>
             </div>
         </div>
@@ -945,7 +953,7 @@ document.addEventListener('DOMContentLoaded', async () => {
                     if (country) params.country = country;
                     const response = await apiClient.getAds(params);
                     const ads = response.data;
-                    
+
                     if (ads.length > 0) {
                         slider.innerHTML = '';
                         slider.setAttribute('data-loaded', 'true');
@@ -1325,7 +1333,7 @@ async function loadGlobalHeader() {
         if (window.initTheme) window.initTheme();
         if (window.initMobileMenu) window.initMobileMenu();
         if (window.updateAuthState) window.updateAuthState();
-        
+
         // Ensure translations and dynamic content are applied after header is loaded
         if (window.updateLanguage) window.updateLanguage(window.currentLang);
         if (window.updateDynamicContent) window.updateDynamicContent(window.selectedCountry, window.currentLang);
