@@ -936,7 +936,7 @@ document.addEventListener('DOMContentLoaded', async () => {
         if (cityTranslated) locationParts.push(`<span>${cityTranslated}</span>`);
         if (adCountryTranslated) locationParts.push(`<span class="country-label" data-translate="${adCountryKey}">${adCountryTranslated}</span>`);
         const locationHTML = locationParts.length > 0
-            ? locationParts.join('<span class="text-gray-400">, </span>')
+            ? locationParts.join('<span class="text-gray-400">,&nbsp;</span>')
             : '';
 
         return `

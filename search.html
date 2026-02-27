@@ -427,7 +427,7 @@
                     const locationParts = [];
                     if (cityTranslated) locationParts.push(`<span class="city-label">${cityTranslated}</span>`);
                     if (adCountryTranslated) locationParts.push(`<span class="country-label" data-translate="${adCountryKey}">${adCountryTranslated}</span>`);
-                    const locationHTML = locationParts.length > 0 ? locationParts.join('<span class="text-gray-400">, </span>') : '';
+                    const locationHTML = locationParts.length > 0 ? locationParts.join('<span class="text-gray-400">,&nbsp;</span>') : '';
 
                     const adCard = `
                         <div class="bg-white dark:bg-gray-800 border dark:border-gray-700 rounded-xl overflow-hidden shadow-sm hover:shadow-lg transition-all flex flex-col sm:flex-row group animate-fade-in relative cursor-pointer" onclick="window.location.href='ad-details.html?id=${ad.id}'">
