@@ -6,9 +6,10 @@ body {
     font-family: 'Roboto', sans-serif;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
-    overflow-x: hidden;
+    overflow-x: hidden !important;
 }
 
+/* admin@taggerly.com Admin123! */
 /* RTL Support */
 html[dir="rtl"] body {
     font-family: 'Cairo', sans-serif;

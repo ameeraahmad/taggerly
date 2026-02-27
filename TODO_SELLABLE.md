@@ -19,6 +19,7 @@
 | المفضلة (Favorites) | ✅ |
 | لوحة تحكم المستخدم (Dashboard) | ✅ |
 | Admin Panel (Ban/Approve/Feature/Revenue) | ✅ |
+| نظام مراجعة الإعلانات (Moderation Queue) | ✅ |
 | نظام الدفع Stripe (Payment System) | ✅ |
 | Rate Limiting (حماية من الـ Spam) | ✅ |
 | دعم اللغتين عربي / إنجليزي | ✅ |
@@ -65,13 +66,11 @@
 ---
 
 ### 4. 📊 نظام موافقة المدير على الإعلانات (Moderation Queue)
-**المشكلة:** الإعلانات تنشر مباشرة بدون مراجعة  
-**الحل:**
-- تغيير القيمة الافتراضية لـ `status` في Ad Model إلى `'pending'`
-- إضافة تاب "Pending Ads" في Admin Panel
-- المدير يوافق أو يرفض كل إعلان
-- إرسال إشعار للمستخدم بنتيجة المراجعة
-- **ملفات:** `models/Ad.js`, `admin.html`, `controllers/adminController.js`
+**الحالة:** ✅ مكتمل
+- تغيير القيمة الافتراضية لـ `status` في Ad Model إلى `'pending'`.
+- إضافة تاب "Pending Ads" في Admin Panel.
+- مراجعة الإعلانات (قبول/رفض) مع إرسال إشعارات فورية وبريد إلكتروني.
+
 
 ---
 

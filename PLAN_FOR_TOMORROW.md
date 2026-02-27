@@ -1,22 +1,37 @@
-# 📅 Plan for Tomorrow
+# 🏁 الخطة النهائية لإنهاء الموقع والبيع
+> التاريخ: 2026-02-27 (غداً)
 
-## Where We Stopped Today 🛑
-1. **Admin Panel Access**: We created a way to access the `Admin Panel` by updating the user roles in the database to `admin`. 
-2. **Database Sync**: We successfully synced the database and confirmed all existing users are now marked as `admin`.
-3. **Admin Dashboard Fixes**: The user attempted to log in but hasn't yet seen the completely synced `admin.html` page because they need to re-login with a freshly created account or the `test@example.com` account.
+---
 
-## Tasks for Tomorrow 🚀
-1. ✅ **Verify Admin Access**: First thing tomorrow, we will ensure that the user successfully logs into the dashboard as an `admin`.
-    - **Step**: Have the user log in using `test@example.com` (Password: `password123`) or create a new account and run `node make-admin.js [their_new_email]` to test the admin functionality.
-2. 🛠️ **Test Ad Moderation**: 
-    - Enter the `Admin Panel` from the account menu.
-    - Go to the **Pending Ads** section.
-    - Verify that new ads appear there and can be **Approved** or **Rejected** smoothly.
-3. 🧹 **Final Cleanup**:
-    - Delete the old, redundant TODO files to clean up the project directory (`TODO_SELLABLE.md`, `TODO_TOMORROW.md`, `tomorrow_tasks.md`, etc.).
-    - Keep only the final `PROJECT_ROADMAP.md` which summarizes everything perfectly.
-4. 📦 **Final Commit & Push**:
-    - Make the final Git commit for all the new documentation and dashboard enhancements.
-    - Push the final code to the repository.
+## 🛑 ما تم إنجازه اليوم
+1.  **إصلاح الموقع والعملات:** تم ربط تغيير الدولة بتحديث أسماء المدن والعملات في الإعلانات بشكل فوري.
+2.  **اختبار لوحة الإدارة:** تم تفعيل حساب المسؤول (`admin@taggerly.com`) واختبار نظام مراجعة الإعلانات والموافقة عليها.
+3.  **تزامن الهيدر:** تم حل مشكلة ظهور خيارات اللغة والدولة في الصفحات التي يتم تحميل الهيدر فيها ديناميكياً.
 
-**Have a great night! We will pick this right back up tomorrow.** 🌙
+---
+
+## 🚀 مهام "اللمسات الأخيرة" (غداً)
+
+### 1. 🎨 تحديث العلامة التجارية (Rebranding)
+- [ ] استبدال كلمة "Dubizzle Clone" بـ "Taggerly" في جميع قوالب الإيميلات (`utils/emailTemplates.js`).
+- [ ] مراجعة ملفات HTML والتأكد من توحيد الاسم والشعارات.
+
+### 2. 💳 تفعيل الدفع (Stripe Connectivity)
+- [ ] اختبار زر "ابدأ الآن" في صفحة الباقات (`plans.html`).
+- [ ] التأكد من أن الرابط يعيد المستخدم للموقع بنجاح (`?success=true`) بعد الدفع.
+- [ ] التأكد من ظهور شارة "Featured" على الإعلان بمجرد نجاح العملية.
+
+### 3. 🔍 تحسين محركات البحث (SEO Check)
+- [ ] التأكد من توليد ملف `sitemap.xml` بشكل صحيح.
+- [ ] مراجعة الـ Meta Tags في صفحة تفاصيل الإعلان لتظهر الصور والعناوين بشكل احترافي عند المشاركة على WhatsApp أو Facebook.
+
+### 4. 🧹 التنظيف النهائي (Cleanup)
+- [ ] حذف الملفات المؤقتة والمسودات (`TODO_SELLABLE.md`, `PLAN_FOR_TOMORROW.md`).
+- [ ] إنشاء ملف `README.md` احترافي يشرح ميزات الموقع وطريقة تشغيله لجذب المشترين.
+
+---
+
+## 💡 نصيحة للبيع
+غداً، سأقوم بعمل "Walkthrough" كامل (فيديو تجريبي) لكل السيناريوهات (تسجيل -> نشر إعلان -> دفع -> مراجعة من الأدمن) للتأكد من أن كل شيء يبدو مثالياً أمام المشتري.
+
+**تصبح على خير، غداً سيكون يوماً حافلاً بالنجاح! 🌙✨**
