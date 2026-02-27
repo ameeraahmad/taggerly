@@ -27,6 +27,7 @@ const enTranslations = {
     followUs: "Follow Us",
     rights: "© 2026 DubizzleClone. All rights reserved.",
     plansTitle: "Pricing Plans",
+    noAdsFound: "No ads found for this country.",
 
     // Header New
     myAccount: "My Account",

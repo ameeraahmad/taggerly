@@ -201,11 +201,17 @@ document.addEventListener('DOMContentLoaded', async () => {
         const countryLabels = document.querySelectorAll('.country-label');
         countryLabels.forEach(el => el.textContent = countryName);
 
-        // --- 3. Update City Labels ---
+        // --- 3. Update City Labels (Rotate through available cities for static cards) ---
         const cityLabels = document.querySelectorAll('.city-label');
-        const cityKey = `city_${country}`;
-        const cityName = translations[lang][cityKey] || translations['en'][cityKey] || (country === 'uae' ? "Dubai" : "");
-        cityLabels.forEach(el => el.textContent = cityName);
+        const cities = countryCities[country] || countryCities['uae'] || ['dubai'];
+        cityLabels.forEach((el, index) => {
+            // Find a relevant city key from the country's cities list
+            const cityIndex = index % cities.length;
+            const cityKey = cities[cityIndex];
+            const name = translations[lang][cityKey] || translations['en'][cityKey] || cityKey;
+            el.textContent = name;
+            el.setAttribute('data-translate', cityKey);
+        });
 
         // --- 4. Update Header Country Name ---
         const currentCountryName = document.getElementById('current-country-name');
@@ -252,11 +258,18 @@ document.addEventListener('DOMContentLoaded', async () => {
 
         // --- 7. Re-populate Ads for the new country ---
         const adsContainer = document.querySelector('.featured-ads .grid');
-        const motorsSlider = document.getElementById('motors-used-slider');
-        if (adsContainer || motorsSlider) {
-            if (adsContainer) populateAdsGrid(adsContainer, country);
-            loadCategorySliders(country);
+        const allSliders = document.querySelectorAll('.flex.overflow-x-auto[id*="slider"]');
+
+        // Show loading state and clear old country data
+        if (adsContainer) {
+            adsContainer.innerHTML = '<div class="col-span-full flex justify-center py-10"><div class="animate-spin rounded-full h-10 w-10 border-b-2 border-accent"></div></div>';
+            populateAdsGrid(adsContainer, country);
         }
+
+        allSliders.forEach(slider => {
+            slider.innerHTML = '<div class="p-10 text-center w-full flex justify-center items-center"><div class="animate-spin inline-block rounded-full h-8 w-8 border-b-2 border-accent"></div></div>';
+        });
+        loadCategorySliders(country);
     };
 
     window.detectLocation = function () {
@@ -872,11 +885,11 @@ document.addEventListener('DOMContentLoaded', async () => {
             const ads = response.data;
 
             if (ads.length === 0) {
-                // container.innerHTML = '<p class="text-center col-span-full py-10 text-gray-500">No ads found for this country.</p>';
+                container.innerHTML = `<p class="text-center col-span-full py-10 text-gray-500">${translations[window.currentLang || 'en'].noAdsFound || 'No ads found for this country.'}</p>`;
                 return;
             }
 
-            container.innerHTML = ''; // Clear static ads
+            container.innerHTML = ''; // Clear loading state
             ads.forEach(ad => {
                 container.insertAdjacentHTML('beforeend', createAdCard(ad));
             });
