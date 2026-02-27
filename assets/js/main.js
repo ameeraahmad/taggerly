@@ -794,50 +794,78 @@ document.addEventListener('DOMContentLoaded', async () => {
             }
         }
 
-        // --- Mobile Menu Refresh ---
-        const mobileMenu = document.getElementById('mobile-menu');
-        if (mobileMenu) {
-            const menuContent = mobileMenu.querySelector('.space-y-1');
-            if (menuContent) {
-                if (token && user) {
-                    menuContent.innerHTML = `
-                        <div class="px-3 py-2 border-b dark:border-gray-700 mb-2">
-                            <p class="text-sm font-bold text-accent">${user.name}</p>
-                        </div>
-                        <a href="messages.html" class="block px-3 py-2 rounded-md text-base font-bold text-accent bg-accent/5">
-                            <span data-translate="messages">${trans.messages || 'Messages'}</span>
-                        </a>
-                        <a href="profile.html" class="block px-3 py-2 rounded-md text-base font-medium text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700">
-                            <span data-translate="myProfile">${trans.myProfile || 'Profile'}</span>
-                        </a>
-                        <a href="dashboard.html" class="block px-3 py-2 rounded-md text-base font-medium text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700">
-                            <span data-translate="myDashboard">${trans.myDashboard || 'Dashboard'}</span>
-                        </a>
-                        ${user.role === 'admin' ? `<a href="admin.html" class="block px-3 py-2 rounded-md text-base font-bold text-blue-600 bg-blue-50"><span data-translate="adminPanel">${trans.adminPanel || 'Admin Panel'}</span></a>` : ''}
-                        <a href="favorites.html" class="block px-3 py-2 rounded-md text-base font-medium text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700">
-                             <span data-translate="myFavorites">${trans.myFavorites || 'Favorites'}</span>
-                        </a>
-                        <a href="#" class="logout-action-btn block px-3 py-2 rounded-md text-base font-medium text-red-600 hover:bg-red-50">
-                            <span data-translate="logout">${trans.logout || 'Logout'}</span>
-                        </a>
-                    `;
-                } else {
-                    menuContent.innerHTML = `
-                        <a href="login.html" class="block px-3 py-2 rounded-md text-base font-bold text-primary dark:text-white bg-gray-50 dark:bg-gray-700">
-                            <span data-translate="login">${trans.login || 'Log in'}</span>
-                        </a>
-                        <a href="login.html?mode=signup" class="block px-3 py-2 rounded-md text-base font-medium text-gray-700 dark:text-gray-300 hover:bg-gray-50">
-                            <span data-translate="createAccount">${trans.createAccount || 'Sign Up'}</span>
-                        </a>
-                    `;
-                }
-                // Add categories/search to mobile menu if not already there or just always include
-                menuContent.innerHTML += `
-                    <div class="border-t dark:border-gray-700 my-2"></div>
-                    <a href="categories.html" class="block px-3 py-2 rounded-md text-base font-medium text-gray-700 dark:text-gray-300 hover:bg-gray-50" data-translate="mobileMenuCategories">${trans.mobileMenuCategories || 'Categories'}</a>
-                    <a href="post-ad.html" class="block px-3 py-2 mt-4 text-center text-white bg-accent rounded-md font-bold" data-translate="postAd">${trans.postAd || 'Post Ad'}</a>
+        // --- Mobile Menu: Update Dynamic Sections Only ---
+        const mobileUserName = document.getElementById('mobile-user-name');
+        const mobileUserEmail = document.getElementById('mobile-user-email');
+        const mobileProfileImg = document.getElementById('mobile-profile-img');
+        const mobileAuthLinks = document.getElementById('mobile-auth-links');
+
+        if (token && user) {
+            // --- Mobile: Logged In State ---
+            if (mobileProfileImg && user.avatar) mobileProfileImg.src = user.avatar;
+            if (mobileUserName) {
+                mobileUserName.textContent = user.name;
+                mobileUserName.removeAttribute('data-translate');
+            }
+            if (mobileUserEmail) {
+                mobileUserEmail.textContent = user.email;
+                mobileUserEmail.classList.remove('hidden');
+            }
+            // Update auth links to logged-in state
+            if (mobileAuthLinks) {
+                mobileAuthLinks.innerHTML = `
+                    <a href="messages.html" class="flex items-center gap-2 px-3 py-2 rounded-md text-base font-bold text-accent hover:bg-accent/5 transition">
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 10h.01M12 10h.01M16 10h.01M9 16H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-5l-5 5-1-5z"></path></svg>
+                        <span data-translate="messages">${trans.messages || 'Messages'}</span>
+                    </a>
+                    <a href="profile.html" class="flex items-center gap-2 px-3 py-2 rounded-md text-base font-medium text-gray-700 dark:text-gray-300 hover:text-accent hover:bg-gray-50 dark:hover:bg-gray-800 transition">
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"></path></svg>
+                        <span data-translate="myProfile">${trans.myProfile || 'Profile'}</span>
+                    </a>
+                    <a href="dashboard.html" class="flex items-center gap-2 px-3 py-2 rounded-md text-base font-medium text-gray-700 dark:text-gray-300 hover:text-accent hover:bg-gray-50 dark:hover:bg-gray-800 transition">
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 7v10a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2h-6l-2-2H5a2 2 0 00-2 2z"></path></svg>
+                        <span data-translate="myDashboard">${trans.myDashboard || 'Dashboard'}</span>
+                    </a>
+                    <a href="favorites.html" class="flex items-center gap-2 px-3 py-2 rounded-md text-base font-medium text-gray-700 dark:text-gray-300 hover:text-accent hover:bg-gray-50 dark:hover:bg-gray-800 transition">
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"></path></svg>
+                        <span data-translate="myFavorites">${trans.myFavorites || 'Favorites'}</span>
+                    </a>
+                    ${user.role === 'admin' ? `
+                    <a href="admin.html" class="flex items-center gap-2 px-3 py-2 rounded-md text-base font-bold text-blue-600 bg-blue-50 dark:bg-blue-900/20 hover:bg-blue-100 transition">
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"></path></svg>
+                        <span data-translate="adminPanel">${trans.adminPanel || 'Admin Panel'}</span>
+                    </a>` : ''}
+                    <a href="#" class="logout-action-btn flex items-center gap-2 px-3 py-2 rounded-md text-base font-medium text-red-600 hover:bg-red-50 dark:hover:bg-red-900/10 transition">
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"></path></svg>
+                        <span data-translate="logout">${trans.logout || 'Logout'}</span>
+                    </a>
                 `;
             }
+        } else {
+            // --- Mobile: Logged Out State ---
+            if (mobileUserName) {
+                mobileUserName.textContent = trans.login || 'Log in';
+                mobileUserName.setAttribute('data-translate', 'login');
+            }
+            if (mobileUserEmail) mobileUserEmail.classList.add('hidden');
+            if (mobileAuthLinks) {
+                mobileAuthLinks.innerHTML = `
+                    <a href="login.html" class="block px-3 py-2 rounded-md text-base font-medium text-gray-700 dark:text-gray-300 hover:text-accent hover:bg-gray-50 dark:hover:bg-gray-800 transition" data-translate="login">${trans.login || 'Log in'}</a>
+                    <a href="login.html?mode=signup" class="block px-3 py-2 rounded-md text-base font-medium text-gray-700 dark:text-gray-300 hover:text-accent hover:bg-gray-50 dark:hover:bg-gray-800 transition" data-translate="createAccount">${trans.createAccount || 'Sign up'}</a>
+                `;
+            }
+        }
+
+        // Wire up mobile lang & theme toggles to match desktop buttons
+        const mobileLangToggle = document.getElementById('mobile-lang-toggle');
+        const mobileThemeToggle = document.getElementById('mobile-theme-toggle');
+        const desktopLangToggle = document.getElementById('lang-toggle');
+        const desktopThemeToggle = document.getElementById('theme-toggle');
+        if (mobileLangToggle && desktopLangToggle) {
+            mobileLangToggle.onclick = (e) => { e.preventDefault(); desktopLangToggle.click(); };
+        }
+        if (mobileThemeToggle && desktopThemeToggle) {
+            mobileThemeToggle.onclick = () => desktopThemeToggle.click();
         }
 
         // Attach logout listeners

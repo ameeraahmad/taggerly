@@ -288,27 +288,158 @@
 
 <!-- Mobile Menu -->
 <div id="mobile-menu"
-    class="hidden-menu md:hidden bg-white dark:bg-gray-800 border-t border-gray-100 dark:border-gray-700 animate-fade-in z-40 relative">
-    <div class="px-2 pt-2 pb-3 space-y-1 sm:px-3">
-        <a href="profile.html" data-translate="myProfile"
-            class="block px-3 py-2 rounded-md text-base font-medium text-accent hover:bg-gray-50 dark:hover:bg-gray-700">My
-            Profile</a>
-        <a href="categories.html" data-translate="mobileMenuCategories"
-            class="block px-3 py-2 rounded-md text-base font-medium text-gray-700 dark:text-gray-300 hover:text-accent hover:bg-gray-50 dark:hover:bg-gray-700">Categories</a>
-        <a href="search.html" data-translate="mobileMenuForSale"
-            class="block px-3 py-2 rounded-md text-base font-medium text-gray-700 dark:text-gray-300 hover:text-accent hover:bg-gray-50 dark:hover:bg-gray-700">For
-            Sale</a>
-        <a href="login.html" data-translate="mobileMenuLogin"
-            class="block px-3 py-2 rounded-md text-base font-medium text-primary dark:text-white hover:bg-gray-50 dark:hover:bg-gray-700">Log
-            in / Sign up</a>
-        <a href="post-ad.html" data-translate="mobileMenuPostAd"
-            class="block px-3 py-2 mt-4 text-center text-white bg-accent rounded-md font-bold">Post an Ad</a>
+    class="hidden-menu md:hidden bg-white dark:bg-gray-900 border-t border-gray-100 dark:border-gray-700 z-40 relative shadow-lg">
+    <div class="px-4 pt-3 pb-5 space-y-1">
+
+        <!-- Mobile User Section (Dynamic) -->
+        <div id="mobile-user-section"
+            class="flex items-center gap-3 px-3 py-3 mb-2 bg-gray-50 dark:bg-gray-800 rounded-xl">
+            <div
+                class="w-10 h-10 rounded-full bg-gray-200 dark:bg-gray-600 flex items-center justify-center overflow-hidden flex-shrink-0">
+                <img src="https://www.gravatar.com/avatar/00000000000000000000000000000000?d=mp&f=y" alt="Profile"
+                    id="mobile-profile-img" class="w-full h-full object-cover">
+            </div>
+            <div class="flex-1 min-w-0">
+                <p id="mobile-user-name" class="font-bold text-gray-900 dark:text-white text-sm truncate"
+                    data-translate="login">Log in</p>
+                <p id="mobile-user-email" class="text-xs text-gray-500 dark:text-gray-400 truncate hidden"></p>
+            </div>
+        </div>
+
+        <!-- Detect Location -->
+        <button onclick="window.detectLocation(); document.getElementById('mobile-menu').classList.add('hidden-menu');"
+            class="w-full flex items-center gap-2 px-3 py-2 rounded-md text-sm font-medium text-accent hover:bg-accent/5 transition">
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                    d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"></path>
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                    d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"></path>
+            </svg>
+            <span data-translate="detectLocation">Detect My Location</span>
+        </button>
+
+        <div class="border-t border-gray-100 dark:border-gray-700 my-1"></div>
+
+        <!-- Motors Section -->
+        <div>
+            <button onclick="this.nextElementSibling.classList.toggle('hidden')"
+                class="w-full flex items-center justify-between px-3 py-2 rounded-md text-base font-medium text-gray-700 dark:text-gray-300 hover:text-accent hover:bg-gray-50 dark:hover:bg-gray-800 transition">
+                <span data-translate="motorsTitle">Motors</span>
+                <svg class="w-4 h-4 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
+                </svg>
+            </button>
+            <div class="hidden pl-4 mt-1 space-y-1 border-l-2 border-accent/30 ml-3">
+                <a href="search.html"
+                    class="block px-3 py-1.5 text-sm text-gray-600 dark:text-gray-400 hover:text-accent transition"
+                    data-translate="usedCars">Used Cars</a>
+                <a href="search.html"
+                    class="block px-3 py-1.5 text-sm text-gray-600 dark:text-gray-400 hover:text-accent transition"
+                    data-translate="motorcycles">Motorcycles</a>
+                <a href="search.html"
+                    class="block px-3 py-1.5 text-sm text-gray-600 dark:text-gray-400 hover:text-accent transition"
+                    data-translate="heavyVehicles">Heavy Vehicles</a>
+                <a href="search.html"
+                    class="block px-3 py-1.5 text-sm text-gray-600 dark:text-gray-400 hover:text-accent transition"
+                    data-translate="boats">Boats</a>
+                <a href="search.html"
+                    class="block px-3 py-1.5 text-sm text-gray-600 dark:text-gray-400 hover:text-accent transition"
+                    data-translate="autoAccessories">Auto Accessories</a>
+            </div>
+        </div>
+
+        <!-- Property Section -->
+        <div>
+            <button onclick="this.nextElementSibling.classList.toggle('hidden')"
+                class="w-full flex items-center justify-between px-3 py-2 rounded-md text-base font-medium text-gray-700 dark:text-gray-300 hover:text-accent hover:bg-gray-50 dark:hover:bg-gray-800 transition">
+                <span data-translate="propertyTitle">Property</span>
+                <svg class="w-4 h-4 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
+                </svg>
+            </button>
+            <div class="hidden pl-4 mt-1 space-y-1 border-l-2 border-accent/30 ml-3">
+                <a href="search.html"
+                    class="block px-3 py-1.5 text-sm text-gray-600 dark:text-gray-400 hover:text-accent transition"
+                    data-translate="residentialSale">Residential for Sale</a>
+                <a href="search.html"
+                    class="block px-3 py-1.5 text-sm text-gray-600 dark:text-gray-400 hover:text-accent transition"
+                    data-translate="commercialSale">Commercial for Sale</a>
+                <a href="search.html"
+                    class="block px-3 py-1.5 text-sm text-gray-600 dark:text-gray-400 hover:text-accent transition"
+                    data-translate="multipleUnits">Multiple Units</a>
+                <a href="search.html"
+                    class="block px-3 py-1.5 text-sm text-gray-600 dark:text-gray-400 hover:text-accent transition"
+                    data-translate="landSale">Land for Sale</a>
+            </div>
+        </div>
+
+        <!-- Classifieds Section -->
+        <div>
+            <button onclick="this.nextElementSibling.classList.toggle('hidden')"
+                class="w-full flex items-center justify-between px-3 py-2 rounded-md text-base font-medium text-gray-700 dark:text-gray-300 hover:text-accent hover:bg-gray-50 dark:hover:bg-gray-800 transition">
+                <span data-translate="classifiedsTitle">Classifieds</span>
+                <svg class="w-4 h-4 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
+                </svg>
+            </button>
+            <div class="hidden pl-4 mt-1 space-y-1 border-l-2 border-accent/30 ml-3">
+                <a href="search.html"
+                    class="block px-3 py-1.5 text-sm text-gray-600 dark:text-gray-400 hover:text-accent transition"
+                    data-translate="electronics">Electronics</a>
+                <a href="search.html"
+                    class="block px-3 py-1.5 text-sm text-gray-600 dark:text-gray-400 hover:text-accent transition"
+                    data-translate="computers">Computers</a>
+                <a href="search.html"
+                    class="block px-3 py-1.5 text-sm text-gray-600 dark:text-gray-400 hover:text-accent transition"
+                    data-translate="clothing">Clothing</a>
+                <a href="search.html"
+                    class="block px-3 py-1.5 text-sm text-gray-600 dark:text-gray-400 hover:text-accent transition"
+                    data-translate="cameras">Cameras</a>
+            </div>
+        </div>
+
         <div class="border-t border-gray-100 dark:border-gray-700 my-2"></div>
-        <a href="help.html" data-translate="helpCenter"
-            class="block px-3 py-2 rounded-md text-base font-medium text-gray-700 dark:text-gray-300 hover:text-accent hover:bg-gray-50 dark:hover:bg-gray-700">Help
-            Center</a>
-        <a href="contact.html" data-translate="contactUs"
-            class="block px-3 py-2 rounded-md text-base font-medium text-gray-700 dark:text-gray-300 hover:text-accent hover:bg-gray-50 dark:hover:bg-gray-700">Contact
-            Us</a>
+
+        <!-- Auth Links (Dynamic — updated by updateAuthState) -->
+        <div id="mobile-auth-links">
+            <!-- Logged Out State (default) -->
+            <a href="login.html"
+                class="block px-3 py-2 rounded-md text-base font-medium text-gray-700 dark:text-gray-300 hover:text-accent hover:bg-gray-50 dark:hover:bg-gray-800 transition"
+                data-translate="login">Log in</a>
+            <a href="login.html?mode=signup"
+                class="block px-3 py-2 rounded-md text-base font-medium text-gray-700 dark:text-gray-300 hover:text-accent hover:bg-gray-50 dark:hover:bg-gray-800 transition"
+                data-translate="createAccount">Sign up</a>
+        </div>
+
+        <!-- Post Ad Button -->
+        <a href="post-ad.html"
+            class="block px-3 py-2.5 mt-2 text-center text-white bg-accent hover:bg-orange-600 rounded-full font-bold transition shadow-md"
+            data-translate="postAd">Post an Ad</a>
+
+        <div class="border-t border-gray-100 dark:border-gray-700 my-2"></div>
+
+        <!-- Settings Row: Language + Dark Mode -->
+        <div class="flex items-center justify-between px-3 py-2">
+            <a href="#" id="mobile-lang-toggle"
+                class="text-gray-700 dark:text-gray-300 hover:text-accent font-medium transition text-sm">عربي</a>
+            <button id="mobile-theme-toggle"
+                class="p-1.5 rounded-full hover:bg-gray-200 dark:hover:bg-gray-600 transition focus:outline-none"
+                aria-label="Toggle Dark Mode">
+                <svg class="w-5 h-5 text-gray-700 dark:text-gray-200" fill="none" stroke="currentColor"
+                    viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                        d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z">
+                    </path>
+                </svg>
+            </button>
+        </div>
+
+        <!-- Help & Contact -->
+        <a href="help.html"
+            class="block px-3 py-2 rounded-md text-sm text-gray-500 dark:text-gray-400 hover:text-accent hover:bg-gray-50 dark:hover:bg-gray-800 transition"
+            data-translate="helpCenter">Help Center</a>
+        <a href="contact.html"
+            class="block px-3 py-2 rounded-md text-sm text-gray-500 dark:text-gray-400 hover:text-accent hover:bg-gray-50 dark:hover:bg-gray-800 transition"
+            data-translate="contactUs">Contact Us</a>
     </div>
 </div>
