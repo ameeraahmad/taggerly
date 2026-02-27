@@ -415,19 +415,7 @@
                 document.querySelector('nav[aria-label="Pagination"]')?.parentElement?.classList.remove('hidden');
 
                 results.forEach(ad => {
-                    const lang = window.currentLang || 'en';
-                    const adCityStr = (ad.city || "").trim();
-                    const cityTranslated = (translations[lang] && translations[lang][adCityStr.toLowerCase()]) || adCityStr;
-
-                    const adCountryKey = ad.country || null;
-                    const adCountryTranslated = adCountryKey
-                        ? ((translations[lang] && translations[lang][adCountryKey]) || adCountryKey.toUpperCase())
-                        : null;
-
-                    const locationParts = [];
-                    if (cityTranslated) locationParts.push(`<span class="city-label">${cityTranslated}</span>`);
-                    if (adCountryTranslated) locationParts.push(`<span class="country-label" data-translate="${adCountryKey}">${adCountryTranslated}</span>`);
-                    const locationHTML = locationParts.length > 0 ? locationParts.join('<span class="text-gray-400">,&nbsp;</span>') : '';
+                    const locationHTML = window.formatAdLocation(ad.city, ad.country, 'city-label');
 
                     const adCard = `
                         <div class="bg-white dark:bg-gray-800 border dark:border-gray-700 rounded-xl overflow-hidden shadow-sm hover:shadow-lg transition-all flex flex-col sm:flex-row group animate-fade-in relative cursor-pointer" onclick="window.location.href='ad-details.html?id=${ad.id}'">

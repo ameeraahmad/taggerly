@@ -4,6 +4,26 @@ const translations = {
     ar: arTranslations
 };
 
+// Global helper to format ad locations consistently across the site
+window.formatAdLocation = function (city, country, cityClass = 'city-label') {
+    const lang = window.currentLang || 'en';
+    const adCityStr = (city || "").trim();
+    const cityTranslated = (translations[lang] && translations[lang][adCityStr.toLowerCase()]) || adCityStr;
+
+    const adCountryKey = country || null;
+    const adCountryTranslated = adCountryKey
+        ? ((translations[lang] && translations[lang][adCountryKey]) || adCountryKey.toUpperCase())
+        : null;
+
+    const locationParts = [];
+    if (cityTranslated) locationParts.push(`<span class="${cityClass}">${cityTranslated}</span>`);
+    if (adCountryTranslated) locationParts.push(`<span class="country-label" data-translate="${adCountryKey}">${adCountryTranslated}</span>`);
+
+    return locationParts.length > 0
+        ? locationParts.join('<span class="text-gray-400">,&nbsp;</span>')
+        : '';
+};
+
 document.addEventListener('DOMContentLoaded', async () => {
     // 1. First Load Global Header if placeholder exists
     await loadGlobalHeader();
@@ -920,24 +940,8 @@ document.addEventListener('DOMContentLoaded', async () => {
             ? "min-w-[280px] w-[280px] md:min-w-[320px] md:w-[320px] bg-white dark:bg-gray-800 rounded-xl shadow border dark:border-gray-700 snap-center flex-shrink-0 cursor-pointer"
             : "ad-card-main bg-white dark:bg-gray-800 border dark:border-gray-700 rounded-xl overflow-hidden shadow-sm hover:shadow-lg transition group cursor-pointer";
 
-        const lang = window.currentLang || 'en';
-        const adCityStr = (ad.city || "").trim();
-        const cityTranslated = (translations[lang] && translations[lang][adCityStr.toLowerCase()]) || adCityStr;
-
-        // Use ONLY the country stored in the ad itself — never inject the selected country
-        // The selected country is used for filtering ads, not for overriding ad location data
-        const adCountryKey = ad.country || null;
-        const adCountryTranslated = adCountryKey
-            ? ((translations[lang] && translations[lang][adCountryKey]) || adCountryKey.toUpperCase())
-            : null;
-
-        // Build location string: show city and country only if they exist in the ad's own data
-        const locationParts = [];
-        if (cityTranslated) locationParts.push(`<span>${cityTranslated}</span>`);
-        if (adCountryTranslated) locationParts.push(`<span class="country-label" data-translate="${adCountryKey}">${adCountryTranslated}</span>`);
-        const locationHTML = locationParts.length > 0
-            ? locationParts.join('<span class="text-gray-400">,&nbsp;</span>')
-            : '';
+        // Generate consistent location string using the global helper
+        const locationHTML = window.formatAdLocation(ad.city, ad.country, "");
 
         return `
         <div class="${cardClass}" onclick="window.location.href='ad-details.html?id=${ad.id}'">
