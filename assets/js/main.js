@@ -201,19 +201,8 @@ document.addEventListener('DOMContentLoaded', async () => {
         const countryLabels = document.querySelectorAll('.country-label');
         countryLabels.forEach(el => el.textContent = countryName);
 
-        // --- 3. Update City Labels (Rotate through available cities for static cards) ---
-        const cityLabels = document.querySelectorAll('.city-label');
-        const cities = countryCities[country] || countryCities['uae'] || ['dubai'];
-        cityLabels.forEach((el, index) => {
-            // Find a relevant city key from the country's cities list
-            const cityIndex = index % cities.length;
-            const cityKey = cities[cityIndex];
-            const name = translations[lang][cityKey] || translations['en'][cityKey] || cityKey;
-            el.textContent = name;
-            el.setAttribute('data-translate', cityKey);
-        });
 
-        // --- 4. Update Header Country Name ---
+        // --- 3. Update Dynamic Location Dropdowns ---
         const currentCountryName = document.getElementById('current-country-name');
         if (currentCountryName) {
             currentCountryName.textContent = countryName;
@@ -906,8 +895,21 @@ document.addEventListener('DOMContentLoaded', async () => {
         const lang = window.currentLang || 'en';
         const adCityStr = ad.city || "";
         const cityTranslated = (translations[lang] && translations[lang][adCityStr.toLowerCase()]) || adCityStr;
-        const countryKey = ad.country || window.selectedCountry || 'uae';
-        const countryTranslated = (translations[lang] && translations[lang][countryKey]) || countryKey.toUpperCase();
+
+        // Use ONLY the country stored in the ad itself — never inject the selected country
+        // The selected country is used for filtering ads, not for overriding ad location data
+        const adCountryKey = ad.country || null;
+        const adCountryTranslated = adCountryKey
+            ? ((translations[lang] && translations[lang][adCountryKey]) || adCountryKey.toUpperCase())
+            : null;
+
+        // Build location string: show city and country only if they exist in the ad's own data
+        const locationParts = [];
+        if (cityTranslated) locationParts.push(`<span>${cityTranslated}</span>`);
+        if (adCountryTranslated) locationParts.push(`<span class="country-label" data-translate="${adCountryKey}">${adCountryTranslated}</span>`);
+        const locationHTML = locationParts.length > 0
+            ? locationParts.join('<span>, </span>')
+            : '';
 
         return `
         <div class="${cardClass}" onclick="window.location.href='ad-details.html?id=${ad.id}'">
@@ -935,8 +937,7 @@ document.addEventListener('DOMContentLoaded', async () => {
                     <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"></path>
                     </svg>
-                    <span class="city-label" data-translate="${adCityStr.toLowerCase()}">${cityTranslated}</span><span>, </span>
-                    <span class="country-label" data-translate="${countryKey}">${countryTranslated}</span>
+                    ${locationHTML}
                 </div>
             </div>
         </div>
