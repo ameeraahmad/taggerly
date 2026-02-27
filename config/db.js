@@ -135,6 +135,10 @@ const connectDB = async () => {
                             console.log('➕ Adding "area" column to Ads...');
                             await queryInterface.addColumn('Ads', 'area', { type: Sequelize.STRING, allowNull: true });
                         }
+                        if (!tableInfo.country) {
+                            console.log('➕ Adding "country" column to Ads...');
+                            await queryInterface.addColumn('Ads', 'country', { type: Sequelize.STRING, allowNull: true, defaultValue: 'uae' });
+                        }
                         if (!tableInfo.rejectionReason) {
                             console.log('➕ Adding "rejectionReason" column to Ads...');
                             await queryInterface.addColumn('Ads', 'rejectionReason', { type: Sequelize.TEXT, allowNull: true });

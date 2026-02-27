@@ -30,6 +30,11 @@ const Ad = sequelize.define('Ad', {
         type: DataTypes.STRING,
         allowNull: false
     },
+    country: {
+        type: DataTypes.STRING,
+        allowNull: true,
+        defaultValue: 'uae'
+    },
     area: {
         type: DataTypes.STRING
     },

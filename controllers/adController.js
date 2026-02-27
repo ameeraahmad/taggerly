@@ -6,7 +6,7 @@ const { Op } = require('sequelize');
 exports.getAllAds = async (req, res) => {
     try {
         const {
-            category, city, minPrice, maxPrice, search,
+            category, city, country, minPrice, maxPrice, search,
             condition, minYear, maxYear, minKm, maxKm,
             isFeatured, userId
         } = req.query;
@@ -14,6 +14,7 @@ exports.getAllAds = async (req, res) => {
 
         if (category) where.category = category;
         if (city) where.city = city;
+        if (country) where.country = country;
         if (condition) where.itemCondition = condition;
         if (isFeatured) where.isFeatured = isFeatured === 'true';
         if (userId) where.userId = userId;
@@ -141,7 +142,7 @@ exports.createAd = async (req, res) => {
     try {
         const {
             title, description, price, category, subCategory,
-            city, area, year, kilometers, itemCondition, phone
+            city, country, area, year, kilometers, itemCondition, phone
         } = req.body;
 
         let images = [];
@@ -172,6 +173,7 @@ exports.createAd = async (req, res) => {
             category,
             subCategory,
             city,
+            country: country || 'uae',
             area,
             year: year ? Number(year) : null,
             kilometers: kilometers ? Number(kilometers) : null,

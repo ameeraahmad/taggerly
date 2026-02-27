@@ -323,6 +323,8 @@
                 formData.append('price', price);
                 formData.append('category', category);
                 formData.append('city', city);
+                // Save the currently selected country with the ad
+                formData.append('country', window.selectedCountry || 'uae');
                 if (year) formData.append('year', year);
                 if (kilometers) formData.append('kilometers', kilometers);
                 if (condition) formData.append('itemCondition', condition);
