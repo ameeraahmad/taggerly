@@ -197,19 +197,24 @@
 
 
     <!-- Hero Section with Carousel -->
-    <header class="hero-section relative bg-primary h-96 overflow-hidden">
-        <div class="carousel-container h-full w-full relative">
+    <section class="hero-section relative bg-gray-900 flex items-center justify-center overflow-hidden min-h-[400px] md:h-[500px]">
+        <div class="carousel-container absolute inset-0 w-full h-full">
             <!-- Slide 1 -->
-            <div class="carousel-slide absolute inset-0 transition-opacity duration-1000 opacity-100 flex items-center justify-center bg-cover bg-center"
-                style="background-image: url('https://images.unsplash.com/photo-1542362567-b07e54358753?ixlib=rb-1.2.1&auto=format&fit=crop&w=1350&q=80');">
-                <div class="bg-black bg-opacity-40 absolute inset-0"></div>
-                <div class="relative z-10 text-center text-white px-4 animate-slide-up">
-                    <h1 class="text-4xl md:text-5xl font-bold mb-4" data-translate="heroTitle">Find Your Dream Car</h1>
-                    <p class="text-xl mb-8" data-translate="heroSubtitle">Thousands of verified listings waiting for
-                        you.</p>
-                    <a href="categories.html" data-translate="heroButton"
-                        class="bg-accent text-white px-8 py-3 rounded-full text-lg font-bold hover:bg-orange-600 transition">Browse
-                        Cars</a>
+            <div class="carousel-slide absolute inset-0 w-full h-full opacity-100 transition-opacity duration-1000 flex items-center justify-center"
+                style="background: linear-gradient(rgba(0,0,0,0.5), rgba(0,0,0,0.5)), url('https://images.unsplash.com/photo-1503376780353-7e6692767b70?ixlib=rb-1.2.1&auto=format&fit=crop&w=1350&q=80'); background-size: cover; background-position: center;">
+                <div class="relative z-10 text-center px-4 max-w-4xl animate-fade-in-up">
+                    <h1 class="text-4xl md:text-6xl font-extrabold mb-6 leading-tight text-white drop-shadow-xl"
+                        data-translate="heroTitle">Find Your Dream Car</h1>
+                    <p class="text-lg md:text-2xl mb-10 text-gray-200 drop-shadow-lg" data-translate="heroSubtitle">Thousands of
+                        verified listings waiting for you.</p>
+                    <div class="flex flex-col sm:flex-row gap-4 justify-center">
+                        <a href="search.html"
+                            class="bg-accent hover:bg-orange-600 text-white px-10 py-4 rounded-full font-bold text-lg transition shadow-xl transform hover:scale-105 inline-block"
+                            data-translate="heroButton">Browse Cars</a>
+                        <a href="post-ad.html"
+                            class="bg-white/10 hover:bg-white/20 backdrop-blur-md text-white border border-white/30 px-10 py-4 rounded-full font-bold text-lg transition inline-block"
+                            data-translate="postAd">Post Ad</a>
+                    </div>
                 </div>
             </div>
             <!-- Slide 2 -->
@@ -217,9 +222,9 @@
                 style="background-image: url('https://images.unsplash.com/photo-1560518883-ce09059eeffa?ixlib=rb-1.2.1&auto=format&fit=crop&w=1350&q=80');">
                 <div class="bg-black bg-opacity-40 absolute inset-0"></div>
                 <div class="relative z-10 text-center text-white px-4">
-                    <h1 class="text-4xl md:text-5xl font-bold mb-4" data-translate="heroTitle">Find Your Dream Home
+                    <h1 class="text-4xl md:text-5xl font-bold mb-4" data-translate="heroTitleProperty">Find Your Dream Home
                     </h1>
-                    <p class="text-xl mb-8" data-translate="heroSubtitle">Discover properties for sale and rent.</p>
+                    <p class="text-xl mb-8" data-translate="heroSubtitleProperty">Discover properties for sale and rent.</p>
                     <a href="categories.html" data-translate="featuredProperties"
                         class="bg-accent text-white px-8 py-3 rounded-full text-lg font-bold hover:bg-orange-600 transition">Browse
                         Properties</a>
@@ -234,7 +239,7 @@
             <button
                 class="w-3 h-3 rounded-full bg-white opacity-50 transition transform hover:scale-110 focus:outline-none shadow"></button>
         </div>
-    </header>
+    </section>
 
     <!-- Special Services Section -->
     <section class="special-services py-16 bg-white dark:bg-gray-800 overflow-hidden transition-colors duration-300">
@@ -552,11 +557,11 @@
             </div>
 
             <!-- Tabs Headers for Motors -->
-            <div class="flex space-x-6 border-b border-gray-200 dark:border-gray-700 mb-6">
+            <div class="flex space-x-6 border-b border-gray-200 dark:border-gray-700 mb-6 overflow-x-auto hide-scrollbar whitespace-nowrap">
                 <button
                     class="pb-3 px-1 border-b-2 border-accent font-bold text-accent focus:outline-none transition tab-btn"
-                    data-target="motors-used" data-group="motors" data-translate="usedCars">
-                    Used Cars
+                    data-target="motors-used" data-group="motors">
+                    <span data-translate="usedCars">Used Cars</span>
                 </button>
                 <button
                     class="pb-3 px-1 border-b-2 border-transparent font-medium text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200 focus:outline-none transition tab-btn"
@@ -569,9 +574,9 @@
                     Electronics & Appliances
                 </button>
                 <button
-                    class="pb-3 px-1 border-b-2 border-transparent font-medium text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200 focus:outline-none transition tab-btn whitespace-nowrap"
-                    data-target="motors-mobiles" data-group="motors" data-translate="mobilesTablets">
-                    Mobiles & Tablets
+                    class="pb-3 px-1 border-b-2 border-transparent font-medium text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200 focus:outline-none transition tab-btn"
+                    data-target="motors-mobiles" data-group="motors">
+                    <span data-translate="mobilesTablets">Mobiles & Tablets</span>
                 </button>
             </div>
 

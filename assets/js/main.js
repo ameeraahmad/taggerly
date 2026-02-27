@@ -249,6 +249,13 @@ document.addEventListener('DOMContentLoaded', async () => {
                 dropdown.appendChild(opt);
             });
         });
+
+        // --- 7. Re-populate Ads for the new country ---
+        const adsContainer = document.querySelector('.featured-ads .grid');
+        if (adsContainer && window.location.pathname.endsWith('index.html') || window.location.pathname === '/') {
+            populateAdsGrid(adsContainer, country);
+            loadCategorySliders(country);
+        }
     };
 
     window.detectLocation = function () {
@@ -852,16 +859,21 @@ document.addEventListener('DOMContentLoaded', async () => {
     // --- Ads Grid population ---
     const adsContainer = document.querySelector('.featured-ads .grid');
     if (adsContainer && window.apiClient) {
-        populateAdsGrid(adsContainer);
-        if (typeof loadCategorySliders === 'function') loadCategorySliders();
+        populateAdsGrid(adsContainer, window.selectedCountry);
+        loadCategorySliders(window.selectedCountry);
     }
 
-    async function populateAdsGrid(container) {
+    async function populateAdsGrid(container, country = null) {
         try {
-            const response = await apiClient.getAds({ limit: 8 });
+            const params = { limit: 8 };
+            if (country) params.country = country;
+            const response = await apiClient.getAds(params);
             const ads = response.data;
 
-            if (ads.length === 0) return; // Keep static ads if none in DB
+            if (ads.length === 0) {
+                // container.innerHTML = '<p class="text-center col-span-full py-10 text-gray-500">No ads found for this country.</p>';
+                return; 
+            }
 
             container.innerHTML = ''; // Clear static ads
             ads.forEach(ad => {
@@ -910,7 +922,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     `;
     }
 
-    async function loadCategorySliders() {
+    async function loadCategorySliders(country = null) {
         const configs = [
             { category: 'Motors', sliderId: 'motors-used-slider' },
             { category: 'Motors', sliderId: 'motors-bikes-slider' },
@@ -923,22 +935,26 @@ document.addEventListener('DOMContentLoaded', async () => {
         ];
 
         // Load Featured Ads first
-        await loadFeaturedAds();
+        await loadFeaturedAds(country);
 
         for (const config of configs) {
             const slider = document.getElementById(config.sliderId);
             if (slider) {
                 try {
-                    const response = await apiClient.getAds({ category: config.category, limit: 12 });
+                    const params = { category: config.category, limit: 12 };
+                    if (country) params.country = country;
+                    const response = await apiClient.getAds(params);
                     const ads = response.data;
+                    
                     if (ads.length > 0) {
-                        if (!slider.hasAttribute('data-loaded')) {
-                            slider.innerHTML = '';
-                            slider.setAttribute('data-loaded', 'true');
-                        }
+                        slider.innerHTML = '';
+                        slider.setAttribute('data-loaded', 'true');
                         ads.forEach(ad => {
                             slider.insertAdjacentHTML('beforeend', createAdCard(ad, true));
                         });
+                    } else if (country) {
+                        // Optional: Clear if no ads for this country
+                        slider.innerHTML = `<div class="p-10 text-center w-full text-gray-500">No ads in ${config.category} for this region.</div>`;
                     }
                 } catch (err) {
                     console.warn(`Failed to load slider for ${config.category}:`, err);
@@ -947,13 +963,15 @@ document.addEventListener('DOMContentLoaded', async () => {
         }
     }
 
-    async function loadFeaturedAds() {
+    async function loadFeaturedAds(country = null) {
         const slider = document.getElementById('featured-ads-slider');
         const section = document.getElementById('featured-ads-section');
         if (!slider) return;
 
         try {
-            const response = await apiClient.getAds({ isFeatured: true, limit: 12 });
+            const params = { isFeatured: true, limit: 12 };
+            if (country) params.country = country;
+            const response = await apiClient.getAds(params);
             const ads = response.data;
             if (ads.length > 0) {
                 section.classList.remove('hidden');
@@ -961,6 +979,8 @@ document.addEventListener('DOMContentLoaded', async () => {
                 ads.forEach(ad => {
                     slider.insertAdjacentHTML('beforeend', createAdCard(ad, true));
                 });
+            } else {
+                section.classList.add('hidden');
             }
         } catch (err) {
             console.warn('Failed to load featured ads:', err);

@@ -139,6 +139,8 @@ const enTranslations = {
     security: "Security",
     securityText: "We implement industry-standard security measures to protect your information from unauthorized access.",
     lastUpdated: "Last Updated: February 2026",
+    heroTitleProperty: "Find Your Dream Home",
+    heroSubtitleProperty: "Discover properties for sale and rent.",
     introduction: "1. Introduction",
     introText: "Welcome to DubizzleClone. We respect your privacy and are committed to protecting your personal data. This privacy policy will inform you as to how we look after your personal data when you visit our website.",
     cookies: "5. Cookies",
