@@ -244,6 +244,13 @@
                     return;
                 }
 
+                // Switch global context to the ad's country so dropdowns and currencies match
+                if (ad.country && window.setCountry) {
+                    const flags = { 'uae': '🇦🇪', 'egypt': '🇪🇬', 'ksa': '🇸🇦', 'qatar': '🇶🇦' };
+                    const names = { 'uae': 'UAE', 'egypt': 'Egypt', 'ksa': 'Saudi Arabia', 'qatar': 'Qatar' };
+                    window.setCountry(ad.country, flags[ad.country] || '🌐', names[ad.country] || ad.country);
+                }
+
                 // Fill Form
                 document.getElementById('ad-title').value = ad.title;
                 document.getElementById('ad-price').value = ad.price;
@@ -308,6 +315,7 @@
                 formData.append('price', document.getElementById('ad-price').value);
                 formData.append('category', categorySelect.value);
                 formData.append('city', document.getElementById('post-ad-location').value);
+                formData.append('country', window.selectedCountry || 'uae');
                 formData.append('year', document.getElementById('ad-year').value);
                 formData.append('kilometers', document.getElementById('ad-kilometers').value);
                 formData.append('itemCondition', document.getElementById('ad-condition').value);
