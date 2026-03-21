@@ -11,6 +11,7 @@
 | Google & Facebook Login (OAuth) | ✅ |
 | Forgot Password + Reset Password | ✅ |
 | Email Verification | ✅ |
+| Rebrand Project To Taggerly (Logo, Emails, Translations, Meta Tags, Banner) | ✅ |
 | نشر الإعلانات مع رفع الصور (Cloudinary) | ✅ |
 | Real-time Chat (Socket.io) | ✅ |
 | نظام الإشعارات | ✅ |

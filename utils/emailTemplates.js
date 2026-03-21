@@ -3,13 +3,13 @@ const secondaryColor = '#0B2447';
 
 const emailHeader = `
 <div style="background-color: ${secondaryColor}; padding: 30px; text-align: center; border-radius: 8px 8px 0 0;">
-    <h1 style="color: white; margin: 0; font-family: sans-serif;">Dubizzle Clone</h1>
+    <h1 style="color: white; margin: 0; font-family: sans-serif;">Taggerly</h1>
 </div>
 `;
 
 const emailFooter = `
 <div style="text-align: center; padding: 20px; color: #666; font-size: 12px; font-family: sans-serif;">
-    <p>&copy; 2026 Dubizzle Clone. All rights reserved.</p>
+    <p>&copy; 2026 Taggerly. All rights reserved.</p>
     <p>The best place to buy and sell anything in the UAE.</p>
 </div>
 `;
@@ -38,7 +38,7 @@ exports.welcomeEmail = (options) => `
         </div>
         
         <p>If you have any questions, our support team is always here to help.</p>
-        <p>Happy trading!<br>The Dubizzle Clone Team</p>
+        <p>Happy trading!<br>The Taggerly Team</p>
     </div>
     ${emailFooter}
 </div>
@@ -60,7 +60,7 @@ exports.emailVerificationEmail = (options) => `
         </div>
         
         <p>If you didn't create an account, you can safely ignore this email.</p>
-        <p>Best regards,<br>The Dubizzle Clone Team</p>
+        <p>Best regards,<br>The Taggerly Team</p>
     </div>
     ${emailFooter}
 </div>
@@ -83,7 +83,7 @@ exports.resetPasswordEmail = (options) => `
         </div>
         
         <p>This link will expire in 10 minutes.</p>
-        <p>Stay safe,<br>The Dubizzle Clone Team</p>
+        <p>Stay safe,<br>The Taggerly Team</p>
     </div>
     ${emailFooter}
 </div>
@@ -144,7 +144,7 @@ exports.paymentReceiptEmail = (options) => `
         </div>
         
         <p>Your features are now active. Go ahead and get more eyes on your ads!</p>
-        <p>Thank you,<br>The Dubizzle Clone Team</p>
+        <p>Thank you,<br>The Taggerly Team</p>
     </div>
     ${emailFooter}
 </div>
@@ -167,7 +167,7 @@ exports.adApprovedEmail = (options) => `
         </div>
         
         <p>Good luck with your sale!</p>
-        <p>Best regards,<br>The Dubizzle Clone Team</p>
+        <p>Best regards,<br>The Taggerly Team</p>
     </div>
     ${emailFooter}
 </div>
@@ -182,7 +182,7 @@ exports.adRejectedEmail = (options) => `
     <div style="padding: 40px; font-family: sans-serif; line-height: 1.6; color: #333;">
         <h2 style="color: #F44336;">Your Ad Requires Attention</h2>
         <p>Hi ${options.userName},</p>
-        <p>Thank you for posting on Dubizzle Clone. Unfortunately, your ad "<strong>${options.adTitle}</strong>" was not approved at this time.</p>
+        <p>Thank you for posting on Taggerly. Unfortunately, your ad "<strong>${options.adTitle}</strong>" was not approved at this time.</p>
         
         <div style="background-color: #FFF9C4; padding: 20px; border-left: 4px solid #FBC02D; margin: 20px 0;">
             <strong>Reason for rejection:</strong><br>
@@ -191,10 +191,10 @@ exports.adRejectedEmail = (options) => `
         
         <p>Please review our posting guidelines and update your ad details accordingly.</p>
         <div style="text-align: center; margin: 30px 0;">
-            <a href="https://dubizzleclone.com/dashboard.html" style="background-color: ${secondaryColor}; color: white; padding: 12px 30px; text-decoration: none; border-radius: 50px; font-weight: bold;">Go to My Ads</a>
+            <a href="https://taggerly.com/dashboard.html" style="background-color: ${secondaryColor}; color: white; padding: 12px 30px; text-decoration: none; border-radius: 50px; font-weight: bold;">Go to My Ads</a>
         </div>
         
-        <p>Best regards,<br>The Dubizzle Clone Team</p>
+        <p>Best regards,<br>The Taggerly Team</p>
     </div>
     ${emailFooter}
 </div>

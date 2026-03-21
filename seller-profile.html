@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title id="page-title">Seller Profile - Dubizzle Clone</title>
+    <title id="page-title">Seller Profile - Taggerly</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script>
         tailwind.config = {
@@ -251,7 +251,7 @@
                 const response = await apiClient.getPublicProfile(sellerId);
                 const user = response.data;
 
-                document.getElementById('page-title').textContent = `${user.name}'s Profile - Dubizzle Clone`;
+                document.getElementById('page-title').textContent = `${user.name}'s Profile - Taggerly`;
                 document.getElementById('seller-name-heading').textContent = user.name;
                 document.getElementById('seller-location-text').querySelector('span').textContent = user.location || 'UAE';
                 document.getElementById('seller-bio').textContent = user.bio || `Passionate seller since ${new Date(user.createdAt).getFullYear()}. Dealing in high quality items.`;

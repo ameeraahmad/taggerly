@@ -1,4 +1,4 @@
-# 🚀 Taggerly (Dubizzle Clone) - Ultimate Classifieds Platform
+# 🚀 Taggerly - Ultimate Classifieds Platform
 
 ![Taggerly Banner](https://images.unsplash.com/photo-1557821552-30d20356b326?ixlib=rb-4.0.3&auto=format&fit=crop&w=1200&q=80)
 
