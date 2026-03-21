@@ -28,7 +28,7 @@ const Payment = sequelize.define('Payment', {
     },
     currency: {
         type: DataTypes.STRING,
-        defaultValue: 'usd'
+        defaultValue: 'aed'
     },
     plan: {
         type: DataTypes.ENUM('basic', 'standard', 'premium', 'featured_ad'),

@@ -26,25 +26,25 @@ function stripeNotConfigured(res) {
 const PLANS = {
     basic: {
         name: 'Basic Plan',
-        price: 999,       // in cents ($9.99)
+        price: 3900,       // in cents (39.00 AED)
         duration: 30,
         features: ['5 Ads per month', 'Standard listing', 'Email support']
     },
     standard: {
         name: 'Standard Plan',
-        price: 2999,      // $29.99
+        price: 9900,      // 99.00 AED
         duration: 30,
         features: ['20 Ads per month', 'Priority listing', 'Chat support', '3 Featured Ads']
     },
     premium: {
         name: 'Premium Plan',
-        price: 5999,      // $59.99
+        price: 19900,      // 199.00 AED
         duration: 30,
         features: ['Unlimited Ads', 'Top listing', 'Dedicated support', 'Unlimited Featured Ads', 'Analytics']
     },
     featured_ad: {
         name: 'Feature an Ad',
-        price: 499,       // $4.99
+        price: 1900,       // 19.00 AED
         duration: 7,
         features: ['Ad appears at top of search', 'Featured badge', '7 days duration']
     }
@@ -79,7 +79,7 @@ exports.createCheckoutSession = async (req, res) => {
             mode: 'payment',
             line_items: [{
                 price_data: {
-                    currency: 'usd',
+                    currency: 'aed',
                     product_data: {
                         name: planConfig.name,
                         description: planConfig.features.join(' \u2022 ')

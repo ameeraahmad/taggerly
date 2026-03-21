@@ -149,7 +149,7 @@
                         d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
                 </svg>
                 <span>Revenue</span>
-                <span class="ml-auto bg-green-500 text-white text-[10px] px-1.5 py-0.5 rounded-full">$</span>
+                <span class="ml-auto bg-green-500 text-white text-[10px] px-1.5 py-0.5 rounded-full">AED</span>
             </div>
 
             <p class="text-white/30 text-xs font-semibold uppercase tracking-wider px-4 mt-4 mb-2">Management</p>
@@ -301,8 +301,8 @@
                                 </svg>
                             </div>
                         </div>
-                        <p id="stat-revenue" class="text-3xl font-bold mb-1">$—</p>
-                        <p id="stat-monthly-revenue" class="text-xs text-blue-600 dark:text-blue-400 font-medium">$0
+                        <p id="stat-revenue" class="text-3xl font-bold mb-1">AED —</p>
+                        <p id="stat-monthly-revenue" class="text-xs text-blue-600 dark:text-blue-400 font-medium">AED 0
                             this month</p>
                     </div>
                     <div class="stat-card">
@@ -420,7 +420,7 @@
                 <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
                     <div class="stat-card text-center">
                         <p class="text-xs text-gray-500 uppercase font-bold mb-2">Total Revenue</p>
-                        <p id="rev-total" class="text-4xl font-black text-green-600">$—</p>
+                        <p id="rev-total" class="text-4xl font-black text-green-600">AED —</p>
                     </div>
                     <div class="stat-card text-center">
                         <p class="text-xs text-gray-500 uppercase font-bold mb-2">Transactions</p>
@@ -428,7 +428,7 @@
                     </div>
                     <div class="stat-card text-center">
                         <p class="text-xs text-gray-500 uppercase font-bold mb-2">Avg. Transaction</p>
-                        <p id="rev-avg" class="text-4xl font-black text-purple-600">$—</p>
+                        <p id="rev-avg" class="text-4xl font-black text-purple-600">AED —</p>
                     </div>
                 </div>
 
@@ -716,12 +716,12 @@
                 document.getElementById('stat-new-users').textContent = `+${d.newUsersThisMonth} this month`;
                 document.getElementById('stat-ads').textContent = d.activeAds.toLocaleString();
                 document.getElementById('stat-new-ads').textContent = `+${d.newAdsThisMonth} this month`;
-                document.getElementById('stat-revenue').textContent = `$${d.totalRevenue}`;
-                document.getElementById('stat-monthly-revenue').textContent = `$${d.monthlyRevenue} this month`;
+                document.getElementById('stat-revenue').textContent = `AED ${d.totalRevenue}`;
+                document.getElementById('stat-monthly-revenue').textContent = `AED ${d.monthlyRevenue} this month`;
                 document.getElementById('stat-reports').textContent = d.totalReports;
                 document.getElementById('stat-views').textContent = d.totalViews.toLocaleString();
                 document.getElementById('stat-transactions').textContent = d.totalTransactions;
-                document.getElementById('stat-monthly').textContent = `$${d.monthlyRevenue}`;
+                document.getElementById('stat-monthly').textContent = `AED ${d.monthlyRevenue}`;
 
                 // Update badge
                 if (d.totalReports > 0) {
@@ -746,10 +746,10 @@
                 const res = await apiClient.fetch(`/admin/revenue?period=${period}`);
                 const d = res.data;
 
-                document.getElementById('rev-total').textContent = `$${d.totalRevenue}`;
+                document.getElementById('rev-total').textContent = `AED ${d.totalRevenue}`;
                 document.getElementById('rev-count').textContent = d.totalTransactions;
                 const avg = d.totalTransactions > 0 ? (parseFloat(d.totalRevenue) / d.totalTransactions).toFixed(2) : '0.00';
-                document.getElementById('rev-avg').textContent = `$${avg}`;
+                document.getElementById('rev-avg').textContent = `AED ${avg}`;
 
                 // By plan
                 const planEl = document.getElementById('rev-by-plan');
@@ -761,7 +761,7 @@
                                 <div class="w-2 h-2 rounded-full bg-${planColors[plan] || 'gray'}-500"></div>
                                 <span class="text-sm capitalize">${plan.replace('_', ' ')}</span>
                             </div>
-                            <span class="font-bold text-sm text-green-600">$${amount.toFixed(2)}</span>
+                            <span class="font-bold text-sm text-green-600">AED ${amount.toFixed(2)}</span>
                         </div>
                     `).join('')
                     : '<p class="text-gray-400 text-sm text-center">No revenue data for this period</p>';
@@ -775,7 +775,7 @@
                                 <p class="text-xs font-semibold capitalize">${p.plan?.replace('_', ' ')} <span class="text-gray-400">• ${p.user?.name || 'Unknown'}</span></p>
                                 <p class="text-xs text-gray-400">${new Date(p.createdAt).toLocaleDateString()}</p>
                             </div>
-                            <span class="font-bold text-sm text-green-600">$${p.amount}</span>
+                            <span class="font-bold text-sm text-green-600">AED ${p.amount}</span>
                         </div>
                     `).join('')
                     : '<p class="text-gray-400 text-sm text-center">No recent transactions</p>';

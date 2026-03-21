@@ -115,6 +115,13 @@ app.get('/sitemap.xml', async (req, res) => {
     }
 });
 
+// Robots.txt for SEO
+app.get('/robots.txt', (req, res) => {
+    const host = `${req.protocol}://${req.get('host')}`;
+    res.type('text/plain');
+    res.send(`User-agent: *\nAllow: /\nSitemap: ${host}/sitemap.xml`);
+});
+
 // Serve static files (After API routes)
 app.use(express.static(path.join(__dirname)));
 app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
