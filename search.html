@@ -127,12 +127,57 @@
                         <h3 class="text-sm font-semibold text-gray-500 dark:text-gray-400 mb-2 uppercase"
                             data-translate="locationLabel">
                             Location</h3>
-                        <select data-dynamic-location="true" data-include-all="true"
+                        <select id="filter-location" data-dynamic-location="true" data-include-all="true"
                             class="block w-full border border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-white rounded px-2 py-1 text-sm focus:outline-none focus:border-accent">
-                            <option data-translate="allUAE">All UAE</option>
+                            <option value="">All UAE</option>
                             <option data-translate="dubai">Dubai</option>
                             <option data-translate="abuDhabi">Abu Dhabi</option>
                         </select>
+                    </div>
+
+                    <!-- Advanced Filters (Conditional) -->
+                    <div id="advanced-filters" class="border-t pt-4 mt-4 hidden">
+                        <h3 class="text-xs font-bold text-accent mb-3 uppercase tracking-wider">Advanced Filters</h3>
+
+                        <!-- Motors -->
+                        <div id="filter-motors-group" class="space-y-4 mb-6 hidden">
+                            <div>
+                                <label class="text-xs text-gray-400 font-bold block mb-1">YEAR</label>
+                                <div class="grid grid-cols-2 gap-2">
+                                    <input type="number" id="minYear" placeholder="Min" class="w-full border border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-white rounded px-2 py-1 text-sm">
+                                    <input type="number" id="maxYear" placeholder="Max" class="w-full border border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-white rounded px-2 py-1 text-sm">
+                                </div>
+                            </div>
+                            <div>
+                                <label class="text-xs text-gray-400 font-bold block mb-1">KILOMETERS</label>
+                                <div class="grid grid-cols-2 gap-2">
+                                    <input type="number" id="minKm" placeholder="Min" class="w-full border border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-white rounded px-2 py-1 text-sm">
+                                    <input type="number" id="maxKm" placeholder="Max" class="w-full border border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-white rounded px-2 py-1 text-sm">
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Property -->
+                        <div id="filter-property-group" class="space-y-4 mb-6 hidden">
+                            <div>
+                                <label class="text-xs text-gray-400 font-bold block mb-1">BEDROOMS</label>
+                                <select id="filter-bedrooms" class="w-full border border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-white rounded px-2 py-1 text-sm">
+                                    <option value="">Any</option>
+                                    <option value="1">1</option>
+                                    <option value="2">2</option>
+                                    <option value="3">3</option>
+                                    <option value="4">4</option>
+                                    <option value="5">5+</option>
+                                </select>
+                            </div>
+                            <div>
+                                <label class="text-xs text-gray-400 font-bold block mb-1">AREA (SQ FT)</label>
+                                <div class="grid grid-cols-2 gap-2">
+                                    <input type="number" id="minArea" placeholder="Min" class="w-full border border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-white rounded px-2 py-1 text-sm">
+                                    <input type="number" id="maxArea" placeholder="Max" class="w-full border border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-white rounded px-2 py-1 text-sm">
+                                </div>
+                            </div>
+                        </div>
                     </div>
 
                     <button
@@ -534,13 +579,46 @@
             const applyBtn = document.querySelector('button[data-translate="applyFilters"]');
             const resetBtn = document.querySelector('button[data-translate="reset"]');
 
+            const toggleAdvancedFilters = () => {
+                const category = document.querySelector('input[name="category"]:checked')?.value || '';
+                const advanced = document.getElementById('advanced-filters');
+                const motors = document.getElementById('filter-motors-group');
+                const property = document.getElementById('filter-property-group');
+
+                if (category === 'Motors') {
+                    advanced.classList.remove('hidden');
+                    motors.classList.remove('hidden');
+                    property.classList.add('hidden');
+                } else if (category === 'Property') {
+                    advanced.classList.remove('hidden');
+                    motors.classList.add('hidden');
+                    property.classList.remove('hidden');
+                } else {
+                    advanced.classList.add('hidden');
+                    motors.classList.add('hidden');
+                    property.classList.add('hidden');
+                }
+            };
+
+            document.querySelectorAll('input[name="category"]').forEach(r => r.addEventListener('change', toggleAdvancedFilters));
+            toggleAdvancedFilters(); // Init
+
             const applyFilters = () => {
                 const category = document.querySelector('input[name="category"]:checked')?.value || '';
                 const minPrice = document.querySelector('input[data-translate="minPrice"]').value;
                 const maxPrice = document.querySelector('input[data-translate="maxPrice"]').value;
-                const city = document.querySelector('select[data-dynamic-location="true"]').value;
+                const city = document.getElementById('filter-location').value;
                 const sortBy = document.getElementById('sort-by').value;
                 const search = document.querySelector('.search-input')?.value || '';
+
+                // Advanced
+                const minYear = document.getElementById('minYear').value;
+                const maxYear = document.getElementById('maxYear').value;
+                const minKm = document.getElementById('minKm').value;
+                const maxKm = document.getElementById('maxKm').value;
+                const bedrooms = document.getElementById('filter-bedrooms').value;
+                const minArea = document.getElementById('minArea').value;
+                const maxArea = document.getElementById('maxArea').value;
 
                 const params = {
                     country: window.selectedCountry || localStorage.getItem('country') || 'uae',
@@ -549,7 +627,9 @@
                     maxPrice,
                     city: (city.toLowerCase().includes('all') || city === '') ? '' : city,
                     sortBy,
-                    search
+                    search,
+                    minYear, maxYear, minKm, maxKm,
+                    bedrooms, minArea, maxArea
                 };
 
                 // Remove empty params

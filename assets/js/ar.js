@@ -276,7 +276,7 @@ const arTranslations = {
     adDesc2: "مواصفات أمريكية، عادم معدل، إطارات جديدة. سيارة قوية جداً.",
 
     // Post Ad
-    postAdTitle: "نشر إعلان",
+    postAdTitle: "0 نشر إعلان",
     cancel: "إلغاء",
     adTitleLabel: "عنوان الإعلان",
     adTitlePlaceholder: "مثال: ايفون 14 برو ماكس للبيع",

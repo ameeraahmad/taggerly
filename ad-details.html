@@ -183,6 +183,22 @@
                             <span class="text-gray-500" data-translate="condition">Condition</span>
                             <span id="detail-condition" class="font-medium text-gray-900">-</span>
                         </div>
+                        <div id="item-bedrooms" class="flex justify-between border-b pb-2 hidden">
+                            <span class="text-gray-500" data-translate="bedrooms">Bedrooms</span>
+                            <span id="detail-bedrooms" class="font-medium text-gray-900">-</span>
+                        </div>
+                        <div id="item-bathrooms" class="flex justify-between border-b pb-2 hidden">
+                            <span class="text-gray-500" data-translate="bathrooms">Bathrooms</span>
+                            <span id="detail-bathrooms" class="font-medium text-gray-900">-</span>
+                        </div>
+                        <div id="item-property-type" class="flex justify-between border-b pb-2 hidden">
+                            <span class="text-gray-500" data-translate="propertyType">Property Type</span>
+                            <span id="detail-property-type" class="font-medium text-gray-900">-</span>
+                        </div>
+                        <div id="item-area" class="flex justify-between border-b pb-2 hidden">
+                            <span class="text-gray-500" data-translate="area">Area</span>
+                            <span id="detail-area" class="font-medium text-gray-900">-</span>
+                        </div>
                     </div>
                 </div>
 
@@ -522,6 +538,32 @@
                     if (document.getElementById('item-condition')) document.getElementById('item-condition').style.display = 'flex';
                 } else {
                     if (document.getElementById('item-condition')) document.getElementById('item-condition').style.display = 'none';
+                }
+
+                // Property Specific Fields
+                const toggleField = (id, value, displayValue) => {
+                    const el = document.getElementById(`detail-${id}`);
+                    const container = document.getElementById(`item-${id}`);
+                    if (value && el && container) {
+                        el.textContent = displayValue || value;
+                        container.classList.remove('hidden');
+                        container.style.display = 'flex';
+                    } else if (container) {
+                        container.classList.add('hidden');
+                        container.style.display = 'none';
+                    }
+                };
+
+                toggleField('bedrooms', ad.bedrooms);
+                toggleField('bathrooms', ad.bathrooms);
+                toggleField('property-type', ad.propertyType);
+                toggleField('area', ad.area, ad.area ? `${ad.area.toLocaleString()} Sq Ft` : '');
+
+                // Breadcrumb Category translation
+                const breadcrumbCat = document.querySelector('[data-translate="motors"]');
+                if (breadcrumbCat && ad.category) {
+                    breadcrumbCat.textContent = ad.category;
+                    breadcrumbCat.setAttribute('data-translate', ad.category.toLowerCase());
                 }
 
                 // Load Initial Image
