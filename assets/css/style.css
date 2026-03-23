@@ -691,7 +691,8 @@ html[dir="rtl"] #notif-list div:hover {
 
 /* --- Eid Celebration Banner --- */
 .eid-banner {
-    background: linear-gradient(90deg, #FF6B00 0%, #FF9E00 50%, #FF6B00 100%);
+    background: red;
+    /* linear-gradient(90deg, #FF6B00 0%, #FF9E00 50%, #FF6B00 100%); */
     background-size: 200% auto;
     animation: gradientMove 3s linear infinite;
     color: white;
