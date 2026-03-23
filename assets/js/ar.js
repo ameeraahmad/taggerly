@@ -23,8 +23,6 @@ const arTranslations = {
     myFavorites: "المفضلة",
     logout: "تسجيل الخروج",
     plansTitle: "خطط الأسعار",
-    eidGreeting: "عيد مبارك! احتفل معانا وانشر إعلانك الأول مجاناً النهاردة!",
-    eidAction: "انشر الآن",
     detectLocation: "تحديد موقعي",
     mobileMenuCategories: "الأقسام",
     mobileMenuForSale: "للبيع",
@@ -276,7 +274,7 @@ const arTranslations = {
     adDesc2: "مواصفات أمريكية، عادم معدل، إطارات جديدة. سيارة قوية جداً.",
 
     // Post Ad
-    postAdTitle: "0 نشر إعلان",
+    postAdTitle: "نشر إعلان",
     cancel: "إلغاء",
     adTitleLabel: "عنوان الإعلان",
     adTitlePlaceholder: "مثال: ايفون 14 برو ماكس للبيع",

@@ -23,8 +23,6 @@ const enTranslations = {
     myFavorites: "Favorites",
     logout: "Logout",
     plansTitle: "Pricing Plans",
-    eidGreeting: "Eid Mubarak! Celebrate with us and post your first ad for free today!",
-    eidAction: "Post Now",
     detectLocation: "Detect My Location",
     mobileMenuCategories: "Categories",
     mobileMenuForSale: "For Sale",
