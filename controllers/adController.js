@@ -8,7 +8,8 @@ exports.getAllAds = async (req, res) => {
         const {
             category, city, country, minPrice, maxPrice, search,
             condition, minYear, maxYear, minKm, maxKm,
-            isFeatured, userId
+            isFeatured, userId,
+            bedrooms, bathrooms, propertyType, minArea, maxArea
         } = req.query;
         let where = { status: 'active' };
 
@@ -18,6 +19,15 @@ exports.getAllAds = async (req, res) => {
         if (condition) where.itemCondition = condition;
         if (isFeatured) where.isFeatured = isFeatured === 'true';
         if (userId) where.userId = userId;
+        if (bedrooms) where.bedrooms = Number(bedrooms);
+        if (bathrooms) where.bathrooms = Number(bathrooms);
+        if (propertyType) where.propertyType = propertyType;
+
+        if (minArea || maxArea) {
+            where.area = {};
+            if (minArea) where.area[Op.gte] = Number(minArea);
+            if (maxArea) where.area[Op.lte] = Number(maxArea);
+        }
 
         if (minPrice || maxPrice) {
             where.price = {};
@@ -142,7 +152,8 @@ exports.createAd = async (req, res) => {
     try {
         const {
             title, description, price, category, subCategory,
-            city, country, area, year, kilometers, itemCondition, phone
+            city, country, area, year, kilometers, itemCondition, phone,
+            bedrooms, bathrooms, propertyType
         } = req.body;
 
         let images = [];
@@ -177,6 +188,9 @@ exports.createAd = async (req, res) => {
             area,
             year: year ? Number(year) : null,
             kilometers: kilometers ? Number(kilometers) : null,
+            bedrooms: bedrooms ? Number(bedrooms) : null,
+            bathrooms: bathrooms ? Number(bathrooms) : null,
+            propertyType,
             itemCondition,
             phone: phone || null,
             images: Array.isArray(images) ? images : [],

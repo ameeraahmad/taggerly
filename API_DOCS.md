@@ -5,38 +5,55 @@ This document outlines the available API endpoints for the Taggerly platform. Al
 ---
 
 ## 🔐 Authentication
-| Method | Endpoint | Description | Auth Required |
-| :--- | :--- | :--- | :--- |
-| POST | `/auth/signup` | Register a new user | No |
-| POST | `/auth/login` | Login user and return JWT | No |
-| POST | `/auth/google` | Google OAuth login | No |
-| POST | `/auth/facebook` | Facebook OAuth login | No |
-| POST | `/auth/forgot-password` | Send password reset email | No |
-| POST | `/auth/reset-password/:token` | Reset password using token | No |
-| POST | `/auth/verify-email` | Verify user email | Yes |
+| Method | Endpoint | Description | Auth Required | Captcha Required |
+| :--- | :--- | :--- | :--- | :--- |
+| POST | `/auth/register` | Register a new user | No | Yes |
+| POST | `/auth/login` | Login user and return JWT | No | Yes |
+| POST | `/auth/google` | Google OAuth login | No | No |
+| POST | `/auth/facebook` | Facebook OAuth login | No | No |
+| POST | `/auth/forgot-password` | Send password reset email | No | No |
+| PATCH | `/auth/reset-password/:token` | Reset password using token | No | No |
+| GET | `/auth/verify-email/:token` | Verify user email | No | No |
+| POST | `/auth/resend-verification` | Resend verification email | Yes | No |
+| GET | `/auth/me` | Get current user info | Yes | No |
 
 ---
 
 ## 📢 Ads Management
-| Method | Endpoint | Description | Auth Required |
-| :--- | :--- | :--- | :--- |
-| GET | `/ads` | List ads (supports filters, sorting, pagination) | No |
-| GET | `/ads/:id` | Get ad details by ID | No |
-| POST | `/ads` | Create a new ad (Multipart/Form-Data) | Yes |
-| PUT | `/ads/:id` | Update an existing ad | Yes (Owner) |
-| DELETE | `/ads/:id` | Soft delete an ad | Yes (Owner/Admin) |
-| POST | `/ads/:id/favorite` | Toggle ad in user favorites | Yes |
-| GET | `/ads/my-ads` | Get ads posted by current user | Yes |
+| Method | Endpoint | Description | Auth Required | Captcha Required |
+| :--- | :--- | :--- | :--- | :--- |
+| GET | `/ads` | List ads (supports filters) | No | No |
+| GET | `/ads/:id` | Get ad details by ID | No | No |
+| POST | `/ads` | Create a new ad | Yes | Yes |
+| PUT | `/ads/:id` | Update an existing ad | Yes (Owner) | No |
+| DELETE | `/ads/:id` | Soft delete an ad | Yes (Owner/Admin) | No |
+| POST | `/ads/:id/favorite` | Toggle ad in user favorites | Yes | No |
+| GET | `/ads/my-ads` | Get ads posted by current user | Yes | No |
+
+### Ad Creation Fields (POST `/ads`)
+- `title` (String, required)
+- `description` (Text, required)
+- `price` (Number, required)
+- `category` (Enum: Motors, Property, Classifieds, Jobs, etc.)
+- `city` (String, required)
+- `country` (String, default: 'uae')
+- `images` (Multipart files, max 5)
+- **Motors Specific**: `year`, `kilometers`
+- **Property Specific**: `bedrooms`, `bathrooms`, `propertyType`, `area` (Sq Ft)
+- `itemCondition` (String: New, Used)
+- `phone` (String, optional)
+- `captchaToken` (String, required)
 
 ---
 
 ## 💬 Chat & Messages
 | Method | Endpoint | Description | Auth Required |
 | :--- | :--- | :--- | :--- |
-| POST | `/chat/start` | Start a new conversation for an ad | Yes |
+| POST | `/chat/conversation` | Start/Get conversation for ad | Yes |
 | GET | `/chat/conversations` | Get all user conversations | Yes |
 | GET | `/chat/messages/:convoId` | Get messages in a conversation | Yes |
-| DELETE | `/chat/:convoId` | Delete/Archive a conversation | Yes |
+| POST | `/chat/message` | Send message (Multipart for image) | Yes |
+| DELETE | `/chat/conversation/:convoId` | Delete/Archive a conversation | Yes |
 
 ---
 
@@ -53,27 +70,31 @@ This document outlines the available API endpoints for the Taggerly platform. Al
 | Method | Endpoint | Description | Auth Required |
 | :--- | :--- | :--- | :--- |
 | GET | `/payments/plans` | List available subscription plans | No |
-| POST | `/payments/checkout` | Create Stripe Checkout Session | Yes |
-| GET | `/payments/history` | Get user payment history | Yes |
+| POST | `/payments/create-checkout-session` | Create Stripe Session | Yes |
+| GET | `/payments/my-payments` | Get user payment history | Yes |
 
 ---
 
 ## 👤 User Profile
 | Method | Endpoint | Description | Auth Required |
 | :--- | :--- | :--- | :--- |
-| GET | `/users/profile/:id` | Get public profile of a user | No |
+| GET | `/users/profile` | Get current user profile | Yes |
+| GET | `/users/public/:id` | Get public profile of a user | No |
 | PUT | `/users/profile` | Update current user profile | Yes |
-| GET | `/users/stats` | Get dashboard statistics for user | Yes |
+| PUT | `/users/update-password` | Update user password | Yes |
 
 ---
 
 ## 👮 Admin Endpoints
 | Method | Endpoint | Description | Auth Required |
 | :--- | :--- | :--- | :--- |
+| GET | `/admin/stats` | Platform-wide overview stats | Admin |
+| GET | `/admin/analytics` | Data for charts (Users, Ads, Revenue) | Admin |
 | GET | `/admin/ads/pending` | List ads awaiting moderation | Admin |
 | PUT | `/admin/ads/:id/approve` | Approve a pending ad | Admin |
 | PUT | `/admin/ads/:id/reject` | Reject a pending ad with reason | Admin |
-| GET | `/admin/stats/overview` | Get platform-wide statistics | Admin |
+| POST | `/admin/users` | List all users | Admin |
+| PUT | `/admin/users/:id/ban` | Toggle ban status for a user | Admin |
 
 ---
 
@@ -81,9 +102,9 @@ This document outlines the available API endpoints for the Taggerly platform. Al
 The API uses standard HTTP status codes:
 - `200 OK`: Request successful.
 - `201 Created`: Resource successfully created.
-- `400 Bad Request`: Validation error or missing fields.
+- `400 Bad Request`: Validation error, missing fields, or **Captcha failure**.
 - `401 Unauthorized`: Authentication token missing or invalid.
-- `403 Forbidden`: Insufficient permissions (Non-admin trying to access admin route).
+- `403 Forbidden`: Insufficient permissions.
 - `404 Not Found`: Resource does not exist.
 - `500 Server Error`: Internal server error.
 

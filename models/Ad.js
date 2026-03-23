@@ -38,6 +38,15 @@ const Ad = sequelize.define('Ad', {
     area: {
         type: DataTypes.STRING
     },
+    bedrooms: {
+        type: DataTypes.INTEGER
+    },
+    bathrooms: {
+        type: DataTypes.INTEGER
+    },
+    propertyType: {
+        type: DataTypes.STRING // Apartment, Villa, etc.
+    },
     year: {
         type: DataTypes.INTEGER
     },

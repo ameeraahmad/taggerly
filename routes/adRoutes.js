@@ -24,9 +24,10 @@ router.get('/:id', getAdById);
 const { upload, resizeImages } = require('../middleware/upload');
 
 const { adValidation, validate } = require('../middleware/validator');
+const verifyCaptcha = require('../middleware/captcha');
 
 // Private routes
-router.post('/', protect, upload.array('images', 5), resizeImages, adValidation, validate, createAd);
+router.post('/', protect, verifyCaptcha, upload.array('images', 5), resizeImages, adValidation, validate, createAd);
 router.post('/:id/favorite', protect, toggleFavorite);
 router.put('/:id', protect, upload.array('images', 5), resizeImages, adValidation, validate, updateAd);
 router.delete('/:id', protect, deleteAd);

@@ -7,9 +7,10 @@ const {
 const { protect } = require('../middleware/authMiddleware');
 
 const { registerValidation, loginValidation, validate } = require('../middleware/validator');
+const verifyCaptcha = require('../middleware/captcha');
 
-router.post('/register', registerValidation, validate, register);
-router.post('/login', loginValidation, validate, login);
+router.post('/register', verifyCaptcha, registerValidation, validate, register);
+router.post('/login', verifyCaptcha, loginValidation, validate, login);
 router.post('/resend-verification', protect, resendVerification);
 router.post('/google', googleLogin);
 router.post('/facebook', facebookLogin);

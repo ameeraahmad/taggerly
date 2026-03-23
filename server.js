@@ -122,22 +122,7 @@ app.get('/robots.txt', (req, res) => {
     res.send(`User-agent: *\nAllow: /\nSitemap: ${host}/sitemap.xml`);
 });
 
-// Serve static files (After API routes)
-app.use(express.static(path.join(__dirname)));
-app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
-
-// 404 Handler for API
-app.use((req, res, next) => {
-    if (req.url.startsWith('/api')) {
-        return res.status(404).json({ success: false, message: 'API Endpoint not found' });
-    }
-    // For non-API routes, if no other route or static file handled it,
-    // you might want to serve a client-side app's index.html here,
-    // or a generic 404 page. For now, we'll just send a simple text 404.
-    res.status(404).send('Not Found');
-});
-
-// SSR for Ad Details (SEO & Social Sharing)
+// SSR for Ad Details (SEO & Social Sharing) - MUST be before express.static
 app.get('/ad-details.html', async (req, res) => {
     const adId = req.query.id;
     const filePath = path.join(__dirname, 'ad-details.html');
@@ -153,7 +138,7 @@ app.get('/ad-details.html', async (req, res) => {
         if (!ad) return res.sendFile(filePath);
 
         let content = fs.readFileSync(filePath, 'utf8');
-        const images = JSON.parse(ad.images || '[]');
+        const images = ad.images || [];
         const ogImage = images[0] || '';
         const description = ad.description ? ad.description.substring(0, 160).replace(/"/g, '&quot;') : '';
 
@@ -169,6 +154,20 @@ app.get('/ad-details.html', async (req, res) => {
         console.error('SSR Error:', err);
         res.sendFile(filePath);
     }
+});
+
+// Serve static files (After API routes and SSR)
+app.use(express.static(path.join(__dirname)));
+app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
+
+// 404 Handler for API
+app.use((req, res, next) => {
+    if (req.url.startsWith('/api')) {
+        return res.status(404).json({ success: false, message: 'API Endpoint not found' });
+    }
+    // For non-API routes, if no other route handled it (and not a static file)
+    // we let it fall through to the global error handler or send a simple 404
+    next();
 });
 
 // Global Error Handler

@@ -1,7 +1,10 @@
 const cron = require('node-cron');
 const Ad = require('../models/Ad');
+const User = require('../models/User');
 const { Op } = require('sequelize');
 const { createNotification } = require('./notifications');
+const sendEmail = require('./email');
+const { adExpiringSoonEmail } = require('./emailTemplates');
 
 const initCronJobs = (io) => {
     // Run every day at MN (midnight)
@@ -17,7 +20,8 @@ const initCronJobs = (io) => {
                 where: {
                     status: 'active',
                     createdAt: { [Op.lt]: thirtyDaysAgo }
-                }
+                },
+                include: [{ model: User, as: 'user', attributes: ['name', 'email'] }]
             });
 
             for (const ad of expiringAds) {
@@ -34,7 +38,43 @@ const initCronJobs = (io) => {
             }
             console.log(`✅ Expired ${expiringAds.length} old ads.`);
 
-            // 2) Demote featured ads that reached their end date
+            // 2) Reminder for ads expiring in 3 days (created 27 days ago)
+            const twentySevenDaysAgoStart = new Date();
+            twentySevenDaysAgoStart.setDate(twentySevenDaysAgoStart.getDate() - 27);
+            twentySevenDaysAgoStart.setHours(0, 0, 0, 0);
+
+            const twentySevenDaysAgoEnd = new Date();
+            twentySevenDaysAgoEnd.setDate(twentySevenDaysAgoEnd.getDate() - 27);
+            twentySevenDaysAgoEnd.setHours(23, 59, 59, 999);
+
+            const adsToRemind = await Ad.findAll({
+                where: {
+                    status: 'active',
+                    createdAt: {
+                        [Op.between]: [twentySevenDaysAgoStart, twentySevenDaysAgoEnd]
+                    }
+                },
+                include: [{ model: User, as: 'user', attributes: ['name', 'email'] }]
+            });
+
+            for (const ad of adsToRemind) {
+                if (ad.user && ad.user.email) {
+                    sendEmail({
+                        email: ad.user.email,
+                        subject: `⚠️ Reminder: Your ad on Taggerly is expiring soon!`,
+                        message: `Your ad "${ad.title}" will expire in 3 days.`,
+                        html: adExpiringSoonEmail({
+                            userName: ad.user.name,
+                            adTitle: ad.title,
+                            daysLeft: 3,
+                            dashboardURL: 'https://taggerly.com/dashboard.html'
+                        })
+                    }).catch(err => console.error('Expiry reminder email failed:', err));
+                }
+            }
+            console.log(`✅ Sent ${adsToRemind.length} expiry reminders.`);
+
+            // 3) Demote featured ads that reached their end date
             const now = new Date();
             const expiringFeatured = await Ad.findAll({
                 where: {

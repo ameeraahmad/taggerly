@@ -39,10 +39,13 @@ const apiClient = {
     },
 
     // Auth
-    async login(email, password) {
+    async login(email, password, captchaToken = null) {
+        const body = { email, password };
+        if (captchaToken) body.captchaToken = captchaToken;
+
         const data = await this.fetch('/auth/login', {
             method: 'POST',
-            body: JSON.stringify({ email, password }),
+            body: JSON.stringify(body),
         });
         localStorage.setItem('token', data.token);
         localStorage.setItem('user', JSON.stringify(data.data));

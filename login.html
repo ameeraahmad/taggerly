@@ -51,6 +51,8 @@
     <!-- Facebook SDK -->
     <script async defer crossorigin="anonymous" src="https://connect.facebook.net/en_US/sdk.js"></script>
     <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet">
+    <!-- Google reCAPTCHA v3 -->
+    <script src="https://www.google.com/recaptcha/api.js?render=YOUR_SITE_KEY_HERE"></script>
     <style>
         body {
             font-family: 'Roboto', sans-serif;
@@ -250,7 +252,13 @@
             const password = loginForm.querySelector('input[type="password"]').value;
 
             try {
-                const response = await apiClient.login(email, password);
+                // Get reCAPTCHA token
+                let captchaToken = '';
+                try {
+                    captchaToken = await grecaptcha.execute('YOUR_SITE_KEY_HERE', { action: 'login' });
+                } catch (cErr) { console.warn('reCAPTCHA failed', cErr); }
+
+                const response = await apiClient.login(email, password, captchaToken);
                 alert(currentLang === 'ar' ? 'تم تسجيل الدخول بنجاح!' : 'Login successful!');
                 window.location.href = 'index.html';
             } catch (err) {
@@ -274,10 +282,17 @@
             }
 
             try {
+                // Get reCAPTCHA token
+                let captchaToken = '';
+                try {
+                    captchaToken = await grecaptcha.execute('YOUR_SITE_KEY_HERE', { action: 'signup' });
+                } catch (cErr) { console.warn('reCAPTCHA failed', cErr); }
+
                 await apiClient.register({
                     name: `${firstName} ${lastName}`,
                     email,
-                    password
+                    password,
+                    captchaToken
                 });
                 alert(currentLang === 'ar' ? 'تم إنشاء الحساب بنجاح!' : 'Account created successfully!');
                 window.location.href = 'index.html';
