@@ -28,18 +28,21 @@ This document outlines the available API endpoints for the Taggerly platform. Al
 | PUT | `/ads/:id` | Update an existing ad | Yes (Owner) | No |
 | DELETE | `/ads/:id` | Soft delete an ad | Yes (Owner/Admin) | No |
 | POST | `/ads/:id/favorite` | Toggle ad in user favorites | Yes | No |
+| GET | `/ads/favorites` | Get current user's favorite ads | Yes | No |
 | GET | `/ads/my-ads` | Get ads posted by current user | Yes | No |
+| GET | `/ads/stats/dashboard` | Get current user's dashboard stats | Yes | No |
 
 ### Ad Creation Fields (POST `/ads`)
 - `title` (String, required)
 - `description` (Text, required)
 - `price` (Number, required)
-- `category` (Enum: Motors, Property, Classifieds, Jobs, etc.)
+- `category` (Enum: Motors, Property, Classifieds, Jobs, Services, Furniture, Mobiles, Electronics)
+- `subCategory` (String, optional)
 - `city` (String, required)
 - `country` (String, default: 'uae')
 - `images` (Multipart files, max 5)
 - **Motors Specific**: `year`, `kilometers`
-- **Property Specific**: `bedrooms`, `bathrooms`, `propertyType`, `area` (Sq Ft)
+- **Property Specific**: `bedrooms`, `bathrooms`, `propertyType` (Apartment, Villa, etc.), `area` (Sq Ft)
 - `itemCondition` (String: New, Used)
 - `phone` (String, optional)
 - `captchaToken` (String, required)
@@ -72,6 +75,9 @@ This document outlines the available API endpoints for the Taggerly platform. Al
 | GET | `/payments/plans` | List available subscription plans | No |
 | POST | `/payments/create-checkout-session` | Create Stripe Session | Yes |
 | GET | `/payments/my-payments` | Get user payment history | Yes |
+| GET | `/payments/verify-session/:sessionId` | Verify Stripe Checkout Session | Yes |
+| GET | `/payments/all` | Get all payments (Admin only) | Admin |
+| POST | `/payments/webhook` | Stripe payment webhook | No (Stripe) |
 
 ---
 
@@ -83,6 +89,43 @@ This document outlines the available API endpoints for the Taggerly platform. Al
 | PUT | `/users/profile` | Update current user profile | Yes |
 | PUT | `/users/update-password` | Update user password | Yes |
 
+### Profile Update Fields (PUT `/users/profile`)
+- `name` (String)
+- `phone` (String)
+- `bio` (Text)
+- `location` (String)
+- `avatar` (File, multipart)
+- `emailNotifications` (Boolean)
+- `chatNotifications` (Boolean)
+
+---
+
+## 🚩 Reports & Moderation
+| Method | Endpoint | Description | Auth Required |
+| :--- | :--- | :--- | :--- |
+| POST | `/reports` | Submit a report (for ad or user) | Yes |
+| GET | `/reports` | List all reports (Admin only) | Admin |
+| PUT | `/reports/:id` | Review and update report status | Admin |
+
+### Report Fields (POST `/reports`)
+- `adId` (Integer, required)
+- `reason` (String, required)
+- `description` (Text, optional)
+
+---
+
+## ⭐ Reviews & Ratings
+| Method | Endpoint | Description | Auth Required |
+| :--- | :--- | :--- | :--- |
+| POST | `/reviews` | Submit a review for a seller | Yes |
+| GET | `/reviews/seller/:sellerId` | Get all reviews for a specific seller | No |
+
+### Review Fields (POST `/reviews`)
+- `sellerId` (Integer, required)
+- `rating` (Integer, 1-5, required)
+- `comment` (Text, optional)
+- `adId` (Integer, optional)
+
 ---
 
 ## 👮 Admin Endpoints
@@ -90,11 +133,19 @@ This document outlines the available API endpoints for the Taggerly platform. Al
 | :--- | :--- | :--- | :--- |
 | GET | `/admin/stats` | Platform-wide overview stats | Admin |
 | GET | `/admin/analytics` | Data for charts (Users, Ads, Revenue) | Admin |
+| GET | `/admin/revenue` | Revenue and financial summary | Admin |
+| GET | `/admin/ads` | List all ads with detailed info | Admin |
 | GET | `/admin/ads/pending` | List ads awaiting moderation | Admin |
 | PUT | `/admin/ads/:id/approve` | Approve a pending ad | Admin |
 | PUT | `/admin/ads/:id/reject` | Reject a pending ad with reason | Admin |
-| POST | `/admin/users` | List all users | Admin |
+| PUT | `/admin/ads/:id/feature` | Toggle "Featured" status of an ad | Admin |
+| DELETE | `/admin/ads/:id` | Permenant delete an ad | Admin |
+| GET | `/admin/users` | List all users | Admin |
 | PUT | `/admin/users/:id/ban` | Toggle ban status for a user | Admin |
+| PUT | `/admin/users/:id/promote` | Promote user to Admin status | Admin |
+| DELETE | `/admin/users/:id` | Permenant delete a user | Admin |
+| GET | `/admin/reports` | List and manage reports | Admin |
+| PUT | `/admin/reports/:id` | Review and resolve a report | Admin |
 
 ---
 
