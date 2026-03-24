@@ -50,7 +50,7 @@ app.use('/api', limiter);
 
 // Pass io to controllers (lazy load)
 app.use((req, res, next) => {
-    req.io = io;
+    req.io = (typeof io !== 'undefined') ? io : { emit: () => {} }; // Mock io if disabled on Vercel
     next();
 });
 
@@ -189,81 +189,61 @@ app.use((err, req, res, next) => {
     });
 });
 
-// Create HTTP Server for Socket.io
-const http = require('http');
-const server = http.createServer(app);
-const { Server } = require('socket.io');
-const io = new Server(server, {
-    cors: {
-        origin: "*",
-        methods: ["GET", "POST"]
-    }
-});
-
-// Socket.io Connection Logic
-const ChatMessage = require('./models/ChatMessage');
-const Conversation = require('./models/Conversation');
-const User = require('./models/User');
-
-// Initialize Cron Jobs
-const initCronJobs = require('./utils/cronJobs');
-initCronJobs(io);
-
-io.on('connection', (socket) => {
-    console.log('👤 User connected:', socket.id);
-
-    socket.on('join_user', async (userId) => {
-        socket.userId = userId; // Store userId on socket object
-        socket.join(`user_${userId}`);
-        console.log(`👤 User joined user room: user_${userId}`);
-
-        // Update status to Online
-        try {
-            await User.update({ isOnline: true }, { where: { id: userId } });
-            // Broadcast to everyone that this user is online
-            io.emit('user_status_change', { userId, isOnline: true });
-        } catch (err) {
-            console.error('Error updating user status:', err);
+// No Socket.io or Cron Jobs on Vercel!
+let io;
+if (!process.env.VERCEL) {
+    const http = require('http');
+    const server = http.createServer(app);
+    const { Server } = require('socket.io');
+    io = new Server(server, {
+        cors: {
+            origin: "*",
+            methods: ["GET", "POST"]
         }
     });
 
-    socket.on('join_conversation', (conversationId) => {
-        socket.join(`convo_${conversationId}`);
-        console.log(`📂 User joined conversation: convo_${conversationId}`);
-    });
+    const initCronJobs = require('./utils/cronJobs');
+    initCronJobs(io);
 
-    socket.on('typing', (data) => {
-        // data: { conversationId, senderId, isTyping }
-        socket.to(`convo_${data.conversationId}`).emit('display_typing', data);
-    });
-
-    // Note: send_message is now handled via HTTP API (POST /api/chat/message)
-    // The API saves to DB, handles image uploads, and emits receive_message + new_message_notification via req.io
-    // Socket is used here only for joining rooms
-
-    socket.on('disconnect', async () => {
-        console.log('👤 User disconnected');
-        if (socket.userId) {
+    io.on('connection', (socket) => {
+        console.log('👤 User connected:', socket.id);
+        // ... Socket logic (same as before)
+        socket.on('join_user', async (userId) => {
+            socket.userId = userId;
+            socket.join(`user_${userId}`);
             try {
-                await User.update({
-                    isOnline: false,
-                    lastActive: new Date()
-                }, {
-                    where: { id: socket.userId }
-                });
+                const User = require('./models/User');
+                await User.update({ isOnline: true }, { where: { id: userId } });
+                io.emit('user_status_change', { userId, isOnline: true });
+            } catch (err) {}
+        });
 
-                // Broadcast to everyone that this user is offline
-                io.emit('user_status_change', {
-                    userId: socket.userId,
-                    isOnline: false,
-                    lastActive: new Date()
-                });
-            } catch (err) {
-                console.error('Error updating user disconnect status:', err);
+        socket.on('join_conversation', (conversationId) => {
+            socket.join(`convo_${conversationId}`);
+        });
+
+        socket.on('typing', (data) => {
+            socket.to(`convo_${data.conversationId}`).emit('display_typing', data);
+        });
+
+        socket.on('disconnect', async () => {
+            if (socket.userId) {
+                try {
+                    const User = require('./models/User');
+                    await User.update({ isOnline: false, lastActive: new Date() }, { where: { id: socket.userId } });
+                    io.emit('user_status_change', { userId: socket.userId, isOnline: false, lastActive: new Date() });
+                } catch (err) {}
             }
-        }
+        });
     });
-});
+
+    // Handle production port listening locally
+    if (require.main === module) {
+        server.listen(PORT, '0.0.0.0', () => {
+            console.log(`🚀 Server is listening locally on 0.0.0.0:${PORT}`);
+        });
+    }
+}
 
 // Start Server
 if (require.main === module) {
