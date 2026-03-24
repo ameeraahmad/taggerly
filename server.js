@@ -272,7 +272,8 @@ if (require.main === module) {
     });
 }
 
-module.exports = { app, server, io };
+// Export the app for Vercel (Required for Serverless Functions)
+module.exports = app;
 
 
 
