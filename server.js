@@ -50,7 +50,7 @@ app.use('/api', limiter);
 
 // Pass io to controllers (lazy load)
 app.use((req, res, next) => {
-    req.io = (typeof io !== 'undefined') ? io : { emit: () => {} }; // Mock io if disabled on Vercel
+    req.io = global.io || { emit: () => {} };
     next();
 });
 
@@ -124,38 +124,9 @@ app.get('/robots.txt', (req, res) => {
     res.send(`User-agent: *\nAllow: /\nSitemap: ${host}/sitemap.xml`);
 });
 
-// SSR for Ad Details (SEO & Social Sharing) - MUST be before express.static
-app.get('/ad-details.html', async (req, res) => {
-    const adId = req.query.id;
-    const filePath = path.join(__dirname, 'ad-details.html');
-
-    if (!adId || !fs.existsSync(filePath)) {
-        return res.sendFile(filePath);
-    }
-
-    try {
-        const Ad = require('./models/Ad');
-        const ad = await Ad.findByPk(adId);
-
-        if (!ad) return res.sendFile(filePath);
-
-        let content = fs.readFileSync(filePath, 'utf8');
-        const images = ad.images || [];
-        const ogImage = images[0] || '';
-        const description = ad.description ? ad.description.substring(0, 160).replace(/"/g, '&quot;') : '';
-
-        // Simple string replacement for meta tags
-        content = content.replace(/<title>.*?<\/title>/, `<title>${ad.title} - Taggerly</title>`);
-        content = content.replace(/property="og:title" content=".*?"/, `property="og:title" content="${ad.title}"`);
-        content = content.replace(/name="description" content=".*?"/, `name="description" content="${description}"`);
-        content = content.replace(/property="og:description" content=".*?"/, `property="og:description" content="${description}"`);
-        content = content.replace(/property="og:image" content=".*?"/, `property="og:image" content="${ogImage}"`);
-
-        res.send(content);
-    } catch (err) {
-        console.error('SSR Error:', err);
-        res.sendFile(filePath);
-    }
+// Simplified Ad Details for Vercel (No SSR, just send file)
+app.get('/ad-details.html', (req, res) => {
+    res.sendFile(path.join(__dirname, 'ad-details.html'));
 });
 
 // Serve static files (After API routes and SSR)
@@ -189,60 +160,36 @@ app.use((err, req, res, next) => {
     });
 });
 
-// No Socket.io or Cron Jobs on Vercel!
-let io;
+// Socket.io & Local Server Logic (Bypass on Vercel)
 if (!process.env.VERCEL) {
     const http = require('http');
     const server = http.createServer(app);
     const { Server } = require('socket.io');
-    io = new Server(server, {
-        cors: {
-            origin: "*",
-            methods: ["GET", "POST"]
-        }
+    const io_instance = new Server(server, {
+        cors: { origin: "*", methods: ["GET", "POST"] }
     });
+
+    // Share io_instance with routes
+    global.io = io_instance;
 
     const initCronJobs = require('./utils/cronJobs');
-    initCronJobs(io);
+    initCronJobs(io_instance);
 
-    io.on('connection', (socket) => {
+    io_instance.on('connection', (socket) => {
         console.log('👤 User connected:', socket.id);
-        // ... Socket logic (same as before)
-        socket.on('join_user', async (userId) => {
-            socket.userId = userId;
-            socket.join(`user_${userId}`);
-            try {
-                const User = require('./models/User');
-                await User.update({ isOnline: true }, { where: { id: userId } });
-                io.emit('user_status_change', { userId, isOnline: true });
-            } catch (err) {}
-        });
-
-        socket.on('join_conversation', (conversationId) => {
-            socket.join(`convo_${conversationId}`);
-        });
-
-        socket.on('typing', (data) => {
-            socket.to(`convo_${data.conversationId}`).emit('display_typing', data);
-        });
-
-        socket.on('disconnect', async () => {
-            if (socket.userId) {
-                try {
-                    const User = require('./models/User');
-                    await User.update({ isOnline: false, lastActive: new Date() }, { where: { id: socket.userId } });
-                    io.emit('user_status_change', { userId: socket.userId, isOnline: false, lastActive: new Date() });
-                } catch (err) {}
-            }
-        });
+        socket.on('join_user', (userId) => { socket.join(`user_${userId}`); });
+        socket.on('join_conversation', (convoId) => { socket.join(`convo_${convoId}`); });
+        socket.on('disconnect', () => { console.log('👤 User disconnected'); });
     });
 
-    // Handle production port listening locally
     if (require.main === module) {
         server.listen(PORT, '0.0.0.0', () => {
             console.log(`🚀 Server is listening locally on 0.0.0.0:${PORT}`);
         });
     }
+} else {
+    // On Vercel, just mock io
+    global.io = { emit: () => {} };
 }
 
 // Start Server
