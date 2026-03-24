@@ -5,10 +5,12 @@ const helmet = require('helmet');
 const path = require('path');
 const fs = require('fs');
 
-// Ensure uploads directory exists
-const uploadsDir = path.join(__dirname, 'uploads');
-if (!fs.existsSync(uploadsDir)) {
-    fs.mkdirSync(uploadsDir);
+// Ensure uploads directory exists (Bypass on Vercel as it is Read-Only)
+if (!process.env.VERCEL) {
+    const uploadsDir = path.join(__dirname, 'uploads');
+    if (!fs.existsSync(uploadsDir)) {
+        fs.mkdirSync(uploadsDir, { recursive: true });
+    }
 }
 
 const { connectDB } = require('./config/db');

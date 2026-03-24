@@ -71,8 +71,10 @@ const resizeAvatar = async (req, res, next) => {
     const filename = `avatar-${req.user.id}-${Date.now()}.webp`;
     const filepath = path.join(__dirname, '../uploads', filename);
 
-    if (!fs.existsSync(path.join(__dirname, '../uploads'))) {
-        fs.mkdirSync(path.join(__dirname, '../uploads'), { recursive: true });
+    if (!process.env.VERCEL) {
+        if (!fs.existsSync(path.join(__dirname, '../uploads'))) {
+            fs.mkdirSync(path.join(__dirname, '../uploads'), { recursive: true });
+        }
     }
 
     await sharp(req.file.buffer)
