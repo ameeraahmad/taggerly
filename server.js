@@ -5,8 +5,8 @@ const helmet = require('helmet');
 const path = require('path');
 const fs = require('fs');
 
-// Ensure uploads directory exists (Bypass on Vercel as it is Read-Only)
-if (!process.env.VERCEL) {
+// Ensure uploads directory exists (Bypass on Vercel/Stormkit as it is Read-Only)
+if (!process.env.VERCEL && !process.env.STORMKIT) {
     const uploadsDir = path.join(__dirname, 'uploads');
     if (!fs.existsSync(uploadsDir)) {
         fs.mkdirSync(uploadsDir, { recursive: true });
@@ -160,8 +160,8 @@ app.use((err, req, res, next) => {
     });
 });
 
-// Socket.io & Local Server Logic (Bypass on Vercel)
-if (!process.env.VERCEL) {
+// Socket.io & Local Server Logic (Bypass on Serverless platforms like Vercel/Stormkit)
+if (!process.env.VERCEL && !process.env.STORMKIT) {
     const http = require('http');
     const server = http.createServer(app);
     const { Server } = require('socket.io');
