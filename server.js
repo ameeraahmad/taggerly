@@ -5,13 +5,14 @@ const helmet = require('helmet');
 const path = require('path');
 const fs = require('fs');
 
-// Ensure uploads directory exists (Bypass on Vercel/Stormkit as it is Read-Only)
-if (!process.env.VERCEL && !process.env.STORMKIT) {
+// Ensure uploads directory exists (Bypass on Vercel as it is Read-Only)
+if (!process.env.VERCEL) {
     const uploadsDir = path.join(__dirname, 'uploads');
     if (!fs.existsSync(uploadsDir)) {
         fs.mkdirSync(uploadsDir, { recursive: true });
     }
 }
+
 
 const { connectDB } = require('./config/db');
 // Load associations
@@ -162,10 +163,11 @@ app.use((err, req, res, next) => {
     });
 });
 
-// Socket.io & Local Server Logic (Bypass on Serverless platforms like Vercel/Stormkit)
-if (!process.env.VERCEL && !process.env.STORMKIT) {
+// Socket.io & Local Server Logic (Bypass on Serverless platforms like Vercel)
+if (!process.env.VERCEL) {
     const http = require('http');
     const server = http.createServer(app);
+
     const { Server } = require('socket.io');
     const io_instance = new Server(server, {
         cors: { origin: "*", methods: ["GET", "POST"] }
