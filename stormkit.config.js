@@ -8,23 +8,23 @@ module.exports = {
     {
       from: "/api/(.*)",
       to: "server.js",
+      method: "rewrite",
     },
     {
       from: "/ad-details.html",
       to: "server.js",
+      method: "rewrite",
     },
     {
       from: "/sitemap.xml",
       to: "server.js",
+      method: "rewrite",
     },
     {
       from: "/robots.txt",
       to: "server.js",
-    },
-    {
-      // Catch-all for other routes to handle SPA-like behavior if needed
-      from: "/(.*)",
-      to: "index.html",
+      method: "rewrite",
     }
   ]
+
 };
