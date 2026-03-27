@@ -2,7 +2,6 @@ module.exports = {
   server: {
     entry: "server.js",
   },
-  // Redirects to handle routing
   redirects: [
     {
       from: "/api/(.*)",
@@ -25,4 +24,5 @@ module.exports = {
       method: "rewrite",
     }
   ]
+
 };
