@@ -130,7 +130,8 @@ app.get('/ad-details.html', (req, res) => {
 });
 
 // Serve static files (After API routes and SSR)
-app.use(express.static(path.join(__dirname)));
+app.use(express.static(path.join(__dirname), { dotfiles: 'ignore' }));
+
 app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
 
 // 404 Handler for API
