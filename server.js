@@ -194,11 +194,16 @@ if (!process.env.VERCEL && !process.env.STORMKIT) {
     global.io = { emit: () => {} };
 }
 
-// Start Server (Handled inside the non-serverless block or exported for serverless)
-
+// Start Server
+if (require.main === module) {
+    server.listen(PORT, '0.0.0.0', () => {
+        console.log(`🚀 Server is listening on 0.0.0.0:${PORT}`);
+    });
+}
 
 // Export the app for Vercel (Required for Serverless Functions)
 module.exports = app;
+
 
 
 
