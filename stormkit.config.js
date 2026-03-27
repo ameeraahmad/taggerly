@@ -5,19 +5,19 @@ module.exports = {
   redirects: [
     {
       from: "/api/(.*)",
-      to: "server.js",
+      to: "/server.js",
     },
     {
       from: "/ad-details.html",
-      to: "server.js",
+      to: "/server.js",
     },
     {
       from: "/sitemap.xml",
-      to: "server.js",
+      to: "/server.js",
     },
     {
       from: "/robots.txt",
-      to: "server.js",
+      to: "/server.js",
     }
   ]
 };
