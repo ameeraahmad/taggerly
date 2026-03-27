@@ -1,5 +1,4 @@
 module.exports = {
-  // Specify the server entry point
   server: {
     entry: "server.js",
   },
@@ -26,5 +25,4 @@ module.exports = {
       method: "rewrite",
     }
   ]
-
 };
