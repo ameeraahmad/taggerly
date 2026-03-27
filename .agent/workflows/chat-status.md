@@ -3,23 +3,21 @@ description: Real-time Chat Implementation Status and Next Steps
 ---
 // turbo-all
 
-## Current Status (Completed)
-1. **Socket.io Integration**: Backend server is now configured for real-time communication.
-2. **Messaging Page**: Created `messages.html` with a dual-pane layout.
-3. **Frontend API**: `api-client.js` extended with chat methods.
-4. **Media Sharing**: Users can now send images 📷 via chat. Fixed validation errors for empty text messages.
-5. **Real-time Notifications**: Added sound alerts and Toast notifications 🔔 when messages arrive while on other pages.
-6. **Online Status**: Added "Online/Offline" indicators 🟢 and "Last Seen" logic.
-7. **Phone Integration**: Added per-ad phone number field and a premium contact modal with WhatsApp/Call links 📞.
-8. **UI Sync**: Synchronized the user dropdown menu across all pages, including the dynamic header in `messages.html`.
+## Current Status (March 27, 2026)
+1. **Deployment Architecture**: Site moved to Stormkit.io (Serverless) and Database to Neon (PostgreSQL).
+2. **Environment Variables**: `DATABASE_URL`, `JWT_SECRET`, `STORMKIT`, and `GOOGLE_CLIENT_ID` are configured in Stormkit dashboard.
+3. **Google OAuth**: Created a new Client ID and updated `login.html`.
+4. **Routing Issue**: Currently facing a `404 Server Error` on API calls.
+5. **Pending Fix**: `stormkit.config.js` was created locally but not yet pushed to GitHub.
 
 ## Next Steps for Tomorrow
-1. **Delete Conversations**: Allow users to delete or archive chats.
-2. **Typing Indicators**: Show "User is typing..." in real-time.
-3. **Ad Edit/Delete**: Implement full management for ads in the dashboard.
-4. **Seller Ratings**: System for buyers to leave reviews on seller profiles.
+1. **Push Changes**: Run `git push` to upload `stormkit.config.js` and the updated `login.html`.
+2. **Verify Stormkit Build**: Ensure the deployment picks up the server configuration.
+3. **Debug API Routing**: If 404 persists, investigate Stormkit serverless handler requirements.
+4. **Test regular & Google login**: Verify connection to Neon DB.
 
 ## How to resume
-1. Run the server: `npm run dev`
-2. Open `messages.html` to check the updated header consistency and image sharing.
-3. Test the "Call Seller" modal on `ad-details.html`.
+1. Push to GitHub: `git add . && git commit -m "fix: stormkit routing and google auth" && git push`
+2. Monitor Stormkit deployment logs.
+3. Test login on `https://taggerly.stormkit.dev`.
+
