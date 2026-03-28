@@ -168,7 +168,7 @@ const connectDB = async () => {
 
             // Disable alter: true for SQLite as it's buggy with column additions
             // Use manual migrations above instead. For Postgres, alter: true is fine UNLESS on Vercel (to avoid timeouts).
-            const isServerless = !!(process.env.VERCEL || process.env.STORMKIT);
+            const isServerless = !!(process.env.VERCEL);
             const syncOptions = isTest ? { force: true } : (databaseUrl ? { alter: !isServerless } : { alter: false });
             await sequelize.sync(syncOptions);
 

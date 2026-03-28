@@ -165,44 +165,35 @@ app.use((err, req, res, next) => {
 
 // Server start up logic
 if (require.main === module) {
-    if (!process.env.VERCEL && !process.env.STORMKIT) {
-        const http = require('http');
-        const server = http.createServer(app);
+    const http = require('http');
+    const server = http.createServer(app);
 
-        const { Server } = require('socket.io');
-        const io_instance = new Server(server, {
-            cors: { origin: "*", methods: ["GET", "POST"] }
-        });
+    const { Server } = require('socket.io');
+    const io_instance = new Server(server, {
+        cors: { origin: "*", methods: ["GET", "POST"] }
+    });
 
-        // Share io_instance with routes
-        global.io = io_instance;
+    // Share io_instance with routes
+    global.io = io_instance;
 
-        const initCronJobs = require('./utils/cronJobs');
-        initCronJobs(io_instance);
+    const initCronJobs = require('./utils/cronJobs');
+    initCronJobs(io_instance);
 
-        io_instance.on('connection', (socket) => {
-            console.log('👤 User connected:', socket.id);
-            socket.on('join_user', (userId) => { socket.join(`user_${userId}`); });
-            socket.on('join_conversation', (convoId) => { socket.join(`convo_${convoId}`); });
-            socket.on('disconnect', () => { console.log('👤 User disconnected'); });
-        });
+    io_instance.on('connection', (socket) => {
+        console.log('👤 User connected:', socket.id);
+        socket.on('join_user', (userId) => { socket.join(`user_${userId}`); });
+        socket.on('join_conversation', (convoId) => { socket.join(`convo_${convoId}`); });
+        socket.on('disconnect', () => { console.log('👤 User disconnected'); });
+    });
 
-        server.listen(PORT, '0.0.0.0', () => {
-            console.log(`🚀 Server listening at http://localhost:${PORT}`);
-        });
-    } else {
-        // Just mock io and let the serverless environment handle exports
-        global.io = { emit: () => {} };
-        app.listen(PORT, () => {
-            console.log(`🚀 Serverless app initialized locally on port ${PORT}`);
-        });
-    }
+    server.listen(PORT, '0.0.0.0', () => {
+        console.log(`🚀 Server listening at http://localhost:${PORT}`);
+    });
 } else {
-    // If required as a module (e.g., Stormkit/Vercel)
+    // If required as a module (e.g. for testing)
     global.io = { emit: () => {} };
 }
 
-// Export the app for Vercel (Required for Serverless Functions)
 module.exports = app;
 
 
