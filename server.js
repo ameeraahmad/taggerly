@@ -20,7 +20,10 @@ require('./models/associations');
 
 
 const app = express();
-const PORT = process.env.PORT || 5000;
+const PORT = parseInt(process.env.PORT, 10) || 5000;
+
+console.log('🔍 Starting Server Initialization...');
+console.log(`📡 Attempting to listen on Port: ${PORT}`);
 
 // Connect to Database (Non-blocking)
 connectDB().catch(err => console.error('Delayed DB Connection Error:', err));
