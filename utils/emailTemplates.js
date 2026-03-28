@@ -45,7 +45,7 @@ exports.welcomeEmail = (options) => `
 `;
 
 /**
- * Email Verification Template (Alternative simple version if needed)
+ * Email Verification Template
  */
 exports.emailVerificationEmail = (options) => `
 <div style="${containerStyle}">
@@ -198,26 +198,26 @@ exports.adRejectedEmail = (options) => `
     </div>
     ${emailFooter}
 </div>
-\`;
+`;
 
 /**
  * Ad Expiring Soon Template
  */
-exports.adExpiringSoonEmail = (options) => \`
-<div style="\${containerStyle}">
-    \${emailHeader}
+exports.adExpiringSoonEmail = (options) => `
+<div style="${containerStyle}">
+    ${emailHeader}
     <div style="padding: 40px; font-family: sans-serif; line-height: 1.6; color: #333;">
-        <h2 style="color: \${brandColor};">Your Ad is Expiring Soon!</h2>
-        <p>Hi \${options.userName},</p>
-        <p>This is a friendly reminder that your ad "<strong>\${options.adTitle}</strong>" will expire in <strong>\${options.daysLeft} days</strong>.</p>
+        <h2 style="color: ${brandColor};">Your Ad is Expiring Soon!</h2>
+        <p>Hi ${options.userName},</p>
+        <p>This is a friendly reminder that your ad "<strong>${options.adTitle}</strong>" will expire in <strong>${options.daysLeft} days</strong>.</p>
         <p>Once it expires, it will no longer be visible to potential buyers. To keep it live, you can renew it from your dashboard.</p>
         
         <div style="text-align: center; margin: 30px 0;">
-            <a href="\${options.dashboardURL}" style="background-color: \${brandColor}; color: white; padding: 12px 30px; text-decoration: none; border-radius: 50px; font-weight: bold;">Renew My Ad</a>
+            <a href="${options.dashboardURL}" style="background-color: ${brandColor}; color: white; padding: 12px 30px; text-decoration: none; border-radius: 50px; font-weight: bold;">Renew My Ad</a>
         </div>
         
         <p>Best regards,<br>The Taggerly Team</p>
     </div>
-    \${emailFooter}
+    ${emailFooter}
 </div>
-\`;
+`;
