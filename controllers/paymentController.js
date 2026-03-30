@@ -98,7 +98,7 @@ exports.createCheckoutSession = async (req, res) => {
             adId: adId || null,
             stripeSessionId: session.id,
             amount: planConfig.price / 100,
-            currency: 'usd',
+            currency: 'aed',
             plan,
             durationDays: planConfig.duration,
             status: 'pending',

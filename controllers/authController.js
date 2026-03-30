@@ -25,7 +25,7 @@ exports.forgotPassword = async (req, res) => {
         try {
             await sendEmail({
                 email: user.email,
-                subject: '🔐 Reset Your Password - Dubizzle Clone',
+                subject: '🔐 Reset Your Password - Taggerly',
                 message: `Reset your password here: ${resetURL} (valid for 10 min)`,
                 html: resetPasswordEmail({ name: user.name, resetURL })
             });
@@ -102,7 +102,7 @@ exports.verifyEmail = async (req, res) => {
 };
 
 const generateToken = (id) => {
-    return jwt.sign({ id }, process.env.JWT_SECRET || 'dubizzle_secret_key', {
+    return jwt.sign({ id }, process.env.JWT_SECRET || 'taggerly_secret_key', {
         expiresIn: '30d'
     });
 };
@@ -136,8 +136,8 @@ exports.register = async (req, res) => {
             const verifyURL = `${req.protocol}://${req.get('host')}/api/auth/verify-email/${verificationToken}`;
             await sendEmail({
                 email: user.email,
-                subject: '🎉 Welcome to Dubizzle Clone - Verify Your Email',
-                message: `Welcome to Dubizzle Clone, ${user.name}! Please verify your email: ${verifyURL}`,
+                subject: '🎉 Welcome to Taggerly - Verify Your Email',
+                message: `Welcome to Taggerly, ${user.name}! Please verify your email: ${verifyURL}`,
                 html: welcomeEmail({ name: user.name, verifyURL })
             });
         } catch (err) {
@@ -359,7 +359,7 @@ exports.resendVerification = async (req, res) => {
         const verifyURL = `${req.protocol}://${req.get('host')}/api/auth/verify-email/${verificationToken}`;
         await sendEmail({
             email: user.email,
-            subject: '✉️ Verify Your Email - Dubizzle Clone',
+            subject: '✉️ Verify Your Email - Taggerly',
             message: `Please verify your email by clicking the link below:\n${verifyURL}`,
             html: emailVerificationEmail({ name: user.name, verifyURL })
         });

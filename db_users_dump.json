@@ -1,0 +1,23 @@
+[
+  {
+    "id": 1,
+    "name": "Test User",
+    "email": "test@example.com",
+    "role": "admin",
+    "hashedPassword": "$2b$12$jtPChmyl..."
+  },
+  {
+    "id": 2,
+    "name": "Admin User",
+    "email": "admin@taggerly.com",
+    "role": "admin",
+    "hashedPassword": "$2b$10$S2YLMX3Z..."
+  },
+  {
+    "id": 3,
+    "name": "Normal User",
+    "email": "user@example.com",
+    "role": "user",
+    "hashedPassword": "$2b$12$Hdu5AOVL..."
+  }
+]

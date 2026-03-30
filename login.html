@@ -80,7 +80,7 @@
             <!-- Header Text -->
             <div class="text-center mb-8">
                 <h2 id="form-title" class="text-3xl font-bold text-gray-900 dark:text-white"
-                    data-translate="welcomeTitle">Join Dubizzle Clone</h2>
+                    data-translate="welcomeTitle">Join Taggerly</h2>
 
                 <p id="form-subtitle" class="mt-2 text-gray-600 dark:text-gray-400" data-translate="welcomeSubtitle">
                     Start buying and selling today</p>
@@ -91,13 +91,13 @@
             <form id="login-form" class="space-y-4">
                 <div>
                     <label class="block text-sm font-medium mb-1" data-translate="emailPlaceholder">Email</label>
-                    <input type="email" required
+                    <input id="login-email" type="email" required
                         class="w-full px-4 py-3 rounded-lg border dark:border-gray-600 dark:bg-gray-700 focus:ring-2 focus:ring-accent outline-none transition"
                         placeholder="example@mail.com">
                 </div>
                 <div>
                     <label class="block text-sm font-medium mb-1" data-translate="passwordPlaceholder">Password</label>
-                    <input type="password" required
+                    <input id="login-password" type="password" required
                         class="w-full px-4 py-3 rounded-lg border dark:border-gray-600 dark:bg-gray-700 focus:ring-2 focus:ring-accent outline-none transition"
                         placeholder="••••••••">
                 </div>
@@ -121,34 +121,34 @@
                     <div>
                         <label class="block text-sm font-medium mb-1" data-translate="firstNamePlaceholder">First
                             Name</label>
-                        <input type="text"
+                        <input id="signup-firstname" type="text"
                             class="w-full px-4 py-3 rounded-lg border dark:border-gray-600 dark:bg-gray-700 focus:ring-2 focus:ring-accent outline-none transition"
                             placeholder="John">
                     </div>
                     <div>
                         <label class="block text-sm font-medium mb-1" data-translate="lastNamePlaceholder">Last
                             Name</label>
-                        <input type="text"
+                        <input id="signup-lastname" type="text"
                             class="w-full px-4 py-3 rounded-lg border dark:border-gray-600 dark:bg-gray-700 focus:ring-2 focus:ring-accent outline-none transition"
                             placeholder="Doe">
                     </div>
                 </div>
                 <div>
                     <label class="block text-sm font-medium mb-1" data-translate="emailPlaceholder">Email</label>
-                    <input type="email" required
+                    <input id="signup-email" type="email" required
                         class="w-full px-4 py-3 rounded-lg border dark:border-gray-600 dark:bg-gray-700 focus:ring-2 focus:ring-accent outline-none transition"
                         placeholder="example@mail.com">
                 </div>
                 <div>
                     <label class="block text-sm font-medium mb-1" data-translate="passwordPlaceholder">Password</label>
-                    <input type="password" required
+                    <input id="signup-password" type="password" required
                         class="w-full px-4 py-3 rounded-lg border dark:border-gray-600 dark:bg-gray-700 focus:ring-2 focus:ring-accent outline-none transition"
                         placeholder="••••••••">
                 </div>
                 <div>
                     <label class="block text-sm font-medium mb-1" data-translate="confirmPasswordPlaceholder">Confirm
                         Password</label>
-                    <input type="password" required
+                    <input id="signup-confirm-password" type="password" required
                         class="w-full px-4 py-3 rounded-lg border dark:border-gray-600 dark:bg-gray-700 focus:ring-2 focus:ring-accent outline-none transition"
                         placeholder="••••••••">
                 </div>
@@ -250,8 +250,8 @@
         // Login Logic
         loginForm.addEventListener('submit', async (e) => {
             e.preventDefault();
-            const email = loginForm.querySelector('input[type="email"]').value;
-            const password = loginForm.querySelector('input[type="password"]').value;
+            const email = document.getElementById('login-email').value;
+            const password = document.getElementById('login-password').value;
 
             try {
                 // Get reCAPTCHA token
@@ -271,12 +271,11 @@
         // Signup Logic
         signupForm.addEventListener('submit', async (e) => {
             e.preventDefault();
-            const inputs = signupForm.querySelectorAll('input');
-            const firstName = inputs[0].value;
-            const lastName = inputs[1].value;
-            const email = inputs[2].value;
-            const password = inputs[3].value;
-            const confirmPassword = inputs[4].value;
+            const firstName = document.getElementById('signup-firstname').value;
+            const lastName = document.getElementById('signup-lastname').value;
+            const email = document.getElementById('signup-email').value;
+            const password = document.getElementById('signup-password').value;
+            const confirmPassword = document.getElementById('signup-confirm-password').value;
 
             if (password !== confirmPassword) {
                 alert(currentLang === 'ar' ? 'كلمات المرور غير متطابقة!' : 'Passwords do not match!');

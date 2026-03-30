@@ -964,9 +964,9 @@ document.addEventListener('DOMContentLoaded', async () => {
                         </svg>
                     ` : ''}
                 </h3>
-                <div class="font-bold text-accent text-xl mb-2">${ad.price} <span class="currency-label">AED</span></div>
+                <div class="font-bold text-accent text-xl mb-2">${ad.price} <span class="currency-label">${(translations[window.currentLang || 'en'] && translations[window.currentLang || 'en'][`currency_${window.selectedCountry || 'uae'}`]) || 'AED'}</span></div>
                 <div class="flex items-center text-gray-500 dark:text-gray-400 text-sm">
-                    <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <svg class="w-4 h-4 mr-1 ml-0 rtl:ml-1 rtl:mr-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"></path>
                     </svg>
                     ${locationHTML}

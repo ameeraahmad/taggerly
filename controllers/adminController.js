@@ -247,7 +247,7 @@ exports.approveAd = async (req, res) => {
             const adURL = `${req.protocol}://${req.get('host')}/ad-details.html?id=${ad.id}`;
             sendEmail({
                 email: ad.user.email,
-                subject: '✅ Your ad is now live on Dubizzle Clone!',
+                subject: '✅ Your ad is now live on Taggerly!',
                 message: `Your ad "${ad.title}" has been approved and is now live.`,
                 html: adApprovedEmail({ userName: ad.user.name, adTitle: ad.title, adURL })
             }).catch(err => console.error('Ad approval email failed:', err));
@@ -283,7 +283,7 @@ exports.rejectAd = async (req, res) => {
         if (ad.user && ad.user.email) {
             sendEmail({
                 email: ad.user.email,
-                subject: '❌ Your Dubizzle Clone ad requires attention',
+                subject: '❌ Your Taggerly ad requires attention',
                 message: `Your ad "${ad.title}" was rejected. Reason: ${reason}`,
                 html: adRejectedEmail({ userName: ad.user.name, adTitle: ad.title, reason })
             }).catch(err => console.error('Ad rejection email failed:', err));

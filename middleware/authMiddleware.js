@@ -13,7 +13,7 @@ const protect = async (req, res, next) => {
     }
 
     try {
-        const decoded = jwt.verify(token, process.env.JWT_SECRET || 'dubizzle_secret_key');
+        const decoded = jwt.verify(token, process.env.JWT_SECRET || 'taggerly_secret_key');
         req.user = await User.findByPk(decoded.id, {
             attributes: { exclude: ['password'] }
         });

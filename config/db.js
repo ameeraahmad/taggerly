@@ -147,6 +147,18 @@ const connectDB = async () => {
                             console.log('➕ Adding "views" column to Ads...');
                             await queryInterface.addColumn('Ads', 'views', { type: Sequelize.INTEGER, defaultValue: 0 });
                         }
+                        if (!tableInfo.bedrooms) {
+                            console.log('➕ Adding "bedrooms" column to Ads...');
+                            await queryInterface.addColumn('Ads', 'bedrooms', { type: Sequelize.INTEGER, allowNull: true });
+                        }
+                        if (!tableInfo.bathrooms) {
+                            console.log('➕ Adding "bathrooms" column to Ads...');
+                            await queryInterface.addColumn('Ads', 'bathrooms', { type: Sequelize.INTEGER, allowNull: true });
+                        }
+                        if (!tableInfo.propertyType) {
+                            console.log('➕ Adding "propertyType" column to Ads...');
+                            await queryInterface.addColumn('Ads', 'propertyType', { type: Sequelize.STRING, allowNull: true });
+                        }
                     } catch (mErr) {
                         console.log('ℹ️ Additional SQLite columns for Ads might already exist.');
                     }

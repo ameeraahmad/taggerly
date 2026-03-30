@@ -181,7 +181,7 @@ exports.sendMessage = async (req, res) => {
 
             sendEmail({
                 email: recipientUser.email,
-                subject: `💬 New message from ${senderUser.name} on Dubizzle Clone`,
+                subject: `💬 New message from ${senderUser.name} on Taggerly`,
                 message: `${senderUser.name} sent you a message: ${message || '(Image)'}`,
                 html: newMessageEmail({
                     userName: recipientUser.name,
