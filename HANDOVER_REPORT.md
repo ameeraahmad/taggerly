@@ -40,3 +40,12 @@ The Taggerly platform is now fully branded, configured, and optimized for immedi
 
 ---
 **Taggerly is now ready for the market.** 🏁
+
+## 📅 Next Steps & Roadmap (Tasks for Tomorrow)
+
+- [ ] **Advanced SEO (JSON-LD):** Implement structured data for ads to appear in Google rich results.
+- [ ] **Seller Analytics Dashboard:** Build a visual chart to show ad performance (views/clicks) over time.
+- [ ] **Quick Chat Responses:** Add pre-defined buttons in the chat (e.g., "Is it still available?") for better engagement.
+- [ ] **Category-Specific Search Filters:** Enhance the search page with detailed filters for the 'Motors' category (Year range, Mileage, etc.).
+- [ ] **Final End-to-End Testing:** Conduct a full user workflow walkthrough (from signup to ad closing).
+
