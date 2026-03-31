@@ -283,7 +283,15 @@ const enTranslations = {
     selectCategory: "Select a category",
     termsConditions: "Terms & Conditions",
     pricePlaceholder: "e.g. 3500",
-    uploadLimits: "PNG, JPG, GIF up to 5MB",
+    uploadLimits: "JPG, PNG, WebP, HEIC up to 10MB",
+    sold: "Sold",
+    archive: "Archive",
+    activeAdsList: "Active Ads",
+    archiveList: "Archive (Sold, Rejected, Deleted)",
+    active: "Active",
+    pending: "Pending",
+    rejected: "Rejected",
+    deleted: "Deleted",
 
     // Categories Page
     motorsTitle: "Motors",

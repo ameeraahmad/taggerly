@@ -273,7 +273,10 @@
                         </div>
                     </div>
 
-                    <div class="bg-orange-50 dark:bg-accent/10 rounded-xl p-4 mb-6">
+                    <div class="bg-orange-50 dark:bg-accent/10 rounded-xl p-4 mb-6 relative">
+                        <div id="sold-badge" class="hidden absolute -top-3 -right-3 bg-red-600 text-white px-4 py-1.5 rounded-full font-bold shadow-lg transform rotate-12 z-10" data-translate="sold">
+                            SOLD
+                        </div>
                         <div class="text-3xl font-bold text-accent mb-0">
                             <span id="priceValue">0</span> <span class="text-lg currency-label">AED</span>
                         </div>
@@ -500,6 +503,25 @@
                 // Update Price & Views
                 document.getElementById('priceValue').textContent = ad.price.toLocaleString();
                 document.getElementById('viewCount').textContent = ad.views || 0;
+
+                // Handle Sold Status
+                if (ad.status === 'sold') {
+                    const soldBadge = document.getElementById('sold-badge');
+                    if (soldBadge) soldBadge.classList.remove('hidden');
+                    
+                    // Disable contact buttons if sold
+                    const chatBtn = document.getElementById('chat-seller-btn');
+                    const callBtn = document.getElementById('call-seller-btn');
+                    if (chatBtn) {
+                        chatBtn.disabled = true;
+                        chatBtn.classList.add('opacity-50', 'cursor-not-allowed');
+                        chatBtn.innerHTML = '<span>Item Sold</span>';
+                    }
+                    if (callBtn) {
+                        callBtn.disabled = true;
+                        callBtn.classList.add('opacity-50', 'cursor-not-allowed');
+                    }
+                }
 
                 if (ad.createdAt) {
                     const date = new Date(ad.createdAt);

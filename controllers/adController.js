@@ -215,6 +215,37 @@ exports.updateAd = async (req, res) => {
             return res.status(403).json({ success: false, message: 'Not authorized' });
         }
 
+        // Apply restrictions for non-admin users
+        if (req.user.role !== 'admin') {
+            // 1. Check max edits (3 times)
+            if (ad.editCount >= 3) {
+                return res.status(400).json({ 
+                    success: false, 
+                    message: req.headers['accept-language']?.includes('ar') ? 'لقد تجاوزت الحد الأقصى للتعديلات (3 مرات).' : 'You have reached the maximum number of edits (3).'
+                });
+            }
+
+            // 2. Check cooldown (3 hours)
+            if (ad.lastEditedAt) {
+                const threeHoursInMs = 3 * 60 * 60 * 1000;
+                const timeDiff = new Date() - new Date(ad.lastEditedAt);
+                if (timeDiff < threeHoursInMs) {
+                    const remainingMinutes = Math.ceil((threeHoursInMs - timeDiff) / (60 * 1000));
+                    return res.status(400).json({ 
+                        success: false, 
+                        message: req.headers['accept-language']?.includes('ar') 
+                            ? `يجب الانتظار لمدة 3 ساعات بين كل تعديل والآخر. المتبقي: ${remainingMinutes} دقيقة.` 
+                            : `You must wait 3 hours between edits. Remaining: ${remainingMinutes} minutes.`
+                    });
+                }
+            }
+
+            // 3. Mark for re-approval
+            req.body.status = 'pending';
+            req.body.editCount = ad.editCount + 1;
+            req.body.lastEditedAt = new Date();
+        }
+
         // Handle new images if uploaded
         let newImages = [];
         if (req.files && req.files.length > 0 && process.env.CLOUDINARY_CLOUD_NAME) {
@@ -225,13 +256,18 @@ exports.updateAd = async (req, res) => {
             newImages = req.body.images.map(filename => `${protocol}://${host}/uploads/${filename}`);
         }
 
-        if (newImages.length > 0) {
-            let currentImages = ad.images || [];
-            // If the user sent existing images in the request (e.g. they kept some old ones)
-            // Note: In createAd we usually replace, in update we might append.
-            // But if resizeImages already processed them, req.body.images contains ONLY the new ones.
-            // We should check if req.body.existingImages exists or similar, or just replace if provided.
-            req.body.images = [...currentImages, ...newImages];
+        if (newImages.length > 0 || req.body.existingImages) {
+            let imagesToKeep = [];
+            if (req.body.existingImages) {
+                try {
+                    imagesToKeep = JSON.parse(req.body.existingImages);
+                } catch (e) {
+                    imagesToKeep = ad.images || [];
+                }
+            } else {
+                imagesToKeep = ad.images || [];
+            }
+            req.body.images = [...imagesToKeep, ...newImages];
         }
 
         await ad.update(req.body);

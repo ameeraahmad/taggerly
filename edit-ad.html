@@ -232,6 +232,68 @@
             const categorySelect = document.getElementById('ad-category');
             const additionalDetails = document.getElementById('additional-details');
 
+            // Handle Image Management
+            let selectedFiles = [];
+            let existingImages = [];
+
+            const renderNewPreviews = () => {
+                previewContainer.innerHTML = '';
+                selectedFiles.forEach((file, index) => {
+                    const reader = new FileReader();
+                    reader.onload = (e) => {
+                        const previewHtml = `
+                            <div class="relative group h-24 bg-gray-100 dark:bg-gray-700 rounded-md overflow-hidden border dark:border-gray-600">
+                                <img src="${e.target.result}" class="w-full h-full object-cover">
+                                <button type="button" onclick="removeNewFile(${index})" 
+                                    class="absolute top-1 right-1 bg-red-500 text-white rounded-full p-1 opacity-100 sm:opacity-0 group-hover:opacity-100 transition shadow-md hover:bg-red-600">
+                                    <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+                                    </svg>
+                                </button>
+                            </div>
+                        `;
+                        previewContainer.insertAdjacentHTML('beforeend', previewHtml);
+                    };
+                    reader.readAsDataURL(file);
+                });
+            };
+
+            const renderExistingImages = () => {
+                const existingContainer = document.getElementById('existing-images-container');
+                const existingList = document.getElementById('existing-images-list');
+                
+                if (existingImages.length === 0) {
+                    existingContainer.classList.add('hidden');
+                    return;
+                }
+
+                existingContainer.classList.remove('hidden');
+                existingList.innerHTML = '';
+                existingImages.forEach((img, index) => {
+                    existingList.insertAdjacentHTML('beforeend', `
+                        <div class="relative group h-24 bg-gray-100 dark:bg-gray-700 rounded-md overflow-hidden border dark:border-gray-600">
+                            <img src="${img}" class="w-full h-full object-cover">
+                            <button type="button" onclick="removeExistingImage(${index})" 
+                                class="absolute top-1 right-1 bg-red-500 text-white rounded-full p-1 opacity-100 sm:opacity-0 group-hover:opacity-100 transition shadow-md hover:bg-red-600">
+                                <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+                                </svg>
+                            </button>
+                        </div>
+                    `);
+                });
+            };
+
+            window.removeNewFile = (index) => {
+                selectedFiles.splice(index, 1);
+                renderNewPreviews();
+            };
+
+            window.removeExistingImage = (index) => {
+                existingImages.splice(index, 1);
+                renderExistingImages();
+            };
+
             // Load Existing Data
             try {
                 const response = await apiClient.getAd(adId);
@@ -244,7 +306,7 @@
                     return;
                 }
 
-                // Switch global context to the ad's country so dropdowns and currencies match
+                // Switch global context to the ad's country
                 if (ad.country && window.setCountry) {
                     const flags = { 'uae': '🇦🇪', 'egypt': '🇪🇬', 'ksa': '🇸🇦', 'qatar': '🇶🇦' };
                     const names = { 'uae': 'UAE', 'egypt': 'Egypt', 'ksa': 'Saudi Arabia', 'qatar': 'Qatar' };
@@ -264,23 +326,11 @@
                 document.getElementById('ad-status').value = ad.status;
 
                 // Toggle fields based on category
-                if (ad.category === 'Motors') additionalDetails.style.display = 'grid';
-                else additionalDetails.style.display = 'none';
+                additionalDetails.style.display = ad.category === 'Motors' ? 'grid' : 'none';
 
-                // Display Existing Images
-                if (ad.images && ad.images.length > 0) {
-                    const existingContainer = document.getElementById('existing-images-container');
-                    const existingList = document.getElementById('existing-images-list');
-                    existingContainer.classList.remove('hidden');
-                    existingList.innerHTML = '';
-                    ad.images.forEach(img => {
-                        existingList.insertAdjacentHTML('beforeend', `
-                            <div class="relative h-24 bg-gray-100 rounded-md overflow-hidden border">
-                                <img src="${img}" class="w-full h-full object-cover">
-                            </div>
-                        `);
-                    });
-                }
+                // Store and render existing images
+                existingImages = ad.images || [];
+                renderExistingImages();
 
             } catch (err) {
                 console.error('Error fetching ad:', err);
@@ -292,18 +342,10 @@
             });
 
             fileInput.addEventListener('change', () => {
-                previewContainer.innerHTML = '';
-                Array.from(fileInput.files).forEach(file => {
-                    const reader = new FileReader();
-                    reader.onload = (e) => {
-                        previewContainer.insertAdjacentHTML('beforeend', `
-                            <div class="relative h-24 bg-gray-100 rounded-md overflow-hidden border">
-                                <img src="${e.target.result}" class="w-full h-full object-cover">
-                            </div>
-                        `);
-                    };
-                    reader.readAsDataURL(file);
-                });
+                const files = Array.from(fileInput.files);
+                selectedFiles = [...selectedFiles, ...files];
+                renderNewPreviews();
+                fileInput.value = '';
             });
 
             form.addEventListener('submit', async (e) => {
@@ -321,9 +363,13 @@
                 formData.append('itemCondition', document.getElementById('ad-condition').value);
                 formData.append('phone', document.getElementById('ad-phone').value);
                 formData.append('status', document.getElementById('ad-status').value);
+                
+                // Send list of existing images to keep
+                formData.append('existingImages', JSON.stringify(existingImages));
 
-                if (fileInput.files.length > 0) {
-                    Array.from(fileInput.files).forEach(file => {
+                // Add new images
+                if (selectedFiles.length > 0) {
+                    selectedFiles.forEach(file => {
                         formData.append('images', file);
                     });
                 }

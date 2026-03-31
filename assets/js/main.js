@@ -347,14 +347,15 @@ document.addEventListener('DOMContentLoaded', async () => {
         window.updateDynamicContent(window.selectedCountry, window.currentLang);
     };
 
-    window.initCountryDropdown = function () {
+    window.initCountryDropdown = async function () {
         const countryOptions = document.querySelectorAll('.country-option');
         const currentCountryFlag = document.getElementById('current-country-flag');
         const currentCountryName = document.getElementById('current-country-name');
 
+        const storedCountry = localStorage.getItem('selectedCountry');
+
         if (countryOptions.length > 0) {
             countryOptions.forEach(opt => {
-                // Remove existing to avoid duplicates if re-initialized
                 opt.onclick = (e) => {
                     e.preventDefault();
                     const country = opt.getAttribute('data-country') || 'uae';
@@ -364,11 +365,28 @@ document.addEventListener('DOMContentLoaded', async () => {
                 };
             });
 
-            // Initialize from storage or defaults
-            const storedCountry = localStorage.getItem('selectedCountry') || 'uae';
-            const storedFlag = localStorage.getItem('selectedCountryFlag') || '🇦🇪';
-            const storedName = localStorage.getItem('selectedCountryName') || 'uae';
-            window.setCountry(storedCountry, storedFlag, storedName);
+            if (storedCountry) {
+                // If we have a stored preference, use it
+                const storedFlag = localStorage.getItem('selectedCountryFlag') || '🇦🇪';
+                const storedName = localStorage.getItem('selectedCountryName') || 'uae';
+                window.setCountry(storedCountry, storedFlag, storedName);
+            } else {
+                // IP-based Geo-location (First time visit)
+                try {
+                    const res = await fetch('https://ipapi.co/json/');
+                    const ipData = await res.json();
+                    const countryCode = ipData.country_code?.toLowerCase();
+                    const countryMap = { 'ae': 'uae', 'eg': 'egypt', 'sa': 'ksa', 'qa': 'qatar' };
+                    const detectedCountry = countryMap[countryCode] || 'uae';
+                    const flags = { 'uae': '🇦🇪', 'egypt': '🇪🇬', 'ksa': '🇸🇦', 'qatar': '🇶🇦' };
+                    const names = { 'uae': (window.currentLang === 'ar' ? 'الإمارات' : 'UAE'), 'egypt': (window.currentLang === 'ar' ? 'مصر' : 'Egypt'), 'ksa': (window.currentLang === 'ar' ? 'السعودية' : 'KSA'), 'qatar': (window.currentLang === 'ar' ? 'قطر' : 'Qatar') };
+                    
+                    window.setCountry(detectedCountry, flags[detectedCountry], names[detectedCountry]);
+                } catch (err) {
+                    // Fallback to UAE if geo-detection fails
+                    window.setCountry('uae', '🇦🇪', 'UAE');
+                }
+            }
         }
     };
 

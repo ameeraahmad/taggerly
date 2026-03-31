@@ -92,6 +92,14 @@ const Ad = sequelize.define('Ad', {
     rejectionReason: {
         type: DataTypes.TEXT,
         allowNull: true
+    },
+    editCount: {
+        type: DataTypes.INTEGER,
+        defaultValue: 0
+    },
+    lastEditedAt: {
+        type: DataTypes.DATE,
+        allowNull: true
     }
 }, {
     timestamps: true

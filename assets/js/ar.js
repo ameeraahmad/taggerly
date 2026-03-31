@@ -289,7 +289,15 @@ const arTranslations = {
     homeGarden: "المنزل والحديقة",
     termsConditions: "الشروط والأحكام",
     pricePlaceholder: "مثال: 3500",
-    uploadLimits: "PNG, JPG, GIF بحد أقصى 5 ميجابايت",
+    uploadLimits: "JPG, PNG, WebP, HEIC (حتى 10 ميجابايت)",
+    sold: "تم البيع",
+    archive: "الأرشيف",
+    activeAdsList: "الإعلانات النشطة",
+    archiveList: "أرشيف الإعلانات (المباعة، المرفوضة، المحذوفة)",
+    active: "نشط",
+    pending: "قيد الانتظار",
+    rejected: "مرفوض",
+    deleted: "محذوف",
 
     // Categories Page
     motorsTitle: "موتورات",

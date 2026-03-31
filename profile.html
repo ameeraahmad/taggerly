@@ -154,7 +154,7 @@
                                         d="M5.05 4.05a7 7 0 119.9 9.9L10 18.9l-4.95-4.95a7 7 0 010-9.9zM10 11a2 2 0 100-4 2 2 0 000 4z"
                                         clip-rule="evenodd"></path>
                                 </svg>
-                                <span id="profile-location-display" class="city-label">Dubai, UAE</span>
+                                <span id="profile-location-display" class="city-label">-</span>
                             </p>
                         </div>
                     </div>
@@ -201,7 +201,7 @@
                                 <p class="text-sm text-gray-500 dark:text-gray-400 font-medium"
                                     data-translate="location">Location</p>
                                 <p id="profile-location-info"
-                                    class="text-lg text-gray-900 dark:text-white font-semibold">Dubai, UAE</p>
+                                    class="text-lg text-gray-900 dark:text-white font-semibold">-</p>
                             </div>
                         </div>
                     </div>
@@ -728,12 +728,13 @@
                     if (mainImg) mainImg.src = defaultAvatar;
                 }
 
+                const currentCountryName = localStorage.getItem('selectedCountryName') || 'UAE';
                 document.getElementById('profile-name-display').textContent = user.name;
-                document.getElementById('profile-location-display').textContent = user.location || 'Location not set';
+                document.getElementById('profile-location-display').textContent = user.location || currentCountryName;
 
                 document.getElementById('profile-name-info').textContent = user.name;
-                document.getElementById('profile-bio-info').textContent = user.bio || 'No bio provided.';
-                document.getElementById('profile-location-info').textContent = user.location || 'Location not set';
+                document.getElementById('profile-bio-info').textContent = user.bio || (currentLang === 'ar' ? 'لا يوجد وصف.' : 'No bio provided.');
+                document.getElementById('profile-location-info').textContent = user.location || currentCountryName;
 
                 document.getElementById('profile-email-info').textContent = user.email;
                 document.getElementById('profile-phone-info').textContent = user.phone || 'Not provided';

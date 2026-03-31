@@ -23,7 +23,7 @@ if (process.env.CLOUDINARY_CLOUD_NAME) {
         cloudinary: cloudinary,
         params: {
             folder: 'taggerly_ads',
-            allowed_formats: ['jpg', 'png', 'jpeg', 'webp'],
+            allowed_formats: ['jpg', 'png', 'jpeg', 'webp', 'heic', 'heif', 'avif', 'jfif'],
             transformation: [{ width: 1200, height: 1200, crop: 'limit', quality: 'auto' }]
         },
     });
@@ -89,7 +89,7 @@ const resizeAvatar = async (req, res, next) => {
 
 // Check file type
 function checkFileType(file, cb) {
-    const filetypes = /jpeg|jpg|png|gif|webp/;
+    const filetypes = /jpeg|jpg|png|gif|webp|heic|heif|jfif|avif|bmp|tiff/;
     const extname = filetypes.test(path.extname(file.originalname).toLowerCase());
     const mimetype = filetypes.test(file.mimetype);
 
