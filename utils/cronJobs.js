@@ -33,6 +33,7 @@ const initCronJobs = (io) => {
                     type: 'ad_expiring',
                     title: 'Ad Expired',
                     message: `Your ad "${ad.title}" has expired after 30 days. You can renew it from your dashboard.`,
+                    link: `ad-details.html?id=${ad.id}`,
                     relatedId: ad.id
                 });
             }
@@ -93,6 +94,7 @@ const initCronJobs = (io) => {
                     type: 'system',
                     title: 'Promotion Ended',
                     message: `The promotion period for your ad "${ad.title}" has ended.`,
+                    link: `ad-details.html?id=${ad.id}`,
                     relatedId: ad.id
                 });
             }

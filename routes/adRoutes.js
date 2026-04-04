@@ -6,6 +6,7 @@ const {
     createAd,
     updateAd,
     deleteAd,
+    permanentlyDeleteAd,
     getUserAds,
     toggleFavorite,
     getFavorites,
@@ -29,7 +30,9 @@ const verifyCaptcha = require('../middleware/captcha');
 // Private routes
 router.post('/', protect, verifyCaptcha, upload.array('images', 5), resizeImages, adValidation, validate, createAd);
 router.post('/:id/favorite', protect, toggleFavorite);
+router.patch('/:id/status', protect, updateAd); // New: Status update (no full validation)
 router.put('/:id', protect, upload.array('images', 5), resizeImages, adValidation, validate, updateAd);
+router.delete('/:id/permanent', protect, permanentlyDeleteAd); // New: Permanent delete
 router.delete('/:id', protect, deleteAd);
 
 module.exports = router;

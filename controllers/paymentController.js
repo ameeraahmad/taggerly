@@ -177,6 +177,7 @@ async function fulfillOrder(session, io) {
                 type: 'payment',
                 title: '🌟 Your Ad is now Featured!',
                 message: `Your ad has been featured successfully for ${payment.durationDays} days.`,
+                link: `ad-details.html?id=${adId}`,
                 relatedId: parseInt(adId)
             });
         } else {
@@ -193,6 +194,7 @@ async function fulfillOrder(session, io) {
                 type: 'payment',
                 title: '✅ Payment Successful!',
                 message: `Your ${plan.charAt(0).toUpperCase() + plan.slice(1)} plan is now active for ${payment.durationDays} days.`,
+                link: `dashboard.html`,
             });
         }
 

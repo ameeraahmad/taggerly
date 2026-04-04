@@ -110,8 +110,21 @@ const apiClient = {
         });
     },
 
+    async updateAdStatus(id, statusData) {
+        return this.fetch(`/ads/${id}/status`, {
+            method: 'PATCH',
+            body: JSON.stringify(statusData),
+        });
+    },
+
     async deleteAd(id) {
         return this.fetch(`/ads/${id}`, {
+            method: 'DELETE',
+        });
+    },
+
+    async permanentlyDeleteAd(id) {
+        return this.fetch(`/ads/${id}/permanent`, {
             method: 'DELETE',
         });
     },
@@ -177,8 +190,10 @@ const apiClient = {
         });
     },
 
-    async getSellerReviews(sellerId) {
-        return this.fetch(`/reviews/seller/${sellerId}`);
+    async getSellerReviews(sellerId, adId = null) {
+        let url = `/reviews/seller/${sellerId}`;
+        if (adId) url += `?adId=${adId}`;
+        return this.fetch(url);
     },
 
     // User Profile

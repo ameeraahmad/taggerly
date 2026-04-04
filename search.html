@@ -139,6 +139,18 @@
                     <div id="advanced-filters" class="border-t pt-4 mt-4 hidden">
                         <h3 class="text-xs font-bold text-accent mb-3 uppercase tracking-wider">Advanced Filters</h3>
 
+                        <!-- Classifieds (Electronics/Mobiles/etc) -->
+                        <div id="filter-classifieds-group" class="space-y-4 mb-6 hidden">
+                            <div>
+                                <label class="text-xs text-gray-400 font-bold block mb-1">CONDITION</label>
+                                <select id="filter-condition" class="w-full border border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-white rounded px-2 py-1 text-sm">
+                                    <option value="">Any</option>
+                                    <option value="New">New</option>
+                                    <option value="Used">Used</option>
+                                </select>
+                            </div>
+                        </div>
+
                         <!-- Motors -->
                         <div id="filter-motors-group" class="space-y-4 mb-6 hidden">
                             <div>
@@ -159,6 +171,15 @@
 
                         <!-- Property -->
                         <div id="filter-property-group" class="space-y-4 mb-6 hidden">
+                            <div>
+                                <label class="text-xs text-gray-400 font-bold block mb-1">PROPERTY TYPE</label>
+                                <select id="filter-propertyType" class="w-full border border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-white rounded px-2 py-1 text-sm">
+                                    <option value="">Any</option>
+                                    <option value="Apartment">Apartment</option>
+                                    <option value="Villa">Villa</option>
+                                    <option value="Office">Office</option>
+                                </select>
+                            </div>
                             <div>
                                 <label class="text-xs text-gray-400 font-bold block mb-1">BEDROOMS</label>
                                 <select id="filter-bedrooms" class="w-full border border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-white rounded px-2 py-1 text-sm">
@@ -214,7 +235,7 @@
                     </div>
                 </div>
 
-                <div class="space-y-4">
+                <div id="search-results-container" class="space-y-4">
                     <!-- Result Item 1 -->
                     <div
                         class="bg-white dark:bg-gray-800 border dark:border-gray-700 rounded-xl overflow-hidden shadow-sm hover:shadow-md transition flex flex-col sm:flex-row group animate-fade-in">
@@ -436,7 +457,7 @@
 
                 const response = await apiClient.getAds(params);
                 const results = response.data;
-                const container = document.querySelector('.space-y-4');
+                const container = document.getElementById('search-results-container');
                 container.innerHTML = '';
 
                 // Update count display
@@ -461,6 +482,7 @@
 
                 results.forEach(ad => {
                     const locationHTML = window.formatAdLocation(ad.city, ad.country, 'city-label');
+                    const isFav = (window.userFavorites || []).includes(ad.id);
 
                     const adCard = `
                         <div class="bg-white dark:bg-gray-800 border dark:border-gray-700 rounded-xl overflow-hidden shadow-sm hover:shadow-lg transition-all flex flex-col sm:flex-row group animate-fade-in relative cursor-pointer" onclick="window.location.href='ad-details.html?id=${ad.id}'">
@@ -479,11 +501,11 @@
                                                 </svg>
                                             ` : ''}
                                         </h3>
-                                        <button class="text-gray-300 hover:text-red-500 transition-colors" onclick="event.stopPropagation(); toggleFav(${ad.id}, this)">
-                                            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"></path></svg>
+                                        <button class="wishlist-btn text-gray-300 hover:text-red-500 transition-colors ${isFav ? 'text-red-500' : ''}" onclick="event.stopPropagation(); toggleFav(${ad.id}, this)">
+                                            <svg class="w-6 h-6" fill="${isFav ? 'currentColor' : 'none'}" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"></path></svg>
                                         </button>
                                     </div>
-                                    <div class="text-2xl font-black text-accent mt-1 mb-3">${ad.price.toLocaleString()} <span class="text-sm font-bold">AED</span></div>
+                                    <div class="text-2xl font-black text-accent mt-1 mb-3">${ad.price.toLocaleString()} <span class="text-sm font-bold">${window.getCurrencySymbol()}</span></div>
                                     <p class="text-gray-500 dark:text-gray-400 text-sm mb-4 line-clamp-2">${ad.description}</p>
                                 </div>
                                 <div class="flex justify-between items-center text-[11px] font-bold text-gray-400 dark:text-gray-500 pt-4 border-t dark:border-gray-700/50 uppercase tracking-wider leading-none">
@@ -557,25 +579,45 @@
         document.addEventListener('DOMContentLoaded', () => {
             const urlParams = new URLSearchParams(window.location.search);
             const initialParams = {};
+            const searchInput = document.querySelector('.search-input');
 
             // Sync Search Bar with Query
-            const searchInput = document.querySelector('.search-input');
             const query = urlParams.get('search') || urlParams.get('q');
             if (query) {
                 initialParams.search = query;
                 if (searchInput) searchInput.value = query;
             }
+
+            const locName = urlParams.get('loc');
+            if (locName && searchInput && !query) {
+                searchInput.placeholder = `${window.translations?.[window.currentLang]?.ads || 'Ads'} near ${locName}`;
+            }
+
+            if (urlParams.get('lat') && urlParams.get('lng')) {
+                initialParams.lat = urlParams.get('lat');
+                initialParams.lng = urlParams.get('lng');
+                initialParams.radius = urlParams.get('radius') || 50;
+                initialParams.loc = locName; 
+            }
+
             if (urlParams.get('category')) {
                 initialParams.category = urlParams.get('category');
                 const radio = document.querySelector(`input[name="category"][value="${urlParams.get('category')}"]`);
                 if (radio) radio.checked = true;
             }
 
-            // Always use the selected country for the initial search to match the user's location setting
-            initialParams.country = window.selectedCountry || localStorage.getItem('country') || 'uae';
+            window.currentSearchParams = initialParams;
+
+            const currentCountry = window.selectedCountry || localStorage.getItem('selectedCountry') || 'uae';
+            initialParams.country = currentCountry;
             loadSearchResults(initialParams);
 
-            // Filter Application logic
+            // Listen for country changes
+            window.addEventListener('countryChanged', (e) => {
+                const newParams = { ...window.currentSearchParams, country: e.detail.country };
+                loadSearchResults(newParams);
+            });
+
             const applyBtn = document.querySelector('button[data-translate="applyFilters"]');
             const resetBtn = document.querySelector('button[data-translate="reset"]');
 
@@ -584,19 +626,28 @@
                 const advanced = document.getElementById('advanced-filters');
                 const motors = document.getElementById('filter-motors-group');
                 const property = document.getElementById('filter-property-group');
+                const classifieds = document.getElementById('filter-classifieds-group');
 
                 if (category === 'Motors') {
                     advanced.classList.remove('hidden');
                     motors.classList.remove('hidden');
                     property.classList.add('hidden');
+                    classifieds.classList.add('hidden');
                 } else if (category === 'Property') {
                     advanced.classList.remove('hidden');
                     motors.classList.add('hidden');
                     property.classList.remove('hidden');
+                    classifieds.classList.add('hidden');
+                } else if (['Electronics', 'Mobiles', 'Furniture', 'Classifieds'].includes(category)) {
+                    advanced.classList.remove('hidden');
+                    motors.classList.add('hidden');
+                    property.classList.add('hidden');
+                    classifieds.classList.remove('hidden');
                 } else {
                     advanced.classList.add('hidden');
                     motors.classList.add('hidden');
                     property.classList.add('hidden');
+                    classifieds.classList.add('hidden');
                 }
             };
 
@@ -607,7 +658,8 @@
                 const category = document.querySelector('input[name="category"]:checked')?.value || '';
                 const minPrice = document.querySelector('input[data-translate="minPrice"]').value;
                 const maxPrice = document.querySelector('input[data-translate="maxPrice"]').value;
-                const city = document.getElementById('filter-location').value;
+                const citySelect = document.getElementById('filter-location');
+                const city = citySelect?.value || '';
                 const sortBy = document.getElementById('sort-by').value;
                 const search = document.querySelector('.search-input')?.value || '';
 
@@ -619,8 +671,11 @@
                 const bedrooms = document.getElementById('filter-bedrooms').value;
                 const minArea = document.getElementById('minArea').value;
                 const maxArea = document.getElementById('maxArea').value;
+                const propertyType = document.getElementById('filter-propertyType').value;
+                const condition = document.getElementById('filter-condition').value;
 
                 const params = {
+                    ...window.currentSearchParams, // Preserve lat/lng/loc if they were already there
                     country: window.selectedCountry || localStorage.getItem('country') || 'uae',
                     category,
                     minPrice,
@@ -629,12 +684,25 @@
                     sortBy,
                     search,
                     minYear, maxYear, minKm, maxKm,
-                    bedrooms, minArea, maxArea
+                    bedrooms, minArea, maxArea,
+                    propertyType, condition
                 };
+
+                // IMPORTANT: If user explicitly selects a different city from the dropdown,
+                // we should clear the manual GPS search to prevent conflicts.
+                if (city && !city.toLowerCase().includes('all')) {
+                    delete params.lat;
+                    delete params.lng;
+                    delete params.radius;
+                    delete params.loc;
+                    const searchInput = document.querySelector('.search-input');
+                    if (searchInput) searchInput.placeholder = window.translations?.[window.currentLang]?.searchPlaceholder || 'Search...';
+                }
 
                 // Remove empty params
                 Object.keys(params).forEach(key => !params[key] && delete params[key]);
 
+                window.currentSearchParams = params;
                 loadSearchResults(params);
             };
 

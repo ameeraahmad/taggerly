@@ -24,9 +24,141 @@ window.formatAdLocation = function (city, country, cityClass = 'city-label') {
         : '';
 };
 
+// Global helper to get current currency symbol
+window.getCurrencySymbol = function() {
+    const country = localStorage.getItem('selectedCountry') || 'uae';
+    const lang = window.currentLang || 'en';
+    const currencyKey = `currency_${country}`;
+    return (translations[lang] && translations[lang][currencyKey]) || 'AED';
+};
+
+window.updateCurrencyLabels = function() {
+    const symbol = window.getCurrencySymbol();
+    document.querySelectorAll('.currency-label').forEach(el => el.textContent = symbol);
+};
+
+// --- Custom Global Modals (Alert/Confirm) ---
+window.customConfirm = function(message) {
+    return new Promise((resolve) => {
+        const overlay = document.createElement('div');
+        overlay.className = 'fixed inset-0 bg-black/60 z-[9999] flex items-center justify-center opacity-0 transition-opacity duration-300 backdrop-blur-sm';
+        
+        const modal = document.createElement('div');
+        modal.className = 'bg-white dark:bg-gray-800 rounded-2xl shadow-2xl p-6 max-w-sm w-full mx-4 transform scale-95 transition-transform duration-300 flex flex-col items-center text-center border dark:border-gray-700';
+        
+        const icon = document.createElement('div');
+        icon.className = 'w-16 h-16 bg-orange-100 dark:bg-orange-900/30 rounded-full flex items-center justify-center mb-4 text-accent shadow-inner';
+        icon.innerHTML = '<svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8.228 9c.549-1.165 2.03-2 3.772-2 2.21 0 4 1.343 4 3 0 1.4-1.278 2.575-3.006 2.907-.542.104-.994.54-.994 1.093m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>';
+        
+        const text = document.createElement('p');
+        text.className = 'text-gray-800 dark:text-gray-200 font-bold mb-6 leading-relaxed';
+        text.textContent = message;
+        
+        const btnContainer = document.createElement('div');
+        btnContainer.className = 'flex justify-center w-full gap-3';
+        
+        const lang = window.currentLang || 'en';
+        const okText = window.translations?.[lang]?.confirm || 'Confirm';
+        const cancelText = window.translations?.[lang]?.cancel || 'Cancel';
+        
+        const cancelBtn = document.createElement('button');
+        cancelBtn.className = 'flex-1 py-2.5 px-4 bg-gray-100 hover:bg-gray-200 dark:bg-gray-700 dark:hover:bg-gray-600 text-gray-800 dark:text-gray-200 rounded-xl font-bold transition';
+        cancelBtn.textContent = cancelText;
+        
+        const okBtn = document.createElement('button');
+        okBtn.className = 'flex-1 py-2.5 px-4 bg-accent hover:bg-orange-600 text-white rounded-xl font-bold transition shadow-lg shadow-orange-500/30';
+        okBtn.textContent = okText;
+        
+        btnContainer.appendChild(cancelBtn);
+        btnContainer.appendChild(okBtn);
+        
+        modal.appendChild(icon);
+        modal.appendChild(text);
+        modal.appendChild(btnContainer);
+        overlay.appendChild(modal);
+        document.body.appendChild(overlay);
+        
+        requestAnimationFrame(() => {
+            overlay.classList.remove('opacity-0');
+            modal.classList.remove('scale-95');
+        });
+        
+        const close = (result) => {
+            overlay.classList.add('opacity-0');
+            modal.classList.add('scale-95');
+            setTimeout(() => {
+                document.body.removeChild(overlay);
+                resolve(result);
+            }, 300);
+        };
+        
+        cancelBtn.onclick = () => close(false);
+        okBtn.onclick = () => close(true);
+    });
+};
+
+window.customAlert = function(message) {
+    return new Promise((resolve) => {
+        const overlay = document.createElement('div');
+        overlay.className = 'fixed inset-0 bg-black/60 z-[9999] flex items-center justify-center opacity-0 transition-opacity duration-300 backdrop-blur-sm';
+        
+        const modal = document.createElement('div');
+        modal.className = 'bg-white dark:bg-gray-800 rounded-2xl shadow-2xl p-6 max-w-sm w-full mx-4 transform scale-95 transition-transform duration-300 flex flex-col items-center text-center border dark:border-gray-700';
+        
+        const icon = document.createElement('div');
+        icon.className = 'w-16 h-16 bg-blue-100 dark:bg-blue-900/30 rounded-full flex items-center justify-center mb-4 text-blue-500 shadow-inner';
+        icon.innerHTML = '<svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>';
+        
+        const text = document.createElement('p');
+        text.className = 'text-gray-800 dark:text-gray-200 font-bold mb-6 break-words w-full leading-relaxed';
+        text.textContent = message;
+        
+        const lang = window.currentLang || 'en';
+        const okText = window.translations?.[lang]?.done || 'OK';
+        
+        const okBtn = document.createElement('button');
+        okBtn.className = 'w-full py-2.5 px-4 bg-primary hover:bg-blue-900 text-white rounded-xl font-bold transition shadow-lg shadow-blue-900/20';
+        okBtn.textContent = okText;
+        
+        modal.appendChild(icon);
+        modal.appendChild(text);
+        modal.appendChild(okBtn);
+        overlay.appendChild(modal);
+        document.body.appendChild(overlay);
+        
+        requestAnimationFrame(() => {
+            overlay.classList.remove('opacity-0');
+            modal.classList.remove('scale-95');
+        });
+        
+        const close = () => {
+            overlay.classList.add('opacity-0');
+            modal.classList.add('scale-95');
+            setTimeout(() => {
+                document.body.removeChild(overlay);
+                resolve();
+            }, 300);
+        };
+        
+        okBtn.onclick = close;
+    });
+};
+
 document.addEventListener('DOMContentLoaded', async () => {
+    // --- Initialize Global State from LocalStorage IMMEDIATELY ---
+    window.selectedCountry = localStorage.getItem('selectedCountry') || 'uae';
+    window.currentLang = localStorage.getItem('lang') || 'en';
+
     // 1. First Load Global Header if placeholder exists
     await loadGlobalHeader();
+    await loadUserFavorites();
+    
+    // 2. Update all currency labels for the current country
+    if (window.updateCurrencyLabels) window.updateCurrencyLabels();
+    else if (typeof getCurrencySymbol === 'function') {
+        const symbol = getCurrencySymbol();
+        document.querySelectorAll('.currency-label').forEach(el => el.textContent = symbol);
+    }
 
     const htmlToUpdate = document.documentElement;
 
@@ -67,7 +199,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     const verifiedStatus = urlParams.get('verified');
     if (verifiedStatus === 'success') {
         const lang = window.currentLang || 'en';
-        alert(translations[lang].emailVerified || 'Email verified successfully!');
+        await customAlert(translations[lang].emailVerified || 'Email verified successfully!');
         const user = JSON.parse(localStorage.getItem('user'));
         if (user) {
             user.isEmailVerified = true;
@@ -78,7 +210,7 @@ document.addEventListener('DOMContentLoaded', async () => {
         window.history.replaceState({}, document.title, window.location.pathname);
     } else if (verifiedStatus === 'error') {
         const lang = window.currentLang || 'en';
-        alert(translations[lang].invalidToken || 'Invalid or expired verification link');
+        await customAlert(translations[lang].invalidToken || 'Invalid or expired verification link');
         window.history.replaceState({}, document.title, window.location.pathname);
     }
 
@@ -86,8 +218,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     const countryOptions = document.querySelectorAll('.country-option');
     const currentCountryFlag = document.getElementById('current-country-flag');
     const currentCountryName = document.getElementById('current-country-name');
-    window.selectedCountry = localStorage.getItem('selectedCountry') || 'uae';
-    window.currentLang = localStorage.getItem('lang') || 'en';
+    // Already handled at the top
 
     // --- Socket.io Global Initialization & Notifications ---
     if (typeof io !== 'undefined') {
@@ -155,33 +286,52 @@ document.addEventListener('DOMContentLoaded', async () => {
         audio.play().catch(err => console.warn('Sound play blocked by browser:', err));
     }
 
-    function showNotificationToast(msg) {
+    function showNotificationToast(data) {
         const existingToasts = document.querySelectorAll('.notification-toast');
         existingToasts.forEach(t => t.remove());
 
         const toast = document.createElement('div');
         toast.className = 'notification-toast fixed bottom-4 right-4 bg-white dark:bg-gray-800 border dark:border-gray-700 text-gray-900 dark:text-gray-100 p-4 rounded-2xl shadow-2xl z-[100] flex items-center gap-4 animate-slide-up max-w-sm cursor-pointer border-l-4 border-l-accent rtl:border-l-0 rtl:border-r-4 rtl:border-r-accent';
+        
+        const lang = window.currentLang || 'en';
+        let title = data.title || (data.type === 'message' ? (translations[lang]?.newMessage || 'New Message') : (translations[lang]?.notification || 'Notification'));
+        let message = data.message || '';
+        let link = data.link || (data.conversationId ? `messages.html?conversationId=${data.conversationId}` : null);
+        
+        let icon = data.type === 'message' ? 
+            `<svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 10h.01M12 10h.01M16 10h.01M9 16H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-5l-5 5v-5z"></path></svg>` :
+            `<svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9"></path></svg>`;
+
         toast.innerHTML = `
             <div class="w-10 h-10 bg-accent rounded-full flex items-center justify-center font-bold text-white text-sm flex-shrink-0">
-                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 10h.01M12 10h.01M16 10h.01M9 16H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-5l-5 5v-5z"></path>
-                </svg>
+                ${icon}
             </div>
             <div class="flex-grow overflow-hidden">
-                <p class="text-xs text-accent font-bold uppercase tracking-tight" data-translate="newMessage">New Message</p>
-                <p class="text-sm font-medium truncate">${msg.message}</p>
+                <p class="text-xs text-accent font-bold uppercase tracking-tight">${title}</p>
+                <p class="text-sm font-medium truncate">${message}</p>
             </div>
             <button class="text-gray-400 hover:text-gray-600 dark:hover:text-white p-1">&times;</button>
         `;
 
-        toast.onclick = () => window.location.href = `messages.html?conversationId=${msg.conversationId}`;
+        toast.onclick = () => {
+            if (link) {
+                // If it's a platform notification (has id), mark as read first
+                if (data.id) {
+                    apiClient.fetch(`/notifications/${data.id}/read`, { method: 'PUT' }).finally(() => {
+                        window.location.href = link;
+                    });
+                } else {
+                    window.location.href = link;
+                }
+            }
+        };
+
         toast.querySelector('button').onclick = (e) => {
             e.stopPropagation();
             toast.remove();
         };
 
         document.body.appendChild(toast);
-        if (window.translatePage) window.translatePage();
 
         // Auto remove after 6 seconds
         setTimeout(() => {
@@ -199,10 +349,10 @@ document.addEventListener('DOMContentLoaded', async () => {
         const countryName = translations[lang][country] || translations['en'][country] || country;
 
         const countryCities = {
-            uae: ['dubai', 'abuDhabi', 'sharjah', 'ajman'],
-            egypt: ['cairo', 'alexandria', 'giza', 'sharm'],
-            ksa: ['riyadh', 'jeddah', 'dammam', 'mecca'],
-            qatar: ['doha', 'wakrah', 'rayyan', 'khor']
+            uae: ['dubai', 'abuDhabi', 'sharjah', 'ajman', 'umAlQuwain', 'rasAlKhaimah', 'fujairah', 'alAin'],
+            egypt: ['cairo', 'alexandria', 'giza', 'sharm', 'hurghada', 'dahab', 'suez', 'portSaid', 'luxor', 'aswan', 'mansoura', 'tanta', 'dakahlia', 'gharbia', 'monufia', 'sharqia', 'kafrElSheikh', 'damietta', 'matrouh', 'beheira', 'ismailia', 'beniSuef', 'faiyum', 'minya', 'asyut', 'sohag', 'qena', 'redSea', 'newValley', 'qalyubia', 'northSinai', 'southSinai'],
+            ksa: ['riyadh', 'jeddah', 'dammam', 'mecca', 'medina', 'khobar', 'abha', 'tabuk', 'buraydah'],
+            qatar: ['doha', 'wakrah', 'rayyan', 'khor', 'shamal']
         };
 
         // --- 1. Update Currencies ---
@@ -317,7 +467,8 @@ document.addEventListener('DOMContentLoaded', async () => {
 
                 if (city) {
                     alert(`${translations[lang].locationActive}: ${city}`);
-                    window.location.href = `search.html?search=${encodeURIComponent(city)}`;
+                    // Redirect with coordinates and a friendly location name, but without restricting 'search' string
+                    window.location.href = `search.html?lat=${latitude}&lng=${longitude}&radius=50&loc=${encodeURIComponent(city)}`;
                 } else {
                     alert(translations[lang].locationError);
                 }
@@ -345,6 +496,7 @@ document.addEventListener('DOMContentLoaded', async () => {
         localStorage.setItem('selectedCountryName', name);
 
         window.updateDynamicContent(window.selectedCountry, window.currentLang);
+        window.dispatchEvent(new CustomEvent('countryChanged', { detail: { country } }));
     };
 
     window.initCountryDropdown = async function () {
@@ -941,10 +1093,16 @@ document.addEventListener('DOMContentLoaded', async () => {
 
             if (ads.length === 0) {
                 container.innerHTML = `<p class="text-center col-span-full py-10 text-gray-500">${translations[window.currentLang || 'en'].noAdsFound || 'No ads found for this country.'}</p>`;
+                // Keep it hidden if no ads
+                const section = container.closest('section');
+                if (section) section.classList.add('hidden');
                 return;
             }
 
             container.innerHTML = ''; // Clear loading state
+            // Show the section since we have ads
+            const section = container.closest('section');
+            if (section) section.classList.remove('hidden');
             ads.forEach(ad => {
                 container.insertAdjacentHTML('beforeend', createAdCard(ad));
             });
@@ -953,21 +1111,33 @@ document.addEventListener('DOMContentLoaded', async () => {
         }
     }
 
+    // --- Global Favorites state for current user ---
+    window.userFavorites = [];
+    async function loadUserFavorites() {
+        if (!localStorage.getItem('token')) return;
+        try {
+            const res = await apiClient.getFavorites();
+            if (res.success) window.userFavorites = res.data.map(ad => ad.id);
+        } catch (err) {
+            console.warn('Failed to load favorites:', err);
+        }
+    }
+
     function createAdCard(ad, isSlider = false) {
         const cardClass = isSlider
             ? "min-w-[280px] w-[280px] md:min-w-[320px] md:w-[320px] bg-white dark:bg-gray-800 rounded-xl shadow border dark:border-gray-700 snap-center flex-shrink-0 cursor-pointer"
             : "ad-card-main bg-white dark:bg-gray-800 border dark:border-gray-700 rounded-xl overflow-hidden shadow-sm hover:shadow-lg transition group cursor-pointer";
 
-        // Generate consistent location string using the global helper
         const locationHTML = window.formatAdLocation(ad.city, ad.country, "");
+        const isFav = window.userFavorites.includes(ad.id);
 
         return `
         <div class="${cardClass}" onclick="window.location.href='ad-details.html?id=${ad.id}'">
             <div class="relative h-48 bg-gray-200 dark:bg-gray-700 overflow-hidden ${!isSlider ? 'rounded-t-xl' : ''}">
                 <img src="${ad.images[0] || 'https://via.placeholder.com/300x200'}" alt="${ad.title}" class="w-full h-full object-cover transition duration-300 group-hover:scale-105">
                 ${ad.status === 'active' ? '<div class="badge-featured absolute top-2 right-2 bg-accent text-white text-xs font-bold px-2 py-1 rounded">FEATURED</div>' : ''}
-                <button class="wishlist-btn absolute bottom-2 right-2 bg-white dark:bg-gray-700 p-2 rounded-full shadow hover:text-red-500 transition" onclick="event.stopPropagation(); toggleFav(${ad.id}, this)">
-                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <button class="wishlist-btn absolute bottom-2 right-2 bg-white dark:bg-gray-700 p-2 rounded-full shadow hover:text-red-500 transition ${isFav ? 'text-red-500' : ''}" onclick="event.stopPropagation(); toggleFav(${ad.id}, this)">
+                    <svg class="w-5 h-5" fill="${isFav ? 'currentColor' : 'none'}" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"></path>
                     </svg>
                 </button>
@@ -1068,11 +1238,33 @@ document.addEventListener('DOMContentLoaded', async () => {
             const res = await apiClient.toggleFavorite(adId);
             const svg = btn.querySelector('svg');
             if (res.isFavorite) {
-                svg.setAttribute('fill', 'currentColor');
-                svg.classList.add('text-red-500');
+                if (svg) {
+                    svg.setAttribute('fill', 'currentColor');
+                }
+                btn.classList.add('text-red-500');
+                if (!window.userFavorites.includes(adId)) window.userFavorites.push(adId);
             } else {
-                svg.setAttribute('fill', 'none');
-                svg.classList.remove('text-red-500');
+                if (svg) {
+                    svg.setAttribute('fill', 'none');
+                }
+                btn.classList.remove('text-red-500');
+                window.userFavorites = window.userFavorites.filter(id => id !== adId);
+
+                // If we are on the favorites page, remove the card from UI
+                if (window.location.pathname.includes('favorites.html')) {
+                    const card = btn.closest('.grid > div');
+                    if (card) {
+                        card.classList.add('opacity-0', 'scale-95');
+                        setTimeout(() => {
+                            card.remove();
+                            // If no cards left, show empty message
+                            const container = document.querySelector('.grid');
+                            if (container && container.children.length === 0) {
+                                container.innerHTML = '<div class="col-span-full text-center py-20 text-gray-500">You haven\'t saved any ads yet.</div>';
+                            }
+                        }, 300);
+                    }
+                }
             }
         } catch (err) {
             alert(err.message);
@@ -1343,7 +1535,7 @@ document.addEventListener('DOMContentLoaded', async () => {
         }
 
         list.innerHTML = notifications.map(n => `
-        <div class="px-4 py-3 hover:bg-gray-50 dark:hover:bg-gray-700 transition cursor-pointer ${!n.isRead ? 'bg-blue-50/50 dark:bg-blue-900/10' : ''}" onclick="handleNotifClick(${n.id}, '${n.link}')">
+        <div class="px-4 py-3 hover:bg-gray-50 dark:hover:bg-gray-700 transition cursor-pointer ${!n.isRead ? 'bg-blue-50/50 dark:bg-blue-900/10' : ''}" onclick="handleNotifClick(${n.id}, '${n.link || ''}')"> 
             <p class="text-sm font-bold text-gray-900 dark:text-white">${n.title}</p>
             <p class="text-xs text-gray-600 dark:text-gray-400 mt-0.5">${n.message}</p>
             <p class="text-[10px] text-gray-400 mt-1">${new Date(n.createdAt).toLocaleString()}</p>
@@ -1354,8 +1546,11 @@ document.addEventListener('DOMContentLoaded', async () => {
     window.handleNotifClick = async function (id, link) {
         try {
             await apiClient.fetch(`/notifications/${id}/read`, { method: 'PUT' });
-            if (link) window.location.href = link;
-            else loadNotifications();
+            if (link && link !== 'null' && link.trim() !== '') {
+                window.location.href = link;
+            } else {
+                loadNotifications();
+            }
         } catch (err) {
             console.error(err);
         }
@@ -1377,6 +1572,8 @@ document.addEventListener('DOMContentLoaded', async () => {
     if (window.socket) {
         window.socket.on('new_notification', (notification) => {
             loadNotifications();
+            showNotificationToast(notification);
+            playNotificationSound();
         });
     }
 });

@@ -9,7 +9,8 @@ exports.getAllAds = async (req, res) => {
             category, city, country, minPrice, maxPrice, search,
             condition, minYear, maxYear, minKm, maxKm,
             isFeatured, userId,
-            bedrooms, bathrooms, propertyType, minArea, maxArea
+            bedrooms, bathrooms, propertyType, minArea, maxArea,
+            lat, lng, radius
         } = req.query;
         let where = { status: 'active' };
 
@@ -45,6 +46,23 @@ exports.getAllAds = async (req, res) => {
             where.kilometers = {};
             if (minKm) where.kilometers[Op.gte] = Number(minKm);
             if (maxKm) where.kilometers[Op.lte] = Number(maxKm);
+        }
+        
+        // Exact location radius filtering (Box Search Approximation)
+        if (lat && lng) {
+            const latitude = parseFloat(lat);
+            const longitude = parseFloat(lng);
+            const r = parseFloat(radius) || 50; // Default 50km
+            
+            // Degrees approx
+            const degLat = r / 111;
+            const degLng = r / (111 * Math.cos(latitude * Math.PI / 180));
+            
+            where.latitude = { [Op.between]: [latitude - degLat, latitude + degLat] };
+            where.longitude = { [Op.between]: [longitude - degLng, longitude + degLng] };
+            
+            // If searching by lat/lng, we might want to prioritize it over purely city-name
+            // but for now we keep existing filters.
         }
 
         if (search) {
@@ -153,7 +171,7 @@ exports.createAd = async (req, res) => {
         const {
             title, description, price, category, subCategory,
             city, country, area, year, kilometers, itemCondition, phone,
-            bedrooms, bathrooms, propertyType
+            bedrooms, bathrooms, propertyType, latitude, longitude
         } = req.body;
 
         let images = [];
@@ -193,6 +211,8 @@ exports.createAd = async (req, res) => {
             propertyType,
             itemCondition,
             phone: phone || null,
+            latitude: req.body.latitude ? Number(req.body.latitude) : null,
+            longitude: req.body.longitude ? Number(req.body.longitude) : null,
             images: Array.isArray(images) ? images : [],
             userId: req.user ? req.user.id : null
         });
@@ -215,35 +235,41 @@ exports.updateAd = async (req, res) => {
             return res.status(403).json({ success: false, message: 'Not authorized' });
         }
 
-        // Apply restrictions for non-admin users
+        // Apply restrictions for non-admin users only if they are changing CONTENT (title, description, price)
         if (req.user.role !== 'admin') {
-            // 1. Check max edits (3 times)
-            if (ad.editCount >= 3) {
-                return res.status(400).json({ 
-                    success: false, 
-                    message: req.headers['accept-language']?.includes('ar') ? 'لقد تجاوزت الحد الأقصى للتعديلات (3 مرات).' : 'You have reached the maximum number of edits (3).'
-                });
-            }
+            const isChangingContent = req.body.title && req.body.title !== ad.title ||
+                                      req.body.description && req.body.description !== ad.description ||
+                                      req.body.price && Number(req.body.price) !== Number(ad.price);
 
-            // 2. Check cooldown (3 hours)
-            if (ad.lastEditedAt) {
-                const threeHoursInMs = 3 * 60 * 60 * 1000;
-                const timeDiff = new Date() - new Date(ad.lastEditedAt);
-                if (timeDiff < threeHoursInMs) {
-                    const remainingMinutes = Math.ceil((threeHoursInMs - timeDiff) / (60 * 1000));
+            if (isChangingContent) {
+                // 1. Check max edits (3 times)
+                if (ad.editCount >= 3) {
                     return res.status(400).json({ 
                         success: false, 
-                        message: req.headers['accept-language']?.includes('ar') 
-                            ? `يجب الانتظار لمدة 3 ساعات بين كل تعديل والآخر. المتبقي: ${remainingMinutes} دقيقة.` 
-                            : `You must wait 3 hours between edits. Remaining: ${remainingMinutes} minutes.`
+                        message: req.headers['accept-language']?.includes('ar') ? 'لقد تجاوزت الحد الأقصى للتعديلات (3 مرات).' : 'You have reached the maximum number of edits (3).'
                     });
                 }
-            }
 
-            // 3. Mark for re-approval
-            req.body.status = 'pending';
-            req.body.editCount = ad.editCount + 1;
-            req.body.lastEditedAt = new Date();
+                // 2. Check cooldown (3 hours)
+                if (ad.lastEditedAt) {
+                    const threeHoursInMs = 3 * 60 * 60 * 1000;
+                    const timeDiff = new Date() - new Date(ad.lastEditedAt);
+                    if (timeDiff < threeHoursInMs) {
+                        const remainingMinutes = Math.ceil((threeHoursInMs - timeDiff) / (60 * 1000));
+                        return res.status(400).json({ 
+                            success: false, 
+                            message: req.headers['accept-language']?.includes('ar') 
+                                ? `يجب الانتظار لمدة 3 ساعات بين كل تعديل والآخر. المتبقي: ${remainingMinutes} دقيقة.` 
+                                : `You must wait 3 hours between edits. Remaining: ${remainingMinutes} minutes.`
+                        });
+                    }
+                }
+
+                // 3. Mark for re-approval and update statistics
+                req.body.status = 'pending';
+                req.body.editCount = ad.editCount + 1;
+                req.body.lastEditedAt = new Date();
+            }
         }
 
         // Handle new images if uploaded
@@ -270,10 +296,35 @@ exports.updateAd = async (req, res) => {
             req.body.images = [...imagesToKeep, ...newImages];
         }
 
+        // If relisting from rejected/deleted, clear rejection reason
+        if (req.body.status === 'pending') {
+            req.body.rejectionReason = null;
+        }
+
         await ad.update(req.body);
         res.status(200).json({ success: true, data: ad });
     } catch (err) {
-        res.status(400).json({ success: false, message: err.message });
+        console.error('🔥 Update Ad Error:', err);
+        res.status(400).json({ success: false, message: err.message || 'Validation failed' });
+    }
+};
+
+// @desc    Permanently delete ad
+// @route   DELETE /api/ads/:id/permanent
+exports.permanentlyDeleteAd = async (req, res) => {
+    try {
+        const ad = await Ad.findByPk(req.params.id);
+        if (!ad) return res.status(404).json({ success: false, message: 'Ad not found' });
+
+        // Ensure user owns the ad or is admin
+        if (ad.userId !== req.user.id && req.user.role !== 'admin') {
+            return res.status(403).json({ success: false, message: 'Not authorized' });
+        }
+
+        await ad.destroy();
+        res.status(200).json({ success: true, message: 'Ad permanently deleted' });
+    } catch (err) {
+        res.status(500).json({ success: false, message: err.message });
     }
 };
 
@@ -356,8 +407,12 @@ exports.getDashboardStats = async (req, res) => {
 const Favorite = require('../models/Favorite');
 exports.toggleFavorite = async (req, res) => {
     try {
-        const adId = req.params.id;
-        const userId = req.user.id;
+        const adId = parseInt(req.params.id);
+        const userId = parseInt(req.user.id);
+
+        if (isNaN(adId)) {
+            return res.status(400).json({ success: false, message: 'Invalid Ad ID' });
+        }
 
         const existing = await Favorite.findOne({ where: { userId, adId } });
         if (existing) {
@@ -368,6 +423,7 @@ exports.toggleFavorite = async (req, res) => {
             return res.status(200).json({ success: true, message: 'Added to favorites', isFavorite: true });
         }
     } catch (err) {
+        console.error('Favorite toggle error:', err);
         res.status(500).json({ success: false, message: err.message });
     }
 };
@@ -388,16 +444,33 @@ exports.getFavorites = async (req, res) => {
         });
 
         const adIds = favorites.map(f => f.adId);
+        if (adIds.length === 0) {
+            return res.status(200).json({
+                success: true,
+                count: 0,
+                page,
+                totalPages: 0,
+                data: []
+            });
+        }
+
+        // Fetch ads and maintain favorite order by mapping back
         const ads = await Ad.findAll({ where: { id: adIds, status: 'active' } });
+        
+        // Sort ads based on the order in favorites array (newest first)
+        const sortedAds = adIds
+            .map(id => ads.find(ad => ad.id === id))
+            .filter(ad => ad !== undefined);
 
         res.status(200).json({
             success: true,
             count,
             page,
             totalPages: Math.ceil(count / limit),
-            data: ads
+            data: sortedAds
         });
     } catch (err) {
+        console.error('Get favorites error:', err);
         res.status(500).json({ success: false, message: err.message });
     }
 };

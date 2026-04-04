@@ -148,9 +148,14 @@ exports.sendMessage = async (req, res) => {
         // ... (image processing logic remains same)
         let imageUrl = null;
         if (req.file) {
-            const protocol = req.protocol;
-            const host = req.get('host');
-            imageUrl = `${protocol}://${host}/uploads/${req.file.filename}`;
+            if (req.file.path && req.file.path.startsWith('http')) {
+                imageUrl = req.file.path; // Cloudinary
+            } else {
+                const protocol = req.protocol;
+                const host = req.get('host');
+                const imagePath = req.file.path.startsWith('/') ? req.file.path : `/${req.file.path}`;
+                imageUrl = `${protocol}://${host}${imagePath}`;
+            }
         }
 
         const chatMessage = await ChatMessage.create({
@@ -169,7 +174,7 @@ exports.sendMessage = async (req, res) => {
             type: 'message',
             title: 'New Message',
             message: `You have a new message regarding "${conversation.ad.title}"`,
-            link: `messages.html?convoId=${conversationId}`,
+            link: `messages.html?conversationId=${conversationId}`,
             relatedId: conversationId
         });
 

@@ -60,6 +60,10 @@
             transform: scale(1.05);
         }
 
+        #ad-map-container {
+            z-index: 1;
+        }
+
         .gallery-thumb {
             width: 100px;
             height: 70px;
@@ -90,6 +94,9 @@
             scrollbar-width: none;
         }
     </style>
+    <!-- Leaflet Maps CSS -->
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
 </head>
 
 <body
@@ -148,21 +155,12 @@
                 <div class="bg-white rounded-xl shadow-sm p-8 mb-8">
                     <h2 class="text-2xl font-bold mb-4 text-gray-900 border-b pb-4" data-translate="description">
                         Description</h2>
-                    <p class="text-gray-700 leading-relaxed mb-6" data-translate="adDescriptionText">
-                        Selling my Toyota Camry 2024 model. GCC specs, bought from Al Futtaim.
-                        <br><br>
-                        - Single owner<br>
-                        - Accident free<br>
-                        - Full service history<br>
-                        - Under warranty until 2029<br>
-                        - Low mileage (only 15,000 KM)<br>
-                        <br>
-                        Car is in pristine condition. Interior still smells new. Reason for selling: Upgrading to SUV.
-                        Price is slightly negotiable for serious buyers. No low ballers please.
+                    <p id="ad-description" class="text-gray-700 leading-relaxed mb-6 whitespace-pre-line">
+                        Loading description...
                     </p>
 
                     <h3 class="font-bold text-lg mb-4 text-gray-900 mt-6" data-translate="details">Details</h3>
-                    <div class="grid grid-cols-1 md:grid-cols-2 gap-y-4 gap-x-8">
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-y-4 gap-x-8 mb-8">
                         <div class="flex justify-between border-b pb-2">
                             <span class="text-gray-500" data-translate="categoryLabel">Category</span>
                             <span id="detail-category" class="font-medium text-gray-900">-</span>
@@ -171,15 +169,15 @@
                             <span class="text-gray-500" data-translate="locationLabel">Location</span>
                             <span id="detail-city" class="font-medium text-gray-900">-</span>
                         </div>
-                        <div id="item-year" class="flex justify-between border-b pb-2">
+                        <div id="item-year" class="flex justify-between border-b pb-2" style="display:none">
                             <span class="text-gray-500" data-translate="year">Year</span>
                             <span id="detail-year" class="font-medium text-gray-900">-</span>
                         </div>
-                        <div id="item-kilometers" class="flex justify-between border-b pb-2">
+                        <div id="item-kilometers" class="flex justify-between border-b pb-2" style="display:none">
                             <span class="text-gray-500" data-translate="kilometers">Kilometers</span>
                             <span id="detail-kilometers" class="font-medium text-gray-900">-</span>
                         </div>
-                        <div id="item-condition" class="flex justify-between border-b pb-2">
+                        <div id="item-condition" class="flex justify-between border-b pb-2" style="display:none">
                             <span class="text-gray-500" data-translate="condition">Condition</span>
                             <span id="detail-condition" class="font-medium text-gray-900">-</span>
                         </div>
@@ -200,6 +198,7 @@
                             <span id="detail-area" class="font-medium text-gray-900">-</span>
                         </div>
                     </div>
+
                 </div>
 
                 <!-- Reviews Section -->
@@ -258,8 +257,14 @@
 
                 <!-- Price Card -->
                 <div class="bg-white dark:bg-gray-800 rounded-xl shadow-sm p-6 border dark:border-gray-700">
-                    <h1 class="text-2xl font-bold text-gray-900 dark:text-white mb-2 leading-tight"
-                        data-translate="adDetailsTitle">Loading...</h1>
+                    <div class="flex justify-between items-start mb-2">
+                        <h1 id="ad-title" class="text-2xl font-bold text-gray-900 dark:text-white leading-tight">Loading...</h1>
+                        <button id="favorite-btn" class="text-gray-400 hover:text-red-500 transition-colors p-1 group">
+                            <svg class="w-7 h-7" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"></path>
+                            </svg>
+                        </button>
+                    </div>
                     <div class="flex justify-between items-center mb-6 text-sm">
                         <div class="flex items-center text-gray-500 dark:text-gray-400">
                             <svg class="w-4 h-4 mr-1 text-accent" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -326,12 +331,16 @@
                     <h2 class="font-bold text-gray-900 dark:text-white mb-4" data-translate="sellerInfo">Seller
                         Information</h2>
                     <div class="flex items-center mb-4">
-                        <div id="seller-avatar"
-                            class="w-12 h-12 bg-gray-300 rounded-full flex items-center justify-center text-xl font-bold text-gray-600">
-                            ??</div>
+                        <a href="#" id="seller-avatar-link" class="block">
+                            <div id="seller-avatar"
+                                class="w-12 h-12 bg-gray-300 rounded-full flex items-center justify-center text-xl font-bold text-gray-600 overflow-hidden">
+                                ??</div>
+                        </a>
                         <div class="ml-4 rtl:mr-4 rtl:ml-0">
-                            <div id="seller-name"
-                                class="font-bold text-primary dark:text-white flex items-center gap-1">Loading...</div>
+                            <a href="#" id="seller-name-link" class="block hover:underline">
+                                <div id="seller-name"
+                                    class="font-bold text-primary dark:text-white flex items-center gap-1">Loading...</div>
+                            </a>
                             <div id="seller-joined" class="text-sm text-gray-500"><span
                                     data-translate="memberSince">Member since</span>
                                 ...</div>
@@ -342,12 +351,23 @@
                         data-translate="viewProfile">View Profile</a>
                 </div>
 
-                <!-- Map Location (Placeholder) -->
-                <div class="bg-white rounded-xl shadow-sm overflow-hidden h-48 bg-gray-200 relative">
-                    <img src="https://staticmapmaker.com/img/google-placeholder.png"
-                        class="w-full h-full object-cover opacity-50">
-                    <div class="absolute inset-0 flex items-center justify-center pointer-events-none">
-                        <span class="text-gray-500 font-bold" data-translate="mapLocation">Map Location</span>
+                <!-- Map Location (Dynamic) -->
+                <div id="sidebar-map-section" class="hidden bg-white dark:bg-gray-800 rounded-xl shadow-sm overflow-hidden border dark:border-gray-700 transition-all duration-500">
+                    <div id="sidebar-map-container" class="h-48 w-full bg-gray-100 dark:bg-gray-700 relative">
+                        <!-- Loading State -->
+                        <div class="absolute inset-0 flex items-center justify-center bg-gray-100 dark:bg-gray-800 map-loader">
+                             <div class="animate-spin rounded-full h-8 w-8 border-b-2 border-accent"></div>
+                        </div>
+                    </div>
+                    <div class="p-3 bg-gray-50 dark:bg-gray-800/50 border-t dark:border-gray-700 flex items-center justify-between">
+                         <div class="flex items-center gap-2">
+                            <svg class="w-4 h-4 text-accent" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M5.05 4.05a7 7 0 119.9 9.9L10 18.9l-4.95-4.95a7 7 0 010-9.9zM10 11a2 2 0 100-4 2 2 0 000 4z" clip-rule="evenodd"></path></svg>
+                            <span class="text-xs font-bold text-gray-700 dark:text-gray-300" data-translate="mapLocation">Map Location</span>
+                         </div>
+                         <a href="#" id="google-maps-link" target="_blank" class="text-[10px] text-accent hover:underline flex items-center gap-1">
+                             <span data-translate="viewOnGoogleMaps">View on Maps</span>
+                             <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path></svg>
+                         </a>
                     </div>
                 </div>
 
@@ -490,19 +510,70 @@
             const id = urlParams.get('id');
             if (!id) return;
 
+            // Safe fallback functions to prevent crashing if SEO functions are undefined
+            const safeUpdateMetaTags = typeof updateMetaTags === 'function' ? updateMetaTags : () => {};
+            const safeInjectJSONLD = typeof injectJSONLD === 'function' ? injectJSONLD : () => {};
+
             try {
                 const response = await apiClient.getAd(id);
                 const ad = response.data;
                 currentImages = ad.images || [];
 
                 // Update Title & Page Title
-                document.title = `${ad.title} - Taggerly`;
-                document.querySelector('h1').textContent = ad.title;
-                document.querySelector('.text-2xl.font-bold.text-gray-900').textContent = ad.title;
+                const siteTitle = `${ad.title} - Taggerly`;
+                document.title = siteTitle;
+                
+                // Update Meta Tags for SEO & Social Sharing
+                safeUpdateMetaTags(ad);
+
+                // Update Title & Description with correct IDs to avoid translation overwrite
+                document.getElementById('ad-title').textContent = ad.title;
+                document.getElementById('ad-description').textContent = ad.description;
 
                 // Update Price & Views
-                document.getElementById('priceValue').textContent = ad.price.toLocaleString();
-                document.getElementById('viewCount').textContent = ad.views || 0;
+                if (document.getElementById('priceValue')) document.getElementById('priceValue').textContent = ad.price ? ad.price.toLocaleString() : '0';
+                if (document.getElementById('viewCount')) document.getElementById('viewCount').textContent = ad.views || 0;
+
+                // Handle GPS Map in Sidebar
+                if (ad.latitude && ad.longitude) {
+                    const mapSection = document.getElementById('sidebar-map-section');
+                    if (mapSection) {
+                        mapSection.classList.remove('hidden');
+                        setTimeout(() => {
+                            try {
+                                if (typeof L !== 'undefined') {
+                                    const map = L.map('sidebar-map-container', {
+                                        center: [ad.latitude, ad.longitude],
+                                        zoom: 14,
+                                        scrollWheelZoom: false,
+                                        zoomControl: false
+                                    });
+                                    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+                                        attribution: '© OpenStreetMap'
+                                    }).addTo(map);
+                                    
+                                    // Add marker with custom popup
+                                    const marker = L.marker([ad.latitude, ad.longitude]).addTo(map);
+                                    
+                                    // Remove loader
+                                    const loader = mapSection.querySelector('.map-loader');
+                                    if (loader) loader.remove();
+
+                                    // External map links
+                                    const gMapsLink = document.getElementById('google-maps-link');
+                                    if (gMapsLink) {
+                                        gMapsLink.href = `https://www.google.com/maps/search/?api=1&query=${ad.latitude},${ad.longitude}`;
+                                    }
+                                }
+                            } catch (mapErr) {
+                                console.warn('Leaflet map error:', mapErr);
+                            }
+                        }, 500);
+                    }
+                }
+
+                // Inject Structured Data (JSON-LD)
+                safeInjectJSONLD(ad);
 
                 // Handle Sold Status
                 if (ad.status === 'sold') {
@@ -528,27 +599,38 @@
                     document.getElementById('postedTime').textContent = `Posted ${date.toLocaleDateString()}`;
                 }
 
-                // Update Description
-                document.querySelector('.text-gray-700.leading-relaxed').textContent = ad.description;
-
                 // Update City
                 document.querySelectorAll('.city-label').forEach(el => el.textContent = ad.city);
+
+                // Handle Favorite Button
+                const favoriteBtn = document.getElementById('favorite-btn');
+                if (favoriteBtn) {
+                    const isFav = (window.userFavorites || []).includes(ad.id);
+                    if (isFav) {
+                        favoriteBtn.classList.add('text-red-500');
+                        favoriteBtn.querySelector('svg').setAttribute('fill', 'currentColor');
+                    }
+                    favoriteBtn.onclick = (e) => {
+                        e.stopPropagation();
+                        window.toggleFav(ad.id, favoriteBtn);
+                    };
+                }
 
                 // Update Details Section
                 if (document.getElementById('detail-category')) document.getElementById('detail-category').textContent = ad.category || '-';
                 if (document.getElementById('detail-city')) document.getElementById('detail-city').textContent = ad.city || '-';
 
                 // Show/Hide Year
-                if (ad.year) {
-                    document.getElementById('detail-year').textContent = ad.year;
+                if (ad.year && ad.year !== '0' && ad.year !== 0) {
+                    if (document.getElementById('detail-year')) document.getElementById('detail-year').textContent = ad.year;
                     if (document.getElementById('item-year')) document.getElementById('item-year').style.display = 'flex';
                 } else {
                     if (document.getElementById('item-year')) document.getElementById('item-year').style.display = 'none';
                 }
 
                 // Show/Hide Kilometers
-                if (ad.kilometers) {
-                    document.getElementById('detail-kilometers').textContent = ad.kilometers.toLocaleString();
+                if (ad.kilometers !== undefined && ad.kilometers !== null && ad.kilometers !== '') {
+                    if (document.getElementById('detail-kilometers')) document.getElementById('detail-kilometers').textContent = ad.kilometers.toLocaleString();
                     if (document.getElementById('item-kilometers')) document.getElementById('item-kilometers').style.display = 'flex';
                 } else {
                     if (document.getElementById('item-kilometers')) document.getElementById('item-kilometers').style.display = 'none';
@@ -562,15 +644,16 @@
                     if (document.getElementById('item-condition')) document.getElementById('item-condition').style.display = 'none';
                 }
 
-                // Property Specific Fields
                 const toggleField = (id, value, displayValue) => {
                     const el = document.getElementById(`detail-${id}`);
                     const container = document.getElementById(`item-${id}`);
-                    if (value && el && container) {
+                    if (!el || !container) return; // Skip if elements are missing
+
+                    if (value !== undefined && value !== null && value !== '' && value !== 0 || (id === 'kilometers' && value === 0)) {
                         el.textContent = displayValue || value;
                         container.classList.remove('hidden');
                         container.style.display = 'flex';
-                    } else if (container) {
+                    } else {
                         container.classList.add('hidden');
                         container.style.display = 'none';
                     }
@@ -595,40 +678,55 @@
 
                 // Update Seller Info
                 if (ad.user) {
-                    const avatarContainer = document.getElementById('seller-avatar');
-                    const nameContainer = document.getElementById('seller-name');
-                    const joinedContainer = document.getElementById('seller-joined');
+                    try {
+                        const avatarContainer = document.getElementById('seller-avatar');
+                        const nameContainer = document.getElementById('seller-name');
+                        const joinedContainer = document.getElementById('seller-joined');
 
-                    // Show Avatar or Initials
-                    if (avatarContainer) {
-                        if (ad.user.avatar && !ad.user.avatar.includes('gravatar.com/avatar/00000000000000000000000000000000')) {
-                            avatarContainer.innerHTML = `<img src="${ad.user.avatar}" class="w-full h-full rounded-full object-cover">`;
-                            avatarContainer.classList.remove('bg-gray-300', 'flex', 'items-center', 'justify-center', 'text-xl', 'font-bold', 'text-gray-600');
-                        } else {
-                            const initials = ad.user.name ? ad.user.name.split(' ').map(n => n[0]).join('').toUpperCase() : '??';
-                            avatarContainer.textContent = initials;
+                        // Show Avatar or Initials
+                        if (avatarContainer) {
+                            const hasAvatar = ad.user.avatar && 
+                                            typeof ad.user.avatar === 'string' && 
+                                            !ad.user.avatar.includes('gravatar.com/avatar/00000000000000000000000000000000');
+                            
+                            if (hasAvatar) {
+                                avatarContainer.innerHTML = `<img src="${ad.user.avatar}" class="w-full h-full rounded-full object-cover">`;
+                                avatarContainer.classList.remove('bg-gray-300', 'flex', 'items-center', 'justify-center', 'text-xl', 'font-bold', 'text-gray-600');
+                            } else {
+                                const initials = ad.user.name ? ad.user.name.split(' ').map(n => n[0]).join('').toUpperCase() : '??';
+                                avatarContainer.innerHTML = `<span class="flex items-center justify-center w-full h-full">${initials}</span>`;
+                            }
                         }
-                    }
 
-                    if (nameContainer) {
-                        nameContainer.innerHTML = `<span>${ad.user.name || 'Anonymous'}</span>` + (ad.user.isEmailVerified ? `
-                            <svg class="w-4 h-4 text-green-500 shrink-0" fill="currentColor" viewBox="0 0 20 20" title="Verified Seller">
-                                <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"></path>
-                            </svg>
-                        ` : '');
-                    }
+                        if (nameContainer) {
+                            nameContainer.innerHTML = `<span>${ad.user.name || 'Anonymous'}</span>` + (ad.user.isEmailVerified ? `
+                                <svg class="w-4 h-4 text-green-500 shrink-0" fill="currentColor" viewBox="0 0 20 20" title="Verified Seller">
+                                    <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"></path>
+                                </svg>
+                            ` : '');
+                        }
 
-                    // Join Date
-                    if (ad.user.createdAt && joinedContainer) {
-                        const joinDate = new Date(ad.user.createdAt);
-                        const year = joinDate.getFullYear();
-                        joinedContainer.innerHTML = `<span data-translate="memberSince">Member since</span> ${year}`;
-                    }
+                        // Join Date
+                        if (ad.user.createdAt && joinedContainer) {
+                            const joinDate = new Date(ad.user.createdAt);
+                            const year = joinDate.getFullYear();
+                            joinedContainer.innerHTML = `<span data-translate="memberSince">Member since</span> ${year}`;
+                        }
 
-                    // Profile Link
-                    const profileLink = document.getElementById('view-seller-profile');
-                    if (profileLink) {
-                        profileLink.href = `seller-profile.html?id=${ad.userId}`;
+                        // Profile Links
+                        const profileUrl = `seller-profile.html?id=${ad.userId || (ad.user ? ad.user.id : '')}`;
+                        const pLink = document.getElementById('view-seller-profile');
+                        const aLink = document.getElementById('seller-avatar-link');
+                        const nLink = document.getElementById('seller-name-link');
+                        
+                        if (pLink) pLink.href = profileUrl;
+                        if (aLink) aLink.href = profileUrl;
+                        if (nLink) nLink.href = profileUrl;
+
+                    } catch (sellerErr) {
+                        console.error('Error updating seller info UI:', sellerErr);
+                        const nameContainer = document.getElementById('seller-name');
+                        if (nameContainer) nameContainer.textContent = ad.user.name || 'Seller';
                     }
                 }
 
@@ -645,7 +743,7 @@
                     chatBtn.addEventListener('click', async () => {
                         const token = localStorage.getItem('token');
                         if (!token) {
-                            alert('Please login to chat with the seller');
+                            await customAlert('Please login to chat with the seller');
                             window.location.href = 'login.html';
                             return;
                         }
@@ -658,7 +756,7 @@
                                 window.location.href = `messages.html?conversationId=${response.data.id}`;
                             }
                         } catch (err) {
-                            alert(err.message);
+                            await customAlert(err.message);
                             chatBtn.disabled = false;
                             chatBtn.textContent = 'Send Message';
                         }
@@ -687,7 +785,7 @@
                         const comment = document.getElementById('review-comment').value;
 
                         if (!rating) {
-                            alert('Please select a rating');
+                            await customAlert('Please select a rating');
                             return;
                         }
 
@@ -703,14 +801,14 @@
                                 comment
                             });
 
-                            alert('Review submitted successfully!');
+                            await customAlert('Review submitted successfully!');
                             document.getElementById('review-comment').value = '';
                             document.querySelectorAll('input[name="rating"]').forEach(r => r.checked = false);
                             loadSellerReviews(ad.userId);
                             submitBtn.disabled = false;
                             submitBtn.textContent = 'Submit Review';
                         } catch (err) {
-                            alert(err.message);
+                            await customAlert(err.message);
                             const submitBtn = e.target.querySelector('button[type="submit"]');
                             submitBtn.disabled = false;
                             submitBtn.textContent = 'Submit Review';
@@ -943,7 +1041,7 @@
             modal.classList.remove('flex');
         }
 
-        function copyPhone() {
+        async function copyPhone() {
             if (!_currentPhoneNumber) return;
             navigator.clipboard.writeText(_currentPhoneNumber).then(() => {
                 const btn = document.getElementById('copy-phone-btn');
@@ -951,15 +1049,15 @@
                 setTimeout(() => {
                     btn.innerHTML = `<svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"></path></svg>`;
                 }, 2000);
-            }).catch(() => {
-                alert(_currentPhoneNumber);
+            }).catch(async () => {
+                await customAlert(_currentPhoneNumber);
             });
         }
 
         // Report Modal Logic
-        function openReportModal() {
+        async function openReportModal() {
             if (!localStorage.getItem('token')) {
-                alert('Please login to report this ad');
+                await customAlert('Please login to report this ad');
                 window.location.href = 'login.html';
                 return;
             }
@@ -987,15 +1085,163 @@
                     body: JSON.stringify({ adId, reason, description })
                 });
                 if (res.success) {
-                    alert('Thank you. Your report has been submitted and will be reviewed.');
+                    await customAlert('Thank you. Your report has been submitted and will be reviewed.');
                     closeReportModal();
                 }
             } catch (err) {
-                alert(err.message);
+                await customAlert(err.message);
             }
         };
 
         // Close modal on Escape key
+
+        function updateMetaTags(ad) {
+            const description = ad.description.substring(0, 160);
+            const title = `${ad.title} - Taggerly`;
+            const image = ad.images && ad.images.length > 0 ? ad.images[0] : 'assets/img/og-placeholder.png';
+            
+            // Standard meta tags
+            const metaDescription = document.querySelector('meta[name="description"]');
+            if (metaDescription) metaDescription.setAttribute('content', description);
+            
+            // OG tags
+            const ogTitle = document.querySelector('meta[property="og:title"]');
+            if (ogTitle) ogTitle.setAttribute('content', title);
+            
+            const ogDescription = document.querySelector('meta[property="og:description"]');
+            if (ogDescription) ogDescription.setAttribute('content', description);
+            
+            const ogImage = document.querySelector('meta[property="og:image"]');
+            if (ogImage) ogImage.setAttribute('content', image);
+            
+            const ogUrl = document.querySelector('meta[property="og:url"]');
+            if (ogUrl) ogUrl.setAttribute('content', window.location.href);
+        }
+
+        // --- Review & Comments Logic ---
+        let selectedRating = 0;
+        const reviewForm = document.getElementById('ad-review-form');
+        const showReviewBtn = document.getElementById('show-review-form-btn');
+        const formContainer = document.getElementById('review-form-container');
+        const cancelReviewBtn = document.getElementById('cancel-review-btn');
+        
+        if (showReviewBtn) {
+            showReviewBtn.onclick = async () => {
+                if (!localStorage.getItem('token')) {
+                    await customAlert('Please login to rate this seller');
+                    window.location.href = 'login.html';
+                    return;
+                }
+                formContainer.classList.remove('hidden');
+                showReviewBtn.classList.add('hidden');
+            };
+        }
+
+        if (cancelReviewBtn) {
+            cancelReviewBtn.onclick = () => {
+                formContainer.classList.add('hidden');
+                showReviewBtn.classList.remove('hidden');
+                reviewForm.reset();
+                selectedRating = 0;
+                updateStars();
+            };
+        }
+
+        // Star Rating selector
+        const starBtns = document.querySelectorAll('#star-input button');
+        starBtns.forEach(btn => {
+            btn.onclick = () => {
+                selectedRating = parseInt(btn.dataset.rating);
+                updateStars();
+            };
+        });
+
+        function updateStars() {
+            starBtns.forEach((btn, i) => {
+                btn.textContent = (i < selectedRating) ? '★' : '☆';
+                if (i < selectedRating) btn.classList.add('text-accent');
+                else btn.classList.remove('text-accent');
+            });
+        }
+
+        if (reviewForm) {
+            reviewForm.onsubmit = async (e) => {
+                e.preventDefault();
+                if (selectedRating === 0) { await customAlert('Please select a rating'); return; }
+                
+                const comment = document.getElementById('review-comment').value;
+                const submitBtn = e.target.querySelector('button[type="submit"]');
+
+                try {
+                    submitBtn.disabled = true;
+                    submitBtn.textContent = 'Submitting...';
+                    
+                    const res = await apiClient.createReview({
+                        sellerId: adData.userId,
+                        adId: adId,
+                        rating: selectedRating,
+                        comment: comment
+                    });
+
+                    if (res.success) {
+                        await customAlert('Your review has been submitted!');
+                        cancelReviewBtn.click();
+                        loadAdReviews(); // Reload list
+                    }
+                } catch (err) {
+                    await customAlert(err.message);
+                } finally {
+                    submitBtn.disabled = false;
+                    submitBtn.textContent = 'Submit Review';
+                }
+            };
+        }
+
+        async function loadAdReviews() {
+            const list = document.getElementById('ad-reviews-list');
+            try {
+                const res = await apiClient.getSellerReviews(adData.userId, adId);
+                const reviews = res.data;
+                const countEl = document.getElementById('reviews-count');
+                if (countEl) countEl.textContent = `(${reviews.length} reviews)`;
+
+                if (reviews.length === 0) {
+                    list.innerHTML = `<div class="text-center py-10 text-gray-400">No reviews yet for this ad. Be the first!</div>`;
+                    return;
+                }
+
+                list.innerHTML = reviews.map(r => `
+                    <div class="border-b dark:border-gray-700 pb-6 last:border-0">
+                        <div class="flex items-center gap-3 mb-3">
+                            <div class="w-10 h-10 rounded-full bg-gray-100 dark:bg-gray-700 flex items-center justify-center font-bold dark:text-white">
+                                ${r.reviewer ? r.reviewer.name[0].toUpperCase() : '?'}
+                            </div>
+                            <div>
+                                <div class="font-bold dark:text-white text-sm">${r.reviewer ? r.reviewer.name : 'Unknown User'}</div>
+                                <div class="text-accent text-[10px] tracking-widest">${'★'.repeat(r.rating)}${'☆'.repeat(5 - r.rating)}</div>
+                            </div>
+                            <div class="ml-auto text-[10px] text-gray-400">${new Date(r.createdAt).toLocaleDateString()}</div>
+                        </div>
+                        <p class="text-sm text-gray-600 dark:text-gray-400 leading-relaxed">${r.comment}</p>
+                    </div>
+                `).join('');
+
+                // Update Avg stars in header
+                const avg = reviews.reduce((sum, r) => sum + r.rating, 0) / reviews.length;
+                const avgStars = document.getElementById('avg-stars');
+                if (avgStars) {
+                    avgStars.innerHTML = '★'.repeat(Math.round(avg)) + '☆'.repeat(5 - Math.round(avg));
+                }
+            } catch (err) {
+                console.error('Failed to load reviews:', err);
+            }
+        }
+
+        // Call load reviews when ad data is available
+        const originalLoadDetails = window.loadAdDetails;
+        // The original logic is inside DOMContentLoaded, we need to ensure loadAdReviews is called after adData is ready.
+        // I will add it inside the existing fetch success block manually since window.loadAdDetails was not globally exposed.
+
         document.addEventListener('keydown', (e) => {
             if (e.key === 'Escape') {
                 closePhoneModal();

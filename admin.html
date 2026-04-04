@@ -149,7 +149,7 @@
                         d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
                 </svg>
                 <span>Revenue</span>
-                <span class="ml-auto bg-green-500 text-white text-[10px] px-1.5 py-0.5 rounded-full">AED</span>
+                <span id="sidebar-currency-badge" class="ml-auto bg-green-500 text-white text-[10px] px-1.5 py-0.5 rounded-full">AED</span>
             </div>
 
             <p class="text-white/30 text-xs font-semibold uppercase tracking-wider px-4 mt-4 mb-2">Management</p>
@@ -301,9 +301,8 @@
                                 </svg>
                             </div>
                         </div>
-                        <p id="stat-revenue" class="text-3xl font-bold mb-1">AED —</p>
-                        <p id="stat-monthly-revenue" class="text-xs text-blue-600 dark:text-blue-400 font-medium">AED 0
-                            this month</p>
+                        <p id="stat-revenue" class="text-3xl font-bold mb-1">—</p>
+                        <p id="stat-monthly-revenue" class="text-xs text-blue-600 dark:text-blue-400 font-medium">0 this month</p>
                     </div>
                     <div class="stat-card">
                         <div class="flex items-center justify-between mb-3">
@@ -420,7 +419,7 @@
                 <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
                     <div class="stat-card text-center">
                         <p class="text-xs text-gray-500 uppercase font-bold mb-2">Total Revenue</p>
-                        <p id="rev-total" class="text-4xl font-black text-green-600">AED —</p>
+                        <p id="rev-total" class="text-4xl font-black text-green-600">—</p>
                     </div>
                     <div class="stat-card text-center">
                         <p class="text-xs text-gray-500 uppercase font-bold mb-2">Transactions</p>
@@ -428,7 +427,7 @@
                     </div>
                     <div class="stat-card text-center">
                         <p class="text-xs text-gray-500 uppercase font-bold mb-2">Avg. Transaction</p>
-                        <p id="rev-avg" class="text-4xl font-black text-purple-600">AED —</p>
+                        <p id="rev-avg" class="text-4xl font-black text-purple-600">—</p>
                     </div>
                 </div>
 
@@ -682,7 +681,142 @@
             window.location.href = 'login.html';
         }
 
+        // ===================== CUSTOM MODALS =====================
+        window.customConfirm = function(message) {
+            return new Promise((resolve) => {
+                const overlay = document.createElement('div');
+                overlay.className = 'fixed inset-0 bg-black/60 z-[9999] flex items-center justify-center opacity-0 transition-opacity duration-300 backdrop-blur-sm';
+                const modal = document.createElement('div');
+                modal.className = 'bg-white dark:bg-gray-800 rounded-2xl shadow-2xl p-6 max-w-sm w-full mx-4 transform scale-95 transition-transform duration-300 flex flex-col items-center text-center border dark:border-gray-700';
+                const icon = document.createElement('div');
+                icon.className = 'w-14 h-14 bg-orange-100 dark:bg-orange-900/30 rounded-full flex items-center justify-center mb-4 text-accent';
+                icon.innerHTML = '<svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8.228 9c.549-1.165 2.03-2 3.772-2 2.21 0 4 1.343 4 3 0 1.4-1.278 2.575-3.006 2.907-.542.104-.994.54-.994 1.093m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>';
+                const text = document.createElement('p');
+                text.className = 'text-gray-800 dark:text-gray-200 font-bold mb-6 leading-relaxed';
+                text.textContent = message;
+                const btnContainer = document.createElement('div');
+                btnContainer.className = 'flex justify-center w-full gap-3';
+                const cancelBtn = document.createElement('button');
+                cancelBtn.className = 'flex-1 py-2.5 px-4 bg-gray-100 hover:bg-gray-200 dark:bg-gray-700 dark:hover:bg-gray-600 text-gray-800 dark:text-gray-200 rounded-xl font-bold transition';
+                cancelBtn.textContent = 'Cancel';
+                const okBtn = document.createElement('button');
+                okBtn.className = 'flex-1 py-2.5 px-4 bg-accent hover:bg-orange-600 text-white rounded-xl font-bold transition shadow-lg shadow-orange-500/30';
+                okBtn.textContent = 'Confirm';
+                btnContainer.appendChild(cancelBtn);
+                btnContainer.appendChild(okBtn);
+                modal.appendChild(icon); modal.appendChild(text); modal.appendChild(btnContainer);
+                overlay.appendChild(modal); document.body.appendChild(overlay);
+                requestAnimationFrame(() => { overlay.classList.remove('opacity-0'); modal.classList.remove('scale-95'); });
+                const close = (result) => {
+                    overlay.classList.add('opacity-0'); modal.classList.add('scale-95');
+                    setTimeout(() => { document.body.removeChild(overlay); resolve(result); }, 300);
+                };
+                cancelBtn.onclick = () => close(false);
+                okBtn.onclick = () => close(true);
+            });
+        };
+
+        window.customAlert = function(message) {
+            return new Promise((resolve) => {
+                const overlay = document.createElement('div');
+                overlay.className = 'fixed inset-0 bg-black/60 z-[9999] flex items-center justify-center opacity-0 transition-opacity duration-300 backdrop-blur-sm';
+                const modal = document.createElement('div');
+                modal.className = 'bg-white dark:bg-gray-800 rounded-2xl shadow-2xl p-6 max-w-sm w-full mx-4 transform scale-95 transition-transform duration-300 flex flex-col items-center text-center border dark:border-gray-700';
+                const icon = document.createElement('div');
+                icon.className = 'w-14 h-14 bg-blue-100 dark:bg-blue-900/30 rounded-full flex items-center justify-center mb-4 text-blue-500';
+                icon.innerHTML = '<svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>';
+                const text = document.createElement('p');
+                text.className = 'text-gray-800 dark:text-gray-200 font-bold mb-6 break-words w-full leading-relaxed';
+                text.textContent = message;
+                const okBtn = document.createElement('button');
+                okBtn.className = 'w-full py-2.5 px-4 bg-primary hover:bg-blue-900 text-white rounded-xl font-bold transition';
+                okBtn.textContent = 'OK';
+                modal.appendChild(icon); modal.appendChild(text); modal.appendChild(okBtn);
+                overlay.appendChild(modal); document.body.appendChild(overlay);
+                requestAnimationFrame(() => { overlay.classList.remove('opacity-0'); modal.classList.remove('scale-95'); });
+                const close = () => {
+                    overlay.classList.add('opacity-0'); modal.classList.add('scale-95');
+                    setTimeout(() => { document.body.removeChild(overlay); resolve(); }, 300);
+                };
+                okBtn.onclick = close;
+            });
+        };
+
+        window.customPrompt = function(title, subtitle, defaultValue) {
+            return new Promise((resolve) => {
+                const overlay = document.createElement('div');
+                overlay.className = 'fixed inset-0 bg-black/60 z-[9999] flex items-center justify-center opacity-0 transition-opacity duration-300 backdrop-blur-sm';
+                const modal = document.createElement('div');
+                modal.className = 'bg-white dark:bg-gray-800 rounded-2xl shadow-2xl p-6 max-w-md w-full mx-4 transform scale-95 transition-transform duration-300 border dark:border-gray-700';
+
+                // Header
+                const header = document.createElement('div');
+                header.className = 'flex items-center gap-3 mb-4';
+                const iconWrap = document.createElement('div');
+                iconWrap.className = 'w-10 h-10 bg-red-100 dark:bg-red-900/30 rounded-xl flex items-center justify-center text-red-500 flex-shrink-0';
+                iconWrap.innerHTML = '<svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M18.364 18.364A9 9 0 005.636 5.636m12.728 12.728A9 9 0 015.636 5.636m12.728 12.728L5.636 5.636"></path></svg>';
+                const titleEl = document.createElement('div');
+                const titleText = document.createElement('p');
+                titleText.className = 'font-bold text-gray-900 dark:text-white text-sm leading-snug';
+                titleText.textContent = title;
+                titleEl.appendChild(titleText);
+                if (subtitle) {
+                    const subText = document.createElement('p');
+                    subText.className = 'text-xs text-gray-500 dark:text-gray-400 mt-0.5';
+                    subText.textContent = subtitle;
+                    titleEl.appendChild(subText);
+                }
+                header.appendChild(iconWrap);
+                header.appendChild(titleEl);
+
+                // Textarea
+                const textarea = document.createElement('textarea');
+                textarea.rows = 3;
+                textarea.className = 'w-full mt-1 px-4 py-3 rounded-xl border border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-white text-sm focus:outline-none focus:ring-2 focus:ring-red-400 resize-none transition';
+                textarea.value = defaultValue || '';
+                textarea.placeholder = 'اكتب السبب هنا...';
+
+                // Buttons
+                const btnContainer = document.createElement('div');
+                btnContainer.className = 'flex gap-3 mt-5';
+                const cancelBtn = document.createElement('button');
+                cancelBtn.className = 'flex-1 py-2.5 px-4 bg-gray-100 hover:bg-gray-200 dark:bg-gray-700 dark:hover:bg-gray-600 text-gray-800 dark:text-gray-200 rounded-xl font-bold transition text-sm';
+                cancelBtn.textContent = 'إلغاء';
+                const okBtn = document.createElement('button');
+                okBtn.className = 'flex-1 py-2.5 px-4 bg-red-500 hover:bg-red-600 text-white rounded-xl font-bold transition text-sm shadow-lg shadow-red-500/30';
+                okBtn.textContent = '❌ تأكيد الرفض';
+                btnContainer.appendChild(cancelBtn);
+                btnContainer.appendChild(okBtn);
+
+                modal.appendChild(header);
+                modal.appendChild(textarea);
+                modal.appendChild(btnContainer);
+                overlay.appendChild(modal);
+                document.body.appendChild(overlay);
+
+                requestAnimationFrame(() => { overlay.classList.remove('opacity-0'); modal.classList.remove('scale-95'); });
+                setTimeout(() => textarea.focus(), 350);
+
+                const close = (result) => {
+                    overlay.classList.add('opacity-0'); modal.classList.add('scale-95');
+                    setTimeout(() => { document.body.removeChild(overlay); resolve(result); }, 300);
+                };
+                cancelBtn.onclick = () => close(null);
+                okBtn.onclick = () => close(textarea.value);
+                textarea.addEventListener('keydown', (e) => {
+                    if (e.key === 'Enter' && e.ctrlKey) okBtn.click();
+                    if (e.key === 'Escape') cancelBtn.click();
+                });
+            });
+        };
+
         // ===================== UTILS =====================
+        const currencyMap = { uae: 'AED', egypt: 'EGP', ksa: 'SAR', qatar: 'QAR' };
+        function getCurrency() {
+            const country = localStorage.getItem('selectedCountry') || 'uae';
+            return currencyMap[country] || 'AED';
+        }
+
         function debounce(fn, delay) {
             let timer;
             return function () {
@@ -709,19 +843,24 @@
         // ===================== DASHBOARD STATS =====================
         async function loadStats() {
             try {
-                const res = await apiClient.fetch('/admin/stats');
+                const currency = getCurrency();
+                const res = await apiClient.fetch(`/admin/stats?currency=${currency}`);
                 const d = res.data;
+
+                // Update Sidebar
+                const sidebarBadge = document.getElementById('sidebar-currency-badge');
+                if (sidebarBadge) sidebarBadge.textContent = currency;
 
                 document.getElementById('stat-users').textContent = d.totalUsers.toLocaleString();
                 document.getElementById('stat-new-users').textContent = `+${d.newUsersThisMonth} this month`;
                 document.getElementById('stat-ads').textContent = d.activeAds.toLocaleString();
                 document.getElementById('stat-new-ads').textContent = `+${d.newAdsThisMonth} this month`;
-                document.getElementById('stat-revenue').textContent = `AED ${d.totalRevenue}`;
-                document.getElementById('stat-monthly-revenue').textContent = `AED ${d.monthlyRevenue} this month`;
+                document.getElementById('stat-revenue').textContent = `${currency} ${d.totalRevenue}`;
+                document.getElementById('stat-monthly-revenue').textContent = `${currency} ${d.monthlyRevenue} this month`;
                 document.getElementById('stat-reports').textContent = d.totalReports;
                 document.getElementById('stat-views').textContent = d.totalViews.toLocaleString();
                 document.getElementById('stat-transactions').textContent = d.totalTransactions;
-                document.getElementById('stat-monthly').textContent = `AED ${d.monthlyRevenue}`;
+                document.getElementById('stat-monthly').textContent = `${currency} ${d.monthlyRevenue}`;
 
                 // Update badge
                 if (d.totalReports > 0) {
@@ -742,14 +881,15 @@
         // ===================== REVENUE =====================
         async function loadRevenue() {
             const period = document.getElementById('revenue-period').value;
+            const currency = getCurrency();
             try {
-                const res = await apiClient.fetch(`/admin/revenue?period=${period}`);
+                const res = await apiClient.fetch(`/admin/revenue?period=${period}&currency=${currency}`);
                 const d = res.data;
 
-                document.getElementById('rev-total').textContent = `AED ${d.totalRevenue}`;
+                document.getElementById('rev-total').textContent = `${currency} ${d.totalRevenue}`;
                 document.getElementById('rev-count').textContent = d.totalTransactions;
                 const avg = d.totalTransactions > 0 ? (parseFloat(d.totalRevenue) / d.totalTransactions).toFixed(2) : '0.00';
-                document.getElementById('rev-avg').textContent = `AED ${avg}`;
+                document.getElementById('rev-avg').textContent = `${currency} ${avg}`;
 
                 // By plan
                 const planEl = document.getElementById('rev-by-plan');
@@ -761,7 +901,7 @@
                                 <div class="w-2 h-2 rounded-full bg-${planColors[plan] || 'gray'}-500"></div>
                                 <span class="text-sm capitalize">${plan.replace('_', ' ')}</span>
                             </div>
-                            <span class="font-bold text-sm text-green-600">AED ${amount.toFixed(2)}</span>
+                            <span class="font-bold text-sm text-green-600">${currency} ${amount.toFixed(2)}</span>
                         </div>
                     `).join('')
                     : '<p class="text-gray-400 text-sm text-center">No revenue data for this period</p>';
@@ -775,7 +915,7 @@
                                 <p class="text-xs font-semibold capitalize">${p.plan?.replace('_', ' ')} <span class="text-gray-400">• ${p.user?.name || 'Unknown'}</span></p>
                                 <p class="text-xs text-gray-400">${new Date(p.createdAt).toLocaleDateString()}</p>
                             </div>
-                            <span class="font-bold text-sm text-green-600">AED ${p.amount}</span>
+                            <span class="font-bold text-sm text-green-600">${currency} ${p.amount}</span>
                         </div>
                     `).join('')
                     : '<p class="text-gray-400 text-sm text-center">No recent transactions</p>';
@@ -853,27 +993,27 @@
         }
 
         async function toggleBan(id, isBanned) {
-            if (!confirm(`Are you sure you want to ${isBanned ? 'unban' : 'ban'} this user?`)) return;
+            if (!await customConfirm(`Are you sure you want to ${isBanned ? 'unban' : 'ban'} this user?`)) return;
             try {
                 await apiClient.fetch(`/admin/users/${id}/ban`, { method: 'PUT' });
                 loadUsers(usersPage);
-            } catch (e) { alert(e.message); }
+            } catch (e) { await customAlert(e.message); }
         }
 
         async function promoteUser(id) {
-            if (!confirm('Promote this user to admin? This gives them full admin access.')) return;
+            if (!await customConfirm('Promote this user to admin? This gives them full admin access.')) return;
             try {
                 await apiClient.fetch(`/admin/users/${id}/promote`, { method: 'PUT' });
                 loadUsers(usersPage);
-            } catch (e) { alert(e.message); }
+            } catch (e) { await customAlert(e.message); }
         }
 
         async function deleteUser(id) {
-            if (!confirm('Delete this user permanently? All their ads will also be deleted.')) return;
+            if (!await customConfirm('Delete this user permanently? All their ads will also be deleted.')) return;
             try {
                 await apiClient.fetch(`/admin/users/${id}`, { method: 'DELETE' });
                 loadUsers(usersPage);
-            } catch (e) { alert(e.message); }
+            } catch (e) { await customAlert(e.message); }
         }
 
         // ===================== ADS =====================
@@ -945,11 +1085,15 @@
             try {
                 await apiClient.fetch(`/admin/ads/${id}/approve`, { method: 'PUT' });
                 loadAds(adsPage);
-            } catch (e) { alert(e.message); }
+            } catch (e) { await customAlert(e.message); }
         }
 
         async function rejectAdFromTable(id) {
-            const reason = prompt('Reason for rejection (will be sent to user):', 'Does not comply with platform policies.');
+            const reason = await customPrompt(
+                'Reason for rejection',
+                'This message will be sent to the ad owner.',
+                'Does not comply with platform policies.'
+            );
             if (reason === null) return;
             try {
                 await apiClient.fetch(`/admin/ads/${id}/reject`, {
@@ -957,22 +1101,22 @@
                     body: JSON.stringify({ reason: reason || undefined })
                 });
                 loadAds(adsPage);
-            } catch (e) { alert(e.message); }
+            } catch (e) { await customAlert(e.message); }
         }
 
         async function deleteAd(id) {
-            if (!confirm('Delete this ad? The owner will be notified.')) return;
+            if (!await customConfirm('Delete this ad? The owner will be notified.')) return;
             try {
                 await apiClient.fetch(`/admin/ads/${id}`, { method: 'DELETE' });
                 loadAds(adsPage);
-            } catch (e) { alert(e.message); }
+            } catch (e) { await customAlert(e.message); }
         }
 
         async function toggleFeature(id) {
             try {
                 await apiClient.fetch(`/admin/ads/${id}/feature`, { method: 'PUT' });
                 loadAds(adsPage);
-            } catch (e) { alert(e.message); }
+            } catch (e) { await customAlert(e.message); }
         }
 
         // ===================== MODERATION QUEUE =====================
@@ -1032,9 +1176,9 @@
                             </div>
                             <p class="text-xs text-gray-500 dark:text-gray-400 mb-3 line-clamp-2">${ad.description || ''}</p>
                             <div class="flex gap-2">
-                                <button onclick="adminApproveAd(${ad.id})" class="flex-1 btn-sm bg-green-100 text-green-700 hover:bg-green-200 text-center">✅ Approve</button>
-                                <button onclick="adminRejectAd(${ad.id}, '${ad.title.replace(/'/g, "\\'")}'  )" class="flex-1 btn-sm bg-red-100 text-red-700 hover:bg-red-200 text-center">❌ Reject</button>
-                                <a href="ad-details.html?id=${ad.id}" target="_blank" class="btn-sm bg-gray-100 text-gray-600 hover:bg-gray-200">👁️</a>
+                                <button onclick="adminApproveAd(${ad.id})" class="flex-1 btn-sm bg-green-100 text-green-700 hover:bg-green-200 text-center">✅ موافقة</button>
+                                <button onclick="adminRejectAd(${ad.id}, '${ad.title.replace(/'/g, "\\'")}'  )" class="flex-1 btn-sm bg-red-100 text-red-700 hover:bg-red-200 text-center">❌ رفض</button>
+                                <a href="ad-details.html?id=${ad.id}" target="_blank" class="btn-sm bg-gray-100 text-gray-600 hover:bg-gray-200" title="معاينة">👁️</a>
                             </div>
                         </div>
                     </div>
@@ -1058,11 +1202,15 @@
                     const current = parseInt(document.getElementById('pending-ads-badge').textContent) || 0;
                     if (current > 0) document.getElementById('pending-ads-badge').textContent = current - 1;
                 }
-            } catch (e) { alert(e.message); }
+            } catch (e) { await customAlert(e.message); }
         }
 
         async function adminRejectAd(id, title) {
-            const reason = prompt(`Reject ad "${title}"\n\nReason for rejection (shown to user):`, 'Does not comply with platform policies.');
+            const reason = await customPrompt(
+                `رفض الإعلان: "${title}"`,
+                'يرجى كتابة سبب الرفض (سيظهر لصاحب الإعلان):',
+                'الإعلان لا يتوافق مع سياسات المنصة، يرجى مراجعته وتعديله.'
+            );
             if (reason === null) return; // cancelled
             try {
                 await apiClient.fetch(`/admin/ads/${id}/reject`, {
@@ -1077,7 +1225,7 @@
                     const current = parseInt(document.getElementById('pending-ads-badge').textContent) || 0;
                     if (current > 0) document.getElementById('pending-ads-badge').textContent = current - 1;
                 }
-            } catch (e) { alert(e.message); }
+            } catch (e) { await customAlert(e.message); }
         }
 
         // ===================== REPORTS =====================
@@ -1123,17 +1271,17 @@
             try {
                 await apiClient.fetch(`/admin/reports/${id}`, { method: 'PUT', body: JSON.stringify({ status: 'resolved' }) });
                 loadReports();
-            } catch (e) { alert(e.message); }
+            } catch (e) { await customAlert(e.message); }
         }
 
         async function deleteReportedAd(adId, reportId) {
-            if (!confirm('Delete the reported ad and resolve this report?')) return;
+            if (!await customConfirm('Delete the reported ad and resolve this report?')) return;
             try {
                 await apiClient.fetch(`/admin/ads/${adId}`, { method: 'DELETE' });
                 await apiClient.fetch(`/admin/reports/${reportId}`, { method: 'PUT', body: JSON.stringify({ status: 'resolved' }) });
                 loadReports();
                 loadStats();
-            } catch (e) { alert(e.message); }
+            } catch (e) { await customAlert(e.message); }
         }
 
         // ===================== ANALYTICS =====================
@@ -1141,14 +1289,15 @@
 
         async function loadAnalytics() {
             try {
-                const res = await apiClient.fetch('/admin/analytics');
-                const { users, ads, revenue } = res.data;
+                const currency = getCurrency();
+                const res = await apiClient.fetch(`/admin/analytics?currency=${currency}`);
+                const d = res.data;
 
-                renderUsersChart(users);
-                renderViewsChart(ads);
-                renderRevenueChart(revenue);
+                renderUsersChart(d.users);
+                renderViewsChart(d.ads);
+                renderRevenueChart(d.revenue, currency);
             } catch (err) {
-                console.error('Analytics load error:', err);
+                console.error('Analytics error:', err);
             }
         }
 
@@ -1209,7 +1358,7 @@
             });
         }
 
-        function renderRevenueChart(data) {
+        function renderRevenueChart(data, currency) {
             const ctx = document.getElementById('revenueChart').getContext('2d');
             if (revenueChart) revenueChart.destroy();
 
@@ -1218,7 +1367,7 @@
                 data: {
                     labels: data.map(d => d.day),
                     datasets: [{
-                        label: 'Revenue ($)',
+                        label: `Revenue (${currency})`,
                         data: data.map(d => d.total || 0),
                         borderColor: '#00C853',
                         backgroundColor: 'rgba(0, 200, 83, 0.1)',
@@ -1235,7 +1384,7 @@
                         y: {
                             beginAtZero: true,
                             grid: { display: false },
-                            ticks: { callback: (val) => '$' + val }
+                            ticks: { callback: (val) => currency + ' ' + val }
                         },
                         x: { grid: { display: false } }
                     }

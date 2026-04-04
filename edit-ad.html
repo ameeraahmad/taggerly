@@ -221,7 +221,7 @@
             const adId = urlParams.get('id');
 
             if (!adId) {
-                alert('No Ad ID provided');
+                await customAlert('No Ad ID provided');
                 window.location.href = 'dashboard.html';
                 return;
             }
@@ -301,7 +301,7 @@
                 const user = JSON.parse(localStorage.getItem('user'));
 
                 if (ad.userId !== user.id && user.role !== 'admin') {
-                    alert('Not authorized to edit this ad');
+                    await customAlert('Not authorized to edit this ad');
                     window.location.href = 'dashboard.html';
                     return;
                 }
@@ -334,7 +334,7 @@
 
             } catch (err) {
                 console.error('Error fetching ad:', err);
-                alert('Failed to load ad details');
+                await customAlert('Failed to load ad details');
             }
 
             categorySelect.addEventListener('change', () => {
@@ -380,10 +380,10 @@
                     submitBtn.textContent = 'Updating...';
 
                     await apiClient.updateAd(adId, formData);
-                    alert('Ad updated successfully!');
+                    await customAlert('Ad updated successfully!');
                     window.location.href = 'dashboard.html';
                 } catch (err) {
-                    alert(err.message);
+                    await customAlert(err.message);
                     const submitBtn = form.querySelector('button[type="submit"]');
                     submitBtn.disabled = false;
                     submitBtn.textContent = 'Update Ad';

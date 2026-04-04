@@ -159,8 +159,54 @@ const connectDB = async () => {
                             console.log('➕ Adding "propertyType" column to Ads...');
                             await queryInterface.addColumn('Ads', 'propertyType', { type: Sequelize.STRING, allowNull: true });
                         }
+                        if (!tableInfo.editCount) {
+                            console.log('➕ Adding "editCount" column to Ads...');
+                            await queryInterface.addColumn('Ads', 'editCount', { type: Sequelize.INTEGER, defaultValue: 0 });
+                        }
+                        if (!tableInfo.lastEditedAt) {
+                            console.log('🏗️ Adding missing column: lastEditedAt to Ads table');
+                            await queryInterface.addColumn('Ads', 'lastEditedAt', { type: Sequelize.DATE, allowNull: true });
+                        }
+                        if (!tableInfo.latitude) {
+                            console.log('🏗️ Adding missing column: latitude to Ads table');
+                            await queryInterface.addColumn('Ads', 'latitude', { type: Sequelize.DOUBLE, allowNull: true });
+                        }
+                        if (!tableInfo.longitude) {
+                            console.log('🏗️ Adding missing column: longitude to Ads table');
+                            await queryInterface.addColumn('Ads', 'longitude', { type: Sequelize.DOUBLE, allowNull: true });
+                        }
+                        
+                        // Ensure Favorites table exists
+                        const tables = await queryInterface.showAllTables();
+                        if (!tables.includes('Favorites')) {
+                            console.log('🏗️ Creating missing table: Favorites');
+                            await queryInterface.createTable('Favorites', {
+                                id: { type: Sequelize.INTEGER, autoIncrement: true, primaryKey: true },
+                                userId: { type: Sequelize.INTEGER, allowNull: false },
+                                adId: { type: Sequelize.INTEGER, allowNull: false },
+                                createdAt: { type: Sequelize.DATE, allowNull: false },
+                                updatedAt: { type: Sequelize.DATE, allowNull: false }
+                            });
+                        }
                     } catch (mErr) {
                         console.log('ℹ️ Additional SQLite columns for Ads might already exist.');
+                    }
+                }
+
+                // Check Conversations table
+                const convTableInfo = await queryInterface.describeTable('Conversations').catch(() => ({}));
+                if (convTableInfo.id) {
+                    try {
+                        if (!convTableInfo.deletedByBuyer) {
+                            console.log('➕ Adding "deletedByBuyer" column to Conversations...');
+                            await queryInterface.addColumn('Conversations', 'deletedByBuyer', { type: Sequelize.BOOLEAN, defaultValue: false });
+                        }
+                        if (!convTableInfo.deletedBySeller) {
+                            console.log('➕ Adding "deletedBySeller" column to Conversations...');
+                            await queryInterface.addColumn('Conversations', 'deletedBySeller', { type: Sequelize.BOOLEAN, defaultValue: false });
+                        }
+                    } catch (mErr) {
+                        console.log('ℹ️ SQLite columns for Conversations might already exist.');
                     }
                 }
 

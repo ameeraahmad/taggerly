@@ -11,14 +11,18 @@ const { adApprovedEmail, adRejectedEmail } = require('../utils/emailTemplates');
 // @route   GET /api/admin/stats
 exports.getStats = async (req, res) => {
     try {
+        const { currency } = req.query;
         const totalUsers = await User.count();
         const totalAds = await Ad.count({ where: { status: { [Op.ne]: 'deleted' } } });
         const totalReports = await Report.count({ where: { status: 'pending' } });
         const activeAds = await Ad.count({ where: { status: 'active' } });
         const totalViews = await Ad.sum('views') || 0;
 
-        // Revenue stats
-        const completedPayments = await Payment.findAll({ where: { status: 'completed' } });
+        // Revenue stats - filter by currency if provided
+        const paymentWhere = { status: 'completed' };
+        if (currency) paymentWhere.currency = currency.toLowerCase();
+
+        const completedPayments = await Payment.findAll({ where: paymentWhere });
         const totalRevenue = completedPayments.reduce((sum, p) => sum + p.amount, 0);
         const monthlyRevenue = completedPayments
             .filter(p => {
@@ -56,6 +60,7 @@ exports.getStats = async (req, res) => {
 // @route   GET /api/admin/analytics
 exports.getAnalytics = async (req, res) => {
     try {
+        const { currency } = req.query;
         const thirtyDaysAgo = new Date();
         thirtyDaysAgo.setDate(thirtyDaysAgo.getDate() - 30);
 
@@ -81,12 +86,15 @@ exports.getAnalytics = async (req, res) => {
             order: [['day', 'ASC']]
         });
 
-        // Daily Revenue
+        // Daily Revenue - filter by currency
+        const revWhere = {
+            status: 'completed',
+            createdAt: { [Op.gte]: thirtyDaysAgo }
+        };
+        if (currency) revWhere.currency = currency.toLowerCase();
+
         const revenueData = await Payment.findAll({
-            where: {
-                status: 'completed',
-                createdAt: { [Op.gte]: thirtyDaysAgo }
-            },
+            where: revWhere,
             attributes: [
                 [require('sequelize').fn('date', require('sequelize').col('createdAt')), 'day'],
                 [require('sequelize').fn('sum', require('sequelize').col('amount')), 'total']
@@ -237,8 +245,9 @@ exports.approveAd = async (req, res) => {
         await createNotification(req.io, {
             userId: ad.userId,
             type: 'system',
-            title: '✅ Your ad has been approved!',
-            message: `Your ad "${ad.title}" is now live and visible to all users.`,
+            title: '✅ تم الموافقة على إعلانك!',
+            message: `إعلانك "${ad.title}" أصبح الآن نشطاً ويمكن للجميع رؤيته.`,
+            link: `ad-details.html?id=${ad.id}`,
             relatedId: ad.id
         });
 
@@ -247,8 +256,8 @@ exports.approveAd = async (req, res) => {
             const adURL = `${req.protocol}://${req.get('host')}/ad-details.html?id=${ad.id}`;
             sendEmail({
                 email: ad.user.email,
-                subject: '✅ Your ad is now live on Taggerly!',
-                message: `Your ad "${ad.title}" has been approved and is now live.`,
+                subject: '✅ تم تفعيل إعلانك على Taggerly!',
+                message: `تمت الموافقة على إعلانك "${ad.title}" وهو الآن متاح للمشترين.`,
                 html: adApprovedEmail({ userName: ad.user.name, adTitle: ad.title, adURL })
             }).catch(err => console.error('Ad approval email failed:', err));
         }
@@ -268,14 +277,15 @@ exports.rejectAd = async (req, res) => {
         });
         if (!ad) return res.status(404).json({ success: false, message: 'Ad not found' });
 
-        const reason = req.body.reason || 'Your ad did not comply with our platform policies.';
+        const reason = req.body.reason || 'إعلانك لا يتوافق مع سياسات المنصة حالياً، يرجى مراجعته وتعديله.';
         await ad.update({ status: 'rejected', rejectionReason: reason });
 
         await createNotification(req.io, {
             userId: ad.userId,
             type: 'ad_rejected',
-            title: '❌ Your ad was not approved',
-            message: `Your ad "${ad.title}" was rejected. Reason: ${reason}`,
+            title: '❌ لم يتم قبول إعلانك',
+            message: `تم رفض إعلانك "${ad.title}". السبب: ${reason}`,
+            link: `ad-details.html?id=${ad.id}`,
             relatedId: ad.id
         });
 
@@ -283,8 +293,8 @@ exports.rejectAd = async (req, res) => {
         if (ad.user && ad.user.email) {
             sendEmail({
                 email: ad.user.email,
-                subject: '❌ Your Taggerly ad requires attention',
-                message: `Your ad "${ad.title}" was rejected. Reason: ${reason}`,
+                subject: '❌ تحديث بخصوص إعلانك على Taggerly',
+                message: `تم رفض إعلانك "${ad.title}". السبب: ${reason}`,
                 html: adRejectedEmail({ userName: ad.user.name, adTitle: ad.title, reason })
             }).catch(err => console.error('Ad rejection email failed:', err));
         }
@@ -334,6 +344,7 @@ exports.deleteAd = async (req, res) => {
             type: 'ad_rejected',
             title: 'Your ad has been removed',
             message: `Your ad "${ad.title}" was removed by an administrator for violating platform policies.`,
+            link: `ad-details.html?id=${ad.id}`,
             relatedId: ad.id
         });
 
@@ -361,6 +372,7 @@ exports.toggleFeatureAd = async (req, res) => {
                 type: 'payment',
                 title: '🌟 Your Ad is now Featured!',
                 message: `Your ad "${ad.title}" has been featured by the admin for 30 days!`,
+                link: `ad-details.html?id=${ad.id}`,
                 relatedId: ad.id
             });
         }
@@ -418,6 +430,7 @@ exports.reviewReport = async (req, res) => {
                 type: 'system',
                 title: '✅ Report resolved',
                 message: 'Your report has been reviewed and resolved by our team. Thank you for keeping the community safe.',
+                link: `ad-details.html?id=${report.adId}`,
                 relatedId: report.adId
             });
         }
@@ -432,15 +445,18 @@ exports.reviewReport = async (req, res) => {
 // @route   GET /api/admin/revenue
 exports.getRevenue = async (req, res) => {
     try {
-        const { period = '30' } = req.query;
+        const { period = '30', currency } = req.query;
         const since = new Date();
         since.setDate(since.getDate() - parseInt(period));
 
+        const where = {
+            status: 'completed',
+            createdAt: { [Op.gte]: since }
+        };
+        if (currency) where.currency = currency.toLowerCase();
+
         const payments = await Payment.findAll({
-            where: {
-                status: 'completed',
-                createdAt: { [Op.gte]: since }
-            },
+            where,
             include: [{ model: User, as: 'user', attributes: ['name', 'email'] }],
             order: [['createdAt', 'DESC']]
         });

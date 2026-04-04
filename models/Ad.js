@@ -100,9 +100,22 @@ const Ad = sequelize.define('Ad', {
     lastEditedAt: {
         type: DataTypes.DATE,
         allowNull: true
+    },
+    rejectionReason: {
+        type: DataTypes.TEXT,
+        allowNull: true
+    },
+    latitude: {
+        type: DataTypes.FLOAT,
+        allowNull: true
+    },
+    longitude: {
+        type: DataTypes.FLOAT,
+        allowNull: true
     }
 }, {
-    timestamps: true
+    timestamps: true,
+    tableName: 'Ads'
 });
 
 module.exports = Ad;

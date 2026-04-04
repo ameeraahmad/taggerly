@@ -42,14 +42,26 @@ app.use(cors());
 app.use(express.json({ limit: '10mb' })); // Limit JSON size
 app.use(express.urlencoded({ extended: true, limit: '10mb' })); // Limit URL encoded size
 
-// Rate Limiting
+// Rate Limiting - Optimized for a smooth user experience
 const limiter = rateLimit({
-    windowMs: 15 * 60 * 1000, // 15 minutes
-    max: 100, // Limit each IP to 100 requests per `window` (here, per 15 minutes)
-    message: { success: false, message: 'Too many requests from this IP, please try again after 15 minutes' }
+    windowMs: 1 * 60 * 1000, // 1 minute window
+    max: 2000, // Limit each IP to 2000 requests per minute (very generous for normal browsing)
+    standardHeaders: true,
+    legacyHeaders: false,
+    message: { success: false, message: 'Too many requests, please try again in a minute.' }
 });
 
-// Apply rate limiting to all requests
+// Stricter limiter for Auth routes (Login/Register) to prevent brute force
+const authLimiter = rateLimit({
+    windowMs: 15 * 60 * 1000, // 15 minutes
+    max: 20, // Limit each IP to 20 login/register attempts per 15 minutes
+    message: { success: false, message: 'Too many login attempts, please try again after 15 minutes.' }
+});
+
+// Apply stricter limit to auth routes
+app.use('/api/auth', authLimiter);
+
+// Apply general rate limiting to all other API requests
 app.use('/api', limiter);
 
 // Pass io to controllers (lazy load)

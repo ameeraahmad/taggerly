@@ -10,12 +10,12 @@ const {
 } = require('../controllers/chatController');
 const { protect } = require('../middleware/authMiddleware');
 
-const { upload } = require('../middleware/upload');
+const { upload, resizeChatImage } = require('../middleware/upload');
 
 router.post('/conversation', protect, startConversation);
 router.get('/conversations', protect, getConversations);
 router.get('/unread-count', protect, getUnreadCount);
-router.post('/message', protect, upload.single('image'), sendMessage);
+router.post('/message', protect, upload.single('image'), resizeChatImage, sendMessage);
 router.get('/messages/:conversationId', protect, getMessages);
 router.delete('/conversation/:conversationId', protect, deleteConversation);
 

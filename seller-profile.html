@@ -28,6 +28,8 @@
         }
     </script>
     <link href="assets/css/style.css" rel="stylesheet">
+    <!-- Socket.io -->
+    <script src="/socket.io/socket.io.js"></script>
 </head>
 
 <body class="bg-gray-50 dark:bg-gray-900 text-gray-800 dark:text-gray-100 transition-colors duration-300">
@@ -212,6 +214,8 @@
 
     <footer id="main-footer"></footer>
 
+    <script src="assets/js/en.js"></script>
+    <script src="assets/js/ar.js"></script>
     <script src="assets/js/api-client.js"></script>
     <script src="assets/js/main.js"></script>
     <script>
@@ -376,7 +380,7 @@
 
         async function handleReviewSubmit(e) {
             e.preventDefault();
-            if (selectedRating === 0) return alert('Please select a rating');
+            if (selectedRating === 0) { await customAlert('Please select a rating'); return; }
 
             const comment = document.getElementById('review-comment').value;
             const submitBtn = e.target.querySelector('button[type="submit"]');
@@ -388,7 +392,7 @@
                 closeReviewModal();
                 loadSellerReviews();
             } catch (err) {
-                alert(err.message);
+                await customAlert(err.message);
                 submitBtn.disabled = false;
                 submitBtn.textContent = 'Submit';
             }

@@ -31,6 +31,8 @@
         }
     </script>
     <link href="assets/css/style.css" rel="stylesheet">
+    <!-- Chart.js for Analytics -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <!-- Socket.io -->
     <script src="/socket.io/socket.io.js"></script>
 </head>
@@ -223,19 +225,23 @@
                         <span class="text-[10px] font-bold text-accent bg-accent/10 px-2 py-1 rounded">PRO
                             FEATURE</span>
                     </div>
-                    <div class="p-8 text-center">
-                        <div
-                            class="w-16 h-16 bg-blue-50 dark:bg-blue-900/20 rounded-full flex items-center justify-center mx-auto mb-4 text-primary dark:text-blue-400">
-                            <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                    d="M7 12l3-3 3 3 4-4M8 21l4-4 4 4M3 4h18M4 4h16v12a1 1 0 01-1 1H5a1 1 0 01-1-1V4z">
-                                </path>
-                            </svg>
+                    <div class="p-6">
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
+                            <div class="bg-gray-50 dark:bg-gray-800/50 p-6 rounded-xl border dark:border-gray-700">
+                                <h4 class="text-sm font-bold text-gray-500 mb-2 uppercase tracking-tight">Top Performing Ad</h4>
+                                <div id="top-ad-title" class="font-bold text-lg text-primary dark:text-white truncate">-</div>
+                                <div id="top-ad-views" class="text-2xl font-black text-accent mt-1">0 <span class="text-xs">views</span></div>
+                            </div>
+                            <div class="bg-gray-50 dark:bg-gray-800/50 p-6 rounded-xl border dark:border-gray-700">
+                                <h4 class="text-sm font-bold text-gray-500 mb-2 uppercase tracking-tight">Average Views per Ad</h4>
+                                <div id="avg-views" class="text-3xl font-black text-primary dark:text-white mt-1">0</div>
+                                <div class="text-[10px] text-gray-400 mt-1 uppercase font-bold tracking-widest">Global average: 12.4</div>
+                            </div>
                         </div>
-                        <h4 class="font-bold text-lg mb-2" data-translate="comingSoon">Detailed Analytics Coming Soon!
-                        </h4>
-                        <p class="text-gray-500 text-sm max-w-sm mx-auto">We are building a powerful dashboard to show
-                            your ad impressions, click-through rates, and buyer demographic data.</p>
+
+                        <div class="relative h-64 w-full">
+                            <canvas id="viewsChart"></canvas>
+                        </div>
                     </div>
                 </div>
 
@@ -319,7 +325,13 @@
             }
 
             // Initial load
-            loadAds();
+            const urlParams = new URLSearchParams(window.location.search);
+            const section = urlParams.get('section');
+            if (section) {
+                showSection(section);
+            } else {
+                loadAds();
+            }
         });
 
         function showSection(sectionId) {
@@ -341,7 +353,7 @@
             }
 
             // Load data if needed
-            if (sectionId === 'ads') loadAds();
+            if (sectionId === 'ads' || sectionId === 'archive') loadAds();
             if (sectionId === 'payments') loadPayments();
             if (sectionId === 'analytics') console.log('Analytics section active');
         }
@@ -351,24 +363,100 @@
                 const response = await apiClient.getMyAds();
                 const allAds = response.data;
 
-                // Split ads into Active and Archive
-                const activeAds = allAds.filter(ad => ad.status === 'active' || ad.status === 'pending');
-                const archiveAds = allAds.filter(ad => ad.status === 'sold' || ad.status === 'rejected' || ad.status === 'deleted');
+                // Split ads into Active and Archive with 15-minute delay rule
+                const fifteenMinutes = 15 * 60 * 1000;
+                const now = new Date().getTime();
+
+                const activeAds = allAds.filter(ad => {
+                    const isNewRecentChange = (ad.status === 'sold' || ad.status === 'deleted') && 
+                                             (now - new Date(ad.updatedAt).getTime() < fifteenMinutes);
+                    return ad.status === 'active' || ad.status === 'pending' || isNewRecentChange;
+                });
+
+                const archiveAds = allAds.filter(ad => {
+                    const isOldChange = (ad.status === 'sold' || ad.status === 'deleted') && 
+                                       (now - new Date(ad.updatedAt).getTime() >= fifteenMinutes);
+                    return ad.status === 'rejected' || isOldChange;
+                });
 
                 // Update Stats (only count active for the counter)
                 const stats = document.querySelectorAll('.text-3xl.font-bold.text-gray-900');
                 if (stats.length >= 2) {
                     stats[0].textContent = activeAds.length;
-                    stats[1].textContent = allAds.reduce((acc, ad) => acc + (ad.views || 0), 0);
+                    const totalViews = allAds.reduce((acc, ad) => acc + (ad.views || 0), 0);
+                    stats[1].textContent = totalViews.toLocaleString();
+                    
+                    // Update Analytics Summary
+                    const avgViews = allAds.length > 0 ? (totalViews / allAds.length).toFixed(1) : 0;
+                    document.getElementById('avg-views').textContent = avgViews;
+                    
+                    const topAd = [...allAds].sort((a, b) => (b.views || 0) - (a.views || 0))[0];
+                    if (topAd) {
+                        document.getElementById('top-ad-title').textContent = topAd.title;
+                        document.getElementById('top-ad-views').innerHTML = `${topAd.views || 0} <span class="text-xs">views</span>`;
+                    }
                 }
 
                 renderAdList(activeAds, 'ads-container', false);
                 renderAdList(archiveAds, 'archive-container', true);
+                
+                // Initialize analytics chart if data exists
+                if (allAds.length > 0) {
+                    renderViewsChart(allAds);
+                }
 
             } catch (err) {
                 console.error('Error loading ads:', err);
                 document.getElementById('ads-container').innerHTML = `<div class="p-12 text-center text-red-500">${err.message}</div>`;
             }
+        }
+
+        let chartInstance = null;
+        function renderViewsChart(ads) {
+            const ctx = document.getElementById('viewsChart').getContext('2d');
+            if (chartInstance) chartInstance.destroy();
+
+            // Sort by views decending
+            const sortedAds = [...ads].sort((a, b) => (b.views || 0) - (a.views || 0)).slice(0, 10);
+            
+            const labels = sortedAds.map(ad => ad.title.length > 20 ? ad.title.substring(0, 17) + '...' : ad.title);
+            const data = sortedAds.map(ad => ad.views || 0);
+
+            const isDark = document.documentElement.classList.contains('dark');
+            const textColor = isDark ? '#E5E7EB' : '#111827';
+            const gridColor = isDark ? 'rgba(255,255,255,0.05)' : 'rgba(0,0,0,0.05)';
+
+            chartInstance = new Chart(ctx, {
+                type: 'bar',
+                data: {
+                    labels: labels,
+                    datasets: [{
+                        label: 'Views',
+                        data: data,
+                        backgroundColor: '#FF6B00',
+                        borderRadius: 6,
+                        hoverBackgroundColor: '#e66000'
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: { display: false }
+                    },
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            grid: { color: gridColor },
+                            ticks: { color: textColor, font: { weight: 'bold' } }
+                        },
+                        x: {
+                            grid: { display: false },
+                            ticks: { color: textColor, font: { size: 10 } }
+                        }
+                    }
+                }
+            });
         }
 
         function renderAdList(ads, containerId, isArchive) {
@@ -389,7 +477,7 @@
                         'bg-gray-50 text-gray-700 border-gray-200';
 
                 const adItem = `
-                    <div class="p-6 flex items-center hover:bg-gray-50 transition border-b dark:border-gray-700">
+                    <div class="p-6 flex items-center hover:bg-gray-50 transition border-b dark:border-gray-700 ${ad.status === 'deleted' ? 'opacity-70 grayscale-[0.5]' : ''}">
                         <img src="${ad.images[0] || 'https://via.placeholder.com/150'}" class="w-16 h-16 rounded object-cover mr-4 rtl:ml-4 rtl:mr-0">
                         <div class="flex-grow">
                             <h4 class="font-bold text-gray-900 dark:text-white mb-1">
@@ -397,27 +485,38 @@
                                 ${ad.isFeatured ? '<span class="ml-2 bg-accent text-[9px] text-white px-1.5 py-0.5 rounded uppercase">Featured</span>' : ''}
                             </h4>
                             <div class="flex flex-wrap items-center gap-y-1 gap-x-4 text-xs text-gray-500">
-                                <span>${ad.category} • Created ${new Date(ad.createdAt).toLocaleDateString()}</span>
+                                <span>${ad.category} • Updated ${new Date(ad.updatedAt).toLocaleDateString()}</span>
                                 <span class="flex items-center gap-1"><svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/><path d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"/></svg> ${ad.views || 0}</span>
                             </div>
-                            <div class="mt-2">
+                            <div class="mt-2 flex items-center gap-2">
                                 <span class="px-2 py-0.5 rounded-full font-bold text-[9px] border uppercase ${statusColor}">
                                     ${translations[localStorage.getItem('lang') || 'en'][ad.status] || ad.status}
                                 </span>
+                                ${ad.status === 'deleted' && !isArchive ? `
+                                    <span class="text-[10px] text-red-600 font-bold animate-pulse" data-translate="archivingSoon">Archiving soon...</span>
+                                ` : ''}
                                 ${ad.status === 'rejected' && ad.rejectionReason ? `<p class="text-[10px] text-red-500 mt-1">Reason: ${ad.rejectionReason}</p>` : ''}
                             </div>
                         </div>
                         <div class="flex items-center space-x-2 rtl:space-x-reverse">
+                            ${(ad.status === 'deleted' || ad.status === 'sold') && !isArchive ? `
+                                <button onclick="undoStatusChange(${ad.id})" class="text-[10px] bg-primary text-white px-3 py-1.5 rounded-full font-bold transition hover:bg-opacity-90 shadow-sm flex items-center gap-1">
+                                    <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 10h10a8 8 0 018 8v2M3 10l6 6m-6-6l6-6"></path></svg>
+                                    <span data-translate="undo">Undo</span>
+                                </button>
+                            ` : ''}
+
                             ${ad.status === 'active' || ad.status === 'pending' ? `
                                 <button onclick="markAsSold(${ad.id})" class="text-[10px] bg-gray-100 dark:bg-gray-700 hover:bg-gray-200 dark:hover:bg-gray-600 text-gray-700 dark:text-gray-300 px-2.5 py-1.5 rounded font-bold transition">Sold</button>
                                 ${!ad.isFeatured ? `<a href="plans.html?adId=${ad.id}" class="text-[10px] bg-accent/10 hover:bg-accent hover:text-white text-accent px-2.5 py-1.5 rounded font-bold transition">Promote</a>` : ''}
                             ` : ''}
 
-                            ${ad.status === 'sold' || ad.status === 'deleted' ? `
+                            ${isArchive ? `
                                 <button onclick="relistAd(${ad.id})" class="text-[10px] bg-green-500 text-white px-2.5 py-1.5 rounded font-bold transition hover:bg-green-600">Relist</button>
+                                <button onclick="permanentlyDeleteAd(${ad.id})" class="text-[10px] bg-red-600 text-white px-2.5 py-1.5 rounded font-bold transition hover:bg-red-700 ml-2 rtl:mr-2 rtl:ml-0">Delete</button>
                             ` : ''}
 
-                            <div class="flex items-center border-l dark:border-gray-700 ml-2 pl-2">
+                            <div class="flex items-center border-l dark:border-gray-700 ml-2 pl-2 rtl:border-r rtl:border-l-0 rtl:mr-2 rtl:pr-2">
                                 <a href="edit-ad.html?id=${ad.id}" class="p-1.5 text-gray-400 hover:text-accent transition" title="Edit">
                                     <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"></path></svg>
                                 </a>
@@ -435,12 +534,25 @@
         }
 
         async function relistAd(id) {
-            if (confirm('Relist this ad for approval?')) {
+            const confirmed = await customConfirm('Relist this ad for approval?');
+            if (confirmed) {
                 try {
-                    await apiClient.updateAd(id, { status: 'pending' });
+                    await apiClient.updateAdStatus(id, { status: 'pending' });
                     window.location.reload();
                 } catch (err) {
-                    alert(err.message);
+                    await customAlert(err.message);
+                }
+            }
+        }
+
+        async function permanentlyDeleteAd(id) {
+            const confirmed = await customConfirm('Are you absolutely sure you want to permanently delete this ad? This action cannot be undone.');
+            if (confirmed) {
+                try {
+                    await apiClient.permanentlyDeleteAd(id);
+                    window.location.reload();
+                } catch (err) {
+                    await customAlert(err.message);
                 }
             }
         }
@@ -493,22 +605,33 @@
         }
 
         async function deleteAd(id) {
-            if (confirm('Are you sure you want to delete this ad?')) {
+            const confirmed = await customConfirm('Are you sure you want to delete this ad?');
+            if (confirmed) {
                 try {
                     await apiClient.deleteAd(id);
                     window.location.reload();
                 } catch (err) {
-                    alert(err.message);
+                    await customAlert(err.message);
                 }
             }
         }
 
         async function markAsSold(id) {
             try {
-                await apiClient.updateAd(id, { status: 'sold' });
+                await apiClient.updateAdStatus(id, { status: 'sold' });
                 window.location.reload();
             } catch (err) {
-                alert(err.message);
+                await customAlert(err.message);
+            }
+        }
+
+        async function undoStatusChange(id) {
+            try {
+                // Restore status to active without admin check because it's within 15 min
+                await apiClient.updateAdStatus(id, { status: 'active' });
+                window.location.reload();
+            } catch (err) {
+                await customAlert(err.message);
             }
         }
     </script>

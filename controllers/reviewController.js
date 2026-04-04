@@ -24,8 +24,8 @@ exports.createReview = async (req, res) => {
         await createNotification(req.io, {
             userId: sellerId,
             type: 'review',
-            title: 'New Review!',
-            message: `${req.user.name} gave you a ${rating}-star rating.`,
+            title: 'تقييم جديد! ⭐',
+            message: `قام ${req.user.name} بتقييمك بـ ${rating} نجوم وكتابة تعليق.`,
             link: `ad-details.html?id=${adId}`,
             relatedId: review.id
         });
@@ -40,8 +40,13 @@ exports.createReview = async (req, res) => {
 // @route   GET /api/reviews/seller/:sellerId
 exports.getSellerReviews = async (req, res) => {
     try {
+        const { sellerId } = req.params;
+        const { adId } = req.query;
+        let where = { sellerId };
+        if (adId) where.adId = adId;
+
         const reviews = await Review.findAll({
-            where: { sellerId: req.params.sellerId },
+            where,
             include: [
                 { model: User, as: 'reviewer', attributes: ['id', 'name', 'avatar'] }
             ],

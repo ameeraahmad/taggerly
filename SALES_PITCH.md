@@ -16,6 +16,14 @@ Taggerly is a premium, full-stack classifieds marketplace built for speed, scala
 - 🗄️ **User Ad Archive:** Dedicated space for 'Sold', 'Rejected', and 'Deleted' ads, allowing users to relist or fix rejected ads effortlessly.
 - ⚙️ **Strict Posting Rules:** Prevent spam with a 3-edit limit per ad and a 3-hour cooldown between modifications.
 - ✉️ **Automated Notifications:** Real-time in-app alerts and branded email notifications for all user actions.
+- 🔐 **Social Sign-On (SSO):** Integrated quick and secure login using Google and Facebook accounts to boost user conversion rates.
+- 📋 **Dynamic Category Attributes:** Dedicated and detailed fields for specific categories (e.g., Bedrooms, Bathrooms for Properties, or specific specs for Motors) ensuring highly accurate listings.
+- ❤️ **Favorites & Wishlist System:** Empowers users to save and track their favorite ads for later viewing and quick access.
+- ✅ **Verified Seller Badges:** Built-in user verification system with "Verified Seller" badges to build trust and credibility within the community.
+- 🔍 **Advanced SEO Optimization:** Search-engine-friendly architecture with pre-configured robots.txt and sitemap.xml elements to ensure high rankings.
+- 📝 **Integrated Blog System:** A dedicated blog section for publishing articles, essential for content marketing and driving organic traffic.
+- 💼 **Dedicated Business Pages (B2B):** Support for agencies and companies (like Real Estate Brokers or Car Dealerships) with dedicated features to manage commercial listings.
+- 🎯 **Advanced Search & Filters:** Precision filters allowing users to narrow down searches by price, condition, precise location, and advanced sub-attributes.
 
 ### 🛠️ Technical Stack (The Engine)
 **Frontend (The Face):**
@@ -60,6 +68,14 @@ Taggerly is a premium, full-stack classifieds marketplace built for speed, scala
 - 🗄️ **أرشيف إعلانات المستخدم:** قسم مخصص للإعلانات (المباعة، المرفوضة، المحذوفة) مع إمكانية "إعادة العرض" أو إصلاح الإعلانات المرفوضة بسهولة.
 - ⚙️ **قواعد نشر صارمة:** حماية من السبام عبر تحديد عدد مرات التعديل (3 مرات كحد أقصى) وفترة انتظار 3 ساعات بين كل تعديل.
 - ✉️ **إشعارات مؤتمتة:** تنبيهات فورية داخل التطبيق (Push Notifications) مع إشعارات عبر البريد الإلكتروني لكل إجراء من مستخدمي الموقع.
+- 🔐 **تسجيل الدخول الاجتماعي (Social Login):** دعم مدمج لتسجيل الدخول السريع والآمن عبر حسابات جوجل وفيسبوك لزيادة معدلات التسجيل.
+- 📋 **حقول مخصصة للأقسام:** دعم تفاصيل دقيقة للإعلانات مثل (عدد الغرف، الحمامات) للعقارات، والمواصفات للسيارات، لتجربة بحث أدق.
+- ❤️ **قائمة المفضلة (Wishlist):** إمكانية حفظ المستخدمين للإعلانات التي تهمهم للرجوع إليها لاحقاً ومتابعتها بسهولة.
+- ✅ **نظام توثيق المستخدمين:** شارات "بائع موثوق" لزيادة الثقة والمصداقية بين البائعين والمشترين داخل المنصة.
+- 🔍 **التهيئة لمحركات البحث (SEO):** بنية صديقة لمحركات البحث مع ملفات robots.txt و sitemap.xml مدمجة لضمان تصدر نتائج جوجل.
+- 📝 **مدونة مدمجة للتسويق:** قسم خاص بالمقالات والمدونات لتعزيز التسويق بالمحتوى وزيادة الزيارات المجانية للموقع.
+- 💼 **صفحات مخصصة للأعمال (B2B):** دعم لتسجيل الشركات والوكالات (مثل المكاتب العقارية) بصفحات مخصصة لإدارة إعلاناتهم التجارية.
+- 🎯 **بحث متقدم وتصفية:** فلاتر دقيقة تسمح بالبحث بناءً على السعر، الحالة، الموقع، والخصائص الفرعية المتقدمة.
 
 ### 🛠️ البنية التكنولوجية (المحرك البرمجي)
 **الواجهة الأمامية (Front-End):**

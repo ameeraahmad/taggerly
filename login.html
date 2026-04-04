@@ -261,10 +261,10 @@
                 } catch (cErr) { console.warn('reCAPTCHA failed', cErr); }
 
                 const response = await apiClient.login(email, password, captchaToken);
-                alert(currentLang === 'ar' ? 'تم تسجيل الدخول بنجاح!' : 'Login successful!');
+                await customAlert(currentLang === 'ar' ? 'تم تسجيل الدخول بنجاح!' : 'Login successful!');
                 window.location.href = 'index.html';
             } catch (err) {
-                alert(err.message);
+                await customAlert(err.message);
             }
         });
 
@@ -278,7 +278,7 @@
             const confirmPassword = document.getElementById('signup-confirm-password').value;
 
             if (password !== confirmPassword) {
-                alert(currentLang === 'ar' ? 'كلمات المرور غير متطابقة!' : 'Passwords do not match!');
+                await customAlert(currentLang === 'ar' ? 'كلمات المرور غير متطابقة!' : 'Passwords do not match!');
                 return;
             }
 
@@ -295,10 +295,10 @@
                     password,
                     captchaToken
                 });
-                alert(currentLang === 'ar' ? 'تم إنشاء الحساب بنجاح!' : 'Account created successfully!');
+                await customAlert(currentLang === 'ar' ? 'تم إنشاء الحساب بنجاح!' : 'Account created successfully!');
                 window.location.href = 'index.html';
             } catch (err) {
-                alert(err.message);
+                await customAlert(err.message);
             }
         });
 
@@ -346,7 +346,7 @@
                 window.location.href = 'dashboard.html';
             } catch (err) {
                 console.error('Facebook Auth Error:', err);
-                alert(currentLang === 'ar' ? 'فشل تسجيل الدخول عبر فيسبوك' : 'Facebook login failed');
+                await customAlert(currentLang === 'ar' ? 'فشل تسجيل الدخول عبر فيسبوك' : 'Facebook login failed');
             }
         }
     </script>

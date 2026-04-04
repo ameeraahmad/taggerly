@@ -30,7 +30,11 @@
             }
         }
     </script>
-    <link href="assets/css/style.css" rel="stylesheet">
+    <link rel="icon" type="image/png" href="assets/images/favicon.png">
+    
+    <!-- Leaflet Maps CSS -->
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin="" />
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
     <!-- Google reCAPTCHA v3 -->
     <script src="https://www.google.com/recaptcha/api.js?render=YOUR_SITE_KEY_HERE"></script>
 </head>
@@ -85,19 +89,19 @@
                     placeholder="Describe your item..." data-translate="descriptionPlaceholder"></textarea>
             </div>
 
-            <!-- Additional Details (Conditional/Optional) -->
-            <div id="additional-details" class="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <!-- Motor Details (Conditional) -->
+            <div id="motor-details" class="grid grid-cols-1 md:grid-cols-2 gap-6 hidden">
                 <div>
-                    <label class="block text-sm font-medium text-gray-700 mb-2" data-translate="year">Year</label>
+                    <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2" data-translate="year">Year</label>
                     <input type="number" id="ad-year"
-                        class="block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-accent focus:border-accent sm:text-sm"
+                        class="block w-full border border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-white rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-accent focus:border-accent sm:text-sm"
                         placeholder="e.g. 2024">
                 </div>
                 <div>
-                    <label class="block text-sm font-medium text-gray-700 mb-2"
+                    <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2"
                         data-translate="kilometers">Kilometers</label>
                     <input type="number" id="ad-kilometers"
-                        class="block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-accent focus:border-accent sm:text-sm"
+                        class="block w-full border border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-white rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-accent focus:border-accent sm:text-sm"
                         placeholder="e.g. 15000">
                 </div>
             </div>
@@ -105,23 +109,23 @@
             <!-- Property Details (Conditional) -->
             <div id="property-details" class="grid grid-cols-1 md:grid-cols-3 gap-6 hidden">
                 <div>
-                    <label class="block text-sm font-medium text-gray-700 mb-2" data-translate="bedrooms">Bedrooms</label>
+                    <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2" data-translate="bedrooms">Bedrooms</label>
                     <input type="number" id="ad-bedrooms"
-                        class="block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-accent focus:border-accent sm:text-sm"
+                        class="block w-full border border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-white rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-accent focus:border-accent sm:text-sm"
                         placeholder="e.g. 3">
                 </div>
                 <div>
-                    <label class="block text-sm font-medium text-gray-700 mb-2"
+                    <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2"
                         data-translate="bathrooms">Bathrooms</label>
                     <input type="number" id="ad-bathrooms"
-                        class="block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-accent focus:border-accent sm:text-sm"
+                        class="block w-full border border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-white rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-accent focus:border-accent sm:text-sm"
                         placeholder="e.g. 2">
                 </div>
                 <div>
-                    <label class="block text-sm font-medium text-gray-700 mb-2"
+                    <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2"
                         data-translate="propertyType">Type</label>
                     <select id="ad-property-type"
-                        class="block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-accent focus:border-accent sm:text-sm">
+                        class="block w-full border border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-white rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-accent focus:border-accent sm:text-sm">
                         <option value="Apartment">Apartment</option>
                         <option value="Villa">Villa</option>
                         <option value="Townhouse">Townhouse</option>
@@ -130,18 +134,17 @@
                     </select>
                 </div>
                 <div class="md:col-span-3">
-                    <label class="block text-sm font-medium text-gray-700 mb-2" data-translate="areaLabel">Area (Sq.
-                        Ft)</label>
+                    <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2" data-translate="areaLabel">Area (Sq. Ft)</label>
                     <input type="number" id="ad-area-size"
-                        class="block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-accent focus:border-accent sm:text-sm"
+                        class="block w-full border border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-white rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-accent focus:border-accent sm:text-sm"
                         placeholder="e.g. 1500">
                 </div>
             </div>
 
-            <div>
-                <label class="block text-sm font-medium text-gray-700 mb-2" data-translate="condition">Condition</label>
+            <div id="condition-details">
+                <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2" data-translate="condition">Condition</label>
                 <select id="ad-condition"
-                    class="block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-accent focus:border-accent sm:text-sm">
+                    class="block w-full border border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-white rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-accent focus:border-accent sm:text-sm">
                     <option value="New" selected>New</option>
                     <option value="Used">Used</option>
                     <option value="Certified Pre-owned">Certified Pre-owned</option>
@@ -176,17 +179,29 @@
             </div>
 
             <!-- Location -->
-            <div>
-                <label class="block text-sm font-medium text-gray-700 mb-2"
-                    data-translate="locationLabel">Location</label>
-                <select id="post-ad-location" data-dynamic-location="true"
-                    class="block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-accent focus:border-accent sm:text-sm">
-                    <option data-translate="dubai">Dubai</option>
-                    <option data-translate="abuDhabi">Abu Dhabi</option>
-                    <option data-translate="sharjah">Sharjah</option>
-                    <option data-translate="ajman">Ajman</option>
+            <label class="text-sm font-bold text-gray-700 dark:text-gray-300 mb-2 block" data-translate="location">Location (Governorate/City)</label>
+            <div id="location-select-container" class="relative flex gap-2">
+                <div class="relative flex-grow">
+                    <input type="text" id="location-search-input" placeholder="Search City/Governorate..." 
+                        class="w-full px-4 py-3 rounded-lg border border-gray-300 dark:border-gray-600 focus:ring-2 focus:ring-accent focus:border-accent dark:bg-gray-700 dark:text-white transition"
+                        autocomplete="off">
+                    <div id="location-results" class="absolute z-50 w-full left-0 mt-1 bg-white dark:bg-gray-800 border dark:border-gray-700 rounded-lg shadow-xl hidden max-h-60 overflow-y-auto"></div>
+                </div>
+                <button type="button" id="open-map-btn" class="bg-gray-100 dark:bg-gray-700 border border-gray-300 dark:border-gray-600 px-3 rounded-lg hover:bg-accent hover:text-white transition" title="Pick on Map">
+                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"></path></svg>
+                </button>
+                <select id="post-ad-location" name="city" class="hidden" required data-dynamic-location="true" data-include-all="false">
+                    <option value="" disabled selected>Select Governorate</option>
+                    <!-- Locations are dynamically added here from main.js -->
                 </select>
             </div>
+                <!-- Precise GPS Fields (Hidden) -->
+                <input type="hidden" id="ad-latitude" name="latitude">
+                <input type="hidden" id="ad-longitude" name="longitude">
+                <div id="map-feedback" class="mt-2 text-xs font-bold text-green-600 hidden flex items-center gap-1">
+                    <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"></path></svg>
+                    Precise location selected on map
+                </div>
 
             <!-- Contact Phone -->
             <div>
@@ -215,16 +230,31 @@
                 </p>
             </div>
 
-            <div class="pt-4 flex justify-end rtl:justify-start">
-                <button type="submit"
-                    class="bg-accent text-white px-8 py-3 rounded-full font-bold hover:bg-orange-600 transition shadow-lg transform hover:-translate-y-0.5 w-full sm:w-auto"
-                    data-translate="postNow">
-                    Post Now
-                </button>
+            <div class="flex justify-end gap-4 mt-12 bg-gray-50 dark:bg-gray-800/50 -mx-6 -mb-6 p-6 rounded-b-2xl border-t dark:border-gray-700">
+                <button type="button" class="px-8 py-3 rounded-xl border border-gray-300 dark:border-gray-600 font-bold text-gray-600 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-700 transition" onclick="history.back()" data-translate="cancel">Cancel</button>
+                <button type="submit" class="px-10 py-3 rounded-xl bg-accent text-white font-bold hover:bg-orange-600 shadow-lg shadow-accent/20 transition transform hover:-translate-y-0.5 active:translate-y-0" data-translate="postNow">Post My Ad</button>
             </div>
 
         </form>
     </div>
+
+    <!-- Map Modal -->
+    <div id="map-modal" class="fixed inset-0 z-50 hidden flex items-center justify-center bg-black/60 backdrop-blur-sm p-4">
+        <div class="bg-white dark:bg-gray-800 rounded-2xl shadow-2xl w-full max-w-4xl overflow-hidden animate-fade-in">
+            <div class="p-4 border-b dark:border-gray-700 flex justify-between items-center">
+                <h3 class="font-bold text-lg dark:text-white">Pin Precise Location</h3>
+                <button type="button" id="close-map-modal" class="text-gray-500 hover:text-red-500">
+                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>
+                </button>
+            </div>
+            <div id="map-container" class="h-[450px] w-full bg-gray-100"></div>
+            <div class="p-4 bg-gray-50 dark:bg-gray-900/50 flex flex-col sm:flex-row justify-between items-center gap-4">
+                <p class="text-xs text-gray-500 max-w-md">Click anywhere on the map to set the exact location of your ad. This helps buyers find you more easily.</p>
+                <button type="button" id="confirm-map-loc" class="w-full sm:w-auto px-8 py-2 bg-accent text-white font-bold rounded-lg hover:bg-orange-600 transition">Confirm Location</button>
+            </div>
+        </div>
+    </div>
+
     <!-- Footer -->
     <footer
         class="site-footer bg-gray-900 text-white pt-12 pb-8 mt-20 border-t border-gray-800 transition-colors duration-300">
@@ -287,10 +317,10 @@
     <script src="assets/js/api-client.js"></script>
     <script src="assets/js/main.js"></script>
     <script>
-        document.addEventListener('DOMContentLoaded', () => {
+        document.addEventListener('DOMContentLoaded', async () => {
             // Check auth
             if (!localStorage.getItem('token')) {
-                alert('Please login to post an ad.');
+                await customAlert('Please login to post an ad.');
                 window.location.href = 'login.html';
                 return;
             }
@@ -299,24 +329,38 @@
             const fileInput = document.getElementById('file-upload');
             const previewContainer = document.getElementById('preview-container');
             const categorySelect = document.getElementById('ad-category');
-            const additionalDetails = document.getElementById('additional-details');
+            const motorDetails = document.getElementById('motor-details');
             const propertyDetails = document.getElementById('property-details');
+            const conditionDetails = document.getElementById('condition-details');
 
             // Handle Category Change (Show/Hide Relevant Fields)
             const toggleAdditionalFields = () => {
-                if (categorySelect.value === 'Motors') {
-                    additionalDetails.style.display = 'grid';
-                    propertyDetails.classList.add('hidden');
-                } else if (categorySelect.value === 'Property') {
-                    additionalDetails.style.display = 'none';
+                const category = categorySelect.value;
+                
+                // Reset all first
+                motorDetails.classList.add('hidden');
+                propertyDetails.classList.add('hidden');
+                conditionDetails.classList.add('hidden');
+
+                if (category === 'Motors') {
+                    motorDetails.classList.remove('hidden');
+                    conditionDetails.classList.remove('hidden');
+                } else if (category === 'Property') {
                     propertyDetails.classList.remove('hidden');
-                    propertyDetails.style.display = 'grid';
-                } else {
-                    additionalDetails.style.display = 'none';
-                    propertyDetails.classList.add('hidden');
-                    // Clear values
+                    // Properties usually don't have "New/Used" condition in our list
+                } else if (category === 'Electronics' || category === 'Furniture' || category === 'Classifieds') {
+                    conditionDetails.classList.remove('hidden');
+                }
+                
+                // Clear hidden field values to prevent stale data submission
+                if (motorDetails.classList.contains('hidden')) {
                     document.getElementById('ad-year').value = '';
                     document.getElementById('ad-kilometers').value = '';
+                }
+                if (propertyDetails.classList.contains('hidden')) {
+                    document.getElementById('ad-bedrooms').value = '';
+                    document.getElementById('ad-bathrooms').value = '';
+                    document.getElementById('ad-area-size').value = '';
                 }
             };
 
@@ -362,69 +406,189 @@
                 fileInput.value = '';
             });
 
+            // --- Searchable Location Logic ---
+            const locSearchInput = document.getElementById('location-search-input');
+            const locResultsDiv = document.getElementById('location-results');
+            const hiddenSelect = document.getElementById('post-ad-location');
+
+            const updateLocationResults = (filter = '') => {
+                const options = Array.from(hiddenSelect.options);
+                locResultsDiv.innerHTML = '';
+                
+                const filtered = options.filter(opt => 
+                    opt.textContent.toLowerCase().includes(filter.toLowerCase())
+                );
+
+                if (filtered.length > 0) {
+                    filtered.forEach(opt => {
+                        const div = document.createElement('div');
+                        div.className = 'px-4 py-2 hover:bg-accent hover:text-white cursor-pointer text-sm transition';
+                        div.textContent = opt.textContent;
+                        div.onclick = () => {
+                            locSearchInput.value = opt.textContent;
+                            hiddenSelect.value = opt.value;
+                            locResultsDiv.classList.add('hidden');
+                        };
+                        locResultsDiv.appendChild(div);
+                    });
+                    locResultsDiv.classList.remove('hidden');
+                } else if (filter.trim().length > 2) {
+                    // Show "Use custom location"
+                    const div = document.createElement('div');
+                    const lang = window.currentLang || 'en';
+                    const label = (translations[lang] && translations[lang].useCustomLocation) || 'Use as location';
+                    
+                    div.className = 'px-4 py-3 hover:bg-gray-100 cursor-pointer text-sm transition border-t dark:border-gray-700';
+                    div.innerHTML = `<span class="text-accent font-bold">${label}:</span> <span class="italic">"${filter}"</span>`;
+                    div.onclick = () => {
+                        // Add temporary option to hidden select so it can be "selected"
+                        const newOpt = document.createElement('option');
+                        newOpt.value = filter;
+                        newOpt.textContent = filter;
+                        newOpt.selected = true;
+                        hiddenSelect.appendChild(newOpt);
+                        hiddenSelect.value = filter;
+
+                        locSearchInput.value = filter;
+                        locResultsDiv.classList.add('hidden');
+                    };
+                    locResultsDiv.appendChild(div);
+                    locResultsDiv.classList.remove('hidden');
+                } else {
+                    locResultsDiv.classList.add('hidden');
+                }
+            };
+
+            locSearchInput.addEventListener('focus', () => updateLocationResults(locSearchInput.value));
+            locSearchInput.addEventListener('input', () => updateLocationResults(locSearchInput.value));
+
+            // Close dropdown when clicking outside
+            document.addEventListener('click', (e) => {
+                if (!document.getElementById('location-select-container').contains(e.target)) {
+                    locResultsDiv.classList.add('hidden');
+                }
+            });
+
+            // --- MAP LOGIC ---
+            let map, marker;
+            const mapModal = document.getElementById('map-modal');
+            const openMapBtn = document.getElementById('open-map-btn');
+            const closeMapBtn = document.getElementById('close-map-modal');
+            const confirmMapBtn = document.getElementById('confirm-map-loc');
+            const latInput = document.getElementById('ad-latitude');
+            const lngInput = document.getElementById('ad-longitude');
+
+            const initMap = () => {
+                if (map) return;
+                
+                // Country Coordinates Mapping
+                const countryCoords = {
+                    'uae': [24.4539, 54.3773],
+                    'egypt': [26.8206, 30.8025],
+                    'ksa': [23.8859, 45.0792],
+                    'qatar': [25.3548, 51.1839]
+                };
+
+                const currentCountry = window.selectedCountry || localStorage.getItem('selectedCountry') || 'uae';
+                const center = countryCoords[currentCountry] || countryCoords['uae'];
+
+                map = L.map('map-container').setView(center, currentCountry === 'egypt' ? 6 : 10);
+                L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+                    attribution: '© OpenStreetMap contributors'
+                }).addTo(map);
+
+                map.on('click', (e) => {
+                    const { lat, lng } = e.latlng;
+                    if (marker) {
+                        marker.setLatLng(e.latlng);
+                    } else {
+                        marker = L.marker(e.latlng, { draggable: true }).addTo(map);
+                    }
+                    latInput.value = lat;
+                    lngInput.value = lng;
+                });
+            };
+
+            openMapBtn.onclick = () => {
+                mapModal.classList.remove('hidden');
+                setTimeout(() => {
+                    initMap();
+                    map.invalidateSize();
+                }, 100);
+            };
+
+            closeMapBtn.onclick = () => mapModal.classList.add('hidden');
+            confirmMapBtn.onclick = async () => {
+                mapModal.classList.add('hidden');
+                if (latInput.value && lngInput.value) {
+                    // Visual feedback
+                    openMapBtn.classList.remove('bg-gray-100', 'dark:bg-gray-700');
+                    openMapBtn.classList.add('bg-green-500', 'text-white');
+                    document.getElementById('map-feedback').classList.remove('hidden');
+                    
+                    // Optional: Reverse geocode to suggest city
+                    try {
+                        const res = await fetch(`https://nominatim.openstreetmap.org/reverse?format=json&lat=${latInput.value}&lon=${lngInput.value}`);
+                        const data = await res.json();
+                        if (data.address) {
+                            const city = data.address.city || data.address.state || data.address.governorate;
+                            if (city) {
+                                locSearchInput.value = city;
+                                // Try to match with existing options
+                                updateLocationResults(city);
+                            }
+                        }
+                    } catch (e) {}
+                }
+            };
             form.addEventListener('submit', async (e) => {
                 e.preventDefault();
 
+                // Gather all values
                 const category = document.getElementById('ad-category').value;
                 const title = document.getElementById('ad-title').value;
                 const price = document.getElementById('ad-price').value;
                 const description = document.getElementById('ad-description').value;
                 const city = document.getElementById('post-ad-location').value;
+                const phone = document.getElementById('ad-phone').value;
 
-                // New Fields
-                const year = document.getElementById('ad-year').value;
-                const kilometers = document.getElementById('ad-kilometers').value;
-                const condition = document.getElementById('ad-condition').value;
-
-                // Property Info
-                const bedrooms = document.getElementById('ad-bedrooms').value;
-                const bathrooms = document.getElementById('ad-bathrooms').value;
-                const propertyType = document.getElementById('ad-property-type').value;
-                const areaSize = document.getElementById('ad-area-size').value;
+                // Optional/Dynamic fields
+                const year = document.getElementById('ad-year')?.value || '';
+                const kilometers = document.getElementById('ad-kilometers')?.value || '';
+                const condition = document.getElementById('ad-condition')?.value || '';
+                const bedrooms = document.getElementById('ad-bedrooms')?.value || '';
+                const bathrooms = document.getElementById('ad-bathrooms')?.value || '';
+                const propertyType = document.getElementById('ad-property-type')?.value || '';
+                const areaSize = document.getElementById('ad-area-size')?.value || '';
 
                 if (!category || !title || !price || !description || !city) {
-                    alert('Please fill in all required fields.');
+                    await customAlert('Please fill in all required fields (Title, Category, Price, Description, & Location).');
                     return;
                 }
-
-                // Get reCAPTCHA token
-                let captchaToken = '';
-                try {
-                    captchaToken = await grecaptcha.execute('YOUR_SITE_KEY_HERE', { action: 'post_ad' });
-                } catch (cErr) {
-                    console.warn('reCAPTCHA failed or blocked', cErr);
-                }
-
+                
                 const formData = new FormData();
                 formData.append('title', title);
                 formData.append('description', description);
                 formData.append('price', price);
                 formData.append('category', category);
                 formData.append('city', city);
-                formData.append('captchaToken', captchaToken);
-                // Save the currently selected country with the ad
+                formData.append('phone', phone);
+                formData.append('year', year);
+                formData.append('kilometers', kilometers);
+                formData.append('itemCondition', condition);
+                formData.append('bedrooms', bedrooms);
+                formData.append('bathrooms', bathrooms);
+                formData.append('propertyType', propertyType);
+                formData.append('area', areaSize);
                 formData.append('country', window.selectedCountry || 'uae');
+                
+                // Add coordinates
+                if (latInput.value) formData.append('latitude', latInput.value);
+                if (lngInput.value) formData.append('longitude', lngInput.value);
 
-                if (category === 'Motors') {
-                    if (year) formData.append('year', year);
-                    if (kilometers) formData.append('kilometers', kilometers);
-                } else if (category === 'Property') {
-                    if (bedrooms) formData.append('bedrooms', bedrooms);
-                    if (bathrooms) formData.append('bathrooms', bathrooms);
-                    if (propertyType) formData.append('propertyType', propertyType);
-                    if (areaSize) formData.append('area', areaSize);
-                }
-
-                if (condition) formData.append('itemCondition', condition);
-
-                const phone = document.getElementById('ad-phone').value.trim();
-                if (phone) formData.append('phone', phone);
-
-                // Add images from our managed array
-                if (selectedFiles.length > 0) {
-                    selectedFiles.forEach(file => {
-                        formData.append('images', file);
-                    });
+                // Add images from selectedFiles array
+                if (selectedFiles && selectedFiles.length > 0) {
+                    selectedFiles.forEach(file => formData.append('images', file));
                 }
 
                 try {
@@ -433,10 +597,10 @@
                     submitBtn.textContent = 'Posting...';
 
                     await apiClient.createAd(formData);
-                    alert('Ad posted successfully!');
+                    await customAlert('Ad posted successfully!');
                     window.location.href = 'index.html';
                 } catch (err) {
-                    alert(err.message);
+                    await customAlert(err.message);
                     const submitBtn = form.querySelector('button[type="submit"]');
                     submitBtn.disabled = false;
                     submitBtn.textContent = 'Post Now';
