@@ -145,9 +145,56 @@ app.get('/ad-details.html', (req, res) => {
     res.sendFile(path.join(__dirname, 'ad-details.html'));
 });
 
+// ─── Dev Hot Reload for Translation Files ───
+// Force no-cache on translation files so the browser always fetches the latest version
+app.get('/assets/js/ar.js', (req, res, next) => {
+    res.setHeader('Cache-Control', 'no-cache, no-store, must-revalidate');
+    res.setHeader('Pragma', 'no-cache');
+    next();
+});
+app.get('/assets/js/en.js', (req, res, next) => {
+    res.setHeader('Cache-Control', 'no-cache, no-store, must-revalidate');
+    res.setHeader('Pragma', 'no-cache');
+    next();
+});
+
+// SSE endpoint: browsers connect here to receive live reload signals
+const devReloadClients = new Set();
+app.get('/dev-reload', (req, res) => {
+    if (process.env.NODE_ENV === 'production') return res.status(404).end();
+    res.setHeader('Content-Type', 'text/event-stream');
+    res.setHeader('Cache-Control', 'no-cache');
+    res.setHeader('Connection', 'keep-alive');
+    res.setHeader('X-Accel-Buffering', 'no');
+    res.flushHeaders();
+    res.write('data: connected\n\n');
+    devReloadClients.add(res);
+    req.on('close', () => devReloadClients.delete(res));
+});
+
+// Watch translation files and broadcast a reload signal when they change
+if (process.env.NODE_ENV !== 'production') {
+    const translationFiles = [
+        path.join(__dirname, 'assets/js/ar.js'),
+        path.join(__dirname, 'assets/js/en.js')
+    ];
+    let reloadTimer;
+    translationFiles.forEach(filePath => {
+        fs.watch(filePath, () => {
+            clearTimeout(reloadTimer);
+            reloadTimer = setTimeout(() => {
+                console.log('🌐 Translation file changed — notifying browsers...');
+                devReloadClients.forEach(client => {
+                    try { client.write('data: reload\n\n'); } catch (e) { devReloadClients.delete(client); }
+                });
+            }, 300);
+        });
+    });
+    console.log('👀 Watching translation files for changes (Hot Reload active).');
+}
+
 // Serve static files (After API routes and SSR)
 app.use(express.static(path.join(__dirname)));
-
 
 app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
 

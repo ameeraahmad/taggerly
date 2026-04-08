@@ -6,7 +6,7 @@ const { Op } = require('sequelize');
 exports.getAllAds = async (req, res) => {
     try {
         const {
-            category, city, country, minPrice, maxPrice, search,
+            category, subCategory, city, country, minPrice, maxPrice, search,
             condition, minYear, maxYear, minKm, maxKm,
             isFeatured, userId,
             bedrooms, bathrooms, propertyType, minArea, maxArea,
@@ -15,6 +15,7 @@ exports.getAllAds = async (req, res) => {
         let where = { status: 'active' };
 
         if (category) where.category = category;
+        if (subCategory) where.subCategory = subCategory;
         if (city) where.city = city;
         if (country) where.country = country;
         if (condition) where.itemCondition = condition;

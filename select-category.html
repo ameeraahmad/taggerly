@@ -1,0 +1,320 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Select Category - Taggerly</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: {
+                        primary: '#0B2447',
+                        secondary: '#F5F5F5',
+                        accent: '#FF6B00',
+                        success: '#00C853',
+                    },
+                    animation: {
+                        'fade-in': 'fadeIn 0.5s ease-out',
+                    },
+                    keyframes: {
+                        fadeIn: {
+                            '0%': { opacity: '0', transform: 'translateY(10px)' },
+                            '100%': { opacity: '1', transform: 'translateY(0)' },
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+    <script>
+        if (localStorage.getItem('theme') === 'dark' || (!('theme' in localStorage) && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
+            document.documentElement.classList.add('dark');
+        } else {
+            document.documentElement.classList.remove('dark');
+        }
+    </script>
+    <link href="assets/css/style.css" rel="stylesheet">
+    <link rel="icon" type="image/png" href="assets/images/favicon.png">
+</head>
+
+<body class="bg-secondary dark:bg-gray-900 text-gray-800 dark:text-gray-100 transition-colors duration-300 min-h-screen flex flex-col">
+
+    <!-- Header Placeholder -->
+    <div id="global-header-placeholder"></div>
+
+    <main class="flex-grow max-w-6xl mx-auto w-full py-12 px-4 sm:px-6 lg:px-8 animate-fade-in">
+        <div class="mb-8">
+            <h1 class="text-3xl font-bold text-gray-900 dark:text-white mb-2" data-translate="postAdTitle">Post your ad</h1>
+            <p class="text-lg text-gray-600 dark:text-gray-400" data-translate="chooseCategory">Choose a category</p>
+        </div>
+
+        <!-- Category Selector Container -->
+        <div class="bg-white dark:bg-gray-800 rounded-xl shadow-lg border dark:border-gray-700 flex flex-col md:flex-row min-h-[400px] overflow-hidden">
+            
+            <!-- Column 1: Main Categories -->
+            <div class="w-full md:w-1/3 border-b md:border-b-0 md:border-r border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-800/50">
+                <ul id="main-categories-list" class="py-2">
+                    <!-- Injected via JS -->
+                </ul>
+            </div>
+
+            <!-- Column 2: Subcategories -->
+            <div class="w-full md:w-1/3 border-b md:border-b-0 md:border-r border-gray-200 dark:border-gray-700 hidden md:block" id="subcategories-col">
+                <ul id="subcategories-list" class="py-2">
+                    <li class="p-8 text-center text-gray-400 text-sm hidden md:block">
+                        Select a category to view options
+                    </li>
+                </ul>
+            </div>
+
+            <!-- Column 3: Sub-subcategories (if any) or Info -->
+            <div class="w-full md:w-1/3 hidden md:block bg-gray-50/50 dark:bg-gray-900/20" id="subsubcategories-col">
+                <ul id="subsubcategories-list" class="py-2">
+                     <li class="p-8 text-center text-gray-400 text-sm mt-10">
+                        <!-- Placeholder -->
+                        <svg class="w-16 h-16 mx-auto mb-4 text-gray-300 dark:text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"></path>
+                        </svg>
+                        <span data-translate="drillDownMsg">Pick a category to proceed</span>
+                    </li>
+                </ul>
+            </div>
+
+        </div>
+    </main>
+
+    <!-- Footer Placeholder -->
+    <div id="global-footer-placeholder"></div>
+
+    <script src="assets/js/en.js"></script>
+    <script src="assets/js/ar.js"></script>
+    <script src="assets/js/api-client.js"></script>
+    <script src="assets/js/main.js"></script>
+    
+    <script>
+        document.addEventListener('DOMContentLoaded', async () => {
+            // Check auth (optional here, but good practice since it's step 1 of posting ad)
+            if (!localStorage.getItem('token')) {
+                await window.customAlert ? window.customAlert('Please login to post an ad.') : alert('Please login to post an ad.');
+                window.location.href = 'login.html';
+                return;
+            }
+
+            const headerRes = await fetch('components/header.html');
+            if (headerRes.ok) {
+                document.getElementById('global-header-placeholder').innerHTML = await headerRes.text();
+            }
+
+            const mainList = document.getElementById('main-categories-list');
+            const subList = document.getElementById('subcategories-list');
+            const subsubList = document.getElementById('subsubcategories-list');
+            const subCol = document.getElementById('subcategories-col');
+
+            const categoryData = [
+                {
+                    id: 'Motors',
+                    titleKey: 'motorsTitle',
+                    icon: '<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"></path>',
+                    color: 'text-blue-500',
+                    subs: [
+                        { id: 'Cars for Sale', titleKey: 'carsForSale' },
+                        { id: 'Cars for Rent', titleKey: 'carsForRent' },
+                        { id: 'Motorcycles for Sale', titleKey: 'motorcyclesForSale' },
+                        { id: 'Motorcycle Parts', titleKey: 'motorcycleParts' },
+                        { id: 'Car Spare Parts', titleKey: 'carSpareParts' },
+                        { id: 'Marine Vehicles', titleKey: 'marineVehicles' },
+                        { id: 'Heavy Trucks', titleKey: 'heavyTrucks' }
+                    ]
+                },
+                {
+                    id: 'Property',
+                    titleKey: 'propertyTitle',
+                    icon: '<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"></path>',
+                    color: 'text-green-500',
+                    subs: [
+                        { id: 'Apartments for Sale', titleKey: 'apartmentsForSale' },
+                        { id: 'Apartments for Rent', titleKey: 'apartmentsForRent' },
+                        { id: 'Villas for Sale', titleKey: 'villasForSale' },
+                        { id: 'Villas for Rent', titleKey: 'villasForRent' },
+                        { id: 'Resorts for Sale', titleKey: 'resortsForSale' },
+                        { id: 'Resorts for Rent', titleKey: 'resortsForRent' },
+                        { id: 'Commercial for Sale', titleKey: 'commercialForSale' },
+                        { id: 'Commercial for Rent', titleKey: 'commercialForRent' },
+                        { id: 'Buildings & Lands', titleKey: 'buildingsAndLands' }
+                    ]
+                },
+                {
+                    id: 'Electronics',
+                    titleKey: 'electronicsCategoryTitle',
+                    icon: '<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.75 17L9 20l-1 1h8l-1-1-.75-3M3 13h18M5 17h14a2 2 0 002-2V5a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"></path>',
+                    color: 'text-indigo-500',
+                    subs: [
+                        { id: 'Computers Desktop', titleKey: 'computersDesktop' },
+                        { id: 'Laptops', titleKey: 'laptops' },
+                        { id: 'Mobile Phones', titleKey: 'mobilePhones' },
+                        { id: 'Tablets', titleKey: 'tabletsOnly' },
+                        { id: 'Mobile Accessories', titleKey: 'mobileTabletAccessories' },
+                        { id: 'Computer Accessories', titleKey: 'computerLaptopAccessories' },
+                        { id: 'TV Screens', titleKey: 'tvScreens' },
+                        { id: 'TV Accessories', titleKey: 'tvAccessories' },
+                        { id: 'Home Audio', titleKey: 'homeAudio' }
+                    ]
+                },
+                {
+                    id: 'Classifieds',
+                    titleKey: 'classifiedsTitle',
+                    icon: '<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"></path>',
+                    color: 'text-yellow-500',
+                    subs: [
+                        { id: 'Clothing', titleKey: 'clothing' },
+                        { id: 'Jewelry', titleKey: 'jewelry' },
+                        { id: 'Furniture & Decor', titleKey: 'furnitureDecor' },
+                        { id: 'Women\'s Clothing', titleKey: 'womensClothing' },
+                        { id: 'Men\'s Clothing', titleKey: 'mensClothing' },
+                        { id: 'Baby Essentials', titleKey: 'babyEssentials' },
+                        { id: 'Antiques & Collectibles', titleKey: 'antiquesCollectibles' }
+                    ]
+                },
+                {
+                    id: 'Jobs',
+                    titleKey: 'jobsTitle',
+                    icon: '<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 13.255A23.931 23.931 0 0112 15c-3.183 0-6.22-.62-9-1.745M16 6V4a2 2 0 00-2-2h-4a2 2 0 00-2 2v2m4 6h.01M5 20h14a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"></path>',
+                    color: 'text-purple-500',
+                    subs: [
+                        { id: 'Accounting', titleKey: 'accounting' },
+                        { id: 'Engineering', titleKey: 'engineering' },
+                        { id: 'Sales', titleKey: 'sales' },
+                        { id: 'Media', titleKey: 'media' },
+                        { id: 'Medical', titleKey: 'medical' },
+                        { id: 'Designers', titleKey: 'designers' },
+                        { id: 'Customer Service', titleKey: 'customerService' },
+                        { id: 'Social Media', titleKey: 'socialMedia' }
+                    ]
+                },
+                {
+                    id: 'Services',
+                    titleKey: 'servicesTitle',
+                    icon: '<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>',
+                    color: 'text-pink-500',
+                    subs: [
+                        { id: 'Cleaning', titleKey: 'cleaning' },
+                        { id: 'Maintenance', titleKey: 'maintenance' },
+                        { id: 'Moving', titleKey: 'moving' },
+                        { id: 'Education', titleKey: 'education' }
+                    ]
+                }
+            ];
+
+            const translateLabel = (key, defaultText) => {
+                const lang = window.currentLang || localStorage.getItem('lang') || 'en';
+                return (window.translations[lang] && window.translations[lang][key]) || defaultText;
+            };
+
+            let activeMainId = null;
+
+            const renderMainCategories = () => {
+                mainList.innerHTML = '';
+                categoryData.forEach(cat => {
+                    const li = document.createElement('li');
+                    li.className = `flex items-center justify-between px-6 py-4 cursor-pointer hover:bg-white dark:hover:bg-gray-800 transition ${activeMainId === cat.id ? 'bg-white dark:bg-gray-800 shadow-sm border-l-4 border-accent' : 'border-l-4 border-transparent'}`;
+                    
+                    li.innerHTML = `
+                        <div class="flex items-center gap-4">
+                            <svg class="w-6 h-6 ${cat.color}" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                ${cat.icon}
+                            </svg>
+                            <span class="font-medium text-gray-900 dark:text-gray-100" data-translate="${cat.titleKey}">${translateLabel(cat.titleKey, cat.id)}</span>
+                        </div>
+                        <svg class="w-4 h-4 text-gray-400 rtl:rotate-180" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
+                        </svg>
+                    `;
+                    
+                    li.onclick = () => {
+                        activeMainId = cat.id;
+                        renderMainCategories(); // re-render to update active state
+                        renderSubCategories(cat);
+                        
+                        // Mobile specific: Scroll down to subcategories or make smooth transition
+                        if (window.innerWidth < 768) {
+                            subCol.classList.remove('hidden');
+                            subCol.scrollIntoView({ behavior: 'smooth' });
+                        }
+                    };
+                    mainList.appendChild(li);
+                });
+            };
+
+            const renderSubCategories = (mainCategory) => {
+                subCol.classList.remove('hidden'); // Show if hidden on mobile
+                subList.innerHTML = '';
+                
+                // Header for mobile back button
+                if (window.innerWidth < 768) {
+                    const backLi = document.createElement('li');
+                    backLi.className = 'px-6 py-3 border-b dark:border-gray-700 bg-gray-100 dark:bg-gray-900 flex items-center gap-2 cursor-pointer';
+                    backLi.innerHTML = `
+                        <svg class="w-4 h-4 text-gray-600 dark:text-gray-400 rtl:rotate-180" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"></path>
+                        </svg>
+                        <span class="font-bold text-gray-800 dark:text-gray-200" data-translate="back">Back</span>
+                    `;
+                    backLi.onclick = () => {
+                        subCol.classList.add('hidden');
+                    };
+                    subList.appendChild(backLi);
+                }
+
+                mainCategory.subs.forEach(sub => {
+                    const li = document.createElement('li');
+                    li.className = 'px-6 py-4 cursor-pointer hover:bg-gray-50 dark:hover:bg-gray-700 text-gray-700 dark:text-gray-300 transition flex justify-between items-center';
+                    li.innerHTML = `
+                        <span data-translate="${sub.titleKey}">${translateLabel(sub.titleKey, sub.id)}</span>
+                        <svg class="w-4 h-4 text-gray-300 opacity-0 group-hover:opacity-100" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
+                        </svg>
+                    `;
+                    
+                    li.onclick = () => {
+                        // User selected the deeply nested leaf! 
+                        // Redirect to post-ad.html with selected info
+                        window.location.href = `post-ad.html?category=${encodeURIComponent(mainCategory.id)}&subcategory=${encodeURIComponent(sub.id)}`;
+                    };
+                    subList.appendChild(li);
+                });
+                
+                // Clear 3rd column since we don't have level 3 for now, but we prepare it.
+                subsubList.innerHTML = `
+                    <div class="h-full flex flex-col items-center justify-center text-gray-400 p-8 text-center mt-12">
+                        <svg class="w-12 h-12 mb-4 text-gray-300 dark:text-gray-700" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M5 13l4 4L19 7"></path>
+                        </svg>
+                        <p class="text-sm" data-translate="almostDone">Good choice! Click to proceed.</p>
+                    </div>
+                `;
+            };
+
+            renderMainCategories();
+            
+            // Re-apply translations dynamically 
+            if (window.updateLanguage) {
+                const originalLangHandler = window.updateLanguage;
+                window.updateLanguage = function(lang) {
+                    originalLangHandler(lang);
+                    // Force re-render of our dynamically created lists
+                    renderMainCategories();
+                    if (activeMainId) {
+                        const cat = categoryData.find(c => c.id === activeMainId);
+                        if (cat) renderSubCategories(cat);
+                    }
+                };
+            }
+        });
+    </script>
+</body>
+
+</html>

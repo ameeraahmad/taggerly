@@ -638,7 +638,12 @@
 
                 // Show/Hide Condition
                 if (ad.itemCondition) {
-                    document.getElementById('detail-condition').textContent = ad.itemCondition;
+                    const trans = translations[window.currentLang || 'en'] || {};
+                    // Match database value (e.g. "Certified Pre-owned") to key (e.g. "CertifiedPreowned")
+                    const conditionKey = ad.itemCondition.toLowerCase().replace(/\s/g, '');
+                    // Try exact key first, then normalized key, then fallback to original
+                    const translatedVal = trans[ad.itemCondition] || trans[conditionKey] || ad.itemCondition;
+                    document.getElementById('detail-condition').textContent = translatedVal;
                     if (document.getElementById('item-condition')) document.getElementById('item-condition').style.display = 'flex';
                 } else {
                     if (document.getElementById('item-condition')) document.getElementById('item-condition').style.display = 'none';

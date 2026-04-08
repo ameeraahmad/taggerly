@@ -186,7 +186,9 @@
                 container.innerHTML = '';
 
                 if (ads.length === 0) {
-                    container.innerHTML = '<div class="col-span-full text-center py-20 text-gray-500">You haven\'t saved any ads yet.</div>';
+                    const lang = localStorage.getItem('lang') || 'en';
+                    const msg = translations[lang]?.noFavoritesSaved || "You haven't saved any ads yet.";
+                    container.innerHTML = `<div class="col-span-full text-center py-20 text-gray-500">${msg}</div>`;
                     return;
                 }
 

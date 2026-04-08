@@ -142,7 +142,7 @@
                 </div>
 
                 <!-- Post Ad Button -->
-                <a href="post-ad.html"
+                <a href="select-category.html"
                     class="bg-accent text-white px-4 py-2 rounded-full font-bold hover:bg-orange-600 transition shadow-md hover:shadow-lg text-sm whitespace-nowrap"
                     data-translate="postAd">Post ad</a>
             </div>
@@ -177,7 +177,7 @@
 
                     <!-- Motors Dropdown -->
                     <div class="group relative h-full flex items-center">
-                        <a href="categories.html"
+                        <a href="javascript:void(0)" onclick="browseCategory('Motors')"
                             class="flex items-center text-gray-700 dark:text-gray-300 hover:text-accent font-medium transition group-hover:text-accent h-full px-2">
                             <span data-translate="motorsTitle">Motors</span>
                             <svg class="w-4 h-4 ml-1 transition-transform group-hover:rotate-180 rtl:mr-1 rtl:ml-0"
@@ -187,30 +187,39 @@
                             </svg>
                         </a>
                         <div
-                            class="absolute top-full left-0 w-56 bg-white dark:bg-gray-800 shadow-xl rounded-b-lg border-t-2 border-accent opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-300 transform scale-95 origin-top group-hover:scale-100 z-50">
-                            <div class="py-2">
-                                <a href="search.html"
-                                    class="block px-4 py-2 text-sm text-gray-700 dark:text-gray-200 hover:bg-gray-50 dark:hover:bg-gray-700 hover:text-accent transition"
-                                    data-translate="usedCars">Used Cars</a>
-                                <a href="search.html"
-                                    class="block px-4 py-2 text-sm text-gray-700 dark:text-gray-200 hover:bg-gray-50 dark:hover:bg-gray-700 hover:text-accent transition"
-                                    data-translate="motorcycles">Motorcycles</a>
-                                <a href="search.html"
-                                    class="block px-4 py-2 text-sm text-gray-700 dark:text-gray-200 hover:bg-gray-50 dark:hover:bg-gray-700 hover:text-accent transition"
-                                    data-translate="heavyVehicles">Heavy Vehicles</a>
-                                <a href="search.html"
-                                    class="block px-4 py-2 text-sm text-gray-700 dark:text-gray-200 hover:bg-gray-50 dark:hover:bg-gray-700 hover:text-accent transition"
-                                    data-translate="boats">Boats</a>
-                                <a href="search.html"
-                                    class="block px-4 py-2 text-sm text-gray-700 dark:text-gray-200 hover:bg-gray-50 dark:hover:bg-gray-700 hover:text-accent transition"
-                                    data-translate="autoAccessories">Auto Accessories</a>
+                            class="absolute top-full left-0 w-[400px] bg-white dark:bg-gray-800 shadow-xl rounded-b-lg border-t-2 border-accent opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-300 transform scale-95 origin-top group-hover:scale-100 z-50">
+                            <div class="p-3 grid grid-cols-2 gap-2">
+                                <a href="javascript:void(0)" onclick="browseCategory('Motors')"
+                                    class="block px-3 py-2 text-sm font-bold text-accent hover:bg-gray-50 dark:hover:bg-gray-700 transition rounded col-span-2 text-center border-b border-gray-100 dark:border-gray-700 mb-1 pb-2"
+                                    data-translate="allCategories">All Categories</a>
+                                <a href="javascript:void(0)" onclick="browseCategory('Motors', 'Cars for Sale')"
+                                    class="block px-3 py-2 text-sm text-gray-700 dark:text-gray-200 hover:bg-gray-50 dark:hover:bg-gray-700 hover:text-accent transition rounded"
+                                    data-translate="carsForSale">Cars for Sale</a>
+                                <a href="javascript:void(0)" onclick="browseCategory('Motors', 'Cars for Rent')"
+                                    class="block px-3 py-2 text-sm text-gray-700 dark:text-gray-200 hover:bg-gray-50 dark:hover:bg-gray-700 hover:text-accent transition rounded"
+                                    data-translate="carsForRent">Cars for Rent</a>
+                                <a href="javascript:void(0)" onclick="browseCategory('Motors', 'Motorcycles for Sale')"
+                                    class="block px-3 py-2 text-sm text-gray-700 dark:text-gray-200 hover:bg-gray-50 dark:hover:bg-gray-700 hover:text-accent transition rounded"
+                                    data-translate="motorcyclesForSale">Motorcycles for Sale</a>
+                                <a href="javascript:void(0)" onclick="browseCategory('Motors', 'Motorcycle Parts')"
+                                    class="block px-3 py-2 text-sm text-gray-700 dark:text-gray-200 hover:bg-gray-50 dark:hover:bg-gray-700 hover:text-accent transition rounded"
+                                    data-translate="motorcycleParts">Motorcycle Spare Parts</a>
+                                <a href="javascript:void(0)" onclick="browseCategory('Motors', 'Car Spare Parts')"
+                                    class="block px-3 py-2 text-sm text-gray-700 dark:text-gray-200 hover:bg-gray-50 dark:hover:bg-gray-700 hover:text-accent transition rounded"
+                                    data-translate="carSpareParts">Car Spare Parts</a>
+                                <a href="javascript:void(0)" onclick="browseCategory('Motors', 'Marine Vehicles')"
+                                    class="block px-3 py-2 text-sm text-gray-700 dark:text-gray-200 hover:bg-gray-50 dark:hover:bg-gray-700 hover:text-accent transition rounded"
+                                    data-translate="marineVehicles">Marine Vehicles</a>
+                                <a href="javascript:void(0)" onclick="browseCategory('Motors', 'Heavy Trucks')"
+                                    class="block px-3 py-2 text-sm text-gray-700 dark:text-gray-200 hover:bg-gray-50 dark:hover:bg-gray-700 hover:text-accent transition rounded"
+                                    data-translate="heavyTrucks">Heavy Duty Trucks</a>
                             </div>
                         </div>
                     </div>
 
                     <!-- Property Dropdown -->
                     <div class="group relative h-full flex items-center">
-                        <a href="categories.html"
+                        <a href="javascript:void(0)" onclick="browseCategory('Property')"
                             class="flex items-center text-gray-700 dark:text-gray-300 hover:text-accent font-medium transition group-hover:text-accent h-full px-2">
                             <span data-translate="propertyTitle">Property</span>
                             <svg class="w-4 h-4 ml-1 transition-transform group-hover:rotate-180 rtl:mr-1 rtl:ml-0"
@@ -220,27 +229,93 @@
                             </svg>
                         </a>
                         <div
-                            class="absolute top-full left-0 w-56 bg-white dark:bg-gray-800 shadow-xl rounded-b-lg border-t-2 border-accent opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-300 transform scale-95 origin-top group-hover:scale-100 z-50">
-                            <div class="py-2">
-                                <a href="search.html"
-                                    class="block px-4 py-2 text-sm text-gray-700 dark:text-gray-200 hover:bg-gray-50 dark:hover:bg-gray-700 hover:text-accent transition"
-                                    data-translate="residentialSale">Residential for Sale</a>
-                                <a href="search.html"
-                                    class="block px-4 py-2 text-sm text-gray-700 dark:text-gray-200 hover:bg-gray-50 dark:hover:bg-gray-700 hover:text-accent transition"
-                                    data-translate="commercialSale">Commercial for Sale</a>
-                                <a href="search.html"
-                                    class="block px-4 py-2 text-sm text-gray-700 dark:text-gray-200 hover:bg-gray-50 dark:hover:bg-gray-700 hover:text-accent transition"
-                                    data-translate="multipleUnits">Multiple Units</a>
-                                <a href="search.html"
-                                    class="block px-4 py-2 text-sm text-gray-700 dark:text-gray-200 hover:bg-gray-50 dark:hover:bg-gray-700 hover:text-accent transition"
-                                    data-translate="landSale">Land for Sale</a>
+                            class="absolute top-full left-0 w-[400px] bg-white dark:bg-gray-800 shadow-xl rounded-b-lg border-t-2 border-accent opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-300 transform scale-95 origin-top group-hover:scale-100 z-50">
+                            <div class="p-3 grid grid-cols-2 gap-2">
+                                <a href="javascript:void(0)" onclick="browseCategory('Property')"
+                                    class="block px-3 py-2 text-sm font-bold text-accent hover:bg-gray-50 dark:hover:bg-gray-700 transition rounded col-span-2 text-center border-b border-gray-100 dark:border-gray-700 mb-1 pb-2"
+                                    data-translate="allCategories">All Categories</a>
+                                <a href="javascript:void(0)" onclick="browseCategory('Property', 'Apartments for Sale')"
+                                    class="block px-3 py-2 text-sm text-gray-700 dark:text-gray-200 hover:bg-gray-50 dark:hover:bg-gray-700 hover:text-accent transition rounded"
+                                    data-translate="apartmentsForSale">Apartments for Sale</a>
+                                <a href="javascript:void(0)" onclick="browseCategory('Property', 'Apartments for Rent')"
+                                    class="block px-3 py-2 text-sm text-gray-700 dark:text-gray-200 hover:bg-gray-50 dark:hover:bg-gray-700 hover:text-accent transition rounded"
+                                    data-translate="apartmentsForRent">Apartments for Rent</a>
+                                <a href="javascript:void(0)" onclick="browseCategory('Property', 'Villas for Sale')"
+                                    class="block px-3 py-2 text-sm text-gray-700 dark:text-gray-200 hover:bg-gray-50 dark:hover:bg-gray-700 hover:text-accent transition rounded"
+                                    data-translate="villasForSale">Villas for Sale</a>
+                                <a href="javascript:void(0)" onclick="browseCategory('Property', 'Villas for Rent')"
+                                    class="block px-3 py-2 text-sm text-gray-700 dark:text-gray-200 hover:bg-gray-50 dark:hover:bg-gray-700 hover:text-accent transition rounded"
+                                    data-translate="villasForRent">Villas for Rent</a>
+                                <a href="javascript:void(0)" onclick="browseCategory('Property', 'Resorts for Sale')"
+                                    class="block px-3 py-2 text-sm text-gray-700 dark:text-gray-200 hover:bg-gray-50 dark:hover:bg-gray-700 hover:text-accent transition rounded"
+                                    data-translate="resortsForSale">Resorts for Sale</a>
+                                <a href="javascript:void(0)" onclick="browseCategory('Property', 'Resorts for Rent')"
+                                    class="block px-3 py-2 text-sm text-gray-700 dark:text-gray-200 hover:bg-gray-50 dark:hover:bg-gray-700 hover:text-accent transition rounded"
+                                    data-translate="resortsForRent">Resorts for Rent</a>
+                                <a href="javascript:void(0)" onclick="browseCategory('Property', 'Commercial for Sale')"
+                                    class="block px-3 py-2 text-sm text-gray-700 dark:text-gray-200 hover:bg-gray-50 dark:hover:bg-gray-700 hover:text-accent transition rounded"
+                                    data-translate="commercialForSale">Commercial for Sale</a>
+                                <a href="javascript:void(0)" onclick="browseCategory('Property', 'Commercial for Rent')"
+                                    class="block px-3 py-2 text-sm text-gray-700 dark:text-gray-200 hover:bg-gray-50 dark:hover:bg-gray-700 hover:text-accent transition rounded"
+                                    data-translate="commercialForRent">Commercial for Rent</a>
+                                <a href="javascript:void(0)" onclick="browseCategory('Property', 'Buildings & Lands')"
+                                    class="block px-3 py-2 text-sm text-gray-700 dark:text-gray-200 hover:bg-gray-50 dark:hover:bg-gray-700 hover:text-accent transition rounded col-span-2 text-center"
+                                    data-translate="buildingsAndLands">Buildings & Lands</a>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Electronics Dropdown -->
+                    <div class="group relative h-full flex items-center">
+                        <a href="javascript:void(0)" onclick="browseCategory('Electronics')"
+                            class="flex items-center text-gray-700 dark:text-gray-300 hover:text-accent font-medium transition group-hover:text-accent h-full px-2">
+                            <span data-translate="electronicsCategoryTitle">Electronics</span>
+                            <svg class="w-4 h-4 ml-1 transition-transform group-hover:rotate-180 rtl:mr-1 rtl:ml-0"
+                                fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M19 9l-7 7-7-7"></path>
+                            </svg>
+                        </a>
+                        <div
+                            class="absolute top-full right-0 w-[400px] bg-white dark:bg-gray-800 shadow-xl rounded-b-lg border-t-2 border-accent opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-300 transform scale-95 origin-top group-hover:scale-100 z-50">
+                            <div class="p-3 grid grid-cols-2 gap-2">
+                                <a href="javascript:void(0)" onclick="browseCategory('Electronics')"
+                                    class="block px-3 py-2 text-sm font-bold text-accent hover:bg-gray-50 dark:hover:bg-gray-700 transition rounded col-span-2 text-center border-b border-gray-100 dark:border-gray-700 mb-1 pb-2"
+                                    data-translate="allCategories">All Categories</a>
+                                <a href="javascript:void(0)" onclick="browseCategory('Electronics', 'Computers Desktop')"
+                                    class="block px-3 py-2 text-sm text-gray-700 dark:text-gray-200 hover:bg-gray-50 dark:hover:bg-gray-700 hover:text-accent transition rounded"
+                                    data-translate="computersDesktop">Computers Desktop</a>
+                                <a href="javascript:void(0)" onclick="browseCategory('Electronics', 'Laptops')"
+                                    class="block px-3 py-2 text-sm text-gray-700 dark:text-gray-200 hover:bg-gray-50 dark:hover:bg-gray-700 hover:text-accent transition rounded"
+                                    data-translate="laptops">Laptops</a>
+                                <a href="javascript:void(0)" onclick="browseCategory('Electronics', 'Mobile Phones')"
+                                    class="block px-3 py-2 text-sm text-gray-700 dark:text-gray-200 hover:bg-gray-50 dark:hover:bg-gray-700 hover:text-accent transition rounded"
+                                    data-translate="mobilePhones">Mobile Phones</a>
+                                <a href="javascript:void(0)" onclick="browseCategory('Electronics', 'Tablets')"
+                                    class="block px-3 py-2 text-sm text-gray-700 dark:text-gray-200 hover:bg-gray-50 dark:hover:bg-gray-700 hover:text-accent transition rounded"
+                                    data-translate="tabletsOnly">Tablets</a>
+                                <a href="javascript:void(0)" onclick="browseCategory('Electronics', 'Mobile Accessories')"
+                                    class="block px-3 py-2 text-sm text-gray-700 dark:text-gray-200 hover:bg-gray-50 dark:hover:bg-gray-700 hover:text-accent transition rounded"
+                                    data-translate="mobileTabletAccessories">Mobile Accessories</a>
+                                <a href="javascript:void(0)" onclick="browseCategory('Electronics', 'Computer Accessories')"
+                                    class="block px-3 py-2 text-sm text-gray-700 dark:text-gray-200 hover:bg-gray-50 dark:hover:bg-gray-700 hover:text-accent transition rounded"
+                                    data-translate="computerLaptopAccessories">Computer Accessories</a>
+                                <a href="javascript:void(0)" onclick="browseCategory('Electronics', 'TV Screens')"
+                                    class="block px-3 py-2 text-sm text-gray-700 dark:text-gray-200 hover:bg-gray-50 dark:hover:bg-gray-700 hover:text-accent transition rounded"
+                                    data-translate="tvScreens">TV Screens</a>
+                                <a href="javascript:void(0)" onclick="browseCategory('Electronics', 'TV Accessories')"
+                                    class="block px-3 py-2 text-sm text-gray-700 dark:text-gray-200 hover:bg-gray-50 dark:hover:bg-gray-700 hover:text-accent transition rounded"
+                                    data-translate="tvAccessories">TV Accessories</a>
+                                <a href="javascript:void(0)" onclick="browseCategory('Electronics', 'Home Audio')"
+                                    class="block px-3 py-2 text-sm text-gray-700 dark:text-gray-200 hover:bg-gray-50 dark:hover:bg-gray-700 hover:text-accent transition rounded col-span-2 text-center"
+                                    data-translate="homeAudio">Home Audio</a>
                             </div>
                         </div>
                     </div>
 
                     <!-- Classifieds Dropdown -->
                     <div class="group relative h-full flex items-center">
-                        <a href="categories.html"
+                        <a href="javascript:void(0)" onclick="browseCategory('Classifieds')"
                             class="flex items-center text-gray-700 dark:text-gray-300 hover:text-accent font-medium transition group-hover:text-accent h-full px-2">
                             <span data-translate="classifiedsTitle">Classifieds</span>
                             <svg class="w-4 h-4 ml-1 transition-transform group-hover:rotate-180 rtl:mr-1 rtl:ml-0"
@@ -250,20 +325,107 @@
                             </svg>
                         </a>
                         <div
-                            class="absolute top-full left-0 w-56 bg-white dark:bg-gray-800 shadow-xl rounded-b-lg border-t-2 border-accent opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-300 transform scale-95 origin-top group-hover:scale-100 z-50">
-                            <div class="py-2">
-                                <a href="search.html"
-                                    class="block px-4 py-2 text-sm text-gray-700 dark:text-gray-200 hover:bg-gray-50 dark:hover:bg-gray-700 hover:text-accent transition"
-                                    data-translate="electronics">Electronics</a>
-                                <a href="search.html"
-                                    class="block px-4 py-2 text-sm text-gray-700 dark:text-gray-200 hover:bg-gray-50 dark:hover:bg-gray-700 hover:text-accent transition"
-                                    data-translate="computers">Computers</a>
-                                <a href="search.html"
-                                    class="block px-4 py-2 text-sm text-gray-700 dark:text-gray-200 hover:bg-gray-50 dark:hover:bg-gray-700 hover:text-accent transition"
+                            class="absolute top-full right-0 w-[400px] bg-white dark:bg-gray-800 shadow-xl rounded-b-lg border-t-2 border-accent opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-300 transform scale-95 origin-top group-hover:scale-100 z-50">
+                            <div class="p-3 grid grid-cols-2 gap-2">
+                                <a href="javascript:void(0)" onclick="browseCategory('Classifieds')"
+                                    class="block px-3 py-2 text-sm font-bold text-accent hover:bg-gray-50 dark:hover:bg-gray-700 transition rounded col-span-2 text-center border-b border-gray-100 dark:border-gray-700 mb-1 pb-2"
+                                    data-translate="allCategories">All Categories</a>
+                                <a href="javascript:void(0)" onclick="browseCategory('Classifieds', 'Clothing')"
+                                    class="block px-3 py-2 text-sm text-gray-700 dark:text-gray-200 hover:bg-gray-50 dark:hover:bg-gray-700 hover:text-accent transition rounded"
                                     data-translate="clothing">Clothing</a>
-                                <a href="search.html"
+                                <a href="javascript:void(0)" onclick="browseCategory('Classifieds', 'Jewelry')"
+                                    class="block px-3 py-2 text-sm text-gray-700 dark:text-gray-200 hover:bg-gray-50 dark:hover:bg-gray-700 hover:text-accent transition rounded"
+                                    data-translate="jewelry">Jewelry</a>
+                                <a href="javascript:void(0)" onclick="browseCategory('Classifieds', 'Furniture & Decor')"
+                                    class="block px-3 py-2 text-sm text-gray-700 dark:text-gray-200 hover:bg-gray-50 dark:hover:bg-gray-700 hover:text-accent transition rounded"
+                                    data-translate="furnitureDecor">Furniture & Decor</a>
+                                <a href="javascript:void(0)" onclick="browseCategory('Classifieds', 'Women\'s Clothing')"
+                                    class="block px-3 py-2 text-sm text-gray-700 dark:text-gray-200 hover:bg-gray-50 dark:hover:bg-gray-700 hover:text-accent transition rounded"
+                                    data-translate="womensClothing">Women's Clothing</a>
+                                <a href="javascript:void(0)" onclick="browseCategory('Classifieds', 'Men\'s Clothing')"
+                                    class="block px-3 py-2 text-sm text-gray-700 dark:text-gray-200 hover:bg-gray-50 dark:hover:bg-gray-700 hover:text-accent transition rounded"
+                                    data-translate="mensClothing">Men's Clothing</a>
+                                <a href="javascript:void(0)" onclick="browseCategory('Classifieds', 'Baby Essentials')"
+                                    class="block px-3 py-2 text-sm text-gray-700 dark:text-gray-200 hover:bg-gray-50 dark:hover:bg-gray-700 hover:text-accent transition rounded"
+                                    data-translate="babyEssentials">Baby Essentials</a>
+                                <a href="javascript:void(0)" onclick="browseCategory('Classifieds', 'Antiques & Collectibles')"
+                                    class="block px-3 py-2 text-sm text-gray-700 dark:text-gray-200 hover:bg-gray-50 dark:hover:bg-gray-700 hover:text-accent transition rounded"
+                                    data-translate="antiquesCollectibles">Antiques & Collectibles</a>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Jobs Dropdown -->
+                    <div class="group relative h-full flex items-center">
+                        <a href="javascript:void(0)" onclick="browseCategory('Jobs')"
+                            class="flex items-center text-gray-700 dark:text-gray-300 hover:text-accent font-medium transition group-hover:text-accent h-full px-2">
+                            <span data-translate="jobsTitle">Jobs</span>
+                            <svg class="w-4 h-4 ml-1 transition-transform group-hover:rotate-180 rtl:mr-1 rtl:ml-0"
+                                fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M19 9l-7 7-7-7"></path>
+                            </svg>
+                        </a>
+                        <div
+                            class="absolute top-full right-0 w-[400px] bg-white dark:bg-gray-800 shadow-xl rounded-b-lg border-t-2 border-accent opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-300 transform scale-95 origin-top group-hover:scale-100 z-50">
+                            <div class="p-3 grid grid-cols-2 gap-2">
+                                <a href="javascript:void(0)" onclick="browseCategory('Jobs')"
+                                    class="block px-3 py-2 text-sm font-bold text-accent hover:bg-gray-50 dark:hover:bg-gray-700 transition rounded col-span-2 text-center border-b border-gray-100 dark:border-gray-700 mb-1 pb-2"
+                                    data-translate="allCategories">All Categories</a>
+                                <a href="javascript:void(0)" onclick="browseCategory('Jobs', 'Accounting')"
+                                    class="block px-3 py-2 text-sm text-gray-700 dark:text-gray-200 hover:bg-gray-50 dark:hover:bg-gray-700 hover:text-accent transition rounded"
+                                    data-translate="accounting">Accounting</a>
+                                <a href="javascript:void(0)" onclick="browseCategory('Jobs', 'Engineering')"
+                                    class="block px-3 py-2 text-sm text-gray-700 dark:text-gray-200 hover:bg-gray-50 dark:hover:bg-gray-700 hover:text-accent transition rounded"
+                                    data-translate="engineering">Engineering</a>
+                                <a href="javascript:void(0)" onclick="browseCategory('Jobs', 'Media')"
+                                    class="block px-3 py-2 text-sm text-gray-700 dark:text-gray-200 hover:bg-gray-50 dark:hover:bg-gray-700 hover:text-accent transition rounded"
+                                    data-translate="media">Media</a>
+                                <a href="javascript:void(0)" onclick="browseCategory('Jobs', 'Medical')"
+                                    class="block px-3 py-2 text-sm text-gray-700 dark:text-gray-200 hover:bg-gray-50 dark:hover:bg-gray-700 hover:text-accent transition rounded"
+                                    data-translate="medical">Medical</a>
+                                <a href="javascript:void(0)" onclick="browseCategory('Jobs', 'Designers')"
+                                    class="block px-3 py-2 text-sm text-gray-700 dark:text-gray-200 hover:bg-gray-50 dark:hover:bg-gray-700 hover:text-accent transition rounded"
+                                    data-translate="designers">Designers</a>
+                                <a href="javascript:void(0)" onclick="browseCategory('Jobs', 'Customer Service')"
+                                    class="block px-3 py-2 text-sm text-gray-700 dark:text-gray-200 hover:bg-gray-50 dark:hover:bg-gray-700 hover:text-accent transition rounded"
+                                    data-translate="customerService">Customer Service</a>
+                                <a href="javascript:void(0)" onclick="browseCategory('Jobs', 'Social Media')"
+                                    class="block px-3 py-2 text-sm text-gray-700 dark:text-gray-200 hover:bg-gray-50 dark:hover:bg-gray-700 hover:text-accent transition rounded"
+                                    data-translate="socialMedia">Social Media</a>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Services Dropdown -->
+                    <div class="group relative h-full flex items-center">
+                        <a href="javascript:void(0)" onclick="browseCategory('Services')"
+                            class="flex items-center text-gray-700 dark:text-gray-300 hover:text-accent font-medium transition group-hover:text-accent h-full px-2">
+                            <span data-translate="servicesTitle">Services</span>
+                            <svg class="w-4 h-4 ml-1 transition-transform group-hover:rotate-180 rtl:mr-1 rtl:ml-0"
+                                fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M19 9l-7 7-7-7"></path>
+                            </svg>
+                        </a>
+                        <div
+                            class="absolute top-full right-0 w-56 bg-white dark:bg-gray-800 shadow-xl rounded-b-lg border-t-2 border-accent opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-300 transform scale-95 origin-top group-hover:scale-100 z-50">
+                            <div class="py-2">
+                                <a href="javascript:void(0)" onclick="browseCategory('Services')"
+                                    class="block px-4 py-2 text-sm font-bold text-accent hover:bg-gray-50 dark:hover:bg-gray-700 transition border-b border-gray-100 dark:border-gray-700 mb-1 pb-2"
+                                    data-translate="allCategories">All Categories</a>
+                                <a href="javascript:void(0)" onclick="browseCategory('Services', 'Cleaning')"
                                     class="block px-4 py-2 text-sm text-gray-700 dark:text-gray-200 hover:bg-gray-50 dark:hover:bg-gray-700 hover:text-accent transition"
-                                    data-translate="cameras">Cameras</a>
+                                    data-translate="cleaning">Cleaning</a>
+                                <a href="javascript:void(0)" onclick="browseCategory('Services', 'Maintenance')"
+                                    class="block px-4 py-2 text-sm text-gray-700 dark:text-gray-200 hover:bg-gray-50 dark:hover:bg-gray-700 hover:text-accent transition"
+                                    data-translate="maintenance">Maintenance</a>
+                                <a href="javascript:void(0)" onclick="browseCategory('Services', 'Moving')"
+                                    class="block px-4 py-2 text-sm text-gray-700 dark:text-gray-200 hover:bg-gray-50 dark:hover:bg-gray-700 hover:text-accent transition"
+                                    data-translate="moving">Moving</a>
+                                <a href="javascript:void(0)" onclick="browseCategory('Services', 'Education')"
+                                    class="block px-4 py-2 text-sm text-gray-700 dark:text-gray-200 hover:bg-gray-50 dark:hover:bg-gray-700 hover:text-accent transition"
+                                    data-translate="education">Education</a>
                             </div>
                         </div>
                     </div>
@@ -330,21 +492,30 @@
                 </svg>
             </button>
             <div class="hidden pl-4 mt-1 space-y-1 border-l-2 border-accent/30 ml-3">
-                <a href="search.html"
+                <a href="javascript:void(0)" onclick="browseCategory('Motors')"
+                    class="block px-3 py-1.5 text-sm font-bold text-accent hover:text-accent transition border-b border-accent/10 mb-1 pb-1.5"
+                    data-translate="allCategories">All Categories</a>
+                <a href="javascript:void(0)" onclick="browseCategory('Motors', 'Cars for Sale')"
                     class="block px-3 py-1.5 text-sm text-gray-600 dark:text-gray-400 hover:text-accent transition"
-                    data-translate="usedCars">Used Cars</a>
-                <a href="search.html"
+                    data-translate="carsForSale">Cars for Sale</a>
+                <a href="javascript:void(0)" onclick="browseCategory('Motors', 'Cars for Rent')"
                     class="block px-3 py-1.5 text-sm text-gray-600 dark:text-gray-400 hover:text-accent transition"
-                    data-translate="motorcycles">Motorcycles</a>
-                <a href="search.html"
+                    data-translate="carsForRent">Cars for Rent</a>
+                <a href="javascript:void(0)" onclick="browseCategory('Motors', 'Motorcycles for Sale')"
                     class="block px-3 py-1.5 text-sm text-gray-600 dark:text-gray-400 hover:text-accent transition"
-                    data-translate="heavyVehicles">Heavy Vehicles</a>
-                <a href="search.html"
+                    data-translate="motorcyclesForSale">Motorcycles for Sale</a>
+                <a href="javascript:void(0)" onclick="browseCategory('Motors', 'Motorcycle Parts')"
                     class="block px-3 py-1.5 text-sm text-gray-600 dark:text-gray-400 hover:text-accent transition"
-                    data-translate="boats">Boats</a>
-                <a href="search.html"
+                    data-translate="motorcycleParts">Motorcycle Spare Parts</a>
+                <a href="javascript:void(0)" onclick="browseCategory('Motors', 'Car Spare Parts')"
                     class="block px-3 py-1.5 text-sm text-gray-600 dark:text-gray-400 hover:text-accent transition"
-                    data-translate="autoAccessories">Auto Accessories</a>
+                    data-translate="carSpareParts">Car Spare Parts</a>
+                <a href="javascript:void(0)" onclick="browseCategory('Motors', 'Marine Vehicles')"
+                    class="block px-3 py-1.5 text-sm text-gray-600 dark:text-gray-400 hover:text-accent transition"
+                    data-translate="marineVehicles">Marine Vehicles</a>
+                <a href="javascript:void(0)" onclick="browseCategory('Motors', 'Heavy Trucks')"
+                    class="block px-3 py-1.5 text-sm text-gray-600 dark:text-gray-400 hover:text-accent transition"
+                    data-translate="heavyTrucks">Heavy Duty Trucks</a>
             </div>
         </div>
 
@@ -358,18 +529,79 @@
                 </svg>
             </button>
             <div class="hidden pl-4 mt-1 space-y-1 border-l-2 border-accent/30 ml-3">
-                <a href="search.html"
+                <a href="javascript:void(0)" onclick="browseCategory('Property')"
+                    class="block px-3 py-1.5 text-sm font-bold text-accent hover:text-accent transition border-b border-accent/10 mb-1 pb-1.5"
+                    data-translate="allCategories">All Categories</a>
+                <a href="javascript:void(0)" onclick="browseCategory('Property', 'Apartments for Sale')"
                     class="block px-3 py-1.5 text-sm text-gray-600 dark:text-gray-400 hover:text-accent transition"
-                    data-translate="residentialSale">Residential for Sale</a>
-                <a href="search.html"
+                    data-translate="apartmentsForSale">Apartments for Sale</a>
+                <a href="javascript:void(0)" onclick="browseCategory('Property', 'Apartments for Rent')"
                     class="block px-3 py-1.5 text-sm text-gray-600 dark:text-gray-400 hover:text-accent transition"
-                    data-translate="commercialSale">Commercial for Sale</a>
-                <a href="search.html"
+                    data-translate="apartmentsForRent">Apartments for Rent</a>
+                <a href="javascript:void(0)" onclick="browseCategory('Property', 'Villas for Sale')"
                     class="block px-3 py-1.5 text-sm text-gray-600 dark:text-gray-400 hover:text-accent transition"
-                    data-translate="multipleUnits">Multiple Units</a>
-                <a href="search.html"
+                    data-translate="villasForSale">Villas for Sale</a>
+                <a href="javascript:void(0)" onclick="browseCategory('Property', 'Villas for Rent')"
                     class="block px-3 py-1.5 text-sm text-gray-600 dark:text-gray-400 hover:text-accent transition"
-                    data-translate="landSale">Land for Sale</a>
+                    data-translate="villasForRent">Villas for Rent</a>
+                <a href="javascript:void(0)" onclick="browseCategory('Property', 'Resorts for Sale')"
+                    class="block px-3 py-1.5 text-sm text-gray-600 dark:text-gray-400 hover:text-accent transition"
+                    data-translate="resortsForSale">Resorts for Sale</a>
+                <a href="javascript:void(0)" onclick="browseCategory('Property', 'Resorts for Rent')"
+                    class="block px-3 py-1.5 text-sm text-gray-600 dark:text-gray-400 hover:text-accent transition"
+                    data-translate="resortsForRent">Resorts for Rent</a>
+                <a href="javascript:void(0)" onclick="browseCategory('Property', 'Commercial for Sale')"
+                    class="block px-3 py-1.5 text-sm text-gray-600 dark:text-gray-400 hover:text-accent transition"
+                    data-translate="commercialForSale">Commercial for Sale</a>
+                <a href="javascript:void(0)" onclick="browseCategory('Property', 'Commercial for Rent')"
+                    class="block px-3 py-1.5 text-sm text-gray-600 dark:text-gray-400 hover:text-accent transition"
+                    data-translate="commercialForRent">Commercial for Rent</a>
+                <a href="javascript:void(0)" onclick="browseCategory('Property', 'Buildings & Lands')"
+                    class="block px-3 py-1.5 text-sm text-gray-600 dark:text-gray-400 hover:text-accent transition"
+                    data-translate="buildingsAndLands">Buildings & Lands</a>
+            </div>
+        </div>
+
+        <!-- Electronics Section -->
+        <div>
+            <button onclick="this.nextElementSibling.classList.toggle('hidden')"
+                class="w-full flex items-center justify-between px-3 py-2 rounded-md text-base font-medium text-gray-700 dark:text-gray-300 hover:text-accent hover:bg-gray-50 dark:hover:bg-gray-800 transition">
+                <span data-translate="electronicsCategoryTitle">Electronics</span>
+                <svg class="w-4 h-4 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
+                </svg>
+            </button>
+            <div class="hidden pl-4 mt-1 space-y-1 border-l-2 border-accent/30 ml-3">
+                <a href="javascript:void(0)" onclick="browseCategory('Electronics')"
+                    class="block px-3 py-1.5 text-sm font-bold text-accent hover:text-accent transition border-b border-accent/10 mb-1 pb-1.5"
+                    data-translate="allCategories">All Categories</a>
+                <a href="javascript:void(0)" onclick="browseCategory('Electronics', 'Computers Desktop')"
+                    class="block px-3 py-1.5 text-sm text-gray-600 dark:text-gray-400 hover:text-accent transition"
+                    data-translate="computersDesktop">Computers Desktop</a>
+                <a href="javascript:void(0)" onclick="browseCategory('Electronics', 'Laptops')"
+                    class="block px-3 py-1.5 text-sm text-gray-600 dark:text-gray-400 hover:text-accent transition"
+                    data-translate="laptops">Laptops</a>
+                <a href="javascript:void(0)" onclick="browseCategory('Electronics', 'Mobile Phones')"
+                    class="block px-3 py-1.5 text-sm text-gray-600 dark:text-gray-400 hover:text-accent transition"
+                    data-translate="mobilePhones">Mobile Phones</a>
+                <a href="javascript:void(0)" onclick="browseCategory('Electronics', 'Tablets')"
+                    class="block px-3 py-1.5 text-sm text-gray-600 dark:text-gray-400 hover:text-accent transition"
+                    data-translate="tabletsOnly">Tablets</a>
+                <a href="javascript:void(0)" onclick="browseCategory('Electronics', 'Mobile Accessories')"
+                    class="block px-3 py-1.5 text-sm text-gray-600 dark:text-gray-400 hover:text-accent transition"
+                    data-translate="mobileTabletAccessories">Mobile Accessories</a>
+                <a href="javascript:void(0)" onclick="browseCategory('Electronics', 'Computer Accessories')"
+                    class="block px-3 py-1.5 text-sm text-gray-600 dark:text-gray-400 hover:text-accent transition"
+                    data-translate="computerLaptopAccessories">Computer Accessories</a>
+                <a href="javascript:void(0)" onclick="browseCategory('Electronics', 'TV Screens')"
+                    class="block px-3 py-1.5 text-sm text-gray-600 dark:text-gray-400 hover:text-accent transition"
+                    data-translate="tvScreens">TV Screens</a>
+                <a href="javascript:void(0)" onclick="browseCategory('Electronics', 'TV Accessories')"
+                    class="block px-3 py-1.5 text-sm text-gray-600 dark:text-gray-400 hover:text-accent transition"
+                    data-translate="tvAccessories">TV Accessories</a>
+                <a href="javascript:void(0)" onclick="browseCategory('Electronics', 'Home Audio')"
+                    class="block px-3 py-1.5 text-sm text-gray-600 dark:text-gray-400 hover:text-accent transition"
+                    data-translate="homeAudio">Home Audio</a>
             </div>
         </div>
 
@@ -383,18 +615,97 @@
                 </svg>
             </button>
             <div class="hidden pl-4 mt-1 space-y-1 border-l-2 border-accent/30 ml-3">
-                <a href="search.html"
-                    class="block px-3 py-1.5 text-sm text-gray-600 dark:text-gray-400 hover:text-accent transition"
-                    data-translate="electronics">Electronics</a>
-                <a href="search.html"
-                    class="block px-3 py-1.5 text-sm text-gray-600 dark:text-gray-400 hover:text-accent transition"
-                    data-translate="computers">Computers</a>
-                <a href="search.html"
+                <a href="javascript:void(0)" onclick="browseCategory('Classifieds')"
+                    class="block px-3 py-1.5 text-sm font-bold text-accent hover:text-accent transition border-b border-accent/10 mb-1 pb-1.5"
+                    data-translate="allCategories">All Categories</a>
+                <a href="javascript:void(0)" onclick="browseCategory('Classifieds', 'Clothing')"
                     class="block px-3 py-1.5 text-sm text-gray-600 dark:text-gray-400 hover:text-accent transition"
                     data-translate="clothing">Clothing</a>
-                <a href="search.html"
+                <a href="javascript:void(0)" onclick="browseCategory('Classifieds', 'Jewelry')"
                     class="block px-3 py-1.5 text-sm text-gray-600 dark:text-gray-400 hover:text-accent transition"
-                    data-translate="cameras">Cameras</a>
+                    data-translate="jewelry">Jewelry</a>
+                <a href="javascript:void(0)" onclick="browseCategory('Classifieds', 'Furniture & Decor')"
+                    class="block px-3 py-1.5 text-sm text-gray-600 dark:text-gray-400 hover:text-accent transition"
+                    data-translate="furnitureDecor">Furniture & Decor</a>
+                <a href="javascript:void(0)" onclick="browseCategory('Classifieds', 'Women\'s Clothing')"
+                    class="block px-3 py-1.5 text-sm text-gray-600 dark:text-gray-400 hover:text-accent transition"
+                    data-translate="womensClothing">Women's Clothing</a>
+                <a href="javascript:void(0)" onclick="browseCategory('Classifieds', 'Men\'s Clothing')"
+                    class="block px-3 py-1.5 text-sm text-gray-600 dark:text-gray-400 hover:text-accent transition"
+                    data-translate="mensClothing">Men's Clothing</a>
+                <a href="javascript:void(0)" onclick="browseCategory('Classifieds', 'Baby Essentials')"
+                    class="block px-3 py-1.5 text-sm text-gray-600 dark:text-gray-400 hover:text-accent transition"
+                    data-translate="babyEssentials">Baby Essentials</a>
+                <a href="javascript:void(0)" onclick="browseCategory('Classifieds', 'Antiques & Collectibles')"
+                    class="block px-3 py-1.5 text-sm text-gray-600 dark:text-gray-400 hover:text-accent transition"
+                    data-translate="antiquesCollectibles">Antiques & Collectibles</a>
+            </div>
+        </div>
+
+        <!-- Jobs Section -->
+        <div>
+            <button onclick="this.nextElementSibling.classList.toggle('hidden')"
+                class="w-full flex items-center justify-between px-3 py-2 rounded-md text-base font-medium text-gray-700 dark:text-gray-300 hover:text-accent hover:bg-gray-50 dark:hover:bg-gray-800 transition">
+                <span data-translate="jobsTitle">Jobs</span>
+                <svg class="w-4 h-4 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
+                </svg>
+            </button>
+            <div class="hidden pl-4 mt-1 space-y-1 border-l-2 border-accent/30 ml-3">
+                <a href="javascript:void(0)" onclick="browseCategory('Jobs')"
+                    class="block px-3 py-1.5 text-sm font-bold text-accent hover:text-accent transition border-b border-accent/10 mb-1 pb-1.5"
+                    data-translate="allCategories">All Categories</a>
+                <a href="javascript:void(0)" onclick="browseCategory('Jobs', 'Accounting')"
+                    class="block px-3 py-1.5 text-sm text-gray-600 dark:text-gray-400 hover:text-accent transition"
+                    data-translate="accounting">Accounting</a>
+                <a href="javascript:void(0)" onclick="browseCategory('Jobs', 'Engineering')"
+                    class="block px-3 py-1.5 text-sm text-gray-600 dark:text-gray-400 hover:text-accent transition"
+                    data-translate="engineering">Engineering</a>
+                <a href="javascript:void(0)" onclick="browseCategory('Jobs', 'Media')"
+                    class="block px-3 py-1.5 text-sm text-gray-600 dark:text-gray-400 hover:text-accent transition"
+                    data-translate="media">Media</a>
+                <a href="javascript:void(0)" onclick="browseCategory('Jobs', 'Medical')"
+                    class="block px-3 py-1.5 text-sm text-gray-600 dark:text-gray-400 hover:text-accent transition"
+                    data-translate="medical">Medical</a>
+                <a href="javascript:void(0)" onclick="browseCategory('Jobs', 'Designers')"
+                    class="block px-3 py-1.5 text-sm text-gray-600 dark:text-gray-400 hover:text-accent transition"
+                    data-translate="designers">Designers</a>
+                <a href="javascript:void(0)" onclick="browseCategory('Jobs', 'Customer Service')"
+                    class="block px-3 py-1.5 text-sm text-gray-600 dark:text-gray-400 hover:text-accent transition"
+                    data-translate="customerService">Customer Service</a>
+                <a href="javascript:void(0)" onclick="browseCategory('Jobs', 'Social Media')"
+                    class="block px-3 py-1.5 text-sm text-gray-600 dark:text-gray-400 hover:text-accent transition"
+                    data-translate="socialMedia">Social Media</a>
+            </div>
+        </div>
+
+        <div class="border-t border-gray-100 dark:border-gray-700 my-2"></div>
+
+        <!-- Services Section -->
+        <div>
+            <button onclick="this.nextElementSibling.classList.toggle('hidden')"
+                class="w-full flex items-center justify-between px-3 py-2 rounded-md text-base font-medium text-gray-700 dark:text-gray-300 hover:text-accent hover:bg-gray-50 dark:hover:bg-gray-800 transition">
+                <span data-translate="servicesTitle">Services</span>
+                <svg class="w-4 h-4 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
+                </svg>
+            </button>
+            <div class="hidden pl-4 mt-1 space-y-1 border-l-2 border-accent/30 ml-3">
+                <a href="javascript:void(0)" onclick="browseCategory('Services')"
+                    class="block px-3 py-1.5 text-sm font-bold text-accent hover:text-accent transition border-b border-accent/10 mb-1 pb-1.5"
+                    data-translate="allCategories">All Categories</a>
+                <a href="javascript:void(0)" onclick="browseCategory('Services', 'Cleaning')"
+                    class="block px-3 py-1.5 text-sm text-gray-600 dark:text-gray-400 hover:text-accent transition"
+                    data-translate="cleaning">Cleaning</a>
+                <a href="javascript:void(0)" onclick="browseCategory('Services', 'Maintenance')"
+                    class="block px-3 py-1.5 text-sm text-gray-600 dark:text-gray-400 hover:text-accent transition"
+                    data-translate="maintenance">Maintenance</a>
+                <a href="javascript:void(0)" onclick="browseCategory('Services', 'Moving')"
+                    class="block px-3 py-1.5 text-sm text-gray-600 dark:text-gray-400 hover:text-accent transition"
+                    data-translate="moving">Moving</a>
+                <a href="javascript:void(0)" onclick="browseCategory('Services', 'Education')"
+                    class="block px-3 py-1.5 text-sm text-gray-600 dark:text-gray-400 hover:text-accent transition"
+                    data-translate="education">Education</a>
             </div>
         </div>
 
@@ -412,7 +723,7 @@
         </div>
 
         <!-- Post Ad Button -->
-        <a href="post-ad.html"
+        <a href="select-category.html"
             class="block px-3 py-2.5 mt-2 text-center text-white bg-accent hover:bg-orange-600 rounded-full font-bold transition shadow-md"
             data-translate="postAd">Post an Ad</a>
 

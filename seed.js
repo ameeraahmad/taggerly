@@ -24,7 +24,9 @@ const seed = async () => {
                 description: 'Pristine condition, low mileage, GCC specs.',
                 price: 95000,
                 category: 'Motors',
+                subCategory: 'Used Cars',
                 city: 'Dubai',
+                country: 'uae',
                 images: ['https://images.unsplash.com/photo-1533473359331-0135ef1b58bf?auto=format&fit=crop&w=600&q=80'],
                 userId: user.id
             },
@@ -32,9 +34,33 @@ const seed = async () => {
                 title: 'iPhone 15 Pro Max 256GB',
                 description: 'Brand new, sealed box, Apple warranty.',
                 price: 4500,
-                category: 'Electronics',
+                category: 'Mobiles',
+                subCategory: 'Mobile Phones',
                 city: 'Abu Dhabi',
+                country: 'uae',
                 images: ['https://images.unsplash.com/photo-1511707171634-5f897ff02aa9?auto=format&fit=crop&w=600&q=80'],
+                userId: user.id
+            },
+            {
+                title: 'Samsung S24 Ultra - Egypt',
+                description: 'Latest flagship, 12GB RAM, 256GB. Sealed.',
+                price: 55000,
+                category: 'Mobiles',
+                subCategory: 'Mobile Phones',
+                city: 'Cairo',
+                country: 'egypt',
+                images: ['https://images.unsplash.com/photo-1610945265064-0e34e5519bbf?auto=format&fit=crop&w=600&q=80'],
+                userId: user.id
+            },
+            {
+                title: 'iPad Pro 12.9 M2 Chip',
+                description: 'Mint condition, with Magic Keyboard.',
+                price: 3200,
+                category: 'Mobiles',
+                subCategory: 'Tablets',
+                city: 'Dubai',
+                country: 'uae',
+                images: ['https://images.unsplash.com/photo-1544244015-0df4b3ffc6b0?auto=format&fit=crop&w=600&q=80'],
                 userId: user.id
             },
             {
@@ -42,7 +68,9 @@ const seed = async () => {
                 description: 'High floor, marina view, fully furnished.',
                 price: 150000,
                 category: 'Property',
+                subCategory: 'Residential for Sale',
                 city: 'Dubai',
+                country: 'uae',
                 images: ['https://images.unsplash.com/photo-1512917774080-9991f1c4c750?auto=format&fit=crop&w=600&q=80'],
                 userId: user.id
             },
@@ -52,6 +80,7 @@ const seed = async () => {
                 price: 1200,
                 category: 'Furniture',
                 city: 'Sharjah',
+                country: 'uae',
                 images: ['https://images.unsplash.com/photo-1555041469-a586c61ea9bc?auto=format&fit=crop&w=600&q=80'],
                 userId: user.id
             }

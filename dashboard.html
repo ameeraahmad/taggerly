@@ -202,11 +202,11 @@
                             <thead
                                 class="bg-gray-50 dark:bg-gray-800 text-gray-500 dark:text-gray-400 uppercase text-[10px] font-bold tracking-wider">
                                 <tr>
-                                    <th class="px-6 py-3">Plan / Purpose</th>
-                                    <th class="px-6 py-3">Amount</th>
-                                    <th class="px-6 py-3">Date</th>
-                                    <th class="px-6 py-3">Status</th>
-                                    <th class="px-6 py-3">Actions</th>
+                                    <th class="px-6 py-3" data-translate="planPurpose">Plan / Purpose</th>
+                                    <th class="px-6 py-3" data-translate="amount">Amount</th>
+                                    <th class="px-6 py-3" data-translate="date">Date</th>
+                                    <th class="px-6 py-3" data-translate="statusColumn">Status</th>
+                                    <th class="px-6 py-3" data-translate="actions">Actions</th>
                                 </tr>
                             </thead>
                             <tbody id="payments-list" class="divide-y divide-gray-100 dark:divide-gray-700">
@@ -228,14 +228,14 @@
                     <div class="p-6">
                         <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
                             <div class="bg-gray-50 dark:bg-gray-800/50 p-6 rounded-xl border dark:border-gray-700">
-                                <h4 class="text-sm font-bold text-gray-500 mb-2 uppercase tracking-tight">Top Performing Ad</h4>
+                                <h4 class="text-sm font-bold text-gray-500 mb-2 uppercase tracking-tight" data-translate="topPerformingAd">Top Performing Ad</h4>
                                 <div id="top-ad-title" class="font-bold text-lg text-primary dark:text-white truncate">-</div>
-                                <div id="top-ad-views" class="text-2xl font-black text-accent mt-1">0 <span class="text-xs">views</span></div>
+                                <div id="top-ad-views" class="text-2xl font-black text-accent mt-1">0 <span class="text-xs" data-translate="viewsSmall">views</span></div>
                             </div>
                             <div class="bg-gray-50 dark:bg-gray-800/50 p-6 rounded-xl border dark:border-gray-700">
-                                <h4 class="text-sm font-bold text-gray-500 mb-2 uppercase tracking-tight">Average Views per Ad</h4>
+                                <h4 class="text-sm font-bold text-gray-500 mb-2 uppercase tracking-tight" data-translate="avgViewsPerAd">Average Views per Ad</h4>
                                 <div id="avg-views" class="text-3xl font-black text-primary dark:text-white mt-1">0</div>
-                                <div class="text-[10px] text-gray-400 mt-1 uppercase font-bold tracking-widest">Global average: 12.4</div>
+                                <div class="text-[10px] text-gray-400 mt-1 uppercase font-bold tracking-widest"><span data-translate="globalAverage">Global average</span>: 12.4</div>
                             </div>
                         </div>
 
@@ -464,7 +464,10 @@
             container.innerHTML = '';
 
             if (ads.length === 0) {
-                const msg = isArchive ? "No archived ads." : "You haven't posted any active ads yet.";
+                const lang = localStorage.getItem('lang') || 'en';
+                const msg = isArchive ? 
+                    (translations[lang]?.noArchivedAds || "No archived ads.") : 
+                    (translations[lang]?.noActiveAds || "You haven't posted any active ads yet.");
                 container.innerHTML = `<div class="p-12 text-center text-gray-500">${msg}</div>`;
                 return;
             }
@@ -485,7 +488,7 @@
                                 ${ad.isFeatured ? '<span class="ml-2 bg-accent text-[9px] text-white px-1.5 py-0.5 rounded uppercase">Featured</span>' : ''}
                             </h4>
                             <div class="flex flex-wrap items-center gap-y-1 gap-x-4 text-xs text-gray-500">
-                                <span>${ad.category} • Updated ${new Date(ad.updatedAt).toLocaleDateString()}</span>
+                                <span>${ad.category} • <span data-translate="updatedLabel">Updated</span> ${new Date(ad.updatedAt).toLocaleDateString()}</span>
                                 <span class="flex items-center gap-1"><svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/><path d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"/></svg> ${ad.views || 0}</span>
                             </div>
                             <div class="mt-2 flex items-center gap-2">
@@ -507,13 +510,13 @@
                             ` : ''}
 
                             ${ad.status === 'active' || ad.status === 'pending' ? `
-                                <button onclick="markAsSold(${ad.id})" class="text-[10px] bg-gray-100 dark:bg-gray-700 hover:bg-gray-200 dark:hover:bg-gray-600 text-gray-700 dark:text-gray-300 px-2.5 py-1.5 rounded font-bold transition">Sold</button>
-                                ${!ad.isFeatured ? `<a href="plans.html?adId=${ad.id}" class="text-[10px] bg-accent/10 hover:bg-accent hover:text-white text-accent px-2.5 py-1.5 rounded font-bold transition">Promote</a>` : ''}
+                                <button onclick="markAsSold(${ad.id})" class="text-[10px] bg-gray-100 dark:bg-gray-700 hover:bg-gray-200 dark:hover:bg-gray-600 text-gray-700 dark:text-gray-300 px-2.5 py-1.5 rounded font-bold transition" data-translate="markSold">Sold</button>
+                                ${!ad.isFeatured ? `<a href="plans.html?adId=${ad.id}" class="text-[10px] bg-accent/10 hover:bg-accent hover:text-white text-accent px-2.5 py-1.5 rounded font-bold transition" data-translate="promote">Promote</a>` : ''}
                             ` : ''}
 
                             ${isArchive ? `
-                                <button onclick="relistAd(${ad.id})" class="text-[10px] bg-green-500 text-white px-2.5 py-1.5 rounded font-bold transition hover:bg-green-600">Relist</button>
-                                <button onclick="permanentlyDeleteAd(${ad.id})" class="text-[10px] bg-red-600 text-white px-2.5 py-1.5 rounded font-bold transition hover:bg-red-700 ml-2 rtl:mr-2 rtl:ml-0">Delete</button>
+                                <button onclick="relistAd(${ad.id})" class="text-[10px] bg-green-500 text-white px-2.5 py-1.5 rounded font-bold transition hover:bg-green-600" data-translate="relistBtn">Relist</button>
+                                <button onclick="permanentlyDeleteAd(${ad.id})" class="text-[10px] bg-red-600 text-white px-2.5 py-1.5 rounded font-bold transition hover:bg-red-700 ml-2 rtl:mr-2 rtl:ml-0" data-translate="deleteBtn">Delete</button>
                             ` : ''}
 
                             <div class="flex items-center border-l dark:border-gray-700 ml-2 pl-2 rtl:border-r rtl:border-l-0 rtl:mr-2 rtl:pr-2">
@@ -534,7 +537,9 @@
         }
 
         async function relistAd(id) {
-            const confirmed = await customConfirm('Relist this ad for approval?');
+            const lang = localStorage.getItem('lang') || 'en';
+            const msg = translations[lang]?.confirmRelist || 'Relist this ad for approval?';
+            const confirmed = await customConfirm(msg);
             if (confirmed) {
                 try {
                     await apiClient.updateAdStatus(id, { status: 'pending' });
@@ -546,7 +551,9 @@
         }
 
         async function permanentlyDeleteAd(id) {
-            const confirmed = await customConfirm('Are you absolutely sure you want to permanently delete this ad? This action cannot be undone.');
+            const lang = localStorage.getItem('lang') || 'en';
+            const msg = translations[lang]?.confirmDeleteAdPermanent || 'Are you absolutely sure you want to permanently delete this ad? This action cannot be undone.';
+            const confirmed = await customConfirm(msg);
             if (confirmed) {
                 try {
                     await apiClient.permanentlyDeleteAd(id);
@@ -559,14 +566,17 @@
 
         async function loadPayments() {
             const list = document.getElementById('payments-list');
-            list.innerHTML = '<tr><td colspan="5" class="p-12 text-center text-gray-400"><svg class="animate-spin h-5 w-5 mx-auto mb-2" fill="none" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path></svg> Loading history...</td></tr>';
+            const lang = localStorage.getItem('lang') || 'en';
+            const loadingMsg = translations[lang]?.loadingHistory || 'Loading history...';
+            list.innerHTML = `<tr><td colspan="5" class="p-12 text-center text-gray-400"><svg class="animate-spin h-5 w-5 mx-auto mb-2" fill="none" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path></svg> ${loadingMsg}</td></tr>`;
 
             try {
                 const res = await apiClient.getMyPayments();
                 const payments = res.data;
 
                 if (payments.length === 0) {
-                    list.innerHTML = '<tr><td colspan="5" class="p-12 text-center text-gray-500">No payment records found.</td></tr>';
+                    const noPaymentsMsg = translations[lang]?.noPayments || "No payment records found.";
+                    list.innerHTML = `<tr><td colspan="5" class="p-12 text-center text-gray-500">${noPaymentsMsg}</td></tr>`;
                     return;
                 }
 
@@ -593,7 +603,7 @@
                                 </span>
                             </td>
                             <td class="px-6 py-4">
-                                <button class="text-accent hover:underline font-bold text-xs">Receipt</button>
+                                <button class="text-accent hover:underline font-bold text-xs" data-translate="receipt">Receipt</button>
                             </td>
                         </tr>
                     `;
@@ -605,7 +615,9 @@
         }
 
         async function deleteAd(id) {
-            const confirmed = await customConfirm('Are you sure you want to delete this ad?');
+            const lang = localStorage.getItem('lang') || 'en';
+            const msg = translations[lang]?.confirmDeleteAd || 'Are you sure you want to delete this ad?';
+            const confirmed = await customConfirm(msg);
             if (confirmed) {
                 try {
                     await apiClient.deleteAd(id);

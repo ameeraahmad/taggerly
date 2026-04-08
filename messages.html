@@ -270,6 +270,7 @@
                             <p class="text-gray-400 text-sm" data-translate="startChatting">Start chatting with sellers to see your messages here.</p>
                         </div>
                     `;
+                    if (window.translatePage) window.translatePage();
                     return;
                 }
 
@@ -312,7 +313,7 @@
                     list.insertAdjacentHTML('beforeend', item);
                 });
 
-                // Translate the newly added content
+                // Translate the newly injected HTML
                 if (window.translatePage) window.translatePage();
             } catch (err) {
                 console.error('Error loading convos:', err);
@@ -386,15 +387,16 @@
                     const statusLabel = document.getElementById('user-status-label');
                     statusDot.setAttribute('data-user-status-id', otherUser.id);
 
+                    const lang = window.currentLang || 'en';
                     if (otherUser.isOnline) {
                         statusDot.className = 'w-2.5 h-2.5 rounded-full bg-green-500';
-                        statusLabel.textContent = 'Online';
                         statusLabel.setAttribute('data-translate', 'online');
+                        statusLabel.textContent = (window.translations?.[lang]?.online) || (translations?.[lang]?.online) || 'Online';
                     } else {
                         statusDot.className = 'w-2.5 h-2.5 rounded-full bg-gray-400';
                         const lastSeen = new Date(otherUser.lastActive);
-                        const statusText = `Last seen ${lastSeen.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}`;
-                        statusLabel.textContent = statusText;
+                        const offlineLabel = (window.translations?.[lang]?.offline) || (translations?.[lang]?.offline) || 'Offline';
+                        statusLabel.textContent = `${offlineLabel} - ${lastSeen.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}`;
                         statusLabel.removeAttribute('data-translate');
                     }
                 }

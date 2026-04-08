@@ -56,7 +56,7 @@
         <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
 
             <!-- Motors -->
-            <div
+            <div id="motors-section"
                 class="bg-white dark:bg-gray-800 rounded-xl shadow-md overflow-hidden hover:shadow-lg transition-all duration-300">
                 <div
                     class="bg-blue-50 dark:bg-blue-900/20 p-4 border-b border-blue-100 dark:border-blue-800 flex items-center">
@@ -71,22 +71,27 @@
                 </div>
                 <div class="p-4">
                     <ul class="space-y-2 text-gray-600 dark:text-gray-300">
-                        <li><a href="search.html" class="hover:text-accent transition" data-translate="usedCars">Used
+                        <li><a href="javascript:void(0)" onclick="browseCategory('Motors', 'Used Cars')"
+                                class="hover:text-accent transition" data-translate="usedCars">Used
                                 Cars for Sale</a></li>
-                        <li><a href="search.html" class="hover:text-accent transition"
-                                data-translate="motorcycles">Motorcycles - Scooters</a></li>
-                        <li><a href="search.html" class="hover:text-accent transition"
-                                data-translate="heavyVehicles">Heavy Vehicles</a></li>
-                        <li><a href="search.html" class="hover:text-accent transition" data-translate="boats">Boats</a>
+                        <li><a href="javascript:void(0)" onclick="browseCategory('Motors', 'Motorcycles')"
+                                class="hover:text-accent transition" data-translate="motorcycles">Motorcycles -
+                                Scooters</a></li>
+                        <li><a href="javascript:void(0)" onclick="browseCategory('Motors', 'Heavy Vehicles')"
+                                class="hover:text-accent transition" data-translate="heavyVehicles">Heavy Vehicles</a>
                         </li>
-                        <li><a href="search.html" class="hover:text-accent transition"
-                                data-translate="autoAccessories">Auto Accessories & Parts</a></li>
+                        <li><a href="javascript:void(0)" onclick="browseCategory('Motors', 'Boats')"
+                                class="hover:text-accent transition" data-translate="boats">Boats</a>
+                        </li>
+                        <li><a href="javascript:void(0)" onclick="browseCategory('Motors', 'Auto Accessories')"
+                                class="hover:text-accent transition" data-translate="autoAccessories">Auto Accessories &
+                                Parts</a></li>
                     </ul>
                 </div>
             </div>
 
             <!-- Property for Sale -->
-            <div class="bg-white dark:bg-gray-800 rounded-xl shadow-md overflow-hidden hover:shadow-lg transition">
+            <div id="properties-section" class="bg-white dark:bg-gray-800 rounded-xl shadow-md overflow-hidden hover:shadow-lg transition">
                 <div
                     class="bg-green-50 dark:bg-green-900/20 p-4 border-b border-green-100 dark:border-green-800 flex items-center">
                     <div
@@ -102,20 +107,24 @@
                 </div>
                 <div class="p-4">
                     <ul class="space-y-2 text-gray-600 dark:text-gray-300">
-                        <li><a href="search.html" class="hover:text-accent transition"
-                                data-translate="residentialSale">Residential for Sale</a></li>
-                        <li><a href="search.html" class="hover:text-accent transition"
-                                data-translate="commercialSale">Commercial for Sale</a></li>
-                        <li><a href="search.html" class="hover:text-accent transition"
-                                data-translate="multipleUnits">Multiple Units for Sale</a></li>
-                        <li><a href="search.html" class="hover:text-accent transition" data-translate="landSale">Land
+                        <li><a href="javascript:void(0)" onclick="browseCategory('Property', 'Residential for Sale')"
+                                class="hover:text-accent transition" data-translate="residentialSale">Residential for
+                                Sale</a></li>
+                        <li><a href="javascript:void(0)" onclick="browseCategory('Property', 'Commercial for Sale')"
+                                class="hover:text-accent transition" data-translate="commercialSale">Commercial for
+                                Sale</a></li>
+                        <li><a href="javascript:void(0)" onclick="browseCategory('Property', 'Multiple Units')"
+                                class="hover:text-accent transition" data-translate="multipleUnits">Multiple Units for
+                                Sale</a></li>
+                        <li><a href="javascript:void(0)" onclick="browseCategory('Property', 'Land for Sale')"
+                                class="hover:text-accent transition" data-translate="landSale">Land
                                 for Sale</a></li>
                     </ul>
                 </div>
             </div>
 
             <!-- Classifieds -->
-            <div class="bg-white dark:bg-gray-800 rounded-xl shadow-md overflow-hidden hover:shadow-lg transition">
+            <div id="classifieds-section" class="bg-white dark:bg-gray-800 rounded-xl shadow-md overflow-hidden hover:shadow-lg transition">
                 <div
                     class="bg-yellow-50 dark:bg-yellow-900/20 p-4 border-b border-yellow-100 dark:border-yellow-800 flex items-center">
                     <div
@@ -131,22 +140,26 @@
                 </div>
                 <div class="p-4">
                     <ul class="space-y-2 text-gray-600 dark:text-gray-300">
-                        <li><a href="search.html" class="hover:text-accent transition"
-                                data-translate="electronics">Electronics</a></li>
-                        <li><a href="search.html" class="hover:text-accent transition"
-                                data-translate="computers">Computers & Networking</a></li>
-                        <li><a href="search.html" class="hover:text-accent transition"
-                                data-translate="clothing">Clothing & Accessories</a></li>
-                        <li><a href="search.html" class="hover:text-accent transition" data-translate="cameras">Cameras
+                        <li><a href="javascript:void(0)" onclick="browseCategory('Classifieds', 'Electronics')"
+                                class="hover:text-accent transition" data-translate="electronics">Electronics</a></li>
+                        <li><a href="javascript:void(0)" onclick="browseCategory('Classifieds', 'Computers')"
+                                class="hover:text-accent transition" data-translate="computers">Computers &
+                                Networking</a></li>
+                        <li><a href="javascript:void(0)" onclick="browseCategory('Classifieds', 'Clothing')"
+                                class="hover:text-accent transition" data-translate="clothing">Clothing &
+                                Accessories</a></li>
+                        <li><a href="javascript:void(0)" onclick="browseCategory('Classifieds', 'Cameras')"
+                                class="hover:text-accent transition" data-translate="cameras">Cameras
                                 & Imaging</a></li>
-                        <li><a href="search.html" class="hover:text-accent transition" data-translate="jewelry">Jewelry
+                        <li><a href="javascript:void(0)" onclick="browseCategory('Classifieds', 'Jewelry')"
+                                class="hover:text-accent transition" data-translate="jewelry">Jewelry
                                 & Watches</a></li>
                     </ul>
                 </div>
             </div>
 
             <!-- Jobs -->
-            <div class="bg-white dark:bg-gray-800 rounded-xl shadow-md overflow-hidden hover:shadow-lg transition">
+            <div id="jobs-section" class="bg-white dark:bg-gray-800 rounded-xl shadow-md overflow-hidden hover:shadow-lg transition">
                 <div
                     class="bg-purple-50 dark:bg-purple-900/20 p-4 border-b border-purple-100 dark:border-purple-800 flex items-center">
                     <div
@@ -161,16 +174,49 @@
                 </div>
                 <div class="p-4">
                     <ul class="space-y-2 text-gray-600 dark:text-gray-300">
-                        <li><a href="search.html" class="hover:text-accent transition"
-                                data-translate="accounting">Accounting</a></li>
-                        <li><a href="search.html" class="hover:text-accent transition"
-                                data-translate="engineering">Engineering</a></li>
-                        <li><a href="search.html" class="hover:text-accent transition" data-translate="sales">Sales</a>
+                        <li><a href="javascript:void(0)" onclick="browseCategory('Jobs', 'Accounting')"
+                                class="hover:text-accent transition" data-translate="accounting">Accounting</a></li>
+                        <li><a href="javascript:void(0)" onclick="browseCategory('Jobs', 'Engineering')"
+                                class="hover:text-accent transition" data-translate="engineering">Engineering</a></li>
+                        <li><a href="javascript:void(0)" onclick="browseCategory('Jobs', 'Sales')"
+                                class="hover:text-accent transition" data-translate="sales">Sales</a>
                         </li>
-                        <li><a href="search.html" class="hover:text-accent transition" data-translate="media">Media</a>
+                        <li><a href="javascript:void(0)" onclick="browseCategory('Jobs', 'Media')"
+                                class="hover:text-accent transition" data-translate="media">Media</a>
                         </li>
-                        <li><a href="search.html" class="hover:text-accent transition"
-                                data-translate="medical">Medical</a></li>
+                        <li><a href="javascript:void(0)" onclick="browseCategory('Jobs', 'Medical')"
+                                class="hover:text-accent transition" data-translate="medical">Medical</a></li>
+                    </ul>
+                </div>
+            </div>
+ 
+            <!-- Services -->
+            <div id="services-section" class="bg-white dark:bg-gray-800 rounded-xl shadow-md overflow-hidden hover:shadow-lg transition">
+                <div
+                    class="bg-pink-50 dark:bg-pink-900/20 p-4 border-b border-pink-100 dark:border-pink-800 flex items-center">
+                    <div
+                        class="p-2 bg-pink-100 dark:bg-pink-900/40 rounded-full mr-3 text-pink-700 dark:text-pink-400 rtl:ml-3 rtl:mr-0">
+                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z">
+                            </path>
+                        </svg>
+                    </div>
+                    <h2 class="text-xl font-bold text-gray-900 dark:text-white" data-translate="servicesTitle">Services</h2>
+                </div>
+                <div class="p-4">
+                    <ul class="space-y-2 text-gray-600 dark:text-gray-300">
+                        <li><a href="javascript:void(0)" onclick="browseCategory('Services', 'Cleaning')"
+                                class="hover:text-accent transition" data-translate="cleaning">Cleaning Services</a>
+                        </li>
+                        <li><a href="javascript:void(0)" onclick="browseCategory('Services', 'Maintenance')"
+                                class="hover:text-accent transition" data-translate="maintenance">Maintenance &
+                                Repair</a></li>
+                        <li><a href="javascript:void(0)" onclick="browseCategory('Services', 'Moving')"
+                                class="hover:text-accent transition" data-translate="moving">Moving & Packing</a></li>
+                        <li><a href="javascript:void(0)" onclick="browseCategory('Services', 'Education')"
+                                class="hover:text-accent transition" data-translate="education">Education & Tutoring</a>
+                        </li>
                     </ul>
                 </div>
             </div>
@@ -188,7 +234,7 @@
                 <h2 class="text-3xl font-bold text-gray-900 dark:text-white" data-translate="featuredCategories">
                     Featured
                     Categories</h2>
-                <a href="search.html"
+                <a href="javascript:void(0)" onclick="browseCategory('Motors')"
                     class="text-primary dark:text-blue-400 hover:text-accent font-medium flex items-center group">
                     <span data-translate="viewAll">View All</span>
                     <span

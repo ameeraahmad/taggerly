@@ -76,35 +76,42 @@
                                     class="w-4 h-4 text-accent border-gray-300 focus:ring-accent">
                                 <span
                                     class="ml-2 text-sm text-gray-600 dark:text-gray-300 group-hover:text-accent transition"
-                                    data-translate="motors">Motors</span>
+                                    data-translate="motorsTitle">Motors</span>
                             </label>
                             <label class="flex items-center group cursor-pointer">
                                 <input type="radio" name="category" value="Property"
                                     class="w-4 h-4 text-accent border-gray-300 focus:ring-accent">
                                 <span
                                     class="ml-2 text-sm text-gray-600 dark:text-gray-300 group-hover:text-accent transition"
-                                    data-translate="property">Property</span>
+                                    data-translate="propertyTitle">Property</span>
                             </label>
                             <label class="flex items-center group cursor-pointer">
                                 <input type="radio" name="category" value="Electronics"
                                     class="w-4 h-4 text-accent border-gray-300 focus:ring-accent">
                                 <span
                                     class="ml-2 text-sm text-gray-600 dark:text-gray-300 group-hover:text-accent transition"
-                                    data-translate="electronics">Electronics</span>
+                                    data-translate="electronicsCategoryTitle">Electronics</span>
                             </label>
                             <label class="flex items-center group cursor-pointer">
-                                <input type="radio" name="category" value="Mobiles"
+                                <input type="radio" name="category" value="Classifieds"
                                     class="w-4 h-4 text-accent border-gray-300 focus:ring-accent">
                                 <span
                                     class="ml-2 text-sm text-gray-600 dark:text-gray-300 group-hover:text-accent transition"
-                                    data-translate="mobiles">Mobiles</span>
+                                    data-translate="classifiedsTitle">Classifieds</span>
                             </label>
                             <label class="flex items-center group cursor-pointer">
-                                <input type="radio" name="category" value="Furniture"
+                                <input type="radio" name="category" value="Jobs"
                                     class="w-4 h-4 text-accent border-gray-300 focus:ring-accent">
                                 <span
                                     class="ml-2 text-sm text-gray-600 dark:text-gray-300 group-hover:text-accent transition"
-                                    data-translate="furniture">Furniture</span>
+                                    data-translate="jobsTitle">Jobs</span>
+                            </label>
+                            <label class="flex items-center group cursor-pointer">
+                                <input type="radio" name="category" value="Services"
+                                    class="w-4 h-4 text-accent border-gray-300 focus:ring-accent">
+                                <span
+                                    class="ml-2 text-sm text-gray-600 dark:text-gray-300 group-hover:text-accent transition"
+                                    data-translate="servicesTitle">Services</span>
                             </label>
                         </div>
                     </div>
@@ -137,16 +144,17 @@
 
                     <!-- Advanced Filters (Conditional) -->
                     <div id="advanced-filters" class="border-t pt-4 mt-4 hidden">
-                        <h3 class="text-xs font-bold text-accent mb-3 uppercase tracking-wider">Advanced Filters</h3>
+                        <h3 class="text-xs font-bold text-accent mb-3 uppercase tracking-wider" data-translate="advancedFilters">Advanced Filters</h3>
 
                         <!-- Classifieds (Electronics/Mobiles/etc) -->
                         <div id="filter-classifieds-group" class="space-y-4 mb-6 hidden">
                             <div>
                                 <label class="text-xs text-gray-400 font-bold block mb-1">CONDITION</label>
                                 <select id="filter-condition" class="w-full border border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-white rounded px-2 py-1 text-sm">
-                                    <option value="">Any</option>
-                                    <option value="New">New</option>
-                                    <option value="Used">Used</option>
+                                    <option value="" data-translate="any">Any</option>
+                                    <option value="New" data-translate="new">New</option>
+                                    <option value="Used" data-translate="used">Used</option>
+                                    <option value="Certified Pre-owned" data-translate="certifiedpreowned">Certified Pre-owned</option>
                                 </select>
                             </div>
                         </div>
@@ -154,17 +162,17 @@
                         <!-- Motors -->
                         <div id="filter-motors-group" class="space-y-4 mb-6 hidden">
                             <div>
-                                <label class="text-xs text-gray-400 font-bold block mb-1">YEAR</label>
+                                <label class="text-xs text-gray-400 font-bold block mb-1" data-translate="year">YEAR</label>
                                 <div class="grid grid-cols-2 gap-2">
-                                    <input type="number" id="minYear" placeholder="Min" class="w-full border border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-white rounded px-2 py-1 text-sm">
-                                    <input type="number" id="maxYear" placeholder="Max" class="w-full border border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-white rounded px-2 py-1 text-sm">
+                                    <input type="number" id="minYear" data-translate="min" placeholder="Min" class="w-full border border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-white rounded px-2 py-1 text-sm">
+                                    <input type="number" id="maxYear" data-translate="max" placeholder="Max" class="w-full border border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-white rounded px-2 py-1 text-sm">
                                 </div>
                             </div>
                             <div>
-                                <label class="text-xs text-gray-400 font-bold block mb-1">KILOMETERS</label>
+                                <label class="text-xs text-gray-400 font-bold block mb-1" data-translate="kiloMetrs">KILOMETERS</label>
                                 <div class="grid grid-cols-2 gap-2">
-                                    <input type="number" id="minKm" placeholder="Min" class="w-full border border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-white rounded px-2 py-1 text-sm">
-                                    <input type="number" id="maxKm" placeholder="Max" class="w-full border border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-white rounded px-2 py-1 text-sm">
+                                    <input type="number" id="minKm" data-translate="min" placeholder="Min" class="w-full border border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-white rounded px-2 py-1 text-sm">
+                                    <input type="number" id="maxKm" data-translate="max" placeholder="Max" class="w-full border border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-white rounded px-2 py-1 text-sm">
                                 </div>
                             </div>
                         </div>
@@ -172,18 +180,18 @@
                         <!-- Property -->
                         <div id="filter-property-group" class="space-y-4 mb-6 hidden">
                             <div>
-                                <label class="text-xs text-gray-400 font-bold block mb-1">PROPERTY TYPE</label>
+                                <label class="text-xs text-gray-400 font-bold block mb-1" data-translate="type">PROPERTY TYPE</label>
                                 <select id="filter-propertyType" class="w-full border border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-white rounded px-2 py-1 text-sm">
-                                    <option value="">Any</option>
-                                    <option value="Apartment">Apartment</option>
-                                    <option value="Villa">Villa</option>
+                                    <option value="" data-translate="any">Any</option>
+                                    <option value="Apartment" data-translate="apartment">Apartment</option>
+                                    <option value="Villa" data-translate="villa">Villa</option>
                                     <option value="Office">Office</option>
                                 </select>
                             </div>
                             <div>
-                                <label class="text-xs text-gray-400 font-bold block mb-1">BEDROOMS</label>
+                                <label class="text-xs text-gray-400 font-bold block mb-1" data-translate="bedRooms">BEDROOMS</label>
                                 <select id="filter-bedrooms" class="w-full border border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-white rounded px-2 py-1 text-sm">
-                                    <option value="">Any</option>
+                                    <option value="" data-translate="any">Any</option>
                                     <option value="1">1</option>
                                     <option value="2">2</option>
                                     <option value="3">3</option>
@@ -467,11 +475,14 @@
                 }
 
                 if (results.length === 0) {
+                    const lang = window.currentLang || 'en';
+                    const noResultsText = (window.translations?.[lang]?.noResultsFound) || 'No results found';
+                    const tryAdjustText = (window.translations?.[lang]?.tryAdjustingYourFiltersOrSearchTerms) || 'Try adjusting your filters or search terms.';
                     container.innerHTML = `
                         <div class="text-center py-20 bg-white dark:bg-gray-800 rounded-xl border dark:border-gray-700">
                             <svg class="mx-auto h-12 w-12 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.172 9.172a4 4 0 015.656 0M9 10h.01M15 10h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
-                            <h3 class="mt-2 text-sm font-medium text-gray-900 dark:text-white">No results found</h3>
-                            <p class="mt-1 text-sm text-gray-500">Try adjusting your filters or search terms.</p>
+                            <h3 class="mt-2 text-sm font-medium text-gray-900 dark:text-white" data-translate="noResultsFound">${noResultsText}</h3>
+                            <p class="mt-1 text-sm text-gray-500" data-translate="tryAdjustingYourFiltersOrSearchTerms">${tryAdjustText}</p>
                         </div>
                     `;
                     document.querySelector('nav[aria-label="Pagination"]')?.parentElement?.classList.add('hidden');
@@ -606,6 +617,10 @@
                 if (radio) radio.checked = true;
             }
 
+            if (urlParams.get('subcategory')) {
+                initialParams.subCategory = urlParams.get('subcategory');
+            }
+
             window.currentSearchParams = initialParams;
 
             const currentCountry = window.selectedCountry || localStorage.getItem('selectedCountry') || 'uae';
@@ -638,7 +653,7 @@
                     motors.classList.add('hidden');
                     property.classList.remove('hidden');
                     classifieds.classList.add('hidden');
-                } else if (['Electronics', 'Mobiles', 'Furniture', 'Classifieds'].includes(category)) {
+                } else if (['Electronics', 'Classifieds'].includes(category)) {
                     advanced.classList.remove('hidden');
                     motors.classList.add('hidden');
                     property.classList.add('hidden');
@@ -674,6 +689,8 @@
                 const propertyType = document.getElementById('filter-propertyType').value;
                 const condition = document.getElementById('filter-condition').value;
 
+                const previousCategory = window.currentSearchParams?.category || '';
+                
                 const params = {
                     ...window.currentSearchParams, // Preserve lat/lng/loc if they were already there
                     country: window.selectedCountry || localStorage.getItem('country') || 'uae',
@@ -687,6 +704,12 @@
                     bedrooms, minArea, maxArea,
                     propertyType, condition
                 };
+
+                // IMPORTANT: Reset subcategory if category was explicitly changed via the left sidebar
+                if (previousCategory && previousCategory !== category) {
+                    delete params.subCategory;
+                }
+
 
                 // IMPORTANT: If user explicitly selects a different city from the dropdown,
                 // we should clear the manual GPS search to prevent conflicts.

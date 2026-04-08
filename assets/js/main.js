@@ -3,6 +3,70 @@ const translations = {
     en: enTranslations,
     ar: arTranslations
 };
+// Make translations globally accessible from any HTML inline script or other JS file
+window.translations = translations;
+
+// ─── Dev Hot Reload (localhost only) ───
+// Listens for translation file changes from the server and auto-reloads the page.
+(function () {
+    const isLocal = ['localhost', '127.0.0.1'].includes(window.location.hostname);
+    if (!isLocal) return;
+    try {
+        const evtSource = new EventSource('/dev-reload');
+        evtSource.onmessage = (e) => {
+            if (e.data === 'reload') {
+                console.log('🔄 Translation file changed — reloading...');
+                window.location.reload();
+            }
+        };
+        evtSource.onerror = () => evtSource.close(); // silently close on error
+    } catch (err) { /* SSE not supported */ }
+})();
+
+// ─── Global Translation Helpers (defined early so loadGlobalHeader can use them) ───
+
+// Re-applies translations to all [data-translate] elements in the current DOM.
+// Call this after injecting dynamic HTML to translate newly added elements.
+window.translatePage = function () {
+    const lang = window.currentLang || localStorage.getItem('lang') || 'en';
+    if (!translations[lang]) return;
+    document.querySelectorAll('[data-translate]').forEach(el => {
+        const key = el.getAttribute('data-translate');
+        const value = translations[lang][key];
+        if (!value) return;
+        if ((el.tagName === 'INPUT' || el.tagName === 'TEXTAREA') && el.getAttribute('placeholder')) {
+            el.setAttribute('placeholder', value);
+        } else {
+            if (el.id === 'user-btn-text' && localStorage.getItem('token')) {
+                const user = JSON.parse(localStorage.getItem('user'));
+                el.textContent = user ? user.name : value;
+            } else {
+                el.innerHTML = value;
+            }
+        }
+    });
+};
+
+// Applies a language: sets dir/lang attributes, updates the toggle button, saves preference, translates the page.
+window.updateLanguage = function (lang) {
+    const htmlEl = document.documentElement;
+    const langBtn = document.getElementById('lang-toggle');
+    if (lang === 'ar') {
+        htmlEl.setAttribute('dir', 'rtl');
+        htmlEl.setAttribute('lang', 'ar');
+        if (langBtn) langBtn.textContent = 'English';
+    } else {
+        htmlEl.setAttribute('dir', 'ltr');
+        htmlEl.setAttribute('lang', 'en');
+        if (langBtn) langBtn.textContent = 'عربي';
+    }
+    localStorage.setItem('lang', lang);
+    window.currentLang = lang;
+    window.translatePage();
+    if (window.updateDynamicContent) {
+        window.updateDynamicContent(window.selectedCountry || localStorage.getItem('selectedCountry') || 'uae', lang);
+    }
+};
 
 // Global helper to format ad locations consistently across the site
 window.formatAdLocation = function (city, country, cityClass = 'city-label') {
@@ -25,64 +89,64 @@ window.formatAdLocation = function (city, country, cityClass = 'city-label') {
 };
 
 // Global helper to get current currency symbol
-window.getCurrencySymbol = function() {
+window.getCurrencySymbol = function () {
     const country = localStorage.getItem('selectedCountry') || 'uae';
     const lang = window.currentLang || 'en';
     const currencyKey = `currency_${country}`;
     return (translations[lang] && translations[lang][currencyKey]) || 'AED';
 };
 
-window.updateCurrencyLabels = function() {
+window.updateCurrencyLabels = function () {
     const symbol = window.getCurrencySymbol();
     document.querySelectorAll('.currency-label').forEach(el => el.textContent = symbol);
 };
 
 // --- Custom Global Modals (Alert/Confirm) ---
-window.customConfirm = function(message) {
+window.customConfirm = function (message) {
     return new Promise((resolve) => {
         const overlay = document.createElement('div');
         overlay.className = 'fixed inset-0 bg-black/60 z-[9999] flex items-center justify-center opacity-0 transition-opacity duration-300 backdrop-blur-sm';
-        
+
         const modal = document.createElement('div');
         modal.className = 'bg-white dark:bg-gray-800 rounded-2xl shadow-2xl p-6 max-w-sm w-full mx-4 transform scale-95 transition-transform duration-300 flex flex-col items-center text-center border dark:border-gray-700';
-        
+
         const icon = document.createElement('div');
         icon.className = 'w-16 h-16 bg-orange-100 dark:bg-orange-900/30 rounded-full flex items-center justify-center mb-4 text-accent shadow-inner';
         icon.innerHTML = '<svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8.228 9c.549-1.165 2.03-2 3.772-2 2.21 0 4 1.343 4 3 0 1.4-1.278 2.575-3.006 2.907-.542.104-.994.54-.994 1.093m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>';
-        
+
         const text = document.createElement('p');
         text.className = 'text-gray-800 dark:text-gray-200 font-bold mb-6 leading-relaxed';
         text.textContent = message;
-        
+
         const btnContainer = document.createElement('div');
         btnContainer.className = 'flex justify-center w-full gap-3';
-        
+
         const lang = window.currentLang || 'en';
         const okText = window.translations?.[lang]?.confirm || 'Confirm';
         const cancelText = window.translations?.[lang]?.cancel || 'Cancel';
-        
+
         const cancelBtn = document.createElement('button');
         cancelBtn.className = 'flex-1 py-2.5 px-4 bg-gray-100 hover:bg-gray-200 dark:bg-gray-700 dark:hover:bg-gray-600 text-gray-800 dark:text-gray-200 rounded-xl font-bold transition';
         cancelBtn.textContent = cancelText;
-        
+
         const okBtn = document.createElement('button');
         okBtn.className = 'flex-1 py-2.5 px-4 bg-accent hover:bg-orange-600 text-white rounded-xl font-bold transition shadow-lg shadow-orange-500/30';
         okBtn.textContent = okText;
-        
+
         btnContainer.appendChild(cancelBtn);
         btnContainer.appendChild(okBtn);
-        
+
         modal.appendChild(icon);
         modal.appendChild(text);
         modal.appendChild(btnContainer);
         overlay.appendChild(modal);
         document.body.appendChild(overlay);
-        
+
         requestAnimationFrame(() => {
             overlay.classList.remove('opacity-0');
             modal.classList.remove('scale-95');
         });
-        
+
         const close = (result) => {
             overlay.classList.add('opacity-0');
             modal.classList.add('scale-95');
@@ -91,46 +155,46 @@ window.customConfirm = function(message) {
                 resolve(result);
             }, 300);
         };
-        
+
         cancelBtn.onclick = () => close(false);
         okBtn.onclick = () => close(true);
     });
 };
 
-window.customAlert = function(message) {
+window.customAlert = function (message) {
     return new Promise((resolve) => {
         const overlay = document.createElement('div');
         overlay.className = 'fixed inset-0 bg-black/60 z-[9999] flex items-center justify-center opacity-0 transition-opacity duration-300 backdrop-blur-sm';
-        
+
         const modal = document.createElement('div');
         modal.className = 'bg-white dark:bg-gray-800 rounded-2xl shadow-2xl p-6 max-w-sm w-full mx-4 transform scale-95 transition-transform duration-300 flex flex-col items-center text-center border dark:border-gray-700';
-        
+
         const icon = document.createElement('div');
         icon.className = 'w-16 h-16 bg-blue-100 dark:bg-blue-900/30 rounded-full flex items-center justify-center mb-4 text-blue-500 shadow-inner';
         icon.innerHTML = '<svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>';
-        
+
         const text = document.createElement('p');
         text.className = 'text-gray-800 dark:text-gray-200 font-bold mb-6 break-words w-full leading-relaxed';
         text.textContent = message;
-        
+
         const lang = window.currentLang || 'en';
         const okText = window.translations?.[lang]?.done || 'OK';
-        
+
         const okBtn = document.createElement('button');
         okBtn.className = 'w-full py-2.5 px-4 bg-primary hover:bg-blue-900 text-white rounded-xl font-bold transition shadow-lg shadow-blue-900/20';
         okBtn.textContent = okText;
-        
+
         modal.appendChild(icon);
         modal.appendChild(text);
         modal.appendChild(okBtn);
         overlay.appendChild(modal);
         document.body.appendChild(overlay);
-        
+
         requestAnimationFrame(() => {
             overlay.classList.remove('opacity-0');
             modal.classList.remove('scale-95');
         });
-        
+
         const close = () => {
             overlay.classList.add('opacity-0');
             modal.classList.add('scale-95');
@@ -139,7 +203,7 @@ window.customAlert = function(message) {
                 resolve();
             }, 300);
         };
-        
+
         okBtn.onclick = close;
     });
 };
@@ -152,7 +216,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     // 1. First Load Global Header if placeholder exists
     await loadGlobalHeader();
     await loadUserFavorites();
-    
+
     // 2. Update all currency labels for the current country
     if (window.updateCurrencyLabels) window.updateCurrencyLabels();
     else if (typeof getCurrencySymbol === 'function') {
@@ -292,13 +356,13 @@ document.addEventListener('DOMContentLoaded', async () => {
 
         const toast = document.createElement('div');
         toast.className = 'notification-toast fixed bottom-4 right-4 bg-white dark:bg-gray-800 border dark:border-gray-700 text-gray-900 dark:text-gray-100 p-4 rounded-2xl shadow-2xl z-[100] flex items-center gap-4 animate-slide-up max-w-sm cursor-pointer border-l-4 border-l-accent rtl:border-l-0 rtl:border-r-4 rtl:border-r-accent';
-        
+
         const lang = window.currentLang || 'en';
         let title = data.title || (data.type === 'message' ? (translations[lang]?.newMessage || 'New Message') : (translations[lang]?.notification || 'Notification'));
         let message = data.message || '';
         let link = data.link || (data.conversationId ? `messages.html?conversationId=${data.conversationId}` : null);
-        
-        let icon = data.type === 'message' ? 
+
+        let icon = data.type === 'message' ?
             `<svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 10h.01M12 10h.01M16 10h.01M9 16H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-5l-5 5v-5z"></path></svg>` :
             `<svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9"></path></svg>`;
 
@@ -532,7 +596,7 @@ document.addEventListener('DOMContentLoaded', async () => {
                     const detectedCountry = countryMap[countryCode] || 'uae';
                     const flags = { 'uae': '🇦🇪', 'egypt': '🇪🇬', 'ksa': '🇸🇦', 'qatar': '🇶🇦' };
                     const names = { 'uae': (window.currentLang === 'ar' ? 'الإمارات' : 'UAE'), 'egypt': (window.currentLang === 'ar' ? 'مصر' : 'Egypt'), 'ksa': (window.currentLang === 'ar' ? 'السعودية' : 'KSA'), 'qatar': (window.currentLang === 'ar' ? 'قطر' : 'Qatar') };
-                    
+
                     window.setCountry(detectedCountry, flags[detectedCountry], names[detectedCountry]);
                 } catch (err) {
                     // Fallback to UAE if geo-detection fails
@@ -569,60 +633,18 @@ document.addEventListener('DOMContentLoaded', async () => {
     };
 
     // --- Language Switching Logic ---
+    // Set up the toggle button click listener (updateLanguage itself is defined globally at top of file)
     const langBtn = document.getElementById('lang-toggle');
-
-    window.updateLanguage = function (lang) {
-        const htmlToUpdate = document.documentElement;
-        // Update direction and font
-        if (lang === 'ar') {
-            htmlToUpdate.setAttribute('dir', 'rtl');
-            htmlToUpdate.setAttribute('lang', 'ar');
-            if (langBtn) langBtn.textContent = 'English';
-        } else {
-            htmlToUpdate.setAttribute('dir', 'ltr');
-            htmlToUpdate.setAttribute('lang', 'en');
-            if (langBtn) langBtn.textContent = 'عربي';
-        }
-
-        // Save preference
-        localStorage.setItem('lang', lang);
-        window.currentLang = lang;
-
-        // Update text content for elements with data-translate key
-        const elementsToTranslate = document.querySelectorAll('[data-translate]');
-        elementsToTranslate.forEach(el => {
-            const key = el.getAttribute('data-translate');
-            if (translations[lang][key]) {
-                if ((el.tagName === 'INPUT' || el.tagName === 'TEXTAREA') && el.getAttribute('placeholder')) {
-                    el.setAttribute('placeholder', translations[lang][key]);
-                } else {
-                    // Specific logic for user button text
-                    if (el.id === 'user-btn-text' && localStorage.getItem('token')) {
-                        const user = JSON.parse(localStorage.getItem('user'));
-                        el.textContent = user ? user.name : translations[lang][key];
-                    } else {
-                        el.innerHTML = translations[lang][key];
-                    }
-                }
-            }
-        });
-
-        // Update dynamic content (currencies, locations) when language changes
-        if (window.updateDynamicContent) {
-            window.updateDynamicContent(window.selectedCountry, window.currentLang);
-        }
-    }
-
     if (langBtn) {
         langBtn.addEventListener('click', (e) => {
             e.preventDefault();
             const newLang = window.currentLang === 'en' ? 'ar' : 'en';
             window.updateLanguage(newLang);
         });
-
-        // Initialize on load
-        window.updateLanguage(window.currentLang);
     }
+
+    // Apply saved language on every page load
+    window.updateLanguage(window.currentLang);
 
     // --- Dark Mode Logic ---
     window.initTheme = function () {
@@ -1194,9 +1216,14 @@ document.addEventListener('DOMContentLoaded', async () => {
                         ads.forEach(ad => {
                             slider.insertAdjacentHTML('beforeend', createAdCard(ad, true));
                         });
-                    } else if (country) {
-                        // Optional: Clear if no ads for this country
-                        slider.innerHTML = `<div class="p-10 text-center w-full text-gray-500">No ads in ${config.category} for this region.</div>`;
+                    } else {
+                        // Clear placeholders if no ads found, showing a message only if country was selected
+                        if (country) {
+                            slider.innerHTML = `<div class="p-10 text-center w-full text-gray-500">${translations[window.currentLang || 'en'].noAdsInCategory || 'No ads in this category for this region.'}</div>`;
+                        } else {
+                            slider.innerHTML = ''; // Just clear if no country yet to avoid empty white space
+                        }
+                        slider.setAttribute('data-loaded', 'true');
                     }
                 } catch (err) {
                     console.warn(`Failed to load slider for ${config.category}:`, err);
@@ -1578,6 +1605,19 @@ document.addEventListener('DOMContentLoaded', async () => {
     }
 });
 
+// --- Global Navigation Helper for Categories ---
+window.browseCategory = function (category, subcategory) {
+    // Navigate to search page with filters to "enter" the section
+    const params = new URLSearchParams();
+    if (category) params.set('category', category);
+    if (subcategory) params.set('subcategory', subcategory);
+
+    window.location.href = `search.html?${params.toString()}`;
+};
+
+// Legacy support
+window.navigateToCategory = window.browseCategory;
+
 // --- Global Header Loader ---
 async function loadGlobalHeader() {
     const placeholder = document.getElementById('global-header-placeholder');
@@ -1599,6 +1639,21 @@ async function loadGlobalHeader() {
         if (window.updateLanguage) window.updateLanguage(window.currentLang);
         if (window.updateDynamicContent) window.updateDynamicContent(window.selectedCountry, window.currentLang);
 
+        // Check for deep link params (section/tab)
+        const urlParams = new URLSearchParams(window.location.search);
+        const sectionId = urlParams.get('section');
+        const tabId = urlParams.get('tab');
+
+        if (sectionId || tabId) {
+            setTimeout(() => {
+                const section = document.getElementById(sectionId);
+                if (section) section.scrollIntoView({ behavior: 'smooth' });
+                if (tabId) {
+                    const tabBtn = document.querySelector(`.tab-btn[data-target="${tabId}"]`);
+                    if (tabBtn) tabBtn.click();
+                }
+            }, 600); // Wait for animations/load
+        }
     } catch (err) {
         console.error('Error loading global header:', err);
     }
