@@ -122,7 +122,7 @@
                             <!-- Main Clickable Area -->
                             <div class="cursor-pointer flex flex-col h-full" onclick="window.location.href='ad-details.html?id=${ad.id}'">
                                 <div class="h-48 bg-gray-200 dark:bg-gray-700 relative overflow-hidden flex-shrink-0">
-                                    <img src="${ad.images[0] || 'https://via.placeholder.com/400x300?text=No+Image'}" 
+                                    <img src="${ad.images[0] || 'https://placehold.co/400x300?text=No+Image'}" 
                                          class="w-full h-full object-cover transition duration-500 group-hover:scale-110" 
                                          alt="${ad.title}">
                                     ${ad.isFeatured ? '<div class="absolute top-3 left-3 bg-accent text-white text-[10px] font-black px-2 py-1 rounded shadow-lg uppercase tracking-wider">Featured</div>' : ''}

@@ -58,7 +58,7 @@ const Ad = sequelize.define('Ad', {
     },
     images: {
         type: DataTypes.TEXT,
-        defaultValue: JSON.stringify(['https://via.placeholder.com/600x400?text=No+Image']),
+        defaultValue: JSON.stringify(['https://placehold.co/600x400?text=No+Image']),
         get() {
             const val = this.getDataValue('images');
             return val ? JSON.parse(val) : [];

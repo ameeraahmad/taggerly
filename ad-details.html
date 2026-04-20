@@ -124,7 +124,7 @@
                 <div
                     class="bg-white dark:bg-gray-800 rounded-xl shadow-sm overflow-hidden mb-8 border dark:border-gray-700">
                     <div class="gallery-main-container group">
-                        <img id="mainImage" src="https://via.placeholder.com/800x500?text=Loading..."
+                        <img id="mainImage" src="https://placehold.co/800x500?text=Loading..."
                             alt="Ad Main Image">
                         <!-- Navigation Arrows (Optional but nice) -->
                         <div
@@ -410,7 +410,7 @@
         <div class="bg-white dark:bg-gray-800 rounded-2xl w-full max-w-md overflow-hidden animate-fade-in shadow-2xl">
             <div class="p-6 border-b dark:border-gray-700 flex justify-between items-center">
                 <h3 class="text-xl font-bold dark:text-white">Report Ad</h3>
-                <button onclick="closeReportModal()" class="text-gray-500 hover:text-gray-700">
+                <button onclick="closeModal()" class="text-gray-500 hover:text-gray-700">
                     <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12">
                         </path>
@@ -882,12 +882,12 @@
     <div id="phone-modal" class="fixed inset-0 z-[200] hidden items-center justify-center">
         <!-- Backdrop -->
         <div id="phone-modal-backdrop" class="absolute inset-0 bg-black/60 backdrop-blur-sm"
-            onclick="closePhoneModal()"></div>
+            onclick="closeModal()"></div>
 
         <!-- Modal Box -->
         <div
             class="relative bg-white dark:bg-gray-800 rounded-2xl shadow-2xl p-8 w-full max-w-sm mx-4 text-center animate-fade-in">
-            <button onclick="closePhoneModal()" class="absolute top-5 right-5 text-gray-400 hover:text-gray-600 dark:hover:text-gray-200 transition-colors z-10" type="button">
+            <button onclick="closeModal()" class="absolute top-5 right-5 text-gray-400 hover:text-gray-600 dark:hover:text-gray-200 transition-colors z-10" type="button">
                 <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
                 </svg>
@@ -957,7 +957,7 @@
                 </div>
                 <p class="text-gray-500 dark:text-gray-400 mb-4" data-translate="noPhone">No phone number registered.
                 </p>
-                <button onclick="closePhoneModal()"
+                <button onclick="closeModal()"
                     class="w-full bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-200 py-3 rounded-xl font-medium hover:bg-gray-200 dark:hover:bg-gray-600 transition"
                     data-translate="close">Close</button>
             </div>

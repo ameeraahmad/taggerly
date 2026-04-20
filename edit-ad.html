@@ -47,7 +47,7 @@
             <div>
                 <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2"
                     data-translate="categoryLabel">Category</label>
-                <select id="ad-category" name="category"
+                <select id="ad-category" name="category" disabled
                     class="block w-full border border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-white rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-accent focus:border-accent sm:text-sm">
                     <option value="" disabled data-translate="selectCategory">Select Category</option>
                     <option value="Motors" data-translate="motors">Motors</option>
@@ -120,16 +120,8 @@
                 <div id="existing-images-list" class="grid grid-cols-2 sm:grid-cols-4 gap-4 mb-4"></div>
             </div>
 
-            <!-- Status Toggle -->
-            <div>
-                <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Status</label>
-                <select id="ad-status" name="status"
-                    class="block w-full border border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-white rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-accent focus:border-accent sm:text-sm">
-                    <option value="active">Active</option>
-                    <option value="sold">Sold</option>
-                    <option value="inactive">Inactive</option>
-                </select>
-            </div>
+            <!-- Status is managed by backend; hidden input preserves current status -->
+            <input type="hidden" id="ad-status" name="status">
 
             <!-- Image Upload -->
             <div>
@@ -161,12 +153,9 @@
             <!-- Location -->
             <div>
                 <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Location (Governorate/City)</label>
-                <select id="post-ad-location" name="city" data-dynamic-location="true"
+                <select id="post-ad-location" name="city"
                     class="block w-full border border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-white rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-accent focus:border-accent sm:text-sm">
-                    <option data-translate="dubai">Dubai</option>
-                    <option data-translate="abuDhabi">Abu Dhabi</option>
-                    <option data-translate="sharjah">Sharjah</option>
-                    <option data-translate="ajman">Ajman</option>
+                    <!-- Populated by JS based on ad's country -->
                 </select>
             </div>
 
@@ -234,6 +223,19 @@
             const previewContainer = document.getElementById('preview-container');
             const categorySelect = document.getElementById('ad-category');
             const additionalDetails = document.getElementById('additional-details');
+
+            // Populate city options based on country
+            const populateCities = (country) => {
+                const cityMap = {
+                    'uae':    ['Dubai', 'Abu Dhabi', 'Sharjah', 'Ajman', 'Ras Al Khaimah', 'Fujairah', 'Umm Al Quwain'],
+                    'egypt':  ['Cairo', 'Alexandria', 'Giza', 'Sharm El Sheikh', 'Hurghada', 'Luxor', 'Aswan', 'Mansoura', 'Tanta', 'Port Said'],
+                    'ksa':    ['Riyadh', 'Jeddah', 'Mecca', 'Medina', 'Dammam', 'Al Khobar', 'Tabuk', 'Abha', 'Taif'],
+                    'qatar':  ['Doha', 'Al Rayyan', 'Umm Salal', 'Al Wakrah', 'Al Khor']
+                };
+                const cities = cityMap[country] || cityMap['uae'];
+                const locationSelect = document.getElementById('post-ad-location');
+                locationSelect.innerHTML = cities.map(c => `<option value="${c}">${c}</option>`).join('');
+            };
 
             // Handle Image Management
             let selectedFiles = [];
@@ -309,24 +311,34 @@
                     return;
                 }
 
-                // Switch global context to the ad's country
+                // Fill Form
+                document.getElementById('ad-title').value = ad.title;
+                document.getElementById('ad-price').value = ad.price;
+                document.getElementById('ad-description').value = ad.description;
+
+                // Lock category - pre-select and disable
+                categorySelect.value = ad.category;
+                categorySelect.disabled = true;
+
+                document.getElementById('ad-year').value = ad.year || '';
+                document.getElementById('ad-kilometers').value = ad.kilometers || '';
+                document.getElementById('ad-condition').value = ad.itemCondition || 'Used';
+
+                // Populate cities based on ad's country THEN set the city value
+                populateCities(ad.country || 'uae');
+                document.getElementById('post-ad-location').value = ad.city || '';
+
+                document.getElementById('ad-phone').value = ad.phone || '';
+
+                // Preserve current status via hidden input
+                document.getElementById('ad-status').value = ad.status || 'active';
+
+                // Update currency display only (without touching location dropdown)
                 if (ad.country && window.setCountry) {
                     const flags = { 'uae': '🇦🇪', 'egypt': '🇪🇬', 'ksa': '🇸🇦', 'qatar': '🇶🇦' };
                     const names = { 'uae': 'UAE', 'egypt': 'Egypt', 'ksa': 'Saudi Arabia', 'qatar': 'Qatar' };
                     window.setCountry(ad.country, flags[ad.country] || '🌐', names[ad.country] || ad.country);
                 }
-
-                // Fill Form
-                document.getElementById('ad-title').value = ad.title;
-                document.getElementById('ad-price').value = ad.price;
-                document.getElementById('ad-description').value = ad.description;
-                categorySelect.value = ad.category;
-                document.getElementById('ad-year').value = ad.year || '';
-                document.getElementById('ad-kilometers').value = ad.kilometers || '';
-                document.getElementById('ad-condition').value = ad.itemCondition || 'Used';
-                document.getElementById('post-ad-location').value = ad.city;
-                document.getElementById('ad-phone').value = ad.phone || '';
-                document.getElementById('ad-status').value = ad.status;
 
                 // Toggle fields based on category
                 additionalDetails.style.display = ad.category === 'Motors' ? 'grid' : 'none';
@@ -356,7 +368,7 @@
 
                 const formData = new FormData(form);
                 
-                // Ensure correct names for critical fields if IDs differ from names
+                // Ensure critical fields are included (category is disabled so must be appended manually)
                 if (!formData.has('category')) formData.append('category', categorySelect.value || '');
                 if (!formData.has('city')) formData.append('city', document.getElementById('post-ad-location')?.value || '');
                 if (!formData.has('country')) formData.append('country', window.selectedCountry || localStorage.getItem('selectedCountry') || 'uae');

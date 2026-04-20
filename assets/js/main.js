@@ -242,6 +242,17 @@ window.customAlert = function (message) {
     });
 };
 
+// ─── Universal Modal Close ───
+// Closes any currently open modal (elements whose ID ends with "-modal" or "Modal")
+window.closeModal = function () {
+    document.querySelectorAll('[id$="-modal"], [id$="Modal"]').forEach(el => {
+        if (!el.classList.contains('hidden')) {
+            el.classList.add('hidden');
+            el.classList.remove('flex');
+        }
+    });
+};
+
 document.addEventListener('DOMContentLoaded', async () => {
     // --- Initialize Global State from LocalStorage IMMEDIATELY ---
     window.selectedCountry = localStorage.getItem('selectedCountry') || 'uae';
@@ -1284,7 +1295,7 @@ function updateDynamicContent(country, lang = window.currentLang || 'en') {
             <!-- Main Clickable Area -->
             <div class="cursor-pointer" onclick="window.location.href='ad-details.html?id=${ad.id}'">
                 <div class="relative h-48 bg-gray-200 dark:bg-gray-700 overflow-hidden ${!isSlider ? 'rounded-t-xl' : ''}">
-                    <img src="${ad.images[0] || 'https://via.placeholder.com/300x200'}" alt="${ad.title}" class="w-full h-full object-cover transition duration-300 group-hover:scale-105">
+                    <img src="${ad.images[0] || 'https://placehold.co/300x200'}" alt="${ad.title}" class="w-full h-full object-cover transition duration-300 group-hover:scale-105">
                     ${ad.isFeatured ? '<div class="badge-featured absolute top-2 right-2 bg-accent text-white text-xs font-bold px-2 py-1 rounded shadow-lg uppercase tracking-wider">FEATURED</div>' : ''}
                 </div>
                 <div class="p-4">

@@ -331,7 +331,7 @@
                     const adCard = `
                         <div class="bg-white dark:bg-gray-800 border dark:border-gray-700 rounded-xl overflow-hidden shadow-sm hover:shadow-lg transition-all flex flex-col sm:flex-row group animate-fade-in relative cursor-pointer" onclick="window.location.href='ad-details.html?id=${ad.id}'">
                             <div class="h-48 sm:h-auto sm:w-64 bg-gray-200 dark:bg-gray-700 relative overflow-hidden flex-shrink-0">
-                                <img src="${ad.images[0] || 'https://via.placeholder.com/300'}" class="w-full h-full object-cover transition duration-500 group-hover:scale-110" alt="${ad.title}">
+                                <img src="${ad.images[0] || 'https://placehold.co/300'}" class="w-full h-full object-cover transition duration-500 group-hover:scale-110" alt="${ad.title}">
                                 ${ad.isFeatured ? `<div class="absolute top-3 left-3 bg-accent text-white text-[10px] font-black px-2 py-1 rounded shadow-lg uppercase tracking-wider" data-translate="featuredBadge">${window.translations?.[window.currentLang || 'en']?.featuredBadge || 'Featured'}</div>` : ''}
                             </div>
                             <div class="p-6 flex flex-col justify-between flex-grow">

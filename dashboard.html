@@ -482,7 +482,7 @@
 
                 const adItem = `
                     <div class="p-6 flex items-center hover:bg-gray-50 transition border-b dark:border-gray-700 ${ad.status === 'deleted' ? 'opacity-70 grayscale-[0.5]' : ''}">
-                        <img src="${ad.images[0] || 'https://via.placeholder.com/150'}" class="w-16 h-16 rounded object-cover mr-4 rtl:ml-4 rtl:mr-0">
+                        <img src="${ad.images[0] || 'https://placehold.co/150'}" class="w-16 h-16 rounded object-cover mr-4 rtl:ml-4 rtl:mr-0">
                         <div class="flex-grow">
                             <h4 class="font-bold text-gray-900 dark:text-white mb-1">
                                 <a href="ad-details.html?id=${ad.id}">${ad.title}</a>
@@ -518,7 +518,7 @@
                                 </button>
                             ` : ''}
 
-                            ${ad.status === 'active' || ad.status === 'pending' ? `
+                            ${ad.status === 'active' ? `
                                 <button onclick="markAsSold(${ad.id})" class="text-[10px] bg-gray-100 dark:bg-gray-700 hover:bg-gray-200 dark:hover:bg-gray-600 text-gray-700 dark:text-gray-300 px-2.5 py-1.5 rounded font-bold transition" data-translate="markSold">Sold</button>
                                 ${!ad.isFeatured ? `<a href="plans.html?adId=${ad.id}" class="text-[10px] bg-accent/10 hover:bg-accent hover:text-white text-accent px-2.5 py-1.5 rounded font-bold transition" data-translate="promote">Promote</a>` : ''}
                             ` : ''}
