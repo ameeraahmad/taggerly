@@ -98,16 +98,20 @@
             transition: all 0.15s;
         }
 
-        .table-row {
-            transition: background 0.15s;
-        }
-
         .table-row:hover {
             background: #f9fafb;
         }
 
         .dark .table-row:hover {
             background: rgba(55, 65, 81, 0.5);
+        }
+
+        @keyframes slideUp {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        .animate-slide-up {
+            animation: slideUp 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
         }
     </style>
 </head>
@@ -149,7 +153,7 @@
                         d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
                 </svg>
                 <span>Revenue</span>
-                <span id="sidebar-currency-badge" class="ml-auto bg-green-500 text-white text-[10px] px-1.5 py-0.5 rounded-full">AED</span>
+                <span id="sidebar-currency-badge" class="ml-auto bg-green-500 text-white text-[10px] px-1.5 py-0.5 rounded-full currency-label">AED</span>
             </div>
 
             <p class="text-white/30 text-xs font-semibold uppercase tracking-wider px-4 mt-4 mb-2">Management</p>
@@ -178,6 +182,16 @@
                 <span id="reports-badge"
                     class="ml-auto bg-red-500 text-white text-[10px] px-1.5 py-0.5 rounded-full hidden">0</span>
             </div>
+            <div class="sidebar-link" onclick="showTab('support')" id="nav-support">
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                        d="M8 10h.01M12 10h.01M16 10h.01M9 16H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-5l-5 5v-5z" />
+                </svg>
+                <span>Support Requests</span>
+                <span id="support-dot-badge" class="w-2 h-2 bg-red-500 rounded-full animate-pulse hidden"></span>
+                <span id="support-badge"
+                    class="ml-auto bg-blue-500 text-white text-[10px] px-1.5 py-0.5 rounded-full hidden">0</span>
+            </div>
             <div class="sidebar-link" onclick="showTab('moderation')" id="nav-moderation">
                 <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
@@ -186,6 +200,13 @@
                 <span>Pending Ads</span>
                 <span id="pending-ads-badge"
                     class="ml-auto bg-yellow-500 text-white text-[10px] px-1.5 py-0.5 rounded-full hidden">0</span>
+            </div>
+            <div class="sidebar-link" onclick="showTab('blog')" id="nav-blog">
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                        d="M19 20H5a2 2 0 01-2-2V6a2 2 0 012-2h10a2 2 0 012 2v1m2 13a2 2 0 01-2-2V7m2 13a2 2 0 002-2V9a2 2 0 00-2-2h-2m-4-3H9M7 16h6M7 8h6v4H7V8z" />
+                </svg>
+                <span>Blog Posts</span>
             </div>
         </nav>
 
@@ -228,6 +249,35 @@
                 </div>
             </div>
             <div class="flex items-center gap-3">
+                <!-- Country Selector -->
+                <div class="relative group hidden sm:block">
+                    <button class="flex items-center gap-1.5 hover:text-accent font-medium text-sm bg-gray-100 dark:bg-gray-700 px-3 py-2.5 rounded-xl focus:outline-none transition">
+                        <span id="current-country-flag">🇦🇪</span>
+                        <span class="text-gray-300 mx-0.5 pointer-events-none">|</span>
+                        <span id="current-country-name" class="font-bold">UAE</span>
+                        <svg class="w-4 h-4 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
+                        </svg>
+                    </button>
+                    <!-- Dropdown Menu -->
+                    <div class="absolute right-0 mt-3 w-48 bg-white dark:bg-gray-800 rounded-xl shadow-xl opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-300 transform origin-top-right scale-95 group-hover:scale-100 border border-gray-100 dark:border-gray-700 overflow-hidden z-[100]">
+                        <div class="p-2 space-y-1">
+                            <a href="#" class="country-option flex items-center gap-3 px-3 py-2 hover:bg-gray-50 dark:hover:bg-gray-700 rounded-lg transition" data-country="uae" data-flag="🇦🇪">
+                                <span>🇦🇪</span> <span class="font-bold text-sm">UAE</span>
+                            </a>
+                            <a href="#" class="country-option flex items-center gap-3 px-3 py-2 hover:bg-gray-50 dark:hover:bg-gray-700 rounded-lg transition" data-country="egypt" data-flag="🇪🇬">
+                                <span>🇪🇬</span> <span class="font-bold text-sm">Egypt</span>
+                            </a>
+                            <a href="#" class="country-option flex items-center gap-3 px-3 py-2 hover:bg-gray-50 dark:hover:bg-gray-700 rounded-lg transition" data-country="ksa" data-flag="🇸🇦">
+                                <span>🇸🇦</span> <span class="font-bold text-sm">KSA</span>
+                            </a>
+                            <a href="#" class="country-option flex items-center gap-3 px-3 py-2 hover:bg-gray-50 dark:hover:bg-gray-700 rounded-lg transition" data-country="qatar" data-flag="🇶🇦">
+                                <span>🇶🇦</span> <span class="font-bold text-sm">Qatar</span>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+
                 <!-- Theme Toggle -->
                 <button onclick="toggleTheme()"
                     class="p-2 rounded-xl hover:bg-gray-100 dark:hover:bg-gray-700 transition">
@@ -607,7 +657,7 @@
                     <h3 class="text-lg font-bold text-gray-700 dark:text-gray-300">All caught up!</h3>
                     <p class="text-gray-400">No pending ads at the moment.</p>
                 </div>
-
+                
                 <div id="moderation-grid" class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4">
                     <!-- Cards injected by JS -->
                 </div>
@@ -615,10 +665,148 @@
                 <div id="moderation-loading" class="text-center py-12 text-gray-400">Loading pending ads...</div>
             </div>
 
+            <!-- ==================== BLOG POSTS TAB ==================== -->
+            <div id="tab-blog" class="tab-content">
+                <div class="flex items-center justify-between mb-6">
+                    <div>
+                        <h2 class="font-bold text-lg">📝 Blog Posts Management</h2>
+                        <p class="text-sm text-gray-500">Create and manage your articles in Arabic & English</p>
+                    </div>
+                    <button onclick="openPostModal()"
+                        class="bg-accent text-white px-5 py-2.5 rounded-xl font-bold flex items-center gap-2 hover:bg-orange-600 transition shadow-lg shadow-orange-500/30">
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" />
+                        </svg>
+                        Create New Article
+                    </button>
+                </div>
+
+                <div class="bg-white dark:bg-gray-800 rounded-2xl border border-gray-100 dark:border-gray-700 overflow-hidden">
+                    <div class="overflow-x-auto">
+                        <table class="w-full text-sm text-left">
+                            <thead class="bg-gray-50 dark:bg-gray-700/50 text-xs text-gray-500 uppercase font-bold tracking-wider">
+                                <tr>
+                                    <th class="px-6 py-4">Title</th>
+                                    <th class="px-6 py-4">Category</th>
+                                    <th class="px-6 py-4">Status</th>
+                                    <th class="px-6 py-4">Date</th>
+                                    <th class="px-6 py-4 text-right">Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody id="blog-table-body" class="divide-y divide-gray-100 dark:divide-gray-700">
+                                <tr>
+                                    <td colspan="5" class="px-6 py-8 text-center text-gray-400">Loading articles...</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            <!-- ==================== SUPPORT REQUESTS TAB ==================== -->
+            <div id="tab-support" class="tab-content">
+                <div class="flex items-center justify-between mb-4">
+                    <h2 class="font-bold text-lg">💬 Support & Contact Requests</h2>
+                    <button onclick="loadSupportRequests()"
+                        class="btn-sm bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300 hover:bg-gray-200 flex items-center gap-1">
+                        🔄 Refresh
+                    </button>
+                </div>
+
+                <div class="bg-white dark:bg-gray-800 rounded-2xl border border-gray-100 dark:border-gray-700 overflow-hidden">
+                    <div class="overflow-x-auto">
+                        <table class="w-full text-sm text-left">
+                            <thead class="bg-gray-50 dark:bg-gray-700/50 text-xs text-gray-500 uppercase font-bold tracking-wider">
+                                <tr>
+                                    <th class="px-6 py-4">Sender</th>
+                                    <th class="px-6 py-4">Subject</th>
+                                    <th class="px-6 py-4">Message</th>
+                                    <th class="px-6 py-4">Date</th>
+                                    <th class="px-6 py-4">Status</th>
+                                    <th class="px-6 py-4 text-right">Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody id="support-table-body" class="divide-y divide-gray-100 dark:divide-gray-700">
+                                <tr>
+                                    <td colspan="6" class="px-6 py-8 text-center text-gray-400">Loading requests...</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
         </div>
     </main>
 
+    <!-- Support Message Modal -->
+    <div id="support-modal" class="fixed inset-0 z-[100] hidden">
+        <div class="absolute inset-0 bg-black/60 backdrop-blur-sm" onclick="closeSupportModal()"></div>
+        <div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-full max-w-2xl bg-white dark:bg-gray-800 rounded-3xl shadow-2xl overflow-hidden transform transition-all scale-95 duration-200">
+            <div class="p-6 border-b border-gray-100 dark:border-gray-700 flex justify-between items-center bg-gray-50 dark:bg-gray-700/50">
+                <h3 class="text-xl font-bold flex items-center gap-2">
+                    <span id="modal-support-subject">Message Subject</span>
+                </h3>
+                <button onclick="closeSupportModal()" class="p-2 hover:bg-gray-200 dark:hover:bg-gray-600 rounded-full transition">
+                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>
+                </button>
+            </div>
+            <div class="p-8 space-y-6">
+            <div class="p-0 flex flex-col">
+                <!-- Header info -->
+                <div class="p-6 border-b dark:border-gray-700 flex items-center justify-between bg-gray-50 dark:bg-gray-800/50">
+                    <div class="flex items-center gap-4">
+                        <div class="w-12 h-12 bg-accent/10 rounded-full flex items-center justify-center text-accent">
+                            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"/></svg>
+                        </div>
+                        <div>
+                            <p id="modal-support-name" class="font-bold text-lg leading-tight">-</p>
+                            <p id="modal-support-email" class="text-xs text-gray-500">-</p>
+                        </div>
+                    </div>
+                    <div class="text-right">
+                        <p id="modal-support-subject" class="font-bold text-accent text-sm uppercase tracking-wider">-</p>
+                        <p id="modal-support-date" class="text-[10px] text-gray-400 font-medium"></p>
+                    </div>
+                </div>
+
+                <!-- Original Message -->
+                <div class="p-6 bg-gray-50 dark:bg-gray-900/10">
+                    <label class="block text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-2">Original Message</label>
+                    <div id="modal-support-message" class="text-sm text-gray-700 dark:text-gray-300 leading-relaxed whitespace-pre-wrap"></div>
+                </div>
+
+                <!-- Reply Area -->
+                <div class="p-6 border-t dark:border-gray-700 bg-white dark:bg-gray-800 rounded-b-3xl">
+                    <label class="block text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-2">Your Response (Sends Email)</label>
+                    <textarea id="reply-text" rows="5" 
+                        class="w-full bg-gray-50 dark:bg-gray-900 border border-gray-100 dark:border-gray-700 rounded-2xl px-4 py-3 text-sm outline-none resize-none focus:ring-2 focus:ring-accent transition mb-4"
+                        placeholder="Write your reply to the customer..."></textarea>
+                    
+                    <div class="flex items-center gap-3">
+                        <button id="send-reply-btn" class="flex-1 bg-accent text-white py-3.5 rounded-2xl font-bold hover:opacity-90 transition flex items-center justify-center gap-2 shadow-lg shadow-accent/20">
+                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/></svg>
+                            Send Reply via Email
+                        </button>
+                        <button onclick="closeSupportModal()" class="px-6 py-3.5 border border-gray-200 dark:border-gray-700 rounded-2xl font-bold hover:bg-gray-50 dark:hover:bg-gray-800 transition text-sm">
+                            Close
+                        </button>
+                    </div>
+                </div>
+            </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Footer Placeholder -->
+    <div id="global-footer-placeholder"></div>
+
+
+    <script src="/socket.io/socket.io.js"></script>
+    <script src="assets/js/en.js"></script>
+    <script src="assets/js/ar.js"></script>
     <script src="assets/js/api-client.js"></script>
+    <script src="assets/js/main.js"></script>
     <script>
         // ===================== AUTH CHECK =====================
         const adminUser = JSON.parse(localStorage.getItem('user'));
@@ -629,13 +817,21 @@
         if (adminUser?.avatar) document.getElementById('admin-avatar').src = adminUser.avatar;
 
         // ===================== TABS =====================
+        // ===================== UTILS & CONFIG =====================
+        window.currencyMap = { uae: 'AED', egypt: 'EGP', ksa: 'SAR', qatar: 'QAR' };
+        window.getCurrency = function() {
+            const country = localStorage.getItem('selectedCountry') || 'uae';
+            return window.currencyMap[country] || 'AED';
+        };
+
         const TAB_CONFIG = {
             dashboard: { title: 'Dashboard', subtitle: 'Overview & Statistics' },
             revenue: { title: 'Revenue', subtitle: 'Financial Analytics' },
             users: { title: 'Users', subtitle: 'Manage all registered users' },
             ads: { title: 'Ads', subtitle: 'Manage all listings' },
             reports: { title: 'Reports', subtitle: 'Review flagged content' },
-            moderation: { title: 'Pending Ads', subtitle: 'Moderation queue — approve or reject ads' }
+            moderation: { title: 'Pending Ads', subtitle: 'Moderation queue — approve or reject ads' },
+            support: { title: 'Support Requests', subtitle: 'Messages from Contact and Support forms' }
         };
 
         function showTab(tabId) {
@@ -652,9 +848,508 @@
             if (tabId === 'reports') loadReports();
             if (tabId === 'revenue') loadRevenue();
             if (tabId === 'moderation') loadPendingAds();
+            if (tabId === 'blog') loadBlogPosts();
+            if (tabId === 'support') loadSupportRequests();
 
             // Close mobile sidebar
             if (window.innerWidth < 768) toggleSidebar(false);
+        }
+
+        // ===================== BLOG MANAGEMENT =====================
+        async function loadBlogPosts() {
+            const tbody = document.getElementById('blog-table-body');
+            tbody.innerHTML = '<tr><td colspan="5" class="px-6 py-8 text-center text-gray-400">Loading articles...</td></tr>';
+            
+            const lang = window.currentLang || localStorage.getItem('lang') || 'en';
+
+            try {
+                const res = await apiClient.fetch('/blog/admin');
+                const data = res; // apiClient.fetch returns data directly or handles response
+                
+                if (data.success && data.data.length > 0) {
+                    // Sort: Important first, then by date
+                    const sortedPosts = data.data.sort((a, b) => {
+                        if (a.isImportant === b.isImportant) {
+                            return new Date(b.createdAt) - new Date(a.createdAt);
+                        }
+                        return a.isImportant ? -1 : 1;
+                    });
+                    
+                    tbody.innerHTML = sortedPosts.map(post => {
+                        const title = lang === 'ar' ? (post.title_ar || post.title_en) : (post.title_en || post.title_ar);
+                        return `
+                        <tr class="table-row">
+                            <td class="px-6 py-4">
+                                <div class="font-bold">${post.title_en}</div>
+                                <div class="text-xs text-gray-400 font-arabic">${post.title_ar}</div>
+                            </td>
+                            <td class="px-6 py-4 capitalize text-xs">
+                                ${window.translations?.[lang]?.[`category${post.category.charAt(0).toUpperCase() + post.category.slice(1)}`] || post.category}
+                            </td>
+                            <td class="px-6 py-4">
+                                <span class="badge ${post.status === 'published' ? 'bg-green-100 text-green-700' : 'bg-gray-100 text-gray-600'}">
+                                    ${post.status}
+                                </span>
+                            </td>
+                            <td class="px-6 py-4 text-xs text-gray-500">${new Date(post.createdAt).toLocaleDateString()}</td>
+                            <td class="px-6 py-4 text-right">
+                                <div class="flex justify-end gap-2">
+                                    <button 
+                                        data-id="${post.id}" 
+                                        data-title="${title.replace(/"/g, '&quot;')}" 
+                                        data-important="${post.isImportant}"
+                                        onclick="togglePostImportant(this)" 
+                                        class="btn-sm ${post.isImportant ? 'bg-orange-100 text-accent' : 'bg-gray-100 text-gray-400'} hover:bg-orange-50 transition-colors" 
+                                        title="${post.isImportant ? 'Mark as normal' : 'Mark as important'}">
+                                        <svg class="w-4 h-4" fill="${post.isImportant ? 'currentColor' : 'none'}" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 5a2 2 0 012-2h10a2 2 0 012 2v16l-7-3.5L5 21V5z" />
+                                        </svg>
+                                    </button>
+                                    <button onclick="editPost(${post.id})" class="btn-sm bg-blue-50 text-blue-600 hover:bg-blue-100">Edit</button>
+                                    <button onclick="deletePost(${post.id})" class="btn-sm bg-red-50 text-red-600 hover:bg-red-100">Delete</button>
+                                </div>
+                            </td>
+                        </tr>
+                        `;
+                    }).join('');
+                } else {
+                    tbody.innerHTML = '<tr><td colspan="5" class="px-6 py-12 text-center text-gray-400">No articles found. Click "Create New Article" to start.</td></tr>';
+                }
+            } catch (err) {
+                tbody.innerHTML = '<tr><td colspan="5" class="px-6 py-8 text-center text-red-400">Failed to load articles.</td></tr>';
+            }
+        }
+
+        // ===================== SUPPORT REQUESTS MANAGEMENT =====================
+        async function loadSupportRequests() {
+            const tbody = document.getElementById('support-table-body');
+            tbody.innerHTML = '<tr><td colspan="6" class="px-6 py-8 text-center text-gray-400">Loading requests...</td></tr>';
+            
+            try {
+                const response = await fetch('/api/support');
+                const data = await response.json();
+                
+                if (data.success && data.data.length > 0) {
+                    // Sort: Important first, then by date (Backend already does this, but keeping it for UI consistency if needed)
+                    const sortedData = data.data.sort((a, b) => {
+                        if (a.isImportant === b.isImportant) {
+                            return new Date(b.createdAt) - new Date(a.createdAt);
+                        }
+                        return a.isImportant ? -1 : 1;
+                    });
+
+                    tbody.innerHTML = sortedData.map(req => {
+                        const isRead = req.isRead || req.status !== 'pending';
+                        const isReplied = req.isReplied || req.status === 'replied';
+                        const isImportant = req.isImportant === true;
+                        
+                        return `
+                        <tr class="table-row ${!isRead ? 'bg-blue-50/50 dark:bg-blue-900/10' : ''}">
+                            <td class="px-6 py-4">
+                                <div class="flex items-center gap-3">
+                                    <button 
+                                        data-id="${req.id}" 
+                                        data-name="${req.name.replace(/"/g, '&quot;')}" 
+                                        data-important="${isImportant}"
+                                        onclick="toggleSupportImportant(this)" 
+                                        class="p-1 rounded-lg transition ${isImportant ? 'text-accent bg-orange-50' : 'text-gray-300 hover:text-gray-500'}"
+                                        title="${isImportant ? 'Unmark as important' : 'Mark as important'}">
+                                        <svg class="w-5 h-5" fill="${isImportant ? 'currentColor' : 'none'}" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11.049 2.927c.3-.921 1.603-.921 1.902 0l1.519 4.674a1 1 0 00.95.69h4.915c.969 0 1.371 1.24.588 1.81l-3.976 2.888a1 1 0 00-.363 1.118l1.518 4.674c.3.922-.755 1.688-1.538 1.118l-3.976-2.888a1 1 0 00-1.176 0l-3.976 2.888c-.783.57-1.838-.197-1.538-1.118l1.518-4.674a1 1 0 00-.363-1.118l-3.976-2.888c-.784-.57-.382-1.81.588-1.81h4.914a1 1 0 00.951-.69l1.519-4.674z" />
+                                        </svg>
+                                    </button>
+                                    <div>
+                                        <div class="font-bold ${!isRead ? 'text-primary' : ''}">${req.name}</div>
+                                        <div class="text-xs text-gray-400">${req.email}</div>
+                                    </div>
+                                </div>
+                            </td>
+                            <td class="px-6 py-4">
+                                <div class="font-medium ${!isRead ? 'font-bold' : ''}">${req.subject}</div>
+                            </td>
+                            <td class="px-6 py-4 text-xs">
+                                <div class="max-w-xs truncate text-gray-500" title="${req.message}">${req.message}</div>
+                            </td>
+                            <td class="px-6 py-4 text-xs text-gray-500">${new Date(req.createdAt).toLocaleDateString()}</td>
+                            <td class="px-6 py-4">
+                                <div class="flex gap-1">
+                                    <span class="badge ${isRead ? 'bg-gray-100 text-gray-600' : 'bg-blue-100 text-blue-700'}">
+                                        ${isRead ? 'Read' : 'New'}
+                                    </span>
+                                    ${isReplied ? '<span class="badge bg-green-100 text-green-700">Replied</span>' : ''}
+                                </div>
+                            </td>
+                            <td class="px-6 py-4 text-right">
+                                <div class="flex justify-end gap-2">
+                                    <button onclick="viewSupportMessage(${req.id}, \`${req.name.replace(/'/g, "\\'")}\`,\`${req.email.replace(/'/g, "\\'")}\`, \`${req.subject.replace(/'/g, "\\'")}\`, \`${req.message.replace(/'/g, "\\'")}\`, '${req.createdAt}', ${isReplied}, \`${(req.replyMessage || '').replace(/'/g, "\\'")}\`, \`${(req.phone || '').replace(/'/g, "\\'")}\`)" class="btn-sm bg-primary text-white hover:bg-opacity-90">Open & Reply</button>
+                                    <button onclick="deleteSupport(${req.id})" class="btn-sm bg-red-100 text-red-600 hover:bg-red-200" title="Delete This Conversation">
+                                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" /></svg>
+                                    </button>
+                                </div>
+                            </td>
+                        </tr>
+                        `;
+                    }).join('');
+                } else {
+                    tbody.innerHTML = '<tr><td colspan="6" class="px-6 py-12 text-center text-gray-400">No support requests found.</td></tr>';
+                }
+            } catch (err) {
+                tbody.innerHTML = '<tr><td colspan="6" class="px-6 py-8 text-center text-red-400">Failed to load requests.</td></tr>';
+            }
+        }
+
+        // ===================== LIVE SUPPORT CHAT =====================
+        let currentChatRequestId = null;
+        let socket = null;
+
+        function initAdminSocket() {
+            if (socket) return;
+            socket = io();
+            socket.on('connect', () => console.log('Admin Socket Connected'));
+            
+            socket.on('new_support_request', (data) => {
+                playSupportSound();
+                showAdminToast(`New Support Request from ${data.name}`);
+                updateSupportBadge(true);
+                if (window.showTab && document.getElementById('tab-support').classList.contains('active')) {
+                    loadSupportRequests();
+                }
+            });
+
+            socket.on('admin_notification', (data) => {
+                if (data.type === 'support_message') {
+                    playSupportSound();
+                    showAdminToast(data.message);
+                    updateSupportBadge(true);
+                    if (window.showTab && document.getElementById('tab-support').classList.contains('active')) {
+                        loadSupportRequests();
+                    }
+                }
+            });
+
+            socket.on('new_support_message', (msg) => {
+                if (currentChatRequestId == msg.requestId) {
+                    appendChatMessage(msg);
+                }
+            });
+        }
+        initAdminSocket();
+
+        function playSupportSound() {
+            try { new Audio('https://assets.mixkit.co/active_storage/sfx/2358/2358-preview.mp3').play(); } catch(e){}
+        }
+
+        function showAdminToast(msg) {
+            const toast = document.createElement('div');
+            toast.className = 'fixed bottom-5 right-5 z-[200] bg-primary text-white px-6 py-4 rounded-2xl shadow-2xl flex items-center gap-3 animate-slide-up';
+            toast.innerHTML = `
+                <div class="w-2 h-2 bg-green-400 rounded-full animate-pulse"></div>
+                <span class="font-bold text-sm">${msg}</span>
+            `;
+            document.body.appendChild(toast);
+            setTimeout(() => {
+                toast.classList.add('opacity-0', 'translate-x-full');
+                setTimeout(() => toast.remove(), 500);
+            }, 4000);
+        }
+
+        function updateSupportBadge(show) {
+            // Find support link in sidebar
+            const badge = document.getElementById('support-dot-badge');
+            if (badge) badge.classList.toggle('hidden', !show);
+        }
+
+        async function viewSupportMessage(id, name, email, subject, message, date, isReplied, replyMessage = '', phone = '') {
+            currentChatRequestId = id;
+            document.getElementById('modal-support-subject').textContent = subject;
+            document.getElementById('modal-support-name').textContent = name;
+            document.getElementById('modal-support-email').textContent = `${email}${phone ? ' / ' + phone : ''}`;
+            document.getElementById('modal-support-date').textContent = new Date(date).toLocaleString();
+            document.getElementById('modal-support-message').textContent = message;
+            
+            const replyText = document.getElementById('reply-text');
+            replyText.value = replyMessage;
+
+            const modal = document.getElementById('support-modal');
+            modal.classList.remove('hidden');
+            setTimeout(() => modal.children[1].classList.remove('scale-95'), 10);
+
+            // Join socket room in background
+            socket.emit('join_support', id);
+
+            // Setup Buttons
+            document.getElementById('send-reply-btn').onclick = () => submitReply(id, true);
+
+            // Mark as read
+            fetch(`/api/support/${id}`, {
+                method: 'PATCH',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ isRead: true, status: 'read' })
+            }).catch(e => {});
+        }
+
+        function appendChatMessage(msg) {
+            const container = document.getElementById('modal-chat-history');
+            const isMe = msg.isAdmin;
+            const div = document.createElement('div');
+            div.className = `flex ${isMe ? 'justify-end' : 'justify-start'}`;
+            div.innerHTML = `
+                <div class="max-w-[80%] p-3 rounded-2xl text-sm ${isMe ? 'bg-accent text-white rounded-tr-none' : 'bg-white dark:bg-gray-800 dark:text-gray-200 border dark:border-gray-700 rounded-tl-noneShadow-sm'}">
+                    <p>${msg.message.replace(/\n/g, '<br>')}</p>
+                    <p class="text-[9px] mt-1 opacity-50 ${isMe ? 'text-right' : ''}">${new Date(msg.createdAt).toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'})}</p>
+                </div>
+            `;
+            container.appendChild(div);
+            container.scrollTop = container.scrollHeight;
+        }
+
+        async function submitReply(id) {
+            const replyText = document.getElementById('reply-text');
+            const message = replyText.value.trim();
+            if (!message) return;
+
+            const btn = document.getElementById('send-reply-btn');
+            const originalContent = btn.innerHTML;
+            btn.disabled = true;
+            btn.textContent = 'Sending...';
+
+            try {
+                const res = await fetch(`/api/support/${id}/reply`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ replyMessage: message })
+                });
+                const data = await res.json();
+                
+                if (data.success) {
+                    closeSupportModal(); // Close first for better UX
+                    setTimeout(async () => await customAlert('Reply sent successfully!'), 300);
+                    replyText.value = '';
+                } else {
+                    await customAlert('Error: ' + data.message);
+                }
+            } catch (err) {
+                console.error(err);
+                await customAlert('Network error occurred');
+            } finally {
+                btn.disabled = false;
+                btn.innerHTML = originalContent;
+            }
+        }
+
+        async function deleteSupport(id) {
+            if (!(await window.customConfirm('Are you sure you want to delete this chat thread? This will permanently remove all messages.'))) return;
+            try {
+                const res = await fetch(`/api/support/${id}`, { method: 'DELETE' });
+                const data = await res.json();
+                if (data.success) {
+                    loadSupportRequests();
+                }
+            } catch (err) { console.error(err); }
+        }
+
+        function closeSupportModal() {
+            const modal = document.getElementById('support-modal');
+            modal.children[1].classList.add('scale-95');
+            currentChatRequestId = null;
+            setTimeout(() => {
+                modal.classList.add('hidden');
+                loadSupportRequests(); 
+            }, 200);
+        }
+
+        function openPostModal(post = null) {
+            document.getElementById('blog-form').reset();
+            document.getElementById('post-id').value = post?.id || '';
+            document.getElementById('modal-title').textContent = post ? 'Edit Article' : 'Create New Article';
+            
+            if (post) {
+                document.getElementById('title_en').value = post.title_en;
+                document.getElementById('title_ar').value = post.title_ar;
+                document.getElementById('excerpt_en').value = post.excerpt_en;
+                document.getElementById('excerpt_ar').value = post.excerpt_ar;
+                document.getElementById('content_en').value = post.content_en;
+                document.getElementById('content_ar').value = post.content_ar;
+                document.getElementById('post-category').value = post.category;
+                document.getElementById('post-image-url').value = post.featuredImage;
+                document.getElementById('post-image-preview').src = post.featuredImage;
+                document.getElementById('post-status').value = post.status;
+            } else {
+                document.getElementById('post-image-preview').src = 'https://placehold.co/600x400?text=Blog+Image';
+                document.getElementById('post-image-url').value = '';
+            }
+            
+            document.getElementById('blog-modal').classList.remove('hidden');
+            document.getElementById('blog-modal').children[0].classList.remove('scale-95');
+        }
+
+        function closePostModal() {
+            document.getElementById('blog-modal').classList.add('hidden');
+        }
+
+        function previewPostImage(input) {
+            if (input.files && input.files[0]) {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    document.getElementById('post-image-preview').src = e.target.result;
+                }
+                reader.readAsDataURL(input.files[0]);
+            }
+        }
+
+        async function handleImageUpload() {
+            const fileInput = document.getElementById('post-image-file');
+            if (!fileInput.files || !fileInput.files[0]) return document.getElementById('post-image-url').value;
+
+            try {
+                // alert('Starting image upload...');
+                const result = await apiClient.uploadImage(fileInput.files[0], 'blog');
+                // alert('Image uploaded successfully: ' + result.url);
+                return result.url;
+            } catch (err) {
+                console.error('Upload error:', err);
+                await customAlert('Image upload failed but continuing: ' + err.message);
+                return document.getElementById('post-image-url').value;
+            }
+        }
+
+        // Add event listener for blog form (Wrapped in safety check)
+        document.addEventListener('DOMContentLoaded', () => {
+            const blogForm = document.getElementById('blog-form');
+            if (blogForm) {
+                blogForm.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const submitBtn = e.target.querySelector('button[type="submit"]');
+            const originalText = submitBtn.textContent;
+            submitBtn.disabled = true;
+            submitBtn.textContent = 'Saving...';
+
+            try {
+                // alert('Preparing data for submission...');
+                const postId = document.getElementById('post-id').value;
+                const imageUrl = await handleImageUpload();
+                
+                let authorId = null;
+                try {
+                    const userStr = localStorage.getItem('user');
+                    if (userStr && userStr.startsWith('{')) {
+                        authorId = JSON.parse(userStr)?.id;
+                    }
+                } catch (e) { }
+
+                const formData = {
+                    title_en: document.getElementById('title_en').value,
+                    title_ar: document.getElementById('title_ar').value,
+                    excerpt_en: document.getElementById('excerpt_en').value,
+                    excerpt_ar: document.getElementById('excerpt_ar').value,
+                    content_en: document.getElementById('content_en').value,
+                    content_ar: document.getElementById('content_ar').value,
+                    category: document.getElementById('post-category').value,
+                    featuredImage: imageUrl || 'https://placehold.co/600x400?text=Blog+Image',
+                    status: document.getElementById('post-status').value,
+                    authorId: authorId
+                };
+            
+                // alert('Sending POST request to server...');
+                const url = postId ? `/blog/${postId}` : '/blog';
+                const method = postId ? 'PUT' : 'POST';
+                const res = await apiClient.fetch(url, {
+                    method: method,
+                    body: JSON.stringify(formData)
+                });
+                
+                if (res.success) {
+                    closePostModal();
+                    loadBlogPosts();
+                    await customAlert(postId ? 'Article updated!' : 'Article published!');
+                } else {
+                    throw new Error(res.message || 'Server error');
+                }
+            } catch (err) {
+                console.error(err);
+                await customAlert('Error: ' + err.message);
+            } finally {
+                submitBtn.disabled = false;
+                submitBtn.textContent = originalText;
+            }
+                });
+            }
+        });
+
+        async function editPost(id) {
+            try {
+                // Fetch the full post data including content fields
+                const res = await apiClient.fetch(`/blog/${id}`);
+                if (res.success) {
+                    openPostModal(res.data);
+                }
+            } catch (err) {
+                window.customAlert('Error fetching post data: ' + err.message);
+            }
+        }
+
+        async function deletePost(id) {
+            if (await window.customConfirm('Are you sure you want to delete this article?')) {
+                try {
+                    const res = await apiClient.fetch(`/blog/${id}`, { method: 'DELETE' });
+                    if (res.success) {
+                        loadBlogPosts();
+                        window.customAlert('Article deleted.');
+                    }
+                } catch (err) {
+                    window.customAlert('Error deleting article');
+                }
+            }
+        }
+
+        async function togglePostImportant(btn) {
+            const id = btn.getAttribute('data-id');
+            const title = btn.getAttribute('data-title');
+            const isCurrentlyImportant = btn.getAttribute('data-important') === 'true';
+            
+            const action = isCurrentlyImportant ? 'remove the important status from' : 'mark this article as important (pin to top)';
+            
+            if (!(await window.customConfirm(`Are you sure you want to ${action}:\n"${title}"?`))) return;
+            
+            try {
+                const res = await apiClient.fetch(`/blog/${id}/important`, { method: 'PUT' });
+                if (res.success) {
+                    loadBlogPosts();
+                    if (res.data.isImportant) {
+                        showAdminToast('تم تحديد المقالة كمهمة ⭐');
+                    } else {
+                        showAdminToast('تمت إزالة العلامة المهمة');
+                    }
+                }
+            } catch (err) {
+                console.error('Error toggling post important status:', err);
+                window.customAlert('Error updating article status');
+            }
+        }
+
+        async function toggleSupportImportant(btn) {
+            const id = btn.getAttribute('data-id');
+            const name = btn.getAttribute('data-name');
+            const isCurrentlyImportant = btn.getAttribute('data-important') === 'true';
+            
+            const action = isCurrentlyImportant ? 'remove the important status from' : 'mark as important (pin to top)';
+            
+            if (!(await window.customConfirm(`Are you sure you want to ${action} this request from:\n"${name}"?`))) return;
+            
+            try {
+                const res = await apiClient.fetch(`/support/${id}/important`, { method: 'PUT' });
+                if (res.success) {
+                    loadSupportRequests();
+                    if (res.data.isImportant) {
+                        showAdminToast('تم تحديد الرسالة كمهمة ⭐');
+                    } else {
+                        showAdminToast('تمت إزالة علامة المهمة');
+                    }
+                }
+            } catch (err) {
+                console.error('Error toggling support important status:', err);
+                window.customAlert('Error updating request status');
+            }
         }
 
         // ===================== SIDEBAR =====================
@@ -687,7 +1382,12 @@
                 const overlay = document.createElement('div');
                 overlay.className = 'fixed inset-0 bg-black/60 z-[9999] flex items-center justify-center opacity-0 transition-opacity duration-300 backdrop-blur-sm';
                 const modal = document.createElement('div');
-                modal.className = 'bg-white dark:bg-gray-800 rounded-2xl shadow-2xl p-6 max-w-sm w-full mx-4 transform scale-95 transition-transform duration-300 flex flex-col items-center text-center border dark:border-gray-700';
+                modal.className = 'bg-white dark:bg-gray-800 rounded-2xl shadow-2xl p-6 max-w-sm w-full mx-4 transform scale-95 transition-transform duration-300 flex flex-col items-center text-center border dark:border-gray-700 relative';
+                
+                const closeBtn = document.createElement('button');
+                closeBtn.className = 'absolute top-4 right-4 text-gray-400 hover:text-gray-600 dark:hover:text-gray-200 transition-colors';
+                closeBtn.innerHTML = '<svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>';
+                modal.appendChild(closeBtn);
                 const icon = document.createElement('div');
                 icon.className = 'w-14 h-14 bg-orange-100 dark:bg-orange-900/30 rounded-full flex items-center justify-center mb-4 text-accent';
                 icon.innerHTML = '<svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8.228 9c.549-1.165 2.03-2 3.772-2 2.21 0 4 1.343 4 3 0 1.4-1.278 2.575-3.006 2.907-.542.104-.994.54-.994 1.093m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>';
@@ -713,6 +1413,7 @@
                 };
                 cancelBtn.onclick = () => close(false);
                 okBtn.onclick = () => close(true);
+                closeBtn.onclick = () => close(false);
             });
         };
 
@@ -721,7 +1422,12 @@
                 const overlay = document.createElement('div');
                 overlay.className = 'fixed inset-0 bg-black/60 z-[9999] flex items-center justify-center opacity-0 transition-opacity duration-300 backdrop-blur-sm';
                 const modal = document.createElement('div');
-                modal.className = 'bg-white dark:bg-gray-800 rounded-2xl shadow-2xl p-6 max-w-sm w-full mx-4 transform scale-95 transition-transform duration-300 flex flex-col items-center text-center border dark:border-gray-700';
+                modal.className = 'bg-white dark:bg-gray-800 rounded-2xl shadow-2xl p-6 max-w-sm w-full mx-4 transform scale-95 transition-transform duration-300 flex flex-col items-center text-center border dark:border-gray-700 relative';
+                
+                const closeBtn = document.createElement('button');
+                closeBtn.className = 'absolute top-4 right-4 text-gray-400 hover:text-gray-600 dark:hover:text-gray-200 transition-colors';
+                closeBtn.innerHTML = '<svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>';
+                modal.appendChild(closeBtn);
                 const icon = document.createElement('div');
                 icon.className = 'w-14 h-14 bg-blue-100 dark:bg-blue-900/30 rounded-full flex items-center justify-center mb-4 text-blue-500';
                 icon.innerHTML = '<svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>';
@@ -739,6 +1445,7 @@
                     setTimeout(() => { document.body.removeChild(overlay); resolve(); }, 300);
                 };
                 okBtn.onclick = close;
+                closeBtn.onclick = close;
             });
         };
 
@@ -747,7 +1454,12 @@
                 const overlay = document.createElement('div');
                 overlay.className = 'fixed inset-0 bg-black/60 z-[9999] flex items-center justify-center opacity-0 transition-opacity duration-300 backdrop-blur-sm';
                 const modal = document.createElement('div');
-                modal.className = 'bg-white dark:bg-gray-800 rounded-2xl shadow-2xl p-6 max-w-md w-full mx-4 transform scale-95 transition-transform duration-300 border dark:border-gray-700';
+                modal.className = 'bg-white dark:bg-gray-800 rounded-2xl shadow-2xl p-6 max-w-md w-full mx-4 transform scale-95 transition-transform duration-300 border dark:border-gray-700 relative';
+
+                const closeBtn = document.createElement('button');
+                closeBtn.className = 'absolute top-4 right-4 text-gray-400 hover:text-gray-600 dark:hover:text-gray-200 transition-colors';
+                closeBtn.innerHTML = '<svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>';
+                modal.appendChild(closeBtn);
 
                 // Header
                 const header = document.createElement('div');
@@ -803,6 +1515,7 @@
                 };
                 cancelBtn.onclick = () => close(null);
                 okBtn.onclick = () => close(textarea.value);
+                closeBtn.onclick = () => close(null);
                 textarea.addEventListener('keydown', (e) => {
                     if (e.key === 'Enter' && e.ctrlKey) okBtn.click();
                     if (e.key === 'Escape') cancelBtn.click();
@@ -810,12 +1523,7 @@
             });
         };
 
-        // ===================== UTILS =====================
-        const currencyMap = { uae: 'AED', egypt: 'EGP', ksa: 'SAR', qatar: 'QAR' };
-        function getCurrency() {
-            const country = localStorage.getItem('selectedCountry') || 'uae';
-            return currencyMap[country] || 'AED';
-        }
+        // Utilities moved to top to prevent initialization errors
 
         function debounce(fn, delay) {
             let timer;
@@ -824,6 +1532,38 @@
                 timer = setTimeout(fn, delay);
             };
         }
+
+        // Listener for Global Country Changes
+        window.addEventListener('countryChanged', (e) => {
+            const country = e.detail.country;
+            
+            // Re-fetch all dynamic data
+            loadStats();
+            loadAnalytics();
+
+            // Refresh specific tabs if they are currently visible
+            const activeTab = document.querySelector('.sidebar-link.active');
+            if (activeTab) {
+                const tabId = activeTab.id;
+                if (tabId === 'nav-revenue') loadRevenue();
+                else if (tabId === 'nav-ads') loadAds();
+                else if (tabId === 'nav-moderation') loadPendingAds();
+                else if (tabId === 'nav-reports') loadReports();
+            }
+
+            // Sync Header UI elements
+            const flagMap = { uae: '🇦🇪', egypt: '🇪🇬', ksa: '🇸🇦', qatar: '🇶🇦' };
+            const nameMap = { uae: 'UAE', egypt: 'Egypt', ksa: 'KSA', qatar: 'Qatar' };
+            const fl = document.getElementById('current-country-flag');
+            const nm = document.getElementById('current-country-name');
+            if(fl) fl.textContent = flagMap[country] || '🇦🇪';
+            if(nm) nm.textContent = nameMap[country] || 'UAE';
+
+            // Show confirmation toast
+            const currency = getCurrency();
+            showAdminToast(`Switched to ${nameMap[country] || country} — showing ${currency} data`);
+        });
+
 
         function statusBadge(status) {
             const colors = {
@@ -844,7 +1584,8 @@
         async function loadStats() {
             try {
                 const currency = getCurrency();
-                const res = await apiClient.fetch(`/admin/stats?currency=${currency}`);
+                const country = localStorage.getItem('selectedCountry') || 'uae';
+                const res = await apiClient.fetch(`/admin/stats?currency=${currency}&country=${country}`);
                 const d = res.data;
 
                 // Update Sidebar
@@ -882,8 +1623,9 @@
         async function loadRevenue() {
             const period = document.getElementById('revenue-period').value;
             const currency = getCurrency();
+            const country = localStorage.getItem('selectedCountry') || 'uae';
             try {
-                const res = await apiClient.fetch(`/admin/revenue?period=${period}&currency=${currency}`);
+                const res = await apiClient.fetch(`/admin/revenue?period=${period}&currency=${currency}&country=${country}`);
                 const d = res.data;
 
                 document.getElementById('rev-total').textContent = `${currency} ${d.totalRevenue}`;
@@ -1031,6 +1773,9 @@
                 if (q) params.set('q', q);
                 if (status) params.set('status', status);
                 if (featured !== '') params.set('featured', featured);
+                
+                const country = localStorage.getItem('selectedCountry') || 'uae';
+                if (country && country !== 'all') params.set('country', country);
 
                 const res = await apiClient.fetch(`/admin/ads?${params}`);
                 if (!res.data.length) {
@@ -1122,7 +1867,8 @@
         // ===================== MODERATION QUEUE =====================
         async function loadPendingCount() {
             try {
-                const res = await apiClient.fetch('/admin/ads/pending?limit=1');
+                const country = localStorage.getItem('selectedCountry') || 'uae';
+            const res = await apiClient.fetch(`/admin/ads/pending?limit=1&country=${country}`);
                 const count = res.total || 0;
                 const badge = document.getElementById('pending-ads-badge');
                 badge.textContent = count;
@@ -1139,7 +1885,8 @@
             emptyState.classList.add('hidden');
 
             try {
-                const res = await apiClient.fetch('/admin/ads/pending?limit=50');
+                const country = localStorage.getItem('selectedCountry') || 'uae';
+            const res = await apiClient.fetch(`/admin/ads/pending?limit=50&country=${country}`);
                 loading.classList.add('hidden');
 
                 if (!res.data || !res.data.length) {
@@ -1153,42 +1900,78 @@
                 document.getElementById('pending-ads-badge').classList.remove('hidden');
 
                 grid.innerHTML = res.data.map(ad => {
+                    // Robust image handling: check if already an array or needs parsing
                     let images = [];
-                    try { images = JSON.parse(ad.images || '[]'); } catch (e) { }
-                    const img = images[0] || 'https://via.placeholder.com/300x200?text=No+Image';
+                    if (Array.isArray(ad.images)) {
+                        images = ad.images;
+                    } else if (typeof ad.images === 'string') {
+                        try { images = JSON.parse(ad.images); } catch (e) { images = []; }
+                    }
+                    
+                    const img = images[0] || 'https://placehold.co/300x200?text=No+Image';
                     const submitted = new Date(ad.createdAt).toLocaleDateString();
+                    const currency = getCurrency(); // Use global currency based on country
+                    
                     return `
                     <div class="bg-white dark:bg-gray-800 rounded-2xl border border-gray-100 dark:border-gray-700 overflow-hidden shadow-sm hover:shadow-md transition" id="pending-card-${ad.id}">
                         <div class="relative">
                             <img src="${img}" class="w-full h-40 object-cover" onerror="this.src='https://via.placeholder.com/300x200?text=No+Image'">
-                            <span class="absolute top-2 right-2 badge bg-yellow-100 text-yellow-700">⏳ Pending</span>
+                            <span class="absolute top-2 right-2 badge bg-yellow-100 text-yellow-700 font-bold">⏳ Pending</span>
                         </div>
                         <div class="p-4">
                             <h3 class="font-bold text-sm mb-1 truncate" title="${ad.title}">${ad.title}</h3>
                             <div class="flex items-center gap-2 text-xs text-gray-500 mb-2">
-                                <span class="badge bg-gray-100 text-gray-600 dark:bg-gray-700">${ad.category}</span>
-                                <span>💰 ${ad.price?.toLocaleString()} ${ad.currency || ''}</span>
+                                <span class="badge bg-gray-100 text-gray-600 dark:bg-gray-700 font-bold">${ad.category}</span>
+                                <span class="font-bold text-accent">💰 ${ad.price?.toLocaleString()} ${currency}</span>
                             </div>
                             <div class="flex items-center gap-2 text-xs text-gray-400 mb-3">
                                 <img src="${ad.user?.avatar || 'https://www.gravatar.com/avatar/?d=mp'}" class="w-5 h-5 rounded-full">
-                                <span>${ad.user?.name || 'Unknown'}</span>
+                                <span class="font-medium">${ad.user?.name || 'Unknown'}</span>
                                 <span class="ml-auto">📅 ${submitted}</span>
                             </div>
                             <p class="text-xs text-gray-500 dark:text-gray-400 mb-3 line-clamp-2">${ad.description || ''}</p>
                             <div class="flex gap-2">
-                                <button onclick="adminApproveAd(${ad.id})" class="flex-1 btn-sm bg-green-100 text-green-700 hover:bg-green-200 text-center">✅ موافقة</button>
-                                <button onclick="adminRejectAd(${ad.id}, '${ad.title.replace(/'/g, "\\'")}'  )" class="flex-1 btn-sm bg-red-100 text-red-700 hover:bg-red-200 text-center">❌ رفض</button>
-                                <a href="ad-details.html?id=${ad.id}" target="_blank" class="btn-sm bg-gray-100 text-gray-600 hover:bg-gray-200" title="معاينة">👁️</a>
+                                <button data-action="approve" data-id="${ad.id}" class="flex-1 btn-sm bg-green-100 text-green-700 hover:bg-green-200 text-center flex items-center justify-center gap-1">
+                                    <span>✅</span> موافقة
+                                </button>
+                                <button data-action="reject" data-id="${ad.id}" class="flex-1 btn-sm bg-red-100 text-red-700 hover:bg-red-200 text-center flex items-center justify-center gap-1">
+                                    <span>❌</span> رفض
+                                </button>
+                                <a href="ad-details.html?id=${ad.id}" target="_blank" class="btn-sm bg-gray-100 text-gray-600 hover:bg-gray-200 flex items-center justify-center" title="معاينة">👁️</a>
                             </div>
                         </div>
                     </div>
                     `;
                 }).join('');
+
+                // Event listener removed from here and moved to global init for stability
             } catch (err) {
                 loading.classList.add('hidden');
-                grid.innerHTML = `<p class="text-red-400 text-sm col-span-3">${err.message}</p>`;
+                grid.innerHTML = `<p class="text-red-400 text-sm col-span-3 font-bold">Error: ${err.message}</p>`;
             }
         }
+
+        // Global Initialization for Moderation Actions (Runs once)
+        document.addEventListener('DOMContentLoaded', () => {
+            const grid = document.getElementById('moderation-grid');
+            if (grid) {
+                grid.addEventListener('click', async (e) => {
+                    const btn = e.target.closest('button[data-action]');
+                    if (!btn) return;
+                    
+                    const id = btn.getAttribute('data-id');
+                    const action = btn.getAttribute('data-action');
+                    
+                    if (action === 'approve') {
+                        await adminApproveAd(id);
+                    } else if (action === 'reject') {
+                        if (window.handleModerationReject) {
+                            await window.handleModerationReject(btn, id);
+                        }
+                    }
+                });
+            }
+        });
 
         async function adminApproveAd(id) {
             try {
@@ -1205,28 +1988,44 @@
             } catch (e) { await customAlert(e.message); }
         }
 
-        async function adminRejectAd(id, title) {
-            const reason = await customPrompt(
-                `رفض الإعلان: "${title}"`,
-                'يرجى كتابة سبب الرفض (سيظهر لصاحب الإعلان):',
-                'الإعلان لا يتوافق مع سياسات المنصة، يرجى مراجعته وتعديله.'
-            );
-            if (reason === null) return; // cancelled
+        window.handleModerationReject = async function(btn, id) {
             try {
+                const card = btn ? btn.closest('[id^="pending-card-"]') : document.getElementById('pending-card-' + id);
+                const title = card && card.querySelector('h3') ? card.querySelector('h3').textContent.trim() : 'هذا الإعلان';
+                
+                const reason = await customPrompt(
+                    `رفض الإعلان: "${title}"`,
+                    'يرجى كتابة سبب الرفض (سيظهر لصاحب الإعلان):',
+                    'الإعلان لا يتوافق مع سياسات المنصة، يرجى مراجعته وتعديله.'
+                );
+                
+                if (reason === null) return; // cancelled
+                
                 await apiClient.fetch(`/admin/ads/${id}/reject`, {
                     method: 'PUT',
                     body: JSON.stringify({ reason: reason || undefined })
                 });
-                document.getElementById('pending-card-' + id)?.remove();
-                if (!document.querySelectorAll('[id^="pending-card-"]').length) {
+                
+                const cardToRemove = document.getElementById('pending-card-' + id);
+                if (cardToRemove) cardToRemove.remove();
+                
+                // Update badge and empty state
+                const remaining = document.querySelectorAll('[id^="pending-card-"]').length;
+                if (remaining === 0) {
                     document.getElementById('moderation-empty').classList.remove('hidden');
                     document.getElementById('pending-ads-badge').classList.add('hidden');
                 } else {
-                    const current = parseInt(document.getElementById('pending-ads-badge').textContent) || 0;
-                    if (current > 0) document.getElementById('pending-ads-badge').textContent = current - 1;
+                    const badge = document.getElementById('pending-ads-badge');
+                    if (badge) {
+                        const current = parseInt(badge.textContent) || 0;
+                        if (current > 0) badge.textContent = current - 1;
+                    }
                 }
-            } catch (e) { await customAlert(e.message); }
-        }
+            } catch (e) { 
+                console.error('Moderation rejection failed:', e);
+                await customAlert(e.message); 
+            }
+        };
 
         // ===================== REPORTS =====================
         async function loadReports() {
@@ -1237,7 +2036,8 @@
             try {
                 const params = new URLSearchParams({ limit: 50 });
                 if (status) params.set('status', status);
-                const res = await apiClient.fetch(`/admin/reports?${params}`);
+                const country = localStorage.getItem('selectedCountry') || 'uae';
+            const res = await apiClient.fetch(`/admin/reports?${params}&country=${country}`);
 
                 if (!res.data.length) {
                     tbody.innerHTML = '<tr><td colspan="5" class="px-6 py-8 text-center text-gray-400">✅ No reports found.</td></tr>';
@@ -1290,7 +2090,8 @@
         async function loadAnalytics() {
             try {
                 const currency = getCurrency();
-                const res = await apiClient.fetch(`/admin/analytics?currency=${currency}`);
+                const country = localStorage.getItem('selectedCountry') || 'uae';
+                const res = await apiClient.fetch(`/admin/analytics?currency=${currency}&country=${country}`);
                 const d = res.data;
 
                 renderUsersChart(d.users);
@@ -1394,10 +2195,115 @@
 
         // ===================== INIT =====================
         document.addEventListener('DOMContentLoaded', () => {
+            // Set initial country selector UI based on localStorage
+            const currentCountry = localStorage.getItem('selectedCountry') || 'uae';
+            const flagMap = { uae: '🇦🇪', egypt: '🇪🇬', ksa: '🇸🇦', qatar: '🇶🇦' };
+            const nameMap = { uae: 'UAE', egypt: 'Egypt', ksa: 'KSA', qatar: 'Qatar' };
+            const fl = document.getElementById('current-country-flag');
+            const nm = document.getElementById('current-country-name');
+            if(fl) fl.textContent = flagMap[currentCountry] || '🇦🇪';
+            if(nm) nm.textContent = nameMap[currentCountry] || 'UAE';
+
             loadStats();
             loadAnalytics();
         });
     </script>
+    <!-- Blog Post Modal -->
+    <div id="blog-modal" class="fixed inset-0 bg-black/60 z-[100] hidden flex items-center justify-center backdrop-blur-sm p-4">
+        <div class="bg-white dark:bg-gray-800 rounded-2xl shadow-2xl w-full max-w-4xl max-h-[90vh] overflow-y-auto transform scale-95 transition-all duration-300">
+            <div class="p-6 border-b border-gray-100 dark:border-gray-700 flex items-center justify-between sticky top-0 bg-white dark:bg-gray-800 z-10">
+                <h3 id="modal-title" class="text-xl font-bold">Create New Article</h3>
+                <button onclick="closePostModal()" class="p-2 hover:bg-gray-100 dark:hover:bg-gray-700 rounded-full">
+                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>
+                </button>
+            </div>
+            <form id="blog-form" class="p-6 space-y-6">
+                <input type="hidden" id="post-id">
+                
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <!-- English Content -->
+                    <div class="space-y-4">
+                        <div class="flex items-center gap-2 mb-2">
+                            <span class="text-xs font-bold bg-blue-100 text-blue-600 px-2 py-0.5 rounded">EN</span>
+                            <span class="text-sm font-bold opacity-50">English Version</span>
+                        </div>
+                        <div>
+                            <label class="block text-xs font-bold text-gray-400 uppercase mb-1">Title (EN)</label>
+                            <input type="text" id="title_en" required class="w-full px-4 py-2.5 rounded-xl border dark:border-gray-700 dark:bg-gray-900 focus:ring-2 focus:ring-accent outline-none">
+                        </div>
+                        <div>
+                            <label class="block text-xs font-bold text-gray-400 uppercase mb-1">Excerpt (EN)</label>
+                            <textarea id="excerpt_en" rows="2" required class="w-full px-4 py-2.5 rounded-xl border dark:border-gray-700 dark:bg-gray-900 focus:ring-2 focus:ring-accent outline-none"></textarea>
+                        </div>
+                        <div>
+                            <label class="block text-xs font-bold text-gray-400 uppercase mb-1">Full Content (EN)</label>
+                            <textarea id="content_en" rows="8" required class="w-full px-4 py-2.5 rounded-xl border dark:border-gray-700 dark:bg-gray-900 focus:ring-2 focus:ring-accent outline-none"></textarea>
+                        </div>
+                    </div>
+
+                    <!-- Arabic Content -->
+                    <div class="space-y-4" dir="rtl">
+                        <div class="flex items-center gap-2 mb-2">
+                            <span class="text-xs font-bold bg-orange-100 text-orange-600 px-2 py-0.5 rounded font-arabic">AR</span>
+                            <span class="text-sm font-bold opacity-50">النسخة العربية</span>
+                        </div>
+                        <div>
+                            <label class="block text-xs font-bold text-gray-400 uppercase mb-1">العنوان (AR)</label>
+                            <input type="text" id="title_ar" required class="w-full px-4 py-2.5 rounded-xl border dark:border-gray-700 dark:bg-gray-900 focus:ring-2 focus:ring-accent outline-none">
+                        </div>
+                        <div>
+                            <label class="block text-xs font-bold text-gray-400 uppercase mb-1">وصف مختصر (AR)</label>
+                            <textarea id="excerpt_ar" rows="2" required class="w-full px-4 py-2.5 rounded-xl border dark:border-gray-700 dark:bg-gray-900 focus:ring-2 focus:ring-accent outline-none"></textarea>
+                        </div>
+                        <div>
+                            <label class="block text-xs font-bold text-gray-400 uppercase mb-1">المحتوى الكامل (AR)</label>
+                            <textarea id="content_ar" rows="8" required class="w-full px-4 py-2.5 rounded-xl border dark:border-gray-700 dark:bg-gray-900 focus:ring-2 focus:ring-accent outline-none"></textarea>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-6 pt-4 border-t dark:border-gray-700">
+                    <div>
+                        <label class="block text-xs font-bold text-gray-400 uppercase mb-1">Category</label>
+                        <select id="post-category" class="w-full px-4 py-2.5 rounded-xl border dark:border-gray-700 dark:bg-gray-900 outline-none">
+                            <option value="motors">Motors</option>
+                            <option value="property">Property / Real Estate</option>
+                            <option value="electronics">Electronics</option>
+                            <option value="classifieds">Classifieds</option>
+                            <option value="jobs">Jobs</option>
+                            <option value="services">Services</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label class="block text-xs font-bold text-gray-400 uppercase mb-1">Featured Image</label>
+                        <div class="flex items-center gap-3">
+                            <label class="flex-1 flex flex-col items-center justify-center h-12 px-4 rounded-xl border-2 border-dashed border-gray-300 dark:border-gray-600 hover:border-accent cursor-pointer transition">
+                                <div class="flex items-center gap-2 text-gray-500">
+                                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12"/></svg>
+                                    <span class="text-xs font-bold">Upload Photo</span>
+                                </div>
+                                <input type="file" id="post-image-file" class="hidden" accept="image/*" onchange="previewPostImage(this)">
+                            </label>
+                            <img id="post-image-preview" src="https://placehold.co/600x400?text=Blog+Image" class="w-12 h-12 rounded-lg object-cover border dark:border-gray-700">
+                            <input type="hidden" id="post-image-url">
+                        </div>
+                    </div>
+                    <div>
+                        <label class="block text-xs font-bold text-gray-400 uppercase mb-1">Status</label>
+                        <select id="post-status" class="w-full px-4 py-2.5 rounded-xl border dark:border-gray-700 dark:bg-gray-900 outline-none">
+                            <option value="published">Published</option>
+                            <option value="draft">Draft</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="flex justify-end gap-3 pt-6">
+                    <button type="button" onclick="closePostModal()" class="px-6 py-2.5 rounded-xl font-bold bg-gray-100 dark:bg-gray-700">Cancel</button>
+                    <button type="submit" class="bg-accent text-white px-8 py-2.5 rounded-xl font-bold hover:bg-orange-600 transition">Save Article</button>
+                </div>
+            </form>
+        </div>
+    </div>
 </body>
 
-</html>
+</html>

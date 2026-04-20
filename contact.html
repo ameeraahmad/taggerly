@@ -123,34 +123,43 @@
             </div>
 
             <!-- Contact Form -->
-            <div
+            <div id="contact-form-container"
                 class="bg-white dark:bg-gray-800 p-8 rounded-2xl shadow-xl animate-fade-in border dark:border-gray-700">
-                <form class="space-y-6">
+                
+                <form id="contact-form" class="space-y-6">
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                         <div>
                             <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2"
                                 data-translate="nameLabel">Name</label>
-                            <input type="text"
+                            <input type="text" id="contact-name" data-translate="namePlaceholder" placeholder="Your Name" required
                                 class="w-full bg-gray-50 dark:bg-gray-700 border border-gray-300 dark:border-gray-600 rounded-xl px-4 py-3 focus:outline-none focus:ring-2 focus:ring-accent dark:text-white transition">
                         </div>
                         <div>
                             <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2"
                                 data-translate="emailLabel">Email</label>
-                            <input type="email"
+                            <input type="email" id="contact-email" data-translate="emailPlaceholder" placeholder="Email address" required
                                 class="w-full bg-gray-50 dark:bg-gray-700 border border-gray-300 dark:border-gray-600 rounded-xl px-4 py-3 focus:outline-none focus:ring-2 focus:ring-accent dark:text-white transition">
                         </div>
                     </div>
                     <div>
                         <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2"
                             data-translate="phoneLabel">Phone Number</label>
-                        <input type="tel"
-                            class="w-full bg-gray-50 dark:bg-gray-700 border border-gray-300 dark:border-gray-600 rounded-xl px-4 py-3 focus:outline-none focus:ring-2 focus:ring-accent dark:text-white transition"
-                            placeholder="+971 -- --- ----" data-translate="phonePlaceholder">
+                        <div class="flex gap-2">
+                            <select id="contact-country-code" class="w-1/3 bg-gray-50 dark:bg-gray-700 border border-gray-300 dark:border-gray-600 rounded-xl px-3 py-3 focus:outline-none focus:ring-2 focus:ring-accent dark:text-white transition text-sm">
+                                <option value="+971">🇦🇪 +971</option>
+                                <option value="+20">🇪🇬 +20</option>
+                                <option value="+966">🇸🇦 +966</option>
+                                <option value="+974">🇶🇦 +974</option>
+                            </select>
+                            <input type="tel" id="contact-phone" required
+                                class="flex-1 bg-gray-50 dark:bg-gray-700 border border-gray-300 dark:border-gray-600 rounded-xl px-4 py-3 focus:outline-none focus:ring-2 focus:ring-accent dark:text-white transition"
+                                placeholder="-- --- ----">
+                        </div>
                     </div>
                     <div>
                         <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2"
                             data-translate="subjectLabel">Subject</label>
-                        <select
+                        <select id="contact-subject"
                             class="w-full bg-gray-50 dark:bg-gray-700 border border-gray-300 dark:border-gray-600 rounded-xl px-4 py-3 focus:outline-none focus:ring-2 focus:ring-accent dark:text-white transition">
                             <option value="general" data-translate="generalEnquiry">General Enquiry</option>
                             <option value="support" data-translate="techSupport">Technical Support</option>
@@ -160,79 +169,163 @@
                     <div>
                         <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2"
                             data-translate="messageLabel">Message</label>
-                        <textarea rows="5"
+                        <textarea id="contact-message" rows="5" data-translate="messagePlaceholder" required
                             class="w-full bg-gray-50 dark:bg-gray-700 border border-gray-300 dark:border-gray-600 rounded-xl px-4 py-3 focus:outline-none focus:ring-2 focus:ring-accent dark:text-white transition"
                             placeholder="How can we help?"></textarea>
                     </div>
-                    <button type="submit"
-                        class="w-full bg-primary dark:bg-accent text-white font-bold py-4 rounded-xl hover:opacity-90 transition shadow-lg text-lg"
-                        data-translate="sendMessage">Send Message</button>
+                    <button type="submit" id="contact-submit-btn"
+                        class="w-full bg-primary dark:bg-accent text-white font-bold py-4 rounded-xl hover:opacity-90 transition shadow-lg text-lg flex items-center justify-center gap-2"
+                        data-translate="sendMessage">
+                        Send Message
+                    </button>
                 </form>
             </div>
         </div>
     </main>
 
-    <!-- Footer -->
-    <footer
-        class="site-footer bg-gray-900 text-white pt-12 pb-8 mt-20 border-t border-gray-800 transition-colors duration-300">
-        <div class="footer-container max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div class="grid grid-cols-1 md:grid-cols-4 gap-8 mb-8">
-                <div>
-                    <h3 class="text-xl font-bold mb-4">Taggerly</h3>
-                    <p class="text-gray-400 text-sm" data-translate="footerText">The best place to buy and sell
-                        anything.</p>
-                </div>
-                <div>
-                    <h4 class="font-bold mb-4 text-gray-300" data-translate="quickLinks">Quick Links</h4>
-                    <ul class="space-y-2 text-sm text-gray-400">
-                        <li><a href="about.html" class="hover:text-white transition" data-translate="aboutUs">About
-                                Us</a></li>
-                        <li><a href="contact.html" class="hover:text-white transition"
-                                data-translate="contactUs">Contact Us</a></li>
-                        <li><a href="#" class="hover:text-white transition" data-translate="careers">Careers</a></li>
-                    </ul>
-                </div>
-                <div>
-                    <h4 class="font-bold mb-4 text-gray-300" data-translate="support">Support</h4>
-                    <ul class="space-y-2 text-sm text-gray-400">
-                        <li><a href="help.html" class="hover:text-white transition" data-translate="helpCenter">Help
-                                Center</a></li>
-                        <li><a href="privacy.html" class="hover:text-white transition"
-                                data-translate="privacyPolicy">Privacy Policy</a></li>
-                        <li><a href="#" class="hover:text-white transition" data-translate="safetyTips">Safety Tips</a>
-                        </li>
-                        <li><a href="#" class="hover:text-white transition" data-translate="termsOfUse">Terms &
-                                Conditions</a></li>
-                    </ul>
-                </div>
-                <div>
-                    <h4 class="font-bold mb-4 text-gray-300" data-translate="followUs">Follow Us</h4>
-                    <div class="flex space-x-4 rtl:space-x-reverse">
-                        <a href="#" class="text-gray-400 hover:text-white transition">
-                            <svg class="w-6 h-6" fill="currentColor" viewBox="0 0 24 24">
-                                <path
-                                    d="M24 4.557c-.883.392-1.832.656-2.828.775 1.017-.609 1.798-1.574 2.165-2.724-.951.564-2.005.974-3.127 1.195-.897-.957-2.178-1.555-3.594-1.555-3.179 0-5.515 2.966-4.797 6.045-4.091-.205-7.719-2.165-10.148-5.144-1.29 2.213-.669 5.108 1.523 6.574-.806-.026-1.566-.247-2.229-.616-.054 2.281 1.581 4.415 3.949 4.89-.693.188-1.452.232-2.224.084.626 1.956 2.444 3.379 4.6 3.419-2.07 1.623-4.678 2.348-7.29 2.04 2.179 1.397 4.768 2.212 7.548 2.212 9.142 0 14.307-7.721 13.995-14.646.962-.695 1.797-1.562 2.457-2.549z" />
-                            </svg>
-                        </a>
-                        <a href="#" class="text-gray-400 hover:text-white transition">
-                            <svg class="w-6 h-6" fill="currentColor" viewBox="0 0 24 24">
-                                <path
-                                    d="M12 2.163c3.204 0 3.584.012 4.85.072 3.269.156 5.093 1.824 5.248 5.093.057 1.266.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.987 4.881-5.248 5.093-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.156-5.094-1.824-5.248-5.093-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.987-4.881 5.248-5.093 1.265-.06 1.644-.072 4.849-.072zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.206-6.788 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.789 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.206 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z" />
-                            </svg>
-                        </a>
-                    </div>
-                </div>
-            </div>
-            <div class="border-t border-gray-800 pt-8 text-center text-sm text-gray-500">
-                <p data-translate="rights">&copy; 2026 Taggerly. All rights reserved.</p>
-            </div>
-        </div>
-    </footer>
+    <!-- Footer Placeholder -->
+    <div id="global-footer-placeholder"></div>
 
     <script src="assets/js/en.js"></script>
     <script src="assets/js/ar.js"></script>
     <script src="assets/js/api-client.js"></script>
     <script src="assets/js/main.js"></script>
+    <script>
+        const phoneConfig = {
+            '+971': { pattern: /^[2-9]\d{8}$/, length: 9, placeholder: '5x xxx xxxx' }, // UAE
+            '+20': { pattern: /^1[0125]\d{8}$/, length: 10, placeholder: '1x xxxx xxxx' }, // Egypt
+            '+966': { pattern: /^5\d{8}$/, length: 9, placeholder: '5x xxx xxxx' }, // KSA
+            '+974': { pattern: /^[3567]\d{7}$/, length: 8, placeholder: 'xxxx xxxx' } // Qatar
+        };
+
+        const countryCodeSelect = document.getElementById('contact-country-code');
+        const phoneInput = document.getElementById('contact-phone');
+
+        function updatePhonePlaceholder() {
+            const config = phoneConfig[countryCodeSelect.value];
+            if (config) {
+                phoneInput.placeholder = config.placeholder;
+            }
+        }
+
+        countryCodeSelect.addEventListener('change', updatePhonePlaceholder);
+
+        document.getElementById('contact-form').addEventListener('submit', async function(e) {
+            e.preventDefault();
+
+            // Auth Check
+            const token = localStorage.getItem('token');
+            if (!token) {
+                const lang = window.currentLang || 'en';
+                const msg = (translations[lang] && translations[lang].loginToContact) || 'Please login to send a message.';
+                await customAlert(msg);
+                window.location.href = 'login.html';
+                return;
+            }
+
+            const btn = document.getElementById('contact-submit-btn');
+            const lang = window.currentLang || 'en';
+            const originalText = btn.textContent;
+            
+            const countryCode = countryCodeSelect.value;
+            let phoneVal = phoneInput.value.replace(/\s+/g, '');
+            const config = phoneConfig[countryCode];
+
+            // Strip leading zero if provided
+            if (phoneVal.startsWith('0') && countryCode !== '+974') {
+                phoneVal = phoneVal.substring(1);
+            }
+
+            // Validate Phone
+            if (config) {
+                if (phoneVal.length !== config.length || !config.pattern.test(phoneVal)) {
+                    const errorMsg = translations?.[lang]?.invalidPhone || 'Invalid phone number';
+                    await customAlert(errorMsg);
+                    phoneInput.focus();
+                    return;
+                }
+            }
+            
+            const payload = {
+                name: document.getElementById('contact-name').value,
+                email: document.getElementById('contact-email').value,
+                phone: countryCode + ' ' + phoneVal,
+                subject: document.getElementById('contact-subject').value,
+                message: document.getElementById('contact-message').value
+            };
+            
+            btn.disabled = true;
+            btn.innerHTML = '<svg class="animate-spin h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path></svg>';
+            
+            try {
+                const token = localStorage.getItem('token');
+                const response = await fetch('/api/support', {
+                    method: 'POST',
+                    headers: { 
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${token}`
+                    },
+                    body: JSON.stringify(payload)
+                });
+                
+                const data = await response.json();
+                
+                if (data.success) {
+                    await customAlert(data.message);
+                    document.getElementById('contact-form').reset();
+                    updatePhonePlaceholder();
+                } else {
+                    throw new Error(data.message);
+                }
+            } catch (err) {
+                await customAlert(err.message || 'Error occurred');
+            } finally {
+                btn.disabled = false;
+                btn.innerHTML = window.translations?.[lang]?.sendMessage || 'Send Message';
+            }
+        });
+
+        // Check Authentication and Initialize Form
+        function checkAuth() {
+            const token = localStorage.getItem('token');
+            const user = JSON.parse(localStorage.getItem('user') || '{}');
+
+            if (token) {
+                // Pre-fill user data
+                if (user.name) document.getElementById('contact-name').value = user.name;
+                if (user.email) document.getElementById('contact-email').value = user.email;
+                if (user.phone) {
+                    // Extract country code if possible
+                    const phoneMatch = user.phone.match(/^(\+\d+)\s+(.+)$/);
+                    if (phoneMatch) {
+                        document.getElementById('contact-country-code').value = phoneMatch[1];
+                        document.getElementById('contact-phone').value = phoneMatch[2];
+                    } else {
+                        document.getElementById('contact-phone').value = user.phone;
+                    }
+                }
+            }
+        }
+
+        // Initialize Country Code based on current country
+        function initCountryCode() {
+            const currentCountry = localStorage.getItem('selectedCountry') || 'uae';
+            const countryCodeSelect = document.getElementById('contact-country-code');
+            const map = {
+                'uae': '+971',
+                'egypt': '+20',
+                'saudi': '+966',
+                'qatar': '+974'
+            };
+            if (map[currentCountry]) {
+                countryCodeSelect.value = map[currentCountry];
+                updatePhonePlaceholder();
+            }
+        }
+        
+        checkAuth();
+        initCountryCode();
+    </script>
 </body>
 
 </html>

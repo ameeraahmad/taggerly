@@ -84,7 +84,10 @@ exports.updatePassword = async (req, res) => {
 // @access  Public
 exports.getPublicProfile = async (req, res) => {
     try {
-        const user = await User.findByPk(req.params.id, {
+        const { Ad, Review } = require('../models/associations');
+        const userId = req.params.id;
+
+        const user = await User.findByPk(userId, {
             attributes: ['id', 'name', 'avatar', 'bio', 'location', 'createdAt', 'isEmailVerified']
         });
 
@@ -92,7 +95,33 @@ exports.getPublicProfile = async (req, res) => {
             return res.status(404).json({ success: false, message: 'User not found' });
         }
 
-        res.status(200).json({ success: true, data: user });
+        // Calculate sold items
+        const soldItemsCount = await Ad.count({ where: { userId, status: 'sold' } });
+
+        // Calculate active ads
+        const activeAdsCount = await Ad.count({ where: { userId, status: 'active' } });
+
+        // Calculate success rate based on reviews
+        const reviews = await Review.findAll({ where: { sellerId: userId } });
+        let successRate = 100; // Default if no reviews
+        if (reviews.length > 0) {
+            const avgRating = reviews.reduce((acc, rev) => acc + rev.rating, 0) / reviews.length;
+            // Success rate is (avgRating / 5) * 100, capped at 100
+            successRate = Math.min(100, Math.round((avgRating / 5) * 100));
+        } else {
+            // If no reviews but has sold items, give a default high score
+            if (soldItemsCount > 0) successRate = 95;
+        }
+
+        res.status(200).json({ 
+            success: true, 
+            data: {
+                ...user.toJSON(),
+                soldItemsCount,
+                activeAdsCount,
+                successRate
+            } 
+        });
     } catch (err) {
         res.status(500).json({ success: false, message: err.message });
     }

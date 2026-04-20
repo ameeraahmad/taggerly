@@ -112,6 +112,10 @@ const Ad = sequelize.define('Ad', {
     longitude: {
         type: DataTypes.FLOAT,
         allowNull: true
+    },
+    paymentMethod: {
+        type: DataTypes.STRING,
+        allowNull: true
     }
 }, {
     timestamps: true,

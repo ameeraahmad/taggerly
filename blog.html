@@ -52,35 +52,18 @@
         </section>
 
         <!-- Search & Categories Bar -->
-        <section
-            class="sticky top-16 z-40 bg-white dark:bg-gray-800 border-b dark:border-gray-700 shadow-sm transition-colors duration-300">
-            <div
-                class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4 flex flex-col md:flex-row justify-between items-center gap-4">
-                <div
-                    class="flex items-center space-x-4 rtl:space-x-reverse overflow-x-auto pb-2 md:pb-0 hide-scrollbar w-full md:w-auto">
-                    <button class="px-4 py-2 bg-accent text-white rounded-full text-sm font-bold whitespace-nowrap"
-                        data-translate="allCategories">All Categories</button>
-                    <button
-                        class="px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-700 rounded-full text-sm font-medium whitespace-nowrap transition"
-                        data-translate="categoryAutomotive">Automotive</button>
-                    <button
-                        class="px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-700 rounded-full text-sm font-medium whitespace-nowrap transition"
-                        data-translate="categoryRealEstate">Real Estate</button>
-                    <button
-                        class="px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-700 rounded-full text-sm font-medium whitespace-nowrap transition"
-                        data-translate="categoryLifestyle">Lifestyle</button>
-                    <button
-                        class="px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-700 rounded-full text-sm font-medium whitespace-nowrap transition"
-                        data-translate="categorySafety">Safety</button>
+        <section class="bg-white dark:bg-gray-800 border-b dark:border-gray-700 shadow-sm transition-colors duration-300">
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4 flex flex-col md:flex-row justify-between items-center gap-4">
+                <div id="blog-filter-btns" class="flex items-center space-x-2 rtl:space-x-reverse overflow-x-auto pb-2 md:pb-0 hide-scrollbar w-full md:w-auto">
+                    <!-- Dynamic Category Buttons will be injected here -->
                 </div>
                 <div class="relative w-full md:w-64">
-                    <input type="text"
+                    <input type="text" id="blog-search-input"
                         class="w-full pl-10 pr-4 py-2 rounded-full border dark:border-gray-700 dark:bg-gray-900 focus:outline-none focus:ring-2 focus:ring-accent transition"
-                        placeholder="Search articles..." data-translate="blogSearchPlaceholder">
-                    <svg class="w-5 h-5 absolute left-3 top-2.5 text-gray-400" fill="none" stroke="currentColor"
-                        viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                            d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
+                        placeholder="Search articles..." data-translate="blogSearchPlaceholder"
+                        oninput="debounceFilter()">
+                    <svg class="w-5 h-5 absolute left-3 top-2.5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
                     </svg>
                 </div>
             </div>
@@ -89,105 +72,30 @@
         <!-- Main Blog Grid -->
         <section class="py-16">
             <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-                <h2 class="text-3xl font-bold mb-12" data-translate="latestArticles">Latest Articles</h2>
-
-                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-                    <!-- Post 1 -->
-                    <article
-                        class="bg-white dark:bg-gray-800 rounded-2xl overflow-hidden shadow-sm hover:shadow-xl transition flex flex-col group cursor-pointer">
-                        <div class="h-56 overflow-hidden">
-                            <img src="https://images.unsplash.com/photo-1550355291-bbee04a92027?ixlib=rb-1.2.1&auto=format&fit=crop&w=800&q=80"
-                                alt="Blog Post"
-                                class="w-full h-full object-cover group-hover:scale-110 transition duration-500">
-                        </div>
-                        <div class="p-6 flex-grow flex flex-col">
-                            <span class="text-accent text-xs font-bold uppercase tracking-wider mb-2"
-                                data-translate="categoryAutomotive">Automotive</span>
-                            <h3 class="text-xl font-bold mb-3 group-hover:text-accent transition"
-                                data-translate="postTitle1">How to Sell Your Car Fast in the UAE</h3>
-                            <p class="text-gray-600 dark:text-gray-400 text-sm mb-6 flex-grow"
-                                data-translate="postDesc1">Learn the top tips to prepare your car for sale and get the
-                                best price quickly.</p>
-                            <div class="flex items-center justify-between mt-auto">
-                                <span class="text-xs text-gray-500" data-translate="dummyJoinedDate">March 2024</span>
-                                <span class="text-accent font-bold text-sm flex items-center">
-                                    <span data-translate="readMore">Read More</span>
-                                    <svg class="w-4 h-4 ml-1 rtl:mr-1 rtl:ml-0 transform rtl:rotate-180" fill="none"
-                                        stroke="currentColor" viewBox="0 0 24 24">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                            d="M9 5l7 7-7 7"></path>
-                                    </svg>
-                                </span>
-                            </div>
-                        </div>
-                    </article>
-
-                    <!-- Post 2 -->
-                    <article
-                        class="bg-white dark:bg-gray-800 rounded-2xl overflow-hidden shadow-sm hover:shadow-xl transition flex flex-col group cursor-pointer">
-                        <div class="h-56 overflow-hidden">
-                            <img src="https://images.unsplash.com/photo-1512917774080-9991f1c4c750?ixlib=rb-1.2.1&auto=format&fit=crop&w=800&q=80"
-                                alt="Blog Post"
-                                class="w-full h-full object-cover group-hover:scale-110 transition duration-500">
-                        </div>
-                        <div class="p-6 flex-grow flex flex-col">
-                            <span class="text-blue-500 text-xs font-bold uppercase tracking-wider mb-2"
-                                data-translate="categoryRealEstate">Real Estate</span>
-                            <h3 class="text-xl font-bold mb-3 group-hover:text-accent transition"
-                                data-translate="postTitle2">Top 5 Neighborhoods to Live in Dubai 2026</h3>
-                            <p class="text-gray-600 dark:text-gray-400 text-sm mb-6 flex-grow"
-                                data-translate="postDesc2">A comprehensive guide to the most popular residential areas
-                                for families and singles.</p>
-                            <div class="flex items-center justify-between mt-auto">
-                                <span class="text-xs text-gray-500" data-translate="dummyJoinedDate">March 2024</span>
-                                <span class="text-accent font-bold text-sm flex items-center">
-                                    <span data-translate="readMore">Read More</span>
-                                    <svg class="w-4 h-4 ml-1 rtl:mr-1 rtl:ml-0 transform rtl:rotate-180" fill="none"
-                                        stroke="currentColor" viewBox="0 0 24 24">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                            d="M9 5l7 7-7 7"></path>
-                                    </svg>
-                                </span>
-                            </div>
-                        </div>
-                    </article>
-
-                    <!-- Post 3 -->
-                    <article
-                        class="bg-white dark:bg-gray-800 rounded-2xl overflow-hidden shadow-sm hover:shadow-xl transition flex flex-col group cursor-pointer">
-                        <div class="h-56 overflow-hidden">
-                            <img src="https://images.unsplash.com/photo-1581578731522-745d05cb972b?ixlib=rb-1.2.1&auto=format&fit=crop&w=800&q=80"
-                                alt="Blog Post"
-                                class="w-full h-full object-cover group-hover:scale-110 transition duration-500">
-                        </div>
-                        <div class="p-6 flex-grow flex flex-col">
-                            <span class="text-green-500 text-xs font-bold uppercase tracking-wider mb-2"
-                                data-translate="categoryLifestyle">Lifestyle</span>
-                            <h3 class="text-xl font-bold mb-3 group-hover:text-accent transition"
-                                data-translate="postTitle3">Spring Cleaning: How to Declutter Your Home</h3>
-                            <p class="text-gray-600 dark:text-gray-400 text-sm mb-6 flex-grow"
-                                data-translate="postDesc3">Simple steps to organize your space and turn your old items
-                                into cash.</p>
-                            <div class="flex items-center justify-between mt-auto">
-                                <span class="text-xs text-gray-500" data-translate="dummyJoinedDate">March 2024</span>
-                                <span class="text-accent font-bold text-sm flex items-center">
-                                    <span data-translate="readMore">Read More</span>
-                                    <svg class="w-4 h-4 ml-1 rtl:mr-1 rtl:ml-0 transform rtl:rotate-180" fill="none"
-                                        stroke="currentColor" viewBox="0 0 24 24">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                            d="M9 5l7 7-7 7"></path>
-                                    </svg>
-                                </span>
-                            </div>
-                        </div>
-                    </article>
+                <div class="flex items-center justify-between mb-12">
+                    <h2 class="text-3xl font-bold" data-translate="latestArticles">Latest Articles</h2>
+                    <span id="blog-results-count" class="text-sm text-gray-500 dark:text-gray-400"></span>
                 </div>
 
-                <!-- Load More Button -->
-                <div class="text-center mt-16">
-                    <button
-                        class="px-10 py-4 bg-gray-100 dark:bg-gray-800 border dark:border-gray-700 rounded-full font-bold hover:bg-gray-200 dark:hover:bg-gray-700 transition"
-                        data-translate="viewAll">View All Articles</button>
+                <!-- Articles Grid (populated dynamically) -->
+                <div id="blog-grid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                    <!-- Empty State -->
+                    <div id="blog-empty-state" class="col-span-full flex flex-col items-center justify-center py-24 text-center">
+                        <div class="w-24 h-24 bg-gray-100 dark:bg-gray-800 rounded-full flex items-center justify-center mb-6">
+                            <svg class="w-12 h-12 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"
+                                    d="M19 20H5a2 2 0 01-2-2V6a2 2 0 012-2h10a2 2 0 012 2v1m2 13a2 2 0 01-2-2V7m2 13a2 2 0 002-2V9a2 2 0 00-2-2h-2m-4-3H9M7 16h6M7 8h6v4H7V8z"/>
+                            </svg>
+                        </div>
+                        <h3 class="text-xl font-bold text-gray-700 dark:text-gray-300 mb-3" data-translate="comingSoon">Coming Soon</h3>
+                        <p class="text-gray-500 dark:text-gray-400 max-w-md" data-translate="blogSubtitle">Tips, news, and guides for savvy buyers and sellers.</p>
+                        <div class="mt-8 flex items-center gap-2 text-accent">
+                            <svg class="w-5 h-5 animate-pulse" fill="currentColor" viewBox="0 0 24 24">
+                                <path d="M12 2a10 10 0 110 20A10 10 0 0112 2zm0 2a8 8 0 100 16A8 8 0 0012 4zm0 3v5l3 3-1.4 1.4L10 13.6V7h2z"/>
+                            </svg>
+                            <span class="text-sm font-medium">Articles launching soon</span>
+                        </div>
+                    </div>
                 </div>
             </div>
         </section>
@@ -198,11 +106,11 @@
                 <h2 class="text-3xl font-bold mb-4" data-translate="followUs">Subscribe to our Newsletter</h2>
                 <p class="text-gray-600 dark:text-gray-400 mb-8" data-translate="blogSubtitle">Get the latest tips and
                     deals delivered straight to your inbox.</p>
-                <form class="flex flex-col sm:flex-row gap-4 max-w-lg mx-auto">
-                    <input type="email" placeholder="Email address"
+                <form id="newsletter-form" class="flex flex-col sm:flex-row gap-4 max-w-lg mx-auto">
+                    <input type="email" id="newsletter-email" placeholder="Email address" data-translate="emailPlaceholder"
                         class="flex-grow px-6 py-4 rounded-full border dark:border-gray-700 dark:bg-gray-900 focus:outline-none focus:ring-2 focus:ring-accent"
                         required>
-                    <button type="submit"
+                    <button type="submit" id="newsletter-submit-btn"
                         class="bg-accent text-white px-8 py-4 rounded-full font-bold hover:bg-orange-600 transition shadow-lg"
                         data-translate="signUpBtn">Subscribe</button>
                 </form>
@@ -210,59 +118,209 @@
         </section>
     </main>
 
-    <!-- Footer (Standardized) -->
-    <footer class="site-footer bg-gray-900 text-white pt-16 pb-8 border-t border-gray-800">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div class="grid grid-cols-1 md:grid-cols-4 gap-12 mb-12">
-                <div class="col-span-1 md:col-span-1">
-                    <a href="index.html" class="text-2xl font-bold mb-6 block">Taggerly</a>
-                    <p class="text-gray-400 text-sm leading-relaxed" data-translate="footerText">The best place to buy
-                        and sell anything in the UAE.</p>
-                </div>
-                <div>
-                    <h4 class="font-bold mb-6 text-gray-200" data-translate="quickLinks">Quick Links</h4>
-                    <ul class="space-y-4 text-sm text-gray-400">
-                        <li><a href="about.html" class="hover:text-accent transition">About Us</a></li>
-                        <li><a href="contact.html" class="hover:text-accent transition">Contact Us</a></li>
-                        <li><a href="blog.html" class="hover:text-accent transition font-bold text-white">Blog</a></li>
-                        <li><a href="plans.html" class="hover:text-accent transition">Pricing Plans</a></li>
-                    </ul>
-                </div>
-                <div>
-                    <h4 class="font-bold mb-6 text-gray-200" data-translate="support">Support</h4>
-                    <ul class="space-y-4 text-sm text-gray-400">
-                        <li><a href="help.html" class="hover:text-accent transition">Help Center</a></li>
-                        <li><a href="privacy.html" class="hover:text-accent transition">Privacy Policy</a></li>
-                        <li><a href="#" class="hover:text-accent transition">Terms & Conditions</a></li>
-                    </ul>
-                </div>
-                <div>
-                    <h4 class="font-bold mb-6 text-gray-200" data-translate="followUs">Follow Us</h4>
-                    <div class="flex space-x-4 rtl:space-x-reverse">
-                        <a href="#"
-                            class="w-10 h-10 rounded-full bg-gray-800 flex items-center justify-center hover:bg-accent transition text-gray-400 hover:text-white"><svg
-                                class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
-                                <path
-                                    d="M24 4.557c-.883.392-1.832.656-2.828.775 1.017-.609 1.798-1.574 2.165-2.724-.951.564-2.005.974-3.127 1.195-.897-.957-2.178-1.555-3.594-1.555-3.179 0-5.515 2.966-4.797 6.045-4.091-.205-7.719-2.165-10.148-5.144-1.29 2.213-.669 5.108 1.523 6.574-.806-.026-1.566-.247-2.229-.616-.054 2.281 1.581 4.415 3.949 4.89-.693.188-1.452.232-2.224.084.626 1.956 2.444 3.379 4.6 3.419-2.07 1.623-4.678 2.348-7.29 2.04 2.179 1.397 4.768 2.212 7.548 2.212 9.142 0 14.307-7.721 13.995-14.646.962-.695 1.797-1.562 2.457-2.549z" />
-                            </svg></a>
-                        <a href="#"
-                            class="w-10 h-10 rounded-full bg-gray-800 flex items-center justify-center hover:bg-accent transition text-gray-400 hover:text-white"><svg
-                                class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
-                                <path
-                                    d="M12 2.163c3.204 0 3.584.012 4.85.072 3.269.156 5.093 1.824 5.248 5.093.057 1.266.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.987 4.881-5.248 5.093-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.156-5.094-1.824-5.248-5.093-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.987-4.881 5.248-5.093 1.265-.06 1.644-.072 4.849-.072zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.206-6.788 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.789 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.206 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z" />
-                            </svg></a>
-                    </div>
-                </div>
-            </div>
-            <div class="border-t border-gray-800 pt-8 text-center text-sm text-gray-500">
-                <p data-translate="rights">&copy; 2026 Taggerly. All rights reserved.</p>
-            </div>
-        </div>
-    </footer>
+    <!-- Footer Placeholder -->
+    <div id="global-footer-placeholder"></div>
 
     <script src="assets/js/en.js"></script>
     <script src="assets/js/ar.js"></script>
     <script src="assets/js/main.js"></script>
+    <script>
+        // Newsletter subscription handler
+        document.getElementById('newsletter-form').addEventListener('submit', async function(e) {
+            e.preventDefault();
+            const emailInput = document.getElementById('newsletter-email');
+            const submitBtn = document.getElementById('newsletter-submit-btn');
+            const lang = window.currentLang || 'en';
+            
+            submitBtn.disabled = true;
+            submitBtn.innerHTML = '<svg class="animate-spin h-5 w-5 text-white mx-auto" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path></svg>';
+            
+            try {
+                const response = await fetch('/api/newsletter/subscribe', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ email: emailInput.value })
+                });
+                
+                const data = await response.json();
+                
+                if (data.success) {
+                    await customAlert(data.message);
+                    emailInput.value = '';
+                } else {
+                    throw new Error(data.message);
+                }
+            } catch (err) {
+                await customAlert(err.message || 'Something went wrong. Please try again.');
+            } finally {
+                submitBtn.disabled = false;
+                submitBtn.textContent = window.translations?.[lang]?.signUpBtn || 'Subscribe';
+            }
+        });
+
+        // Central list of categories (matching site main categories)
+        const blogCategories = ['motors', 'property', 'electronics', 'classifieds', 'jobs', 'services'];
+
+        function renderCategoryButtons(activeCat = 'all') {
+            const container = document.getElementById('blog-filter-btns');
+            if (!container) return;
+            
+            const lang = window.currentLang || 'en';
+            const t = window.translations?.[lang] || {};
+
+            // Map internal category keys to translation keys (handle special cases like realestate)
+            const getTranslationKey = (cat) => {
+                if (cat === 'all') return 'allCategories';
+                if (cat === 'realestate') return 'categoryRealEstate';
+                return `category${cat.charAt(0).toUpperCase() + cat.slice(1)}`;
+            };
+
+            let html = `
+                <button onclick="filterCategory('all')" data-cat="all"
+                    class="blog-cat-btn ${activeCat === 'all' ? 'active-cat bg-accent text-white' : 'bg-gray-100 dark:bg-gray-700 hover:bg-accent hover:text-white'} px-4 py-2 rounded-full text-sm font-bold whitespace-nowrap transition">
+                    ${t.allCategories || 'All Categories'}
+                </button>
+            `;
+
+            blogCategories.forEach(cat => {
+                const translationKey = `category${cat.charAt(0).toUpperCase() + cat.slice(1)}`;
+                const label = t[translationKey] || cat;
+                
+                html += `
+                    <button onclick="filterCategory('${cat}')" data-cat="${cat}"
+                        class="blog-cat-btn ${activeCat === cat ? 'active-cat bg-accent text-white' : 'bg-gray-100 dark:bg-gray-700 hover:bg-accent hover:text-white'} px-4 py-2 rounded-full text-sm font-bold whitespace-nowrap transition">
+                        ${label}
+                    </button>
+                `;
+            });
+
+            container.innerHTML = html;
+        }
+
+        // Blog category filter & search
+        let blogAbortController = null;
+        async function filterCategory(cat = 'all') {
+            const grid = document.getElementById('blog-grid');
+            const count = document.getElementById('blog-results-count');
+            const searchInput = document.getElementById('blog-search-input');
+            const lang = window.currentLang || 'en';
+            const t = window.translations?.[lang] || {};
+
+            if (!grid) return;
+
+            // Show loading state
+            grid.style.opacity = '0.5';
+            
+            // Cancel previous request if any
+            if (blogAbortController) blogAbortController.abort();
+            blogAbortController = new AbortController();
+
+            try {
+                // Ensure buttons are rendered if this is the first call
+                if (!document.querySelector('.blog-cat-btn')) {
+                    renderCategoryButtons(cat);
+                }
+
+                const query = (searchInput?.value || '').trim().toLowerCase();
+                const response = await fetch(`/api/blog?category=${cat}&search=${encodeURIComponent(query)}`, {
+                    signal: blogAbortController.signal
+                });
+                
+                const resData = await response.json();
+                grid.style.opacity = '1';
+
+                if (resData.success) {
+                    // Re-render buttons to update active state
+                    renderCategoryButtons(cat);
+
+                    if (count) {
+                        const countText = lang === 'ar' ? `${resData.data.length} مقال` : `${resData.data.length} articles`;
+                        count.textContent = countText;
+                    }
+
+                    if (resData.data.length === 0) {
+                        grid.innerHTML = `
+                            <div class="col-span-full py-20 text-center">
+                                <div class="text-4xl mb-4">🔍</div>
+                                <p class="text-gray-400 font-bold">${t.noArticlesFound || 'No articles found matching your criteria.'}</p>
+                            </div>
+                        `;
+                        return;
+                    }
+
+                    grid.innerHTML = resData.data.map(post => {
+                        const title = lang === 'ar' ? post.title_ar : post.title_en;
+                        const excerpt = lang === 'ar' ? post.excerpt_ar : post.excerpt_en;
+                        const catKey = `category${post.category.charAt(0).toUpperCase() + post.category.slice(1)}`;
+                        const catLabel = t[catKey] || post.category;
+                        
+                        return `
+                        <article class="bg-white dark:bg-gray-800 rounded-2xl overflow-hidden shadow-sm hover:shadow-xl transition-all duration-300 group">
+                            <div class="relative h-48 overflow-hidden">
+                                <img src="${post.featuredImage}" alt="${title}" 
+                                    class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500">
+                                <div class="absolute top-4 left-4 bg-accent text-white text-[10px] font-bold px-3 py-1 rounded-full uppercase tracking-wider">
+                                    ${catLabel}
+                                </div>
+                            </div>
+                            <div class="p-6">
+                                <h3 class="text-lg font-bold mb-3 line-clamp-2 group-hover:text-accent transition-colors">
+                                    <a href="blog-details.html?slug=${post.slug}">${title}</a>
+                                </h3>
+                                <p class="text-gray-500 dark:text-gray-400 text-sm mb-4 line-clamp-3">
+                                    ${excerpt}
+                                </p>
+                                <div class="flex items-center justify-between pt-4 border-t border-gray-100 dark:border-gray-700">
+                                    <span class="text-xs text-gray-400 font-medium">${new Date(post.createdAt).toLocaleDateString(lang === 'ar' ? 'ar-EG' : 'en-US')}</span>
+                                    <a href="blog-details.html?slug=${post.slug}" class="text-accent text-xs font-bold hover:underline">
+                                        ${t.readMore || 'Read More'} →
+                                    </a>
+                                </div>
+                            </div>
+                        </article>
+                        `;
+                    }).join('');
+                }
+            } catch (err) {
+                if (err.name === 'AbortError') return;
+                console.error('Error loading posts:', err);
+                grid.style.opacity = '1';
+            }
+        }
+
+        let debounceTimer;
+        function debounceFilter() {
+            clearTimeout(debounceTimer);
+            debounceTimer = setTimeout(() => {
+                const activeCat = document.querySelector('.active-cat')?.dataset.cat || 'all';
+                filterCategory(activeCat);
+            }, 300);
+        }
+
+        function viewPost(slug) {
+            window.location.href = `blog-details.html?slug=${slug}`;
+        }
+
+        // Initial load
+        let isInitialLoad = true;
+        document.addEventListener('DOMContentLoaded', () => {
+            // Give main.js a moment to initialize currentLang
+            setTimeout(() => {
+                const activeCat = document.querySelector('.active-cat')?.dataset.cat || 'all';
+                filterCategory(activeCat);
+                isInitialLoad = false;
+            }, 100);
+        });
+
+        // Align with main.js dynamic update pattern
+        window.updateDynamicContent = function(country, lang) {
+            // Prevent redundant updates during initial page load
+            if (isInitialLoad) return;
+            
+            const activeCat = document.querySelector('.active-cat')?.dataset.cat || 'all';
+            filterCategory(activeCat);
+        };
+    </script>
 </body>
 
 </html>

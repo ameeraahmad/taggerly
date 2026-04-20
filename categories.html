@@ -71,27 +71,27 @@
                 </div>
                 <div class="p-4">
                     <ul class="space-y-2 text-gray-600 dark:text-gray-300">
-                        <li><a href="javascript:void(0)" onclick="browseCategory('Motors', 'Used Cars')"
-                                class="hover:text-accent transition" data-translate="usedCars">Used
-                                Cars for Sale</a></li>
-                        <li><a href="javascript:void(0)" onclick="browseCategory('Motors', 'Motorcycles')"
-                                class="hover:text-accent transition" data-translate="motorcycles">Motorcycles -
-                                Scooters</a></li>
-                        <li><a href="javascript:void(0)" onclick="browseCategory('Motors', 'Heavy Vehicles')"
-                                class="hover:text-accent transition" data-translate="heavyVehicles">Heavy Vehicles</a>
-                        </li>
-                        <li><a href="javascript:void(0)" onclick="browseCategory('Motors', 'Boats')"
-                                class="hover:text-accent transition" data-translate="boats">Boats</a>
-                        </li>
-                        <li><a href="javascript:void(0)" onclick="browseCategory('Motors', 'Auto Accessories')"
-                                class="hover:text-accent transition" data-translate="autoAccessories">Auto Accessories &
-                                Parts</a></li>
+                        <li><a href="javascript:void(0)" onclick="browseCategory('Motors', 'Cars for Sale')"
+                                class="hover:text-accent transition" data-translate="carsForSale">Cars for Sale</a></li>
+                        <li><a href="javascript:void(0)" onclick="browseCategory('Motors', 'Cars for Rent')"
+                                class="hover:text-accent transition" data-translate="carsForRent">Cars for Rent</a></li>
+                        <li><a href="javascript:void(0)" onclick="browseCategory('Motors', 'Motorcycles for Sale')"
+                                class="hover:text-accent transition" data-translate="motorcyclesForSale">Motorcycles for Sale</a></li>
+                        <li><a href="javascript:void(0)" onclick="browseCategory('Motors', 'Motorcycle Parts')"
+                                class="hover:text-accent transition" data-translate="motorcycleParts">Motorcycle Spare Parts</a></li>
+                        <li><a href="javascript:void(0)" onclick="browseCategory('Motors', 'Car Spare Parts')"
+                                class="hover:text-accent transition" data-translate="carSpareParts">Car Spare Parts</a></li>
+                        <li><a href="javascript:void(0)" onclick="browseCategory('Motors', 'Marine Vehicles')"
+                                class="hover:text-accent transition" data-translate="marineVehicles">Marine Vehicles</a></li>
+                        <li><a href="javascript:void(0)" onclick="browseCategory('Motors', 'Heavy Trucks')"
+                                class="hover:text-accent transition" data-translate="heavyTrucks">Heavy Duty Trucks</a></li>
                     </ul>
                 </div>
             </div>
 
             <!-- Property for Sale -->
-            <div id="properties-section" class="bg-white dark:bg-gray-800 rounded-xl shadow-md overflow-hidden hover:shadow-lg transition">
+            <div id="properties-section"
+                class="bg-white dark:bg-gray-800 rounded-xl shadow-md overflow-hidden hover:shadow-lg transition">
                 <div
                     class="bg-green-50 dark:bg-green-900/20 p-4 border-b border-green-100 dark:border-green-800 flex items-center">
                     <div
@@ -107,24 +107,66 @@
                 </div>
                 <div class="p-4">
                     <ul class="space-y-2 text-gray-600 dark:text-gray-300">
-                        <li><a href="javascript:void(0)" onclick="browseCategory('Property', 'Residential for Sale')"
-                                class="hover:text-accent transition" data-translate="residentialSale">Residential for
-                                Sale</a></li>
+                        <li><a href="javascript:void(0)" onclick="browseCategory('Property', 'Apartments for Sale')"
+                                class="hover:text-accent transition" data-translate="apartmentsForSale">Apartments for Sale</a></li>
+                        <li><a href="javascript:void(0)" onclick="browseCategory('Property', 'Apartments for Rent')"
+                                class="hover:text-accent transition" data-translate="apartmentsForRent">Apartments for Rent</a></li>
+                        <li><a href="javascript:void(0)" onclick="browseCategory('Property', 'Villas for Sale')"
+                                class="hover:text-accent transition" data-translate="villasForSale">Villas for Sale</a></li>
+                        <li><a href="javascript:void(0)" onclick="browseCategory('Property', 'Villas for Rent')"
+                                class="hover:text-accent transition" data-translate="villasForRent">Villas for Rent</a></li>
+                        <li><a href="javascript:void(0)" onclick="browseCategory('Property', 'Resorts for Sale')"
+                                class="hover:text-accent transition" data-translate="resortsForSale">Resorts for Sale</a></li>
+                        <li><a href="javascript:void(0)" onclick="browseCategory('Property', 'Resorts for Rent')"
+                                class="hover:text-accent transition" data-translate="resortsForRent">Resorts for Rent</a></li>
                         <li><a href="javascript:void(0)" onclick="browseCategory('Property', 'Commercial for Sale')"
-                                class="hover:text-accent transition" data-translate="commercialSale">Commercial for
-                                Sale</a></li>
-                        <li><a href="javascript:void(0)" onclick="browseCategory('Property', 'Multiple Units')"
-                                class="hover:text-accent transition" data-translate="multipleUnits">Multiple Units for
-                                Sale</a></li>
-                        <li><a href="javascript:void(0)" onclick="browseCategory('Property', 'Land for Sale')"
-                                class="hover:text-accent transition" data-translate="landSale">Land
-                                for Sale</a></li>
+                                class="hover:text-accent transition" data-translate="commercialForSale">Commercial for Sale</a></li>
+                        <li><a href="javascript:void(0)" onclick="browseCategory('Property', 'Commercial for Rent')"
+                                class="hover:text-accent transition" data-translate="commercialForRent">Commercial for Rent</a></li>
+                        <li><a href="javascript:void(0)" onclick="browseCategory('Property', 'Buildings & Lands')"
+                                class="hover:text-accent transition" data-translate="buildingsAndLands">Buildings & Lands</a></li>
+                    </ul>
+                </div>
+            </div>
+
+            <!-- Electronics -->
+            <div id="electronics-section"
+                class="bg-white dark:bg-gray-800 rounded-xl shadow-md overflow-hidden hover:shadow-lg transition">
+                <div
+                    class="bg-blue-50 dark:bg-blue-900/20 p-4 border-b border-blue-100 dark:border-blue-800 flex items-center">
+                    <div
+                        class="p-2 bg-blue-100 dark:bg-blue-900/40 rounded-full mr-3 text-blue-700 dark:text-blue-400 rtl:ml-3 rtl:mr-0">
+                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                d="M9 3v2m6-2v2M9 19v2m6-2v2M5 9H3m2 6H3m18-6h-2m2 6h-2M7 19h10a2 2 0 002-2V7a2 2 0 00-2-2H7a2 2 0 00-2 2v10a2 2 0 002 2zM9 9h6v6H9V9z">
+                            </path>
+                        </svg>
+                    </div>
+                    <h2 class="text-xl font-bold text-gray-900 dark:text-white" data-translate="electronicsCategoryTitle">Electronics</h2>
+                </div>
+                <div class="p-4">
+                    <ul class="space-y-2 text-gray-600 dark:text-gray-300">
+                        <li><a href="javascript:void(0)" onclick="browseCategory('Electronics', 'Computers Desktop')"
+                                class="hover:text-accent transition" data-translate="computersDesktop">Computers Desktop</a></li>
+                        <li><a href="javascript:void(0)" onclick="browseCategory('Electronics', 'Laptops')"
+                                class="hover:text-accent transition" data-translate="laptops">Laptops</a></li>
+                        <li><a href="javascript:void(0)" onclick="browseCategory('Electronics', 'Mobile Phones')"
+                                class="hover:text-accent transition" data-translate="mobilePhones">Mobile Phones</a></li>
+                        <li><a href="javascript:void(0)" onclick="browseCategory('Electronics', 'Tablets')"
+                                class="hover:text-accent transition" data-translate="tabletsOnly">Tablets</a></li>
+                        <li><a href="javascript:void(0)" onclick="browseCategory('Electronics', 'Mobile Accessories')"
+                                class="hover:text-accent transition" data-translate="mobileTabletAccessories">Mobile Accessories</a></li>
+                        <li><a href="javascript:void(0)" onclick="browseCategory('Electronics', 'Computer Accessories')"
+                                class="hover:text-accent transition" data-translate="computerLaptopAccessories">Computer Accessories</a></li>
+                        <li><a href="javascript:void(0)" onclick="browseCategory('Electronics', 'TV Screens')"
+                                class="hover:text-accent transition" data-translate="tvScreens">TV Screens</a></li>
                     </ul>
                 </div>
             </div>
 
             <!-- Classifieds -->
-            <div id="classifieds-section" class="bg-white dark:bg-gray-800 rounded-xl shadow-md overflow-hidden hover:shadow-lg transition">
+            <div id="classifieds-section"
+                class="bg-white dark:bg-gray-800 rounded-xl shadow-md overflow-hidden hover:shadow-lg transition">
                 <div
                     class="bg-yellow-50 dark:bg-yellow-900/20 p-4 border-b border-yellow-100 dark:border-yellow-800 flex items-center">
                     <div
@@ -140,26 +182,27 @@
                 </div>
                 <div class="p-4">
                     <ul class="space-y-2 text-gray-600 dark:text-gray-300">
-                        <li><a href="javascript:void(0)" onclick="browseCategory('Classifieds', 'Electronics')"
-                                class="hover:text-accent transition" data-translate="electronics">Electronics</a></li>
-                        <li><a href="javascript:void(0)" onclick="browseCategory('Classifieds', 'Computers')"
-                                class="hover:text-accent transition" data-translate="computers">Computers &
-                                Networking</a></li>
                         <li><a href="javascript:void(0)" onclick="browseCategory('Classifieds', 'Clothing')"
-                                class="hover:text-accent transition" data-translate="clothing">Clothing &
-                                Accessories</a></li>
-                        <li><a href="javascript:void(0)" onclick="browseCategory('Classifieds', 'Cameras')"
-                                class="hover:text-accent transition" data-translate="cameras">Cameras
-                                & Imaging</a></li>
+                                class="hover:text-accent transition" data-translate="clothing">Clothing</a></li>
                         <li><a href="javascript:void(0)" onclick="browseCategory('Classifieds', 'Jewelry')"
-                                class="hover:text-accent transition" data-translate="jewelry">Jewelry
-                                & Watches</a></li>
+                                class="hover:text-accent transition" data-translate="jewelry">Jewelry</a></li>
+                        <li><a href="javascript:void(0)" onclick="browseCategory('Classifieds', 'Furniture & Decor')"
+                                class="hover:text-accent transition" data-translate="furnitureDecor">Furniture & Decor</a></li>
+                        <li><a href="javascript:void(0)" onclick="browseCategory('Classifieds', 'Women\'s Clothing')"
+                                class="hover:text-accent transition" data-translate="womensClothing">Women's Clothing</a></li>
+                        <li><a href="javascript:void(0)" onclick="browseCategory('Classifieds', 'Men\'s Clothing')"
+                                class="hover:text-accent transition" data-translate="mensClothing">Men's Clothing</a></li>
+                        <li><a href="javascript:void(0)" onclick="browseCategory('Classifieds', 'Baby Essentials')"
+                                class="hover:text-accent transition" data-translate="babyEssentials">Baby Essentials</a></li>
+                        <li><a href="javascript:void(0)" onclick="browseCategory('Classifieds', 'Antiques & Collectibles')"
+                                class="hover:text-accent transition" data-translate="antiquesCollectibles">Antiques & Collectibles</a></li>
                     </ul>
                 </div>
             </div>
 
             <!-- Jobs -->
-            <div id="jobs-section" class="bg-white dark:bg-gray-800 rounded-xl shadow-md overflow-hidden hover:shadow-lg transition">
+            <div id="jobs-section"
+                class="bg-white dark:bg-gray-800 rounded-xl shadow-md overflow-hidden hover:shadow-lg transition">
                 <div
                     class="bg-purple-50 dark:bg-purple-900/20 p-4 border-b border-purple-100 dark:border-purple-800 flex items-center">
                     <div
@@ -178,20 +221,23 @@
                                 class="hover:text-accent transition" data-translate="accounting">Accounting</a></li>
                         <li><a href="javascript:void(0)" onclick="browseCategory('Jobs', 'Engineering')"
                                 class="hover:text-accent transition" data-translate="engineering">Engineering</a></li>
-                        <li><a href="javascript:void(0)" onclick="browseCategory('Jobs', 'Sales')"
-                                class="hover:text-accent transition" data-translate="sales">Sales</a>
-                        </li>
                         <li><a href="javascript:void(0)" onclick="browseCategory('Jobs', 'Media')"
-                                class="hover:text-accent transition" data-translate="media">Media</a>
-                        </li>
+                                class="hover:text-accent transition" data-translate="media">Media</a></li>
                         <li><a href="javascript:void(0)" onclick="browseCategory('Jobs', 'Medical')"
                                 class="hover:text-accent transition" data-translate="medical">Medical</a></li>
+                        <li><a href="javascript:void(0)" onclick="browseCategory('Jobs', 'Designers')"
+                                class="hover:text-accent transition" data-translate="designers">Designers</a></li>
+                        <li><a href="javascript:void(0)" onclick="browseCategory('Jobs', 'Customer Service')"
+                                class="hover:text-accent transition" data-translate="customerService">Customer Service</a></li>
+                        <li><a href="javascript:void(0)" onclick="browseCategory('Jobs', 'Social Media')"
+                                class="hover:text-accent transition" data-translate="socialMedia">Social Media</a></li>
                     </ul>
                 </div>
             </div>
- 
+
             <!-- Services -->
-            <div id="services-section" class="bg-white dark:bg-gray-800 rounded-xl shadow-md overflow-hidden hover:shadow-lg transition">
+            <div id="services-section"
+                class="bg-white dark:bg-gray-800 rounded-xl shadow-md overflow-hidden hover:shadow-lg transition">
                 <div
                     class="bg-pink-50 dark:bg-pink-900/20 p-4 border-b border-pink-100 dark:border-pink-800 flex items-center">
                     <div
@@ -202,21 +248,19 @@
                             </path>
                         </svg>
                     </div>
-                    <h2 class="text-xl font-bold text-gray-900 dark:text-white" data-translate="servicesTitle">Services</h2>
+                    <h2 class="text-xl font-bold text-gray-900 dark:text-white" data-translate="servicesTitle">Services
+                    </h2>
                 </div>
                 <div class="p-4">
                     <ul class="space-y-2 text-gray-600 dark:text-gray-300">
                         <li><a href="javascript:void(0)" onclick="browseCategory('Services', 'Cleaning')"
-                                class="hover:text-accent transition" data-translate="cleaning">Cleaning Services</a>
-                        </li>
+                                class="hover:text-accent transition" data-translate="cleaning">Cleaning</a></li>
                         <li><a href="javascript:void(0)" onclick="browseCategory('Services', 'Maintenance')"
-                                class="hover:text-accent transition" data-translate="maintenance">Maintenance &
-                                Repair</a></li>
+                                class="hover:text-accent transition" data-translate="maintenance">Maintenance</a></li>
                         <li><a href="javascript:void(0)" onclick="browseCategory('Services', 'Moving')"
-                                class="hover:text-accent transition" data-translate="moving">Moving & Packing</a></li>
+                                class="hover:text-accent transition" data-translate="moving">Moving</a></li>
                         <li><a href="javascript:void(0)" onclick="browseCategory('Services', 'Education')"
-                                class="hover:text-accent transition" data-translate="education">Education & Tutoring</a>
-                        </li>
+                                class="hover:text-accent transition" data-translate="education">Education</a></li>
                     </ul>
                 </div>
             </div>
@@ -226,769 +270,231 @@
 
 
     <!--  -->
-    <!-- Section 1: Featured Categories -->
-    <section
-        class="motors-section py-12 dark:bg-gray-900 border-t border-gray-200 dark:border-gray-800 transition-colors duration-300">
-        <div class="motors-container max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+    <!-- Section: Category Tabs (Dynamic Sliders per Category) -->
+    <section id="categories-tabs-section"
+        class="py-12 bg-gray-50 dark:bg-gray-800 border-t border-gray-200 dark:border-gray-800 transition-colors duration-300">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div class="flex justify-between items-center mb-8">
                 <h2 class="text-3xl font-bold text-gray-900 dark:text-white" data-translate="featuredCategories">
-                    Featured
-                    Categories</h2>
-                <a href="javascript:void(0)" onclick="browseCategory('Motors')"
-                    class="text-primary dark:text-blue-400 hover:text-accent font-medium flex items-center group">
-                    <span data-translate="viewAll">View All</span>
-                    <span
-                        class="transform group-hover:translate-x-1 rtl:group-hover:-translate-x-1 transition-transform inline-block ml-1 rtl:mr-1 rtl:ml-0">&rarr;</span>
-                </a>
+                    Featured Categories</h2>
             </div>
 
-            <!-- Tabs Headers for Motors -->
-            <div class="flex space-x-6 border-b border-gray-200 dark:border-gray-700 mb-6">
+            <!-- Tabs Headers -->
+            <div
+                class="flex space-x-6 border-b border-gray-200 dark:border-gray-700 mb-6 overflow-x-auto hide-scrollbar whitespace-nowrap">
                 <button
                     class="pb-3 px-1 border-b-2 border-accent font-bold text-accent focus:outline-none transition tab-btn"
-                    data-target="motors-used" data-group="motors" data-translate="usedCars">
-                    Used Cars
+                    data-target="cat-motors" data-group="maincats">
+                    <span data-translate="motorsTitle">Motors</span>
                 </button>
                 <button
                     class="pb-3 px-1 border-b-2 border-transparent font-medium text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200 focus:outline-none transition tab-btn"
-                    data-target="motors-bikes" data-group="motors" data-translate="motorcycles">
-                    Motorcycles
+                    data-target="cat-property" data-group="maincats">
+                    <span data-translate="propertyTitle">Property</span>
                 </button>
                 <button
-                    class="pb-3 px-1 border-b-2 border-transparent font-medium text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200 focus:outline-none transition tab-btn whitespace-nowrap"
-                    data-target="motors-electronics" data-group="motors" data-translate="electronicsAppliances">
-                    Electronics & Appliances
+                    class="pb-3 px-1 border-b-2 border-transparent font-medium text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200 focus:outline-none transition tab-btn"
+                    data-target="cat-electronics" data-group="maincats">
+                    <span data-translate="electronicsCategoryTitle">Electronics</span>
                 </button>
                 <button
-                    class="pb-3 px-1 border-b-2 border-transparent font-medium text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200 focus:outline-none transition tab-btn whitespace-nowrap"
-                    data-target="motors-mobiles" data-group="motors" data-translate="mobilesTablets">
-                    Mobiles & Tablets
+                    class="pb-3 px-1 border-b-2 border-transparent font-medium text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200 focus:outline-none transition tab-btn"
+                    data-target="cat-classifieds" data-group="maincats">
+                    <span data-translate="classifiedsTitle">Classifieds</span>
+                </button>
+                <button
+                    class="pb-3 px-1 border-b-2 border-transparent font-medium text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200 focus:outline-none transition tab-btn"
+                    data-target="cat-jobs" data-group="maincats">
+                    <span data-translate="jobsTitle">Jobs</span>
+                </button>
+                <button
+                    class="pb-3 px-1 border-b-2 border-transparent font-medium text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200 focus:outline-none transition tab-btn"
+                    data-target="cat-services" data-group="maincats">
+                    <span data-translate="servicesTitle">Services</span>
                 </button>
             </div>
 
-            <!-- Motors Tab Contents -->
+            <!-- Tab Contents -->
             <div class="relative">
-
-                <!-- Used Cars Tab -->
-                <div id="motors-used" class="tab-content transition-opacity duration-300" data-group="motors">
+                <!-- Motors Content -->
+                <div id="cat-motors" class="tab-content transition-opacity duration-300" data-group="maincats">
                     <div class="relative group">
-                        <div id="motors-used-slider"
+                        <div id="cat-motors-slider"
                             class="flex overflow-x-auto space-x-6 pb-4 hide-scrollbar scroll-smooth snap-x snap-mandatory">
-                            <!-- Card 1 -->
-                            <div
-                                class="motor-card min-w-[280px] w-[280px] md:min-w-[320px] md:w-[320px] bg-white dark:bg-gray-800 rounded-xl shadow border dark:border-gray-700 snap-center flex-shrink-0">
-                                <div
-                                    class="motor-card-img-wrapper h-48 bg-gray-200 dark:bg-gray-700 relative overflow-hidden rounded-t-xl group-hover:scale-[1.02] transition-transform duration-300">
-                                    <img src="https://images.unsplash.com/photo-1605559424843-9e4c228bf1c2?ixlib=rb-1.2.1&auto=format&fit=crop&w=634&q=80"
-                                        loading="lazy" class="w-full h-full object-cover">
-                                    <span
-                                        class="badge-deal absolute top-2 left-2 bg-blue-600 text-white text-xs font-bold px-2 py-1 rounded">DEAL</span>
-                                </div>
-                                <div class="motor-card-info p-4">
-                                    <h3 class="font-bold text-lg mb-1 truncate text-gray-900 dark:text-white"
-                                        data-translate="ad_mercedes_c_class">
-                                        Mercedes-Benz C-Class</h3>
-                                    <p class="text-accent font-bold mb-2">145,000 <span
-                                            class="currency-label">AED</span></p>
-                                    <div class="text-xs text-gray-500 dark:text-gray-400 flex items-center">
-                                        <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                                d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z">
-                                            </path>
-                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                                d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"></path>
-                                        </svg>
-                                        <span class="city-label">Dubai</span>
-                                    </div>
-                                </div>
-                            </div>
-                            <!-- Card 2 -->
-                            <div class="motor-card min-w-[280px] w-[280px] md:min-w-[320px] md:w-[320px] bg-white dark:bg-gray-800 rounded-xl shadow border dark:border-gray-700 snap-center flex-shrink-0 cursor-pointer"
-                                onclick="window.location.href='ad-details.html'">
-                                <div
-                                    class="motor-card-img-wrapper h-48 bg-gray-200 dark:bg-gray-700 relative overflow-hidden rounded-t-xl group-hover:scale-[1.02] transition-transform duration-300">
-                                    <img src="https://images.unsplash.com/photo-1605559424843-9e4c228bf1c2?ixlib=rb-1.2.1&auto=format&fit=crop&w=634&q=80"
-                                        loading="lazy" class="w-full h-full object-cover">
-                                    <span
-                                        class="badge-deal absolute top-2 left-2 bg-blue-600 text-white text-xs font-bold px-2 py-1 rounded">DEAL</span>
-                                </div>
-                                <div class="motor-card-info p-4">
-                                    <h3 class="font-bold text-lg mb-1 truncate text-gray-900 dark:text-white"
-                                        data-translate="ad_mercedes_c_class">
-                                        Mercedes-Benz C-Class</h3>
-                                    <p class="text-accent font-bold mb-2">145,000 <span
-                                            class="currency-label">AED</span></p>
-                                    <div class="text-xs text-gray-500 dark:text-gray-400 flex items-center">
-                                        <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                                d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z">
-                                            </path>
-                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                                d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"></path>
-                                        </svg>
-                                        <span class="city-label">Dubai</span>
-                                    </div>
-                                </div>
-                            </div>
-                            <!-- Card 3 -->
-                            <div class="motor-card min-w-[280px] w-[280px] md:min-w-[320px] md:w-[320px] bg-white dark:bg-gray-800 rounded-xl shadow border dark:border-gray-700 snap-center flex-shrink-0 cursor-pointer"
-                                onclick="window.location.href='ad-details.html'">
-                                <div
-                                    class="motor-card-img-wrapper h-48 bg-gray-200 dark:bg-gray-700 relative overflow-hidden rounded-t-xl group-hover:scale-[1.02] transition-transform duration-300">
-                                    <img src="https://images.unsplash.com/photo-1605559424843-9e4c228bf1c2?ixlib=rb-1.2.1&auto=format&fit=crop&w=634&q=80"
-                                        loading="lazy" class="w-full h-full object-cover">
-                                    <span
-                                        class="badge-deal absolute top-2 left-2 bg-blue-600 text-white text-xs font-bold px-2 py-1 rounded">DEAL</span>
-                                </div>
-                                <div class="motor-card-info p-4">
-                                    <h3 class="font-bold text-lg mb-1 truncate text-gray-900 dark:text-white"
-                                        data-translate="ad_mercedes_c_class">
-                                        Mercedes-Benz C-Class</h3>
-                                    <p class="text-accent font-bold mb-2">145,000 <span
-                                            class="currency-label">AED</span></p>
-                                    <div class="text-xs text-gray-500 dark:text-gray-400 flex items-center">
-                                        <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                                d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z">
-                                            </path>
-                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                                d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"></path>
-                                        </svg>
-                                        <span class="city-label">Dubai</span>
-                                    </div>
-                                </div>
-                            </div>
-                            <!-- Card 4 -->
-                            <div class="motor-card min-w-[280px] w-[280px] md:min-w-[320px] md:w-[320px] bg-white dark:bg-gray-800 rounded-xl shadow border dark:border-gray-700 snap-center flex-shrink-0 cursor-pointer"
-                                onclick="window.location.href='ad-details.html'">
-                                <div
-                                    class="motor-card-img-wrapper h-48 bg-gray-200 dark:bg-gray-700 relative overflow-hidden rounded-t-xl group-hover:scale-[1.02] transition-transform duration-300">
-                                    <img src="https://images.unsplash.com/photo-1605559424843-9e4c228bf1c2?ixlib=rb-1.2.1&auto=format&fit=crop&w=634&q=80"
-                                        loading="lazy" class="w-full h-full object-cover">
-                                    <span
-                                        class="badge-deal absolute top-2 left-2 bg-blue-600 text-white text-xs font-bold px-2 py-1 rounded">DEAL</span>
-                                </div>
-                                <div class="motor-card-info p-4">
-                                    <h3 class="font-bold text-lg mb-1 truncate text-gray-900 dark:text-white"
-                                        data-translate="ad_mercedes_c_class">
-                                        Mercedes-Benz C-Class</h3>
-                                    <p class="text-accent font-bold mb-2">145,000 <span
-                                            class="currency-label">AED</span></p>
-                                    <div class="text-xs text-gray-500 dark:text-gray-400 flex items-center">
-                                        <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                                d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z">
-                                            </path>
-                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                                d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"></path>
-                                        </svg>
-                                        <span class="city-label">Dubai</span>
-                                    </div>
-                                </div>
-                            </div>
-                            <!-- Card 5 -->
-
-                            <div
-                                class="min-w-[280px] w-[280px] md:min-w-[320px] md:w-[320px] bg-white rounded-xl shadow border snap-center flex-shrink-0">
-                                <div class="h-48 bg-gray-200 relative overflow-hidden rounded-t-xl">
-                                    <img src="https://images.unsplash.com/photo-1503376763036-066120622c74?ixlib=rb-1.2.1&auto=format&fit=crop&w=634&q=80"
-                                        loading="lazy" class="w-full h-full object-cover">
-                                </div>
-                                <div class="p-4">
-                                    <h3 class="font-bold text-lg mb-1 truncate" data-translate="ad_audi_a4">Audi A4 2023
-                                    </h3>
-                                    <p class="text-accent font-bold mb-2">110,000 <span
-                                            class="currency-label">AED</span></p>
-                                    <div class="text-xs text-gray-500 flex items-center">
-                                        <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                                d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z">
-                                            </path>
-                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                                d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"></path>
-                                        </svg>
-                                        <span class="city-label">Abu Dhabi</span>
-                                    </div>
-                                </div>
-                            </div>
-                            <!-- Card 3 -->
-                            <div
-                                class="min-w-[280px] w-[280px] md:min-w-[320px] md:w-[320px] bg-white rounded-xl shadow border snap-center flex-shrink-0">
-                                <div class="h-48 bg-gray-200 relative overflow-hidden rounded-t-xl">
-                                    <img src="https://images.unsplash.com/photo-1583121274602-3e2820c69888?ixlib=rb-1.2.1&auto=format&fit=crop&w=634&q=80"
-                                        loading="lazy" class="w-full h-full object-cover">
-                                </div>
-                                <div class="p-4">
-                                    <h3 class="font-bold text-lg mb-1 truncate" data-translate="ad_tesla_model_3">Tesla
-                                        Model 3</h3>
-                                    <p class="text-accent font-bold mb-2">160,000 <span
-                                            class="currency-label">AED</span></p>
-                                    <div class="text-xs text-gray-500 flex items-center">
-                                        <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                                d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z">
-                                            </path>
-                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                                d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"></path>
-                                        </svg>
-                                        <span class="city-label">Dubai</span>
-                                    </div>
-                                </div>
-                            </div>
                         </div>
                         <button
-                            class="absolute left-0 top-1/2 transform -translate-y-1/2 -ml-4 bg-white p-2 rounded-full shadow-lg text-gray-700 hover:text-accent z-10 hidden md:block"
-                            onclick="scrollSlider('motors-used-slider', -300)">
+                            class="absolute left-0 top-1/2 transform -translate-y-1/2 -ml-4 bg-white dark:bg-gray-700 p-3 rounded-full shadow-lg text-gray-700 dark:text-gray-200 hover:text-accent z-10 hidden md:block"
+                            onclick="scrollSlider('cat-motors-slider', -300)">
                             <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                                     d="M15 19l-7-7 7-7"></path>
                             </svg>
                         </button>
                         <button
-                            class="absolute right-0 top-1/2 transform -translate-y-1/2 -mr-4 bg-white p-2 rounded-full shadow-lg text-gray-700 hover:text-accent z-10 hidden md:block"
-                            onclick="scrollSlider('motors-used-slider', 300)">
+                            class="absolute right-0 top-1/2 transform -translate-y-1/2 -mr-4 bg-white dark:bg-gray-700 p-3 rounded-full shadow-lg text-gray-700 dark:text-gray-200 hover:text-accent z-10 hidden md:block"
+                            onclick="scrollSlider('cat-motors-slider', 300)">
                             <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7">
                                 </path>
                             </svg>
                         </button>
                     </div>
+                    <div class="mt-4 text-center">
+                        <a href="search.html?category=Motors"
+                            class="text-primary dark:text-blue-400 hover:underline font-bold"
+                            data-translate="viewAll">View All Results</a>
+                    </div>
                 </div>
 
-                <!-- Motorcycles Tab -->
-                <div id="motors-bikes" class="tab-content hidden transition-opacity duration-300" data-group="motors">
+                <!-- Property Content -->
+                <div id="cat-property" class="tab-content hidden transition-opacity duration-300" data-group="maincats">
                     <div class="relative group">
-                        <div id="motors-bikes-slider"
+                        <div id="cat-property-slider"
                             class="flex overflow-x-auto space-x-6 pb-4 hide-scrollbar scroll-smooth snap-x snap-mandatory">
-                            <!-- Card 1 -->
-                            <div
-                                class="min-w-[280px] w-[280px] md:min-w-[320px] md:w-[320px] bg-white rounded-xl shadow border snap-center flex-shrink-0">
-                                <div class="h-48 bg-gray-200 relative overflow-hidden rounded-t-xl">
-                                    <img src="https://images.unsplash.com/photo-1558981403-c5f9899a28bc?ixlib=rb-1.2.1&auto=format&fit=crop&w=634&q=80"
-                                        loading="lazy" class="w-full h-full object-cover">
-                                </div>
-                                <div class="p-4">
-                                    <h3 class="font-bold text-lg mb-1 truncate" data-translate="ad_harley_sportster">
-                                        Harley-Davidson Sportster</h3>
-                                    <p class="text-accent font-bold mb-2">45,000 <span class="currency-label">AED</span>
-                                    </p>
-                                    <div class="text-xs text-gray-500 flex items-center">
-                                        <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                                d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z">
-                                            </path>
-                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                                d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"></path>
-                                        </svg>
-                                        <span class="city-label">Dubai</span>
-                                    </div>
-                                </div>
-                            </div>
-                            <!-- ./Card 1 -->
-                            <div
-                                class="min-w-[280px] w-[280px] md:min-w-[320px] md:w-[320px] bg-white rounded-xl shadow border snap-center flex-shrink-0">
-                                <div class="h-48 bg-gray-200 relative overflow-hidden rounded-t-xl">
-                                    <img src="https://images.unsplash.com/photo-1568772585407-9361f9bf3a87?ixlib=rb-1.2.1&auto=format&fit=crop&w=634&q=80"
-                                        loading="lazy" class="w-full h-full object-cover">
-                                </div>
-                                <div class="p-4">
-                                    <h3 class="font-bold text-lg mb-1 truncate" data-translate="ad_ducati_panigale">
-                                        Ducati Panigale V4</h3>
-                                    <p class="text-accent font-bold mb-2">95,000 <span class="currency-label">AED</span>
-                                    </p>
-                                    <div class="text-xs text-gray-500 flex items-center">
-                                        <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                                d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z">
-                                            </path>
-                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                                d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"></path>
-                                        </svg>
-                                        <span class="city-label">Abu Dhabi</span>
-                                    </div>
-                                </div>
-                            </div>
-                            <!-- Card 2 -->
-                            <div
-                                class="min-w-[280px] w-[280px] md:min-w-[320px] md:w-[320px] bg-white rounded-xl shadow border snap-center flex-shrink-0">
-                                <div class="h-48 bg-gray-200 relative overflow-hidden rounded-t-xl">
-                                    <img src="https://images.unsplash.com/photo-1558981403-c5f9899a28bc?ixlib=rb-1.2.1&auto=format&fit=crop&w=634&q=80"
-                                        loading="lazy" class="w-full h-full object-cover">
-                                </div>
-                                <div class="p-4">
-                                    <h3 class="font-bold text-lg mb-1 truncate" data-translate="ad_harley_sportster">
-                                        Harley-Davidson Sportster</h3>
-                                    <p class="text-accent font-bold mb-2">45,000 <span class="currency-label">AED</span>
-                                    </p>
-                                    <div class="text-xs text-gray-500 flex items-center">
-                                        <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                                d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z">
-                                            </path>
-                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                                d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"></path>
-                                        </svg>
-                                        <span class="city-label">Dubai</span>
-                                    </div>
-                                </div>
-                            </div>
-                            <!-- Card 3 -->
-                            <div
-                                class="min-w-[280px] w-[280px] md:min-w-[320px] md:w-[320px] bg-white rounded-xl shadow border snap-center flex-shrink-0">
-                                <div class="h-48 bg-gray-200 relative overflow-hidden rounded-t-xl">
-                                    <img src="https://images.unsplash.com/photo-1568772585407-9361f9bf3a87?ixlib=rb-1.2.1&auto=format&fit=crop&w=634&q=80"
-                                        loading="lazy" class="w-full h-full object-cover">
-                                </div>
-                                <div class="p-4">
-                                    <h3 class="font-bold text-lg mb-1 truncate" data-translate="ad_ducati_panigale">
-                                        Ducati Panigale V4</h3>
-                                    <p class="text-accent font-bold mb-2">95,000 <span class="currency-label">AED</span>
-                                    </p>
-                                    <div class="text-xs text-gray-500 flex items-center">
-                                        <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                                d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z">
-                                            </path>
-                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                                d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"></path>
-                                        </svg>
-                                        <span class="city-label">Abu Dhabi</span>
-                                    </div>
-                                </div>
-                            </div>
-                            <!-- Card 4 -->
-                            <div
-                                class="min-w-[280px] w-[280px] md:min-w-[320px] md:w-[320px] bg-white rounded-xl shadow border snap-center flex-shrink-0">
-                                <div class="h-48 bg-gray-200 relative overflow-hidden rounded-t-xl">
-                                    <img src="https://images.unsplash.com/photo-1558981403-c5f9899a28bc?ixlib=rb-1.2.1&auto=format&fit=crop&w=634&q=80"
-                                        loading="lazy" class="w-full h-full object-cover">
-                                </div>
-                                <div class="p-4">
-                                    <h3 class="font-bold text-lg mb-1 truncate" data-translate="ad_harley_sportster">
-                                        Harley-Davidson Sportster</h3>
-                                    <p class="text-accent font-bold mb-2">45,000 <span class="currency-label">AED</span>
-                                    </p>
-                                    <div class="text-xs text-gray-500 flex items-center">
-                                        <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                                d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z">
-                                            </path>
-                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                                d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"></path>
-                                        </svg>
-                                        <span class="city-label">Dubai</span>
-                                    </div>
-                                </div>
-                            </div>
-                            <!-- Card 5 -->
-                            <div
-                                class="min-w-[280px] w-[280px] md:min-w-[320px] md:w-[320px] bg-white rounded-xl shadow border snap-center flex-shrink-0">
-                                <div class="h-48 bg-gray-200 relative overflow-hidden rounded-t-xl">
-                                    <img src="https://images.unsplash.com/photo-1568772585407-9361f9bf3a87?ixlib=rb-1.2.1&auto=format&fit=crop&w=634&q=80"
-                                        loading="lazy" class="w-full h-full object-cover">
-                                </div>
-                                <div class="p-4">
-                                    <h3 class="font-bold text-lg mb-1 truncate" data-translate="ad_ducati_panigale">
-                                        Ducati Panigale V4</h3>
-                                    <p class="text-accent font-bold mb-2">95,000 <span class="currency-label">AED</span>
-                                    </p>
-                                    <div class="text-xs text-gray-500 flex items-center">
-                                        <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                                d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z">
-                                            </path>
-                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                                d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"></path>
-                                        </svg>
-                                        <span class="city-label">Abu Dhabi</span>
-                                    </div>
-                                </div>
-                            </div>
-                            <!-- Card 6 -->
                         </div>
-
                         <button
-                            class="absolute left-0 top-1/2 transform -translate-y-1/2 -ml-4 bg-white p-2 rounded-full shadow-lg text-gray-700 hover:text-accent z-10 hidden md:block"
-                            onclick="scrollSlider('motors-bikes-slider', -300)">
+                            class="absolute left-0 top-1/2 transform -translate-y-1/2 -ml-4 bg-white dark:bg-gray-700 p-3 rounded-full shadow-lg text-gray-700 dark:text-gray-200 hover:text-accent z-10 hidden md:block"
+                            onclick="scrollSlider('cat-property-slider', -300)">
                             <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                                     d="M15 19l-7-7 7-7"></path>
                             </svg>
                         </button>
                         <button
-                            class="absolute right-0 top-1/2 transform -translate-y-1/2 -mr-4 bg-white p-2 rounded-full shadow-lg text-gray-700 hover:text-accent z-10 hidden md:block"
-                            onclick="scrollSlider('motors-bikes-slider', 300)">
+                            class="absolute right-0 top-1/2 transform -translate-y-1/2 -mr-4 bg-white dark:bg-gray-700 p-3 rounded-full shadow-lg text-gray-700 dark:text-gray-200 hover:text-accent z-10 hidden md:block"
+                            onclick="scrollSlider('cat-property-slider', 300)">
                             <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7">
                                 </path>
                             </svg>
                         </button>
                     </div>
+                    <div class="mt-4 text-center">
+                        <a href="search.html?category=Property"
+                            class="text-primary dark:text-blue-400 hover:underline font-bold"
+                            data-translate="viewAll">View All Results</a>
+                    </div>
                 </div>
 
-                <!-- Electronics & Appliances Tab -->
-                <div id="motors-electronics" class="tab-content hidden transition-opacity duration-300"
-                    data-group="motors">
+                <!-- Electronics Content -->
+                <div id="cat-electronics" class="tab-content hidden transition-opacity duration-300"
+                    data-group="maincats">
                     <div class="relative group">
-                        <div id="motors-electronics-slider"
+                        <div id="cat-electronics-slider"
                             class="flex overflow-x-auto space-x-6 pb-4 hide-scrollbar scroll-smooth snap-x snap-mandatory">
-                            <!-- Card 1 -->
-                            <div class="min-w-[280px] w-[280px] md:min-w-[320px] md:w-[320px] bg-white dark:bg-gray-800 rounded-xl shadow border dark:border-gray-700 snap-center flex-shrink-0 cursor-pointer"
-                                onclick="window.location.href='ad-details.html'">
-                                <div
-                                    class="h-48 bg-gray-200 dark:bg-gray-700 relative overflow-hidden rounded-t-xl group-hover:scale-[1.02] transition-transform duration-300 flex items-center justify-center">
-                                    <img src="https://images.unsplash.com/photo-1544244015-0df4b3ffc6b0?ixlib=rb-1.2.1&auto=format&fit=crop&w=634&q=80"
-                                        loading="lazy" class="w-full h-full object-cover">
-                                </div>
-                                <div class="p-4">
-                                    <h3 class="font-bold text-lg mb-1 truncate text-gray-900 dark:text-white"
-                                        data-translate="ad_smart_tv_55">Smart TV
-                                        55 Inch</h3>
-                                    <p class="text-accent font-bold mb-2">1,500 <span class="currency-label">AED</span>
-                                    </p>
-                                    <div class="text-xs text-gray-500 dark:text-gray-400 flex items-center">
-                                        <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                                d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z">
-                                            </path>
-                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                                d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"></path>
-                                        </svg>
-                                        <span class="city-label">Dubai</span>
-                                    </div>
-                                </div>
-                            </div>
-                            <!-- ./Card 1 -->
-                            <div class="min-w-[280px] w-[280px] md:min-w-[320px] md:w-[320px] bg-white dark:bg-gray-800 rounded-xl shadow border dark:border-gray-700 snap-center flex-shrink-0 cursor-pointer"
-                                onclick="window.location.href='ad-details.html'">
-                                <div
-                                    class="h-48 bg-gray-200 dark:bg-gray-700 relative overflow-hidden rounded-t-xl group-hover:scale-[1.02] transition-transform duration-300 flex items-center justify-center">
-                                    <img src="https://images.unsplash.com/photo-1574269909862-7e1d70bb8078?ixlib=rb-1.2.1&auto=format&fit=crop&w=634&q=80"
-                                        loading="lazy" class="w-full h-full object-cover">
-                                </div>
-                                <div class="p-4">
-                                    <h3 class="font-bold text-lg mb-1 truncate text-gray-900 dark:text-white"
-                                        data-translate="ad_refrigerator">
-                                        Refrigerator</h3>
-                                    <p class="text-accent font-bold mb-2">800 <span class="currency-label">AED</span>
-                                    </p>
-                                    <div class="text-xs text-gray-500 dark:text-gray-400 flex items-center">
-                                        <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                                d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z">
-                                            </path>
-                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                                d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"></path>
-                                        </svg>
-                                        <span class="city-label">Sharjah</span>
-                                    </div>
-                                </div>
-                            </div>
-                            <!-- ./Card 2 -->
-                            <div class="min-w-[280px] w-[280px] md:min-w-[320px] md:w-[320px] bg-white dark:bg-gray-800 rounded-xl shadow border dark:border-gray-700 snap-center flex-shrink-0 cursor-pointer"
-                                onclick="window.location.href='ad-details.html'">
-                                <div
-                                    class="h-48 bg-gray-200 dark:bg-gray-700 relative overflow-hidden rounded-t-xl group-hover:scale-[1.02] transition-transform duration-300 flex items-center justify-center">
-                                    <img src="https://images.unsplash.com/photo-1544244015-0df4b3ffc6b0?ixlib=rb-1.2.1&auto=format&fit=crop&w=634&q=80"
-                                        loading="lazy" class="w-full h-full object-cover">
-                                </div>
-                                <div class="p-4">
-                                    <h3 class="font-bold text-lg mb-1 truncate text-gray-900 dark:text-white"
-                                        data-translate="ad_smart_tv_55">Smart TV
-                                        55 Inch</h3>
-                                    <p class="text-accent font-bold mb-2">1,500 <span class="currency-label">AED</span>
-                                    </p>
-                                    <div class="text-xs text-gray-500 dark:text-gray-400 flex items-center">
-                                        <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                                d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z">
-                                            </path>
-                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                                d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"></path>
-                                        </svg>
-                                        <span class="city-label">Dubai</span>
-                                    </div>
-                                </div>
-                            </div>
-                            <!-- ./Card 3 -->
-                            <div class="min-w-[280px] w-[280px] md:min-w-[320px] md:w-[320px] bg-white dark:bg-gray-800 rounded-xl shadow border dark:border-gray-700 snap-center flex-shrink-0 cursor-pointer"
-                                onclick="window.location.href='ad-details.html'">
-                                <div
-                                    class="h-48 bg-gray-200 dark:bg-gray-700 relative overflow-hidden rounded-t-xl group-hover:scale-[1.02] transition-transform duration-300 flex items-center justify-center">
-                                    <img src="https://images.unsplash.com/photo-1574269909862-7e1d70bb8078?ixlib=rb-1.2.1&auto=format&fit=crop&w=634&q=80"
-                                        loading="lazy" class="w-full h-full object-cover">
-                                </div>
-                                <div class="p-4">
-                                    <h3 class="font-bold text-lg mb-1 truncate text-gray-900 dark:text-white"
-                                        data-translate="ad_refrigerator">
-                                        Refrigerator</h3>
-                                    <p class="text-accent font-bold mb-2">800 <span class="currency-label">AED</span>
-                                    </p>
-                                    <div class="text-xs text-gray-500 dark:text-gray-400 flex items-center">
-                                        <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                                d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z">
-                                            </path>
-                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                                d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"></path>
-                                        </svg>
-                                        <span class="city-label">Sharjah</span>
-                                    </div>
-                                </div>
-                            </div>
-                            <!-- ./Card 4 -->
-                            <div class="min-w-[280px] w-[280px] md:min-w-[320px] md:w-[320px] bg-white dark:bg-gray-800 rounded-xl shadow border dark:border-gray-700 snap-center flex-shrink-0 cursor-pointer"
-                                onclick="window.location.href='ad-details.html'">
-                                <div
-                                    class="h-48 bg-gray-200 dark:bg-gray-700 relative overflow-hidden rounded-t-xl group-hover:scale-[1.02] transition-transform duration-300 flex items-center justify-center">
-                                    <img src="https://images.unsplash.com/photo-1544244015-0df4b3ffc6b0?ixlib=rb-1.2.1&auto=format&fit=crop&w=634&q=80"
-                                        loading="lazy" class="w-full h-full object-cover">
-                                </div>
-                                <div class="p-4">
-                                    <h3 class="font-bold text-lg mb-1 truncate text-gray-900 dark:text-white"
-                                        data-translate="ad_smart_tv_55">Smart TV
-                                        55 Inch</h3>
-                                    <p class="text-accent font-bold mb-2">1,500 <span class="currency-label">AED</span>
-                                    </p>
-                                    <div class="text-xs text-gray-500 dark:text-gray-400 flex items-center">
-                                        <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                                d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z">
-                                            </path>
-                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                                d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"></path>
-                                        </svg>
-                                        <span class="city-label">Dubai</span>
-                                    </div>
-                                </div>
-                            </div>
-                            <!-- ./Card 5 -->
-                            <div class="min-w-[280px] w-[280px] md:min-w-[320px] md:w-[320px] bg-white dark:bg-gray-800 rounded-xl shadow border dark:border-gray-700 snap-center flex-shrink-0 cursor-pointer"
-                                onclick="window.location.href='ad-details.html'">
-                                <div
-                                    class="h-48 bg-gray-200 dark:bg-gray-700 relative overflow-hidden rounded-t-xl group-hover:scale-[1.02] transition-transform duration-300 flex items-center justify-center">
-                                    <img src="https://images.unsplash.com/photo-1574269909862-7e1d70bb8078?ixlib=rb-1.2.1&auto=format&fit=crop&w=634&q=80"
-                                        loading="lazy" class="w-full h-full object-cover">
-                                </div>
-                                <div class="p-4">
-                                    <h3 class="font-bold text-lg mb-1 truncate text-gray-900 dark:text-white"
-                                        data-translate="ad_refrigerator">
-                                        Refrigerator</h3>
-                                    <p class="text-accent font-bold mb-2">800 <span class="currency-label">AED</span>
-                                    </p>
-                                    <div class="text-xs text-gray-500 dark:text-gray-400 flex items-center">
-                                        <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                                d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z">
-                                            </path>
-                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                                d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"></path>
-                                        </svg>
-                                        <span class="city-label">Sharjah</span>
-                                    </div>
-                                </div>
-                            </div>
-                            <!-- ./Card 6 -->
-
                         </div>
                         <button
-                            class="absolute left-0 top-1/2 transform -translate-y-1/2 -ml-4 bg-white p-2 rounded-full shadow-lg text-gray-700 hover:text-accent z-10 hidden md:block"
-                            onclick="scrollSlider('motors-electronics-slider', -300)">
+                            class="absolute left-0 top-1/2 transform -translate-y-1/2 -ml-4 bg-white dark:bg-gray-700 p-3 rounded-full shadow-lg text-gray-700 dark:text-gray-200 hover:text-accent z-10 hidden md:block"
+                            onclick="scrollSlider('cat-electronics-slider', -300)">
                             <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                                     d="M15 19l-7-7 7-7"></path>
                             </svg>
                         </button>
                         <button
-                            class="absolute right-0 top-1/2 transform -translate-y-1/2 -mr-4 bg-white p-2 rounded-full shadow-lg text-gray-700 hover:text-accent z-10 hidden md:block"
-                            onclick="scrollSlider('motors-electronics-slider', 300)">
+                            class="absolute right-0 top-1/2 transform -translate-y-1/2 -mr-4 bg-white dark:bg-gray-700 p-3 rounded-full shadow-lg text-gray-700 dark:text-gray-200 hover:text-accent z-10 hidden md:block"
+                            onclick="scrollSlider('cat-electronics-slider', 300)">
                             <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7">
                                 </path>
                             </svg>
                         </button>
                     </div>
+                    <div class="mt-4 text-center">
+                        <a href="search.html?category=Electronics"
+                            class="text-primary dark:text-blue-400 hover:underline font-bold"
+                            data-translate="viewAll">View All Results</a>
+                    </div>
                 </div>
 
-                <!-- Mobiles & Tablets Tab -->
-                <div id="motors-mobiles" class="tab-content hidden transition-opacity duration-300" data-group="motors">
+                <!-- Classifieds Content -->
+                <div id="cat-classifieds" class="tab-content hidden transition-opacity duration-300"
+                    data-group="maincats">
                     <div class="relative group">
-                        <div id="motors-mobiles-slider"
+                        <div id="cat-classifieds-slider"
                             class="flex overflow-x-auto space-x-6 pb-4 hide-scrollbar scroll-smooth snap-x snap-mandatory">
-                            <!-- Card 1 -->
-                            <div class="min-w-[280px] w-[280px] md:min-w-[320px] md:w-[320px] bg-white dark:bg-gray-800 rounded-xl shadow border dark:border-gray-700 snap-center flex-shrink-0 cursor-pointer"
-                                onclick="window.location.href='ad-details.html'">
-                                <div
-                                    class="h-48 bg-gray-200 dark:bg-gray-700 relative overflow-hidden rounded-t-xl group-hover:scale-[1.02] transition-transform duration-300 flex items-center justify-center">
-                                    <img src="https://images.unsplash.com/photo-1511707171634-5f897ff02aa9?ixlib=rb-1.2.1&auto=format&fit=crop&w=634&q=80"
-                                        loading="lazy" class="w-full h-full object-cover">
-                                </div>
-                                <div class="p-4">
-                                    <h3 class="font-bold text-lg mb-1 truncate text-gray-900 dark:text-white"
-                                        data-translate="ad_iphone_14_pro">iPhone 14
-                                        Pro</h3>
-                                    <p class="text-accent font-bold mb-2">3,500 <span class="currency-label">AED</span>
-                                    </p>
-                                    <div class="text-xs text-gray-500 dark:text-gray-400 flex items-center">
-                                        <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                                d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z">
-                                            </path>
-                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                                d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"></path>
-                                        </svg>
-                                        <span class="city-label">Abu Dhabi</span>
-                                    </div>
-                                </div>
-                            </div>
-                            <!-- ./ Card 1 -->
-                            <div class="min-w-[280px] w-[280px] md:min-w-[320px] md:w-[320px] bg-white dark:bg-gray-800 rounded-xl shadow border dark:border-gray-700 snap-center flex-shrink-0 cursor-pointer"
-                                onclick="window.location.href='ad-details.html'">
-                                <div
-                                    class="h-48 bg-gray-200 dark:bg-gray-700 relative overflow-hidden rounded-t-xl group-hover:scale-[1.02] transition-transform duration-300 flex items-center justify-center">
-                                    <img src="https://images.unsplash.com/photo-1546868871-7041f2a55e12?ixlib=rb-1.2.1&auto=format&fit=crop&w=634&q=80"
-                                        loading="lazy" class="w-full h-full object-cover">
-                                </div>
-                                <div class="p-4">
-                                    <h3 class="font-bold text-lg mb-1 truncate text-gray-900 dark:text-white"
-                                        data-translate="ad_ipad_pro">iPad Pro
-                                    </h3>
-                                    <p class="text-accent font-bold mb-2">2,800 <span class="currency-label">AED</span>
-                                    </p>
-                                    <div class="text-xs text-gray-500 dark:text-gray-400 flex items-center">
-                                        <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                                d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z">
-                                            </path>
-                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                                d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"></path>
-                                        </svg>
-                                        <span class="city-label">Dubai</span>
-                                    </div>
-                                </div>
-                            </div>
-                            <!-- Card 2 -->
-                            <div class="min-w-[280px] w-[280px] md:min-w-[320px] md:w-[320px] bg-white dark:bg-gray-800 rounded-xl shadow border dark:border-gray-700 snap-center flex-shrink-0 cursor-pointer"
-                                onclick="window.location.href='ad-details.html'">
-                                <div
-                                    class="h-48 bg-gray-200 dark:bg-gray-700 relative overflow-hidden rounded-t-xl group-hover:scale-[1.02] transition-transform duration-300 flex items-center justify-center">
-                                    <img src="https://images.unsplash.com/photo-1511707171634-5f897ff02aa9?ixlib=rb-1.2.1&auto=format&fit=crop&w=634&q=80"
-                                        loading="lazy" class="w-full h-full object-cover">
-                                </div>
-                                <div class="p-4">
-                                    <h3 class="font-bold text-lg mb-1 truncate text-gray-900 dark:text-white"
-                                        data-translate="ad_iphone_14_pro">iPhone 14
-                                        Pro</h3>
-                                    <p class="text-accent font-bold mb-2">3,500 <span class="currency-label">AED</span>
-                                    </p>
-                                    <div class="text-xs text-gray-500 dark:text-gray-400 flex items-center">
-                                        <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                                d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z">
-                                            </path>
-                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                                d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"></path>
-                                        </svg>
-                                        <span class="city-label">Abu Dhabi</span>
-                                    </div>
-                                </div>
-                            </div>
-                            <!-- Card 3 -->
-                            <div class="min-w-[280px] w-[280px] md:min-w-[320px] md:w-[320px] bg-white dark:bg-gray-800 rounded-xl shadow border dark:border-gray-700 snap-center flex-shrink-0 cursor-pointer"
-                                onclick="window.location.href='ad-details.html'">
-                                <div
-                                    class="h-48 bg-gray-200 dark:bg-gray-700 relative overflow-hidden rounded-t-xl group-hover:scale-[1.02] transition-transform duration-300 flex items-center justify-center">
-                                    <img src="https://images.unsplash.com/photo-1546868871-7041f2a55e12?ixlib=rb-1.2.1&auto=format&fit=crop&w=634&q=80"
-                                        loading="lazy" class="w-full h-full object-cover">
-                                </div>
-                                <div class="p-4">
-                                    <h3 class="font-bold text-lg mb-1 truncate text-gray-900 dark:text-white"
-                                        data-translate="ad_ipad_pro">iPad Pro
-                                    </h3>
-                                    <p class="text-accent font-bold mb-2">2,800 <span class="currency-label">AED</span>
-                                    </p>
-                                    <div class="text-xs text-gray-500 dark:text-gray-400 flex items-center">
-                                        <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                                d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z">
-                                            </path>
-                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                                d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"></path>
-                                        </svg>
-                                        <span class="city-label">Dubai</span>
-                                    </div>
-                                </div>
-                            </div>
-                            <!-- Card 4 -->
-                            <div class="min-w-[280px] w-[280px] md:min-w-[320px] md:w-[320px] bg-white dark:bg-gray-800 rounded-xl shadow border dark:border-gray-700 snap-center flex-shrink-0 cursor-pointer"
-                                onclick="window.location.href='ad-details.html'">
-                                <div
-                                    class="h-48 bg-gray-200 dark:bg-gray-700 relative overflow-hidden rounded-t-xl group-hover:scale-[1.02] transition-transform duration-300 flex items-center justify-center">
-                                    <img src="https://images.unsplash.com/photo-1511707171634-5f897ff02aa9?ixlib=rb-1.2.1&auto=format&fit=crop&w=634&q=80"
-                                        loading="lazy" class="w-full h-full object-cover">
-                                </div>
-                                <div class="p-4">
-                                    <h3 class="font-bold text-lg mb-1 truncate text-gray-900 dark:text-white"
-                                        data-translate="ad_iphone_14_pro">iPhone 14
-                                        Pro</h3>
-                                    <p class="text-accent font-bold mb-2">3,500 <span class="currency-label">AED</span>
-                                    </p>
-                                    <div class="text-xs text-gray-500 dark:text-gray-400 flex items-center">
-                                        <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                                d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z">
-                                            </path>
-                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                                d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"></path>
-                                        </svg>
-                                        <span class="city-label">Abu Dhabi</span>
-                                    </div>
-                                </div>
-                            </div>
-                            <!-- Card 5 -->
-                            <div class="min-w-[280px] w-[280px] md:min-w-[320px] md:w-[320px] bg-white dark:bg-gray-800 rounded-xl shadow border dark:border-gray-700 snap-center flex-shrink-0 cursor-pointer"
-                                onclick="window.location.href='ad-details.html'">
-                                <div
-                                    class="h-48 bg-gray-200 dark:bg-gray-700 relative overflow-hidden rounded-t-xl group-hover:scale-[1.02] transition-transform duration-300 flex items-center justify-center">
-                                    <img src="https://images.unsplash.com/photo-1546868871-7041f2a55e12?ixlib=rb-1.2.1&auto=format&fit=crop&w=634&q=80"
-                                        loading="lazy" class="w-full h-full object-cover">
-                                </div>
-                                <div class="p-4">
-                                    <h3 class="font-bold text-lg mb-1 truncate text-gray-900 dark:text-white">iPad Pro
-                                    </h3>
-                                    <p class="text-accent font-bold mb-2">2,800 <span class="currency-label">AED</span>
-                                    </p>
-                                    <div class="text-xs text-gray-500 dark:text-gray-400 flex items-center">
-                                        <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                                d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z">
-                                            </path>
-                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                                d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"></path>
-                                        </svg>
-                                        <span class="city-label">Dubai</span>
-                                    </div>
-                                </div>
-                            </div>
-                            <!-- card 6 -->
-
                         </div>
                         <button
-                            class="absolute left-0 top-1/2 transform -translate-y-1/2 -ml-4 bg-white p-2 rounded-full shadow-lg text-gray-700 hover:text-accent z-10 hidden md:block"
-                            onclick="scrollSlider('motors-mobiles-slider', -300)">
+                            class="absolute left-0 top-1/2 transform -translate-y-1/2 -ml-4 bg-white dark:bg-gray-700 p-3 rounded-full shadow-lg text-gray-700 dark:text-gray-200 hover:text-accent z-10 hidden md:block"
+                            onclick="scrollSlider('cat-classifieds-slider', -300)">
                             <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                                     d="M15 19l-7-7 7-7"></path>
                             </svg>
                         </button>
                         <button
-                            class="absolute right-0 top-1/2 transform -translate-y-1/2 -mr-4 bg-white p-2 rounded-full shadow-lg text-gray-700 hover:text-accent z-10 hidden md:block"
-                            onclick="scrollSlider('motors-mobiles-slider', 300)">
+                            class="absolute right-0 top-1/2 transform -translate-y-1/2 -mr-4 bg-white dark:bg-gray-700 p-3 rounded-full shadow-lg text-gray-700 dark:text-gray-200 hover:text-accent z-10 hidden md:block"
+                            onclick="scrollSlider('cat-classifieds-slider', 300)">
                             <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7">
                                 </path>
                             </svg>
                         </button>
+                    </div>
+                    <div class="mt-4 text-center">
+                        <a href="search.html?category=Classifieds"
+                            class="text-primary dark:text-blue-400 hover:underline font-bold"
+                            data-translate="viewAll">View All Results</a>
+                    </div>
+                </div>
+
+                <!-- Jobs Content -->
+                <div id="cat-jobs" class="tab-content hidden transition-opacity duration-300" data-group="maincats">
+                    <div class="relative group">
+                        <div id="cat-jobs-slider"
+                            class="flex overflow-x-auto space-x-6 pb-4 hide-scrollbar scroll-smooth snap-x snap-mandatory">
+                        </div>
+                        <button
+                            class="absolute left-0 top-1/2 transform -translate-y-1/2 -ml-4 bg-white dark:bg-gray-700 p-3 rounded-full shadow-lg text-gray-700 dark:text-gray-200 hover:text-accent z-10 hidden md:block"
+                            onclick="scrollSlider('cat-jobs-slider', -300)">
+                            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M15 19l-7-7 7-7"></path>
+                            </svg>
+                        </button>
+                        <button
+                            class="absolute right-0 top-1/2 transform -translate-y-1/2 -mr-4 bg-white dark:bg-gray-700 p-3 rounded-full shadow-lg text-gray-700 dark:text-gray-200 hover:text-accent z-10 hidden md:block"
+                            onclick="scrollSlider('cat-jobs-slider', 300)">
+                            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7">
+                                </path>
+                            </svg>
+                        </button>
+                    </div>
+                    <div class="mt-4 text-center">
+                        <a href="search.html?category=Jobs"
+                            class="text-primary dark:text-blue-400 hover:underline font-bold"
+                            data-translate="viewAll">View All Results</a>
+                    </div>
+                </div>
+
+                <!-- Services Content -->
+                <div id="cat-services" class="tab-content hidden transition-opacity duration-300" data-group="maincats">
+                    <div class="relative group">
+                        <div id="cat-services-slider"
+                            class="flex overflow-x-auto space-x-6 pb-4 hide-scrollbar scroll-smooth snap-x snap-mandatory">
+                        </div>
+                        <button
+                            class="absolute left-0 top-1/2 transform -translate-y-1/2 -ml-4 bg-white dark:bg-gray-700 p-3 rounded-full shadow-lg text-gray-700 dark:text-gray-200 hover:text-accent z-10 hidden md:block"
+                            onclick="scrollSlider('cat-services-slider', -300)">
+                            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M15 19l-7-7 7-7"></path>
+                            </svg>
+                        </button>
+                        <button
+                            class="absolute right-0 top-1/2 transform -translate-y-1/2 -mr-4 bg-white dark:bg-gray-700 p-3 rounded-full shadow-lg text-gray-700 dark:text-gray-200 hover:text-accent z-10 hidden md:block"
+                            onclick="scrollSlider('cat-services-slider', 300)">
+                            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7">
+                                </path>
+                            </svg>
+                        </button>
+                    </div>
+                    <div class="mt-4 text-center">
+                        <a href="search.html?category=Services"
+                            class="text-primary dark:text-blue-400 hover:underline font-bold"
+                            data-translate="viewAll">View All Results</a>
                     </div>
                 </div>
             </div>
@@ -996,62 +502,8 @@
     </section>
 
 
-    <!-- Footer -->
-    <footer
-        class="site-footer bg-gray-900 text-white pt-12 pb-8 mt-20 border-t border-gray-800 transition-colors duration-300">
-        <div class="footer-container max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div class="grid grid-cols-1 md:grid-cols-4 gap-8 mb-8">
-                <div>
-                    <h3 class="text-xl font-bold mb-4">Taggerly</h3>
-                    <p class="text-gray-400 text-sm" data-translate="footerText">The best place to buy and sell
-                        anything.</p>
-                </div>
-                <div>
-                    <h4 class="font-bold mb-4 text-gray-300" data-translate="quickLinks">Quick Links</h4>
-                    <ul class="space-y-2 text-sm text-gray-400">
-                        <li><a href="about.html" class="hover:text-white transition" data-translate="aboutUs">About
-                                Us</a></li>
-                        <li><a href="contact.html" class="hover:text-white transition"
-                                data-translate="contactUs">Contact Us</a></li>
-                        <li><a href="#" class="hover:text-white transition" data-translate="careers">Careers</a></li>
-                    </ul>
-                </div>
-                <div>
-                    <h4 class="font-bold mb-4 text-gray-300" data-translate="support">Support</h4>
-                    <ul class="space-y-2 text-sm text-gray-400">
-                        <li><a href="help.html" class="hover:text-white transition" data-translate="helpCenter">Help
-                                Center</a></li>
-                        <li><a href="privacy.html" class="hover:text-white transition"
-                                data-translate="privacyPolicy">Privacy Policy</a></li>
-                        <li><a href="#" class="hover:text-white transition" data-translate="safetyTips">Safety Tips</a>
-                        </li>
-                        <li><a href="#" class="hover:text-white transition" data-translate="termsOfUse">Terms &
-                                Conditions</a></li>
-                    </ul>
-                </div>
-                <div>
-                    <h4 class="font-bold mb-4 text-gray-300" data-translate="followUs">Follow Us</h4>
-                    <div class="flex space-x-4 rtl:space-x-reverse">
-                        <a href="#" class="text-gray-400 hover:text-white transition">
-                            <svg class="w-6 h-6" fill="currentColor" viewBox="0 0 24 24">
-                                <path
-                                    d="M24 4.557c-.883.392-1.832.656-2.828.775 1.017-.609 1.798-1.574 2.165-2.724-.951.564-2.005.974-3.127 1.195-.897-.957-2.178-1.555-3.594-1.555-3.179 0-5.515 2.966-4.797 6.045-4.091-.205-7.719-2.165-10.148-5.144-1.29 2.213-.669 5.108 1.523 6.574-.806-.026-1.566-.247-2.229-.616-.054 2.281 1.581 4.415 3.949 4.89-.693.188-1.452.232-2.224.084.626 1.956 2.444 3.379 4.6 3.419-2.07 1.623-4.678 2.348-7.29 2.04 2.179 1.397 4.768 2.212 7.548 2.212 9.142 0 14.307-7.721 13.995-14.646.962-.695 1.797-1.562 2.457-2.549z" />
-                            </svg>
-                        </a>
-                        <a href="#" class="text-gray-400 hover:text-white transition">
-                            <svg class="w-6 h-6" fill="currentColor" viewBox="0 0 24 24">
-                                <path
-                                    d="M12 2.163c3.204 0 3.584.012 4.85.072 3.269.156 5.093 1.824 5.248 5.093.057 1.266.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.987 4.881-5.248 5.093-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.156-5.094-1.824-5.248-5.093-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.987-4.881 5.248-5.093 1.265-.06 1.644-.072 4.849-.072zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.206-6.788 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.789 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.206 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z" />
-                            </svg>
-                        </a>
-                    </div>
-                </div>
-            </div>
-            <div class="border-t border-gray-800 pt-8 text-center text-sm text-gray-500">
-                <p data-translate="rights">&copy; 2026 Taggerly. All rights reserved.</p>
-            </div>
-        </div>
-    </footer>
+    <!-- Footer Placeholder -->
+    <div id="global-footer-placeholder"></div>
 
     <script src="assets/js/en.js"></script>
     <script src="assets/js/ar.js"></script>

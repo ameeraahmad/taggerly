@@ -11,14 +11,35 @@ const { adApprovedEmail, adRejectedEmail } = require('../utils/emailTemplates');
 // @route   GET /api/admin/stats
 exports.getStats = async (req, res) => {
     try {
-        const { currency } = req.query;
-        const totalUsers = await User.count();
-        const totalAds = await Ad.count({ where: { status: { [Op.ne]: 'deleted' } } });
-        const totalReports = await Report.count({ where: { status: 'pending' } });
-        const activeAds = await Ad.count({ where: { status: 'active' } });
-        const totalViews = await Ad.sum('views') || 0;
+        const { currency, country } = req.query;
+        const userWhere = {};
+        const adWhereAll = { status: { [Op.ne]: 'deleted' } };
+        const adWhereActive = { status: 'active' };
+        
+        if (country && country !== 'all') {
+            adWhereAll.country = country.toLowerCase();
+            adWhereActive.country = country.toLowerCase();
+        }
 
-        // Revenue stats - filter by currency if provided
+        const totalUsers = await User.count({ where: userWhere });
+        const totalAds = await Ad.count({ where: adWhereAll });
+        
+        // For reports, we want reports where the associated Ad is in this country.
+        // But for simplicity, we'll just join with Ad if country is specified.
+        let totalReports = 0;
+        if (country && country !== 'all') {
+            totalReports = await Report.count({
+                where: { status: 'pending' },
+                include: [{ model: Ad, as: 'ad', where: { country: country.toLowerCase() }, required: true }]
+            });
+        } else {
+            totalReports = await Report.count({ where: { status: 'pending' } });
+        }
+
+        const activeAds = await Ad.count({ where: adWhereActive });
+        const totalViews = await Ad.sum('views', { where: country && country !== 'all' ? { country: country.toLowerCase() } : {} }) || 0;
+
+        // Revenue stats - already filtered by currency which is passed from frontend
         const paymentWhere = { status: 'completed' };
         if (currency) paymentWhere.currency = currency.toLowerCase();
 
@@ -60,7 +81,7 @@ exports.getStats = async (req, res) => {
 // @route   GET /api/admin/analytics
 exports.getAnalytics = async (req, res) => {
     try {
-        const { currency } = req.query;
+        const { currency, country } = req.query;
         const thirtyDaysAgo = new Date();
         thirtyDaysAgo.setDate(thirtyDaysAgo.getDate() - 30);
 
@@ -75,9 +96,12 @@ exports.getAnalytics = async (req, res) => {
             order: [['day', 'ASC']]
         });
 
+        const adWhere = { createdAt: { [Op.gte]: thirtyDaysAgo } };
+        if (country && country !== 'all') adWhere.country = country.toLowerCase();
+
         // Daily Ad Views
         const adsData = await Ad.findAll({
-            where: { createdAt: { [Op.gte]: thirtyDaysAgo } },
+            where: adWhere,
             attributes: [
                 [require('sequelize').fn('date', require('sequelize').col('createdAt')), 'day'],
                 [require('sequelize').fn('sum', require('sequelize').col('views')), 'views']
@@ -205,11 +229,12 @@ exports.deleteUser = async (req, res) => {
 // @route   GET /api/admin/ads
 exports.getAllAds = async (req, res) => {
     try {
-        const { q, status, page = 1, limit = 20, featured } = req.query;
+        const { q, status, page = 1, limit = 20, featured, country } = req.query;
         const where = {};
         if (q) where.title = { [Op.like]: `%${q}%` };
         if (status) where.status = status;
         if (featured !== undefined) where.isFeatured = featured === 'true';
+        if (country && country !== 'all') where.country = country.toLowerCase();
 
         const ads = await Ad.findAndCountAll({
             where,
@@ -285,7 +310,7 @@ exports.rejectAd = async (req, res) => {
             type: 'ad_rejected',
             title: '❌ لم يتم قبول إعلانك',
             message: `تم رفض إعلانك "${ad.title}". السبب: ${reason}`,
-            link: `ad-details.html?id=${ad.id}`,
+            link: 'dashboard.html?section=rejected',
             relatedId: ad.id
         });
 
@@ -309,9 +334,12 @@ exports.rejectAd = async (req, res) => {
 // @route   GET /api/admin/ads/pending
 exports.getPendingAds = async (req, res) => {
     try {
-        const { page = 1, limit = 20 } = req.query;
+        const { page = 1, limit = 20, country } = req.query;
+        const where = { status: 'pending' };
+        if (country && country !== 'all') where.country = country.toLowerCase();
+
         const ads = await Ad.findAndCountAll({
-            where: { status: 'pending' },
+            where,
             include: [{ model: User, as: 'user', attributes: ['name', 'email', 'avatar'] }],
             order: [['createdAt', 'ASC']], // oldest first - review FIFO
             limit: parseInt(limit),
@@ -387,16 +415,23 @@ exports.toggleFeatureAd = async (req, res) => {
 // @route   GET /api/admin/reports
 exports.getAllReports = async (req, res) => {
     try {
-        const { status, page = 1, limit = 20 } = req.query;
+        const { status, page = 1, limit = 20, country } = req.query;
         const where = {};
         if (status) where.status = status;
 
+        const include = [
+            { model: User, as: 'reporter', attributes: ['name', 'email'] }
+        ];
+
+        if (country && country !== 'all') {
+            include.push({ model: Ad, as: 'ad', attributes: ['title', 'status', 'country'], where: { country: country.toLowerCase() }, required: true });
+        } else {
+            include.push({ model: Ad, as: 'ad', attributes: ['title', 'status', 'country'] });
+        }
+
         const reports = await Report.findAndCountAll({
             where,
-            include: [
-                { model: User, as: 'reporter', attributes: ['name', 'email'] },
-                { model: Ad, as: 'ad', attributes: ['title', 'status'] }
-            ],
+            include,
             order: [['createdAt', 'DESC']],
             limit: parseInt(limit),
             offset: (parseInt(page) - 1) * parseInt(limit)

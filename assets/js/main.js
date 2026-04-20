@@ -1,5 +1,5 @@
 // Language Dictionary
-const translations = {
+var translations = {
     en: enTranslations,
     ar: arTranslations
 };
@@ -27,13 +27,30 @@ window.translations = translations;
 
 // Re-applies translations to all [data-translate] elements in the current DOM.
 // Call this after injecting dynamic HTML to translate newly added elements.
-window.translatePage = function () {
+// Centralized translation access that always uses latest global dictionaries
+const getTranslations = () => ({
+    en: typeof enTranslations !== 'undefined' ? enTranslations : {},
+    ar: typeof arTranslations !== 'undefined' ? arTranslations : {}
+});
+
+window.translatePage = translatePage;
+function translatePage() {
     const lang = window.currentLang || localStorage.getItem('lang') || 'en';
-    if (!translations[lang]) return;
+    const dicts = getTranslations();
+    if (!dicts[lang]) {
+        console.warn(`Translation dictionary for "${lang}" not found.`);
+        return;
+    }
+
     document.querySelectorAll('[data-translate]').forEach(el => {
         const key = el.getAttribute('data-translate');
-        const value = translations[lang][key];
-        if (!value) return;
+        const value = dicts[lang][key] || dicts['en'][key];
+        
+        if (!value) {
+            console.debug(`No translation found for key: "${key}" in language: "${lang}"`);
+            return;
+        }
+
         if ((el.tagName === 'INPUT' || el.tagName === 'TEXTAREA') && el.getAttribute('placeholder')) {
             el.setAttribute('placeholder', value);
         } else {
@@ -45,10 +62,12 @@ window.translatePage = function () {
             }
         }
     });
-};
+}
 
 // Applies a language: sets dir/lang attributes, updates the toggle button, saves preference, translates the page.
-window.updateLanguage = function (lang) {
+// Applies a language: sets dir/lang attributes, updates the toggle button, saves preference, translates the page.
+window.updateLanguage = updateLanguage;
+function updateLanguage(lang) {
     const htmlEl = document.documentElement;
     const langBtn = document.getElementById('lang-toggle');
     if (lang === 'ar') {
@@ -62,11 +81,13 @@ window.updateLanguage = function (lang) {
     }
     localStorage.setItem('lang', lang);
     window.currentLang = lang;
-    window.translatePage();
+    translatePage();
     if (window.updateDynamicContent) {
         window.updateDynamicContent(window.selectedCountry || localStorage.getItem('selectedCountry') || 'uae', lang);
     }
-};
+    // Notify other components that language has changed
+    window.dispatchEvent(new CustomEvent('languageChanged', { detail: { lang } }));
+}
 
 // Global helper to format ad locations consistently across the site
 window.formatAdLocation = function (city, country, cityClass = 'city-label') {
@@ -108,7 +129,12 @@ window.customConfirm = function (message) {
         overlay.className = 'fixed inset-0 bg-black/60 z-[9999] flex items-center justify-center opacity-0 transition-opacity duration-300 backdrop-blur-sm';
 
         const modal = document.createElement('div');
-        modal.className = 'bg-white dark:bg-gray-800 rounded-2xl shadow-2xl p-6 max-w-sm w-full mx-4 transform scale-95 transition-transform duration-300 flex flex-col items-center text-center border dark:border-gray-700';
+        modal.className = 'bg-white dark:bg-gray-800 rounded-2xl shadow-2xl p-6 max-w-sm w-full mx-4 transform scale-95 transition-transform duration-300 flex flex-col items-center text-center border dark:border-gray-700 relative';
+
+        const closeBtn = document.createElement('button');
+        closeBtn.className = 'absolute top-4 right-4 text-gray-400 hover:text-gray-600 dark:hover:text-gray-200 transition-colors';
+        closeBtn.innerHTML = '<svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>';
+        modal.appendChild(closeBtn);
 
         const icon = document.createElement('div');
         icon.className = 'w-16 h-16 bg-orange-100 dark:bg-orange-900/30 rounded-full flex items-center justify-center mb-4 text-accent shadow-inner';
@@ -158,6 +184,7 @@ window.customConfirm = function (message) {
 
         cancelBtn.onclick = () => close(false);
         okBtn.onclick = () => close(true);
+        closeBtn.onclick = () => close(false);
     });
 };
 
@@ -167,7 +194,13 @@ window.customAlert = function (message) {
         overlay.className = 'fixed inset-0 bg-black/60 z-[9999] flex items-center justify-center opacity-0 transition-opacity duration-300 backdrop-blur-sm';
 
         const modal = document.createElement('div');
-        modal.className = 'bg-white dark:bg-gray-800 rounded-2xl shadow-2xl p-6 max-w-sm w-full mx-4 transform scale-95 transition-transform duration-300 flex flex-col items-center text-center border dark:border-gray-700';
+        modal.className = 'bg-white dark:bg-gray-800 rounded-2xl shadow-2xl p-6 max-w-sm w-full mx-4 transform scale-95 transition-transform duration-300 flex flex-col items-center text-center border dark:border-gray-700 relative';
+
+        const closeBtn = document.createElement('button');
+        closeBtn.type = 'button';
+        closeBtn.className = 'absolute top-5 right-5 text-gray-400 hover:text-gray-600 dark:hover:text-gray-200 transition-colors z-10';
+        closeBtn.innerHTML = '<svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>';
+        modal.appendChild(closeBtn);
 
         const icon = document.createElement('div');
         icon.className = 'w-16 h-16 bg-blue-100 dark:bg-blue-900/30 rounded-full flex items-center justify-center mb-4 text-blue-500 shadow-inner';
@@ -205,6 +238,7 @@ window.customAlert = function (message) {
         };
 
         okBtn.onclick = close;
+        closeBtn.onclick = close;
     });
 };
 
@@ -213,8 +247,9 @@ document.addEventListener('DOMContentLoaded', async () => {
     window.selectedCountry = localStorage.getItem('selectedCountry') || 'uae';
     window.currentLang = localStorage.getItem('lang') || 'en';
 
-    // 1. First Load Global Header if placeholder exists
+    // 1. First Load Global Header/Footer if placeholders exist
     await loadGlobalHeader();
+    await loadGlobalFooter();
     await loadUserFavorites();
 
     // 2. Update all currency labels for the current country
@@ -285,46 +320,46 @@ document.addEventListener('DOMContentLoaded', async () => {
     // Already handled at the top
 
     // --- Socket.io Global Initialization & Notifications ---
-    if (typeof io !== 'undefined') {
+    window.initGlobalSocket = function() {
+        if (typeof io === 'undefined') return;
+        if (window.socket) return window.socket;
+
+        window.socket = io();
         const user = JSON.parse(localStorage.getItem('user'));
         const token = localStorage.getItem('token');
+        
         if (user && user.id && token) {
-            if (!window.socket) {
-                window.socket = io();
-                window.socket.emit('join_user', user.id);
-            }
+            window.socket.emit('join_user', user.id);
+        }
 
-            window.socket.on('new_message_notification', (msg) => {
-                // Refresh badges
-                if (window.refreshUnreadCount) window.refreshUnreadCount();
+        window.socket.on('new_message_notification', (msg) => {
+            // Refresh badges
+            if (window.refreshUnreadCount) window.refreshUnreadCount();
+            playNotificationSound();
+            const isMessagesPage = window.location.pathname.includes('messages.html');
+            const isInActiveConvo = isMessagesPage && (typeof currentConversationId !== 'undefined') && (window.currentConversationId == msg.conversationId);
+            if (!isInActiveConvo) showNotificationToast(msg);
+        });
 
-                // Play notification sound
-                playNotificationSound();
-
-                // Show Toast if NOT on messages.html or not in current chat
-                const isMessagesPage = window.location.pathname.includes('messages.html');
-                const isInActiveConvo = isMessagesPage && (typeof currentConversationId !== 'undefined') && (window.currentConversationId == msg.conversationId);
-
-                if (!isInActiveConvo) {
-                    showNotificationToast(msg);
+        window.socket.on('user_status_change', (data) => {
+            const statusDots = document.querySelectorAll(`[data-user-status-id="${data.userId}"]`);
+            statusDots.forEach(dot => {
+                if (data.isOnline) {
+                    dot.classList.add('bg-green-500');
+                    dot.classList.remove('bg-gray-400');
+                } else {
+                    dot.classList.add('bg-gray-400');
+                    dot.classList.remove('bg-green-500');
                 }
             });
+        });
 
-            window.socket.on('user_status_change', (data) => {
-                // Update UI elements that track specific user status
-                // This could be used in messages.html or ad-details.html
-                const statusDots = document.querySelectorAll(`[data-user-status-id="${data.userId}"]`);
-                statusDots.forEach(dot => {
-                    if (data.isOnline) {
-                        dot.classList.add('bg-green-500');
-                        dot.classList.remove('bg-gray-400');
-                    } else {
-                        dot.classList.add('bg-gray-400');
-                        dot.classList.remove('bg-green-500');
-                    }
-                });
-            });
-        }
+        return window.socket;
+    };
+
+    // Auto-init if logged in, otherwise it will init when chat widget opens
+    if (localStorage.getItem('token')) {
+        window.initGlobalSocket();
     }
 
     // --- Global Logout Handler ---
@@ -407,145 +442,230 @@ document.addEventListener('DOMContentLoaded', async () => {
         }, 6000);
     }
 
-    window.updateDynamicContent = function (country, lang = window.currentLang || 'en') {
-        if (!translations[lang]) return;
 
-        const countryName = translations[lang][country] || translations['en'][country] || country;
+// --- Global helper to update dynamic content across the site ---
+// --- Global helper to update dynamic content across the site ---
+window.updateDynamicContent = updateDynamicContent;
+function updateDynamicContent(country, lang = window.currentLang || 'en') {
+    if (!translations[lang]) return;
 
-        const countryCities = {
-            uae: ['dubai', 'abuDhabi', 'sharjah', 'ajman', 'umAlQuwain', 'rasAlKhaimah', 'fujairah', 'alAin'],
-            egypt: ['cairo', 'alexandria', 'giza', 'sharm', 'hurghada', 'dahab', 'suez', 'portSaid', 'luxor', 'aswan', 'mansoura', 'tanta', 'dakahlia', 'gharbia', 'monufia', 'sharqia', 'kafrElSheikh', 'damietta', 'matrouh', 'beheira', 'ismailia', 'beniSuef', 'faiyum', 'minya', 'asyut', 'sohag', 'qena', 'redSea', 'newValley', 'qalyubia', 'northSinai', 'southSinai'],
-            ksa: ['riyadh', 'jeddah', 'dammam', 'mecca', 'medina', 'khobar', 'abha', 'tabuk', 'buraydah'],
-            qatar: ['doha', 'wakrah', 'rayyan', 'khor', 'shamal']
-        };
+    console.log(`🌐 Updating dynamic content for: ${country} [${lang}]`);
+    const countryName = translations[lang][country] || translations['en'][country] || country;
 
-        // --- 1. Update Currencies ---
-        const currencyLabels = document.querySelectorAll('.currency-label');
-        const currencyKey = `currency_${country}`;
-        const currencyText = translations[lang][currencyKey] || translations['en'][currencyKey] || "AED";
-        currencyLabels.forEach(el => el.textContent = currencyText);
-
-        // Update Price Label in search filters if exists
-        const priceLabel = document.querySelector('[data-translate="priceLabel"]');
-        if (priceLabel) {
-            priceLabel.textContent = `${translations[lang].priceLabel?.split('(')[0] || 'Price'} (${currencyText})`;
-        }
-
-        // --- 2. Update Country Labels ---
-        const countryLabels = document.querySelectorAll('.country-label');
-        countryLabels.forEach(el => el.textContent = countryName);
-
-
-        // --- 3. Update Dynamic Location Dropdowns ---
-        const currentCountryName = document.getElementById('current-country-name');
-        if (currentCountryName) {
-            currentCountryName.textContent = countryName;
-            currentCountryName.setAttribute('data-translate', country);
-        }
-
-        // --- 5. Update Footer & Community Labels ---
-        const footerTemplate = translations[lang].footerText || translations['en'].footerText;
-        if (footerTemplate) {
-            const footerTextElements = document.querySelectorAll('[data-translate="footerText"]');
-            footerTextElements.forEach(el => {
-                el.textContent = footerTemplate.replace('UAE', countryName).replace('الإمارات', countryName);
-            });
-        }
-
-        const allUAELabels = document.querySelectorAll('[data-translate="allUAE"]');
-        allUAELabels.forEach(el => {
-            const prefix = lang === 'ar' ? 'كل ' : 'All ';
-            el.textContent = prefix + countryName;
-        });
-
-        // --- 6. Update Dynamic Location Dropdowns ---
-        const dynamicDropdowns = document.querySelectorAll('[data-dynamic-location="true"]');
-        dynamicDropdowns.forEach(dropdown => {
-            const cities = countryCities[country] || countryCities['uae'];
-            const includeAll = dropdown.getAttribute('data-include-all') === 'true';
-            dropdown.innerHTML = '';
-            if (includeAll) {
-                const allOpt = document.createElement('option');
-                allOpt.value = `all_${country}`;
-                allOpt.textContent = (lang === 'ar' ? 'كل ' : 'All ') + countryName;
-                dropdown.appendChild(allOpt);
-            }
-            cities.forEach(c => {
-                const opt = document.createElement('option');
-                opt.value = c;
-                opt.textContent = translations[lang][c] || translations['en'][c] || c;
-                opt.setAttribute('data-translate', c);
-                dropdown.appendChild(opt);
-            });
-        });
-
-        // --- 7. Re-populate Ads for the new country ---
-        const adsContainer = document.querySelector('.featured-ads .grid');
-        const allSliders = document.querySelectorAll('.flex.overflow-x-auto[id*="slider"]');
-
-        // Show loading state and clear old country data
-        if (adsContainer) {
-            adsContainer.innerHTML = '<div class="col-span-full flex justify-center py-10"><div class="animate-spin rounded-full h-10 w-10 border-b-2 border-accent"></div></div>';
-            populateAdsGrid(adsContainer, country);
-        }
-
-        allSliders.forEach(slider => {
-            slider.innerHTML = '<div class="p-10 text-center w-full flex justify-center items-center"><div class="animate-spin inline-block rounded-full h-8 w-8 border-b-2 border-accent"></div></div>';
-        });
-        loadCategorySliders(country);
+    const countryCities = {
+        uae: ['dubai', 'abuDhabi', 'sharjah', 'ajman', 'umAlQuwain', 'rasAlKhaimah', 'fujairah', 'alAin'],
+        egypt: ['cairo', 'alexandria', 'giza', 'sharm', 'hurghada', 'dahab', 'suez', 'portSaid', 'luxor', 'aswan', 'mansoura', 'tanta', 'dakahlia', 'gharbia', 'monufia', 'sharqia', 'kafrElSheikh', 'damietta', 'matrouh', 'beheira', 'ismailia', 'beniSuef', 'faiyum', 'minya', 'asyut', 'sohag', 'qena', 'redSea', 'newValley', 'qalyubia', 'northSinai', 'southSinai'],
+        ksa: ['riyadh', 'jeddah', 'dammam', 'mecca', 'medina', 'khobar', 'abha', 'tabuk', 'buraydah'],
+        qatar: ['doha', 'wakrah', 'rayyan', 'khor', 'shamal']
     };
 
+    // --- 1. Update Currencies ---
+    const currencyLabels = document.querySelectorAll('.currency-label');
+    const currencyKey = `currency_${country}`;
+    const currencyText = translations[lang][currencyKey] || translations['en'][currencyKey] || "AED";
+    currencyLabels.forEach(el => el.textContent = currencyText);
+
+    // Update Price Label in search filters if exists
+    const priceLabel = document.querySelector('[data-translate="priceLabel"]');
+    if (priceLabel) {
+        priceLabel.textContent = `${translations[lang].priceLabel?.split('(')[0] || 'Price'} (${currencyText})`;
+    }
+
+    // --- 2. Update Country Labels ---
+    const countryLabels = document.querySelectorAll('.country-label');
+    countryLabels.forEach(el => el.textContent = countryName);
+
+    // --- 3. Update Dynamic Location Dropdowns ---
+    const currentCountryNameEl = document.getElementById('current-country-name');
+    if (currentCountryNameEl) {
+        currentCountryNameEl.textContent = countryName;
+        currentCountryNameEl.setAttribute('data-translate', country);
+    }
+
+    // --- 5. Update Footer & Community Labels ---
+    const footerTemplate = translations[lang].footerText || translations['en'].footerText;
+    if (footerTemplate) {
+        const footerTextElements = document.querySelectorAll('[data-translate="footerText"]');
+        footerTextElements.forEach(el => {
+            el.textContent = footerTemplate.replace('UAE', countryName).replace('الإمارات', countryName);
+        });
+    }
+
+    const allUAELabels = document.querySelectorAll('[data-translate="allUAE"]');
+    allUAELabels.forEach(el => {
+        const prefix = lang === 'ar' ? 'كل ' : 'All ';
+        el.textContent = prefix + countryName;
+    });
+
+    // --- 6. Update Dynamic Location Dropdowns ---
+    const dynamicDropdowns = document.querySelectorAll('[data-dynamic-location="true"]');
+    dynamicDropdowns.forEach(dropdown => {
+        const cities = countryCities[country] || countryCities['uae'];
+        const includeAll = dropdown.getAttribute('data-include-all') === 'true';
+        
+        const currentValue = dropdown.value;
+        dropdown.innerHTML = '';
+        if (includeAll) {
+            const allKey = `all_${country}`;
+            const allOpt = document.createElement('option');
+            allOpt.value = allKey;
+            allOpt.textContent = translations[lang][allKey] || translations['en'][allKey] || (lang === 'ar' ? 'كل ' : 'All ') + countryName;
+            allOpt.setAttribute('data-translate', allKey);
+            dropdown.appendChild(allOpt);
+        }
+        cities.forEach(c => {
+            const opt = document.createElement('option');
+            opt.value = c;
+            opt.textContent = translations[lang][c] || translations['en'][c] || c;
+            opt.setAttribute('data-translate', c);
+            dropdown.appendChild(opt);
+        });
+        if (currentValue) dropdown.value = currentValue;
+    });
+
+    // --- 7. Re-populate Ads for the new country ---
+    const adsContainer = document.querySelector('.featured-ads .grid');
+    const allSliders = document.querySelectorAll('.flex.overflow-x-auto[id*="slider"]');
+
+    if (adsContainer) {
+        adsContainer.innerHTML = '<div class="col-span-full flex justify-center py-10"><div class="animate-spin rounded-full h-10 w-10 border-b-2 border-accent"></div></div>';
+        if (window.populateAdsGrid) window.populateAdsGrid(adsContainer, country);
+    }
+
+    allSliders.forEach(slider => {
+        slider.innerHTML = '<div class="p-10 text-center w-full flex justify-center items-center"><div class="animate-spin inline-block rounded-full h-8 w-8 border-b-2 border-accent"></div></div>';
+    });
+    if (window.loadCategorySliders) window.loadCategorySliders(country);
+
+    translatePage();
+}
+
     window.detectLocation = function () {
-        const btn = document.getElementById('detect-location-btn');
+        const btn = document.getElementById('detect-location-btn') || document.getElementById('detect-location-btn-mobile');
         const lang = window.currentLang || 'en';
         if (!navigator.geolocation) {
-            alert(translations[lang].locationError || 'Geolocation not supported');
+            customAlert(translations[lang].locationError || 'Geolocation not supported');
             return;
         }
 
-        const span = btn?.querySelector('span');
-        const originalText = span ? span.textContent : '';
-        if (span) span.textContent = translations[lang].detecting;
+        const spans = btn?.querySelectorAll('span');
+        const originalTexts = Array.from(spans || []).map(s => s.textContent);
+        const dicts = getTranslations();
+
+        if (spans) {
+            spans.forEach(span => {
+                span.textContent = dicts[lang].detecting || 'Detecting...';
+            });
+        }
         if (btn) btn.disabled = true;
 
         navigator.geolocation.getCurrentPosition(async (position) => {
             const { latitude, longitude } = position.coords;
             try {
-                const response = await fetch(`https://nominatim.openstreetmap.org/reverse?format=json&lat=${latitude}&lon=${longitude}&accept-language=${lang}`);
+                // Fetch in English to match our keys consistently
+                const response = await fetch(`https://nominatim.openstreetmap.org/reverse?format=json&lat=${latitude}&lon=${longitude}&accept-language=en`);
                 const data = await response.json();
-                const city = data.address.city || data.address.town || data.address.suburb || data.address.state;
-                const countryCode = data.address?.country_code?.toLowerCase();
+                
+                const addr = data.address;
+                // Identify the governorate/state level
+                const detectedName = addr.state || addr.province || addr.region || addr.city || addr.town || addr.county;
+                const countryCode = addr.country_code?.toLowerCase();
+
+                if (!detectedName) {
+                    customAlert(dicts[lang].locationError || 'Location Error');
+                    return;
+                }
 
                 // Map country code to our keys
                 const countryMap = { 'ae': 'uae', 'eg': 'egypt', 'sa': 'ksa', 'qa': 'qatar' };
                 const detectedCountry = countryMap[countryCode];
 
-                if (detectedCountry && detectedCountry !== window.selectedCountry) {
-                    // Ask user to switch 
-                    const switchConfirm = confirm(lang === 'ar' ? `هل تود الانتقال إلى موقعنا في ${data.address.country}؟` : `Would you like to switch to our ${data.address.country} site?`);
-                    if (switchConfirm) {
-                        const flags = { 'uae': '🇦🇪', 'egypt': '🇪🇬', 'ksa': '🇸🇦', 'qatar': '🇶🇦' };
-                        window.setCountry(detectedCountry, flags[detectedCountry], data.address.country);
+                // 1. Clean the detected value (remove common suffixes)
+                let cleanLoc = detectedName.toLowerCase()
+                    .replace(' governorate', '')
+                    .replace(' region', '')
+                    .replace(' emirate', '')
+                    .replace(' province', '')
+                    .replace(' municipality', '')
+                    .trim();
+
+                // 2. Map cleanLoc to our supported city keys
+                const countryCitiesList = {
+                    uae: ['dubai', 'abuDhabi', 'sharjah', 'ajman', 'umAlQuwain', 'rasAlKhaimah', 'fujairah', 'alAin'],
+                    egypt: ['cairo', 'alexandria', 'giza', 'sharm', 'hurghada', 'dahab', 'suez', 'portSaid', 'luxor', 'aswan', 'mansoura', 'tanta', 'dakahlia', 'gharbia', 'monufia', 'sharqia', 'kafrElSheikh', 'damietta', 'matrouh', 'beheira', 'ismailia', 'beniSuef', 'faiyum', 'minya', 'asyut', 'sohag', 'qena', 'redSea', 'newValley', 'qalyubia', 'northSinai', 'southSinai'],
+                    ksa: ['riyadh', 'jeddah', 'dammam', 'mecca', 'medina', 'khobar', 'abha', 'tabuk', 'buraydah'],
+                    qatar: ['doha', 'wakrah', 'rayyan', 'khor', 'shamal']
+                };
+
+                let matchedKey = null;
+                if (detectedCountry && countryCitiesList[detectedCountry]) {
+                    const list = countryCitiesList[detectedCountry];
+                    matchedKey = list.find(k => k === cleanLoc || cleanLoc.includes(k) || k.includes(cleanLoc));
+                }
+
+                if (!matchedKey) {
+                    for (const c in countryCitiesList) {
+                        const match = countryCitiesList[c].find(k => k === cleanLoc || cleanLoc.includes(k) || k.includes(cleanLoc));
+                        if (match) {
+                            matchedKey = match;
+                            break;
+                        }
                     }
                 }
 
-                if (city) {
-                    alert(`${translations[lang].locationActive}: ${city}`);
-                    // Redirect with coordinates and a friendly location name, but without restricting 'search' string
-                    window.location.href = `search.html?lat=${latitude}&lng=${longitude}&radius=50&loc=${encodeURIComponent(city)}`;
-                } else {
-                    alert(translations[lang].locationError);
+                const finalLocKey = matchedKey || cleanLoc;
+                const finalLocDisplayName = (translations[lang] && translations[lang][finalLocKey]) || finalLocKey;
+
+                // Handle country switch if detected different country
+                if (detectedCountry && detectedCountry !== window.selectedCountry) {
+                    const countryNames = {
+                        'uae': (lang === 'ar' ? 'الإمارات' : 'UAE'),
+                        'egypt': (lang === 'ar' ? 'مصر' : 'Egypt'),
+                        'ksa': (lang === 'ar' ? 'السعودية' : 'KSA'),
+                        'qatar': (lang === 'ar' ? 'قطر' : 'Qatar')
+                    };
+                    const detectedCountryName = countryNames[detectedCountry] || detectedCountry;
+                    const currentCountryName = countryNames[window.selectedCountry] || window.selectedCountry;
+
+                    const msg = lang === 'ar' 
+                        ? `لقد اكتشفنا أنك في ${detectedCountryName}. هل تود الانتقال إلى موقعنا في ${detectedCountryName}؟ (أنت حالياً تتصفح موقع ${currentCountryName})`
+                        : `We detected you are in ${detectedCountryName}. Would you like to switch to our site for that country? (You are currently viewing ${currentCountryName})`;
+                    
+                    const switchConfirm = await customConfirm(msg);
+                    if (switchConfirm) {
+                        const flags = { 'uae': '🇦🇪', 'egypt': '🇪🇬', 'ksa': '🇸🇦', 'qatar': '🇶🇦' };
+                        window.setCountry(detectedCountry, flags[detectedCountry], detectedCountryName);
+                        // Brief delay to ensure localStorage is set before redirect
+                        await new Promise(r => setTimeout(r, 100));
+                    }
                 }
+
+                await customAlert(`${dicts[lang].locationActive || 'Location Set'}: ${finalLocDisplayName}`);
+                
+                // Construct search URL - ensure country is explicitly passed if we just switched it
+                const currentCountry = localStorage.getItem('selectedCountry') || window.selectedCountry || 'uae';
+                const searchUrl = `search.html?country=${currentCountry}&city=${encodeURIComponent(finalLocKey)}&lat=${latitude}&lng=${longitude}&radius=50&loc=${encodeURIComponent(finalLocDisplayName)}`;
+                window.location.href = searchUrl;
+
             } catch (err) {
                 console.error('Location detection failed:', err);
-                alert(translations[lang].locationError);
+                customAlert(dicts[lang].locationError || 'Location Error');
             } finally {
-                if (span) span.textContent = originalText;
+                if (spans) {
+                    spans.forEach((span, i) => {
+                        span.textContent = originalTexts[i];
+                    });
+                }
                 if (btn) btn.disabled = false;
             }
         }, (err) => {
-            alert(translations[lang].locationDenied);
-            if (span) span.textContent = originalText;
+            console.warn('Geolocation denied or failed:', err);
+            customAlert(dicts[lang].locationDenied || 'Location Denied');
+            if (spans) {
+                spans.forEach((span, i) => {
+                    span.textContent = originalTexts[i];
+                });
+            }
             if (btn) btn.disabled = false;
         });
     };
@@ -1101,9 +1221,15 @@ document.addEventListener('DOMContentLoaded', async () => {
 
     // --- Ads Grid population ---
     const adsContainer = document.querySelector('.featured-ads .grid');
-    if (adsContainer && window.apiClient) {
-        populateAdsGrid(adsContainer, window.selectedCountry);
-        loadCategorySliders(window.selectedCountry);
+    const hasSliders = document.querySelectorAll('[id*="-slider"]').length > 0;
+    
+    if (window.apiClient) {
+        if (adsContainer) {
+            populateAdsGrid(adsContainer, window.selectedCountry);
+        }
+        if (hasSliders) {
+            loadCategorySliders(window.selectedCountry);
+        }
     }
 
     async function populateAdsGrid(container, country = null) {
@@ -1154,48 +1280,51 @@ document.addEventListener('DOMContentLoaded', async () => {
         const isFav = window.userFavorites.includes(ad.id);
 
         return `
-        <div class="${cardClass}" onclick="window.location.href='ad-details.html?id=${ad.id}'">
-            <div class="relative h-48 bg-gray-200 dark:bg-gray-700 overflow-hidden ${!isSlider ? 'rounded-t-xl' : ''}">
-                <img src="${ad.images[0] || 'https://via.placeholder.com/300x200'}" alt="${ad.title}" class="w-full h-full object-cover transition duration-300 group-hover:scale-105">
-                ${ad.status === 'active' ? '<div class="badge-featured absolute top-2 right-2 bg-accent text-white text-xs font-bold px-2 py-1 rounded">FEATURED</div>' : ''}
-                <button class="wishlist-btn absolute bottom-2 right-2 bg-white dark:bg-gray-700 p-2 rounded-full shadow hover:text-red-500 transition ${isFav ? 'text-red-500' : ''}" onclick="event.stopPropagation(); toggleFav(${ad.id}, this)">
-                    <svg class="w-5 h-5" fill="${isFav ? 'currentColor' : 'none'}" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"></path>
-                    </svg>
-                </button>
-            </div>
-            <div class="p-4">
-                <div class="text-sm text-gray-500 dark:text-gray-400 mb-1">${ad.category}</div>
-                <h3 class="font-bold text-lg text-gray-900 dark:text-white mb-2 truncate flex items-center gap-1">
-                    <span>${ad.title}</span>
-                    ${ad.user && ad.user.isEmailVerified ? `
-                        <svg class="w-4 h-4 text-green-500 shrink-0" fill="currentColor" viewBox="0 0 20 20">
-                            <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"></path>
+        <div class="${cardClass} relative">
+            <!-- Main Clickable Area -->
+            <div class="cursor-pointer" onclick="window.location.href='ad-details.html?id=${ad.id}'">
+                <div class="relative h-48 bg-gray-200 dark:bg-gray-700 overflow-hidden ${!isSlider ? 'rounded-t-xl' : ''}">
+                    <img src="${ad.images[0] || 'https://via.placeholder.com/300x200'}" alt="${ad.title}" class="w-full h-full object-cover transition duration-300 group-hover:scale-105">
+                    ${ad.isFeatured ? '<div class="badge-featured absolute top-2 right-2 bg-accent text-white text-xs font-bold px-2 py-1 rounded shadow-lg uppercase tracking-wider">FEATURED</div>' : ''}
+                </div>
+                <div class="p-4">
+                    <div class="text-sm text-gray-500 dark:text-gray-400 mb-1">${ad.category}</div>
+                    <h3 class="font-bold text-lg text-gray-900 dark:text-white mb-2 truncate flex items-center gap-1">
+                        <span>${ad.title}</span>
+                        ${ad.user && ad.user.isEmailVerified ? `
+                            <svg class="w-4 h-4 text-green-500 shrink-0" fill="currentColor" viewBox="0 0 20 20">
+                                <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"></path>
+                            </svg>
+                        ` : ''}
+                    </h3>
+                    <div class="font-bold text-accent text-xl mb-2">${ad.price} <span class="currency-label">${(translations[window.currentLang || 'en'] && translations[window.currentLang || 'en'][`currency_${window.selectedCountry || 'uae'}`]) || 'AED'}</span></div>
+                    <div class="flex items-center text-gray-500 dark:text-gray-400 text-sm">
+                        <svg class="w-4 h-4 mr-1 ml-0 rtl:ml-1 rtl:mr-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"></path>
                         </svg>
-                    ` : ''}
-                </h3>
-                <div class="font-bold text-accent text-xl mb-2">${ad.price} <span class="currency-label">${(translations[window.currentLang || 'en'] && translations[window.currentLang || 'en'][`currency_${window.selectedCountry || 'uae'}`]) || 'AED'}</span></div>
-                <div class="flex items-center text-gray-500 dark:text-gray-400 text-sm">
-                    <svg class="w-4 h-4 mr-1 ml-0 rtl:ml-1 rtl:mr-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"></path>
-                    </svg>
-                    ${locationHTML}
+                        ${locationHTML}
+                    </div>
                 </div>
             </div>
+
+            <!-- Favorite Button (Outside the main link div) -->
+            <button class="wishlist-btn absolute bottom-[110px] right-2 bg-white dark:bg-gray-700 p-2 rounded-full shadow hover:text-red-500 transition z-[30] ${isFav ? 'text-red-500' : ''}" onclick="window.toggleFav(event, ${ad.id}, this)">
+                <svg class="w-5 h-5" fill="${isFav ? 'currentColor' : 'none'}" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"></path>
+                </svg>
+            </button>
         </div>
     `;
     }
 
     async function loadCategorySliders(country = null) {
         const configs = [
-            { category: 'Motors', sliderId: 'motors-used-slider' },
-            { category: 'Motors', sliderId: 'motors-bikes-slider' },
-            { category: 'Electronics', sliderId: 'motors-electronics-slider' },
-            { category: 'Mobiles', sliderId: 'motors-mobiles-slider' },
-            { category: 'Property', sliderId: 'prop-sale-slider' },
-            { category: 'Property', sliderId: 'prop-rent-slider' },
-            { category: 'Furniture', sliderId: 'classifieds-furniture-slider' },
-            { category: 'Classifieds', sliderId: 'classifieds-hobbies-slider' }
+            { category: 'Motors', sliderId: 'cat-motors-slider' },
+            { category: 'Property', sliderId: 'cat-property-slider' },
+            { category: 'Electronics', sliderId: 'cat-electronics-slider' },
+            { category: 'Classifieds', sliderId: 'cat-classifieds-slider' },
+            { category: 'Jobs', sliderId: 'cat-jobs-slider' },
+            { category: 'Services', sliderId: 'cat-services-slider' }
         ];
 
         // Load Featured Ads first
@@ -1256,7 +1385,10 @@ document.addEventListener('DOMContentLoaded', async () => {
         }
     }
 
-    window.toggleFav = async function (adId, btn) {
+    window.toggleFav = async function (e, adId, btn) {
+        if (e && e.stopPropagation) e.stopPropagation();
+        if (e && e.preventDefault) e.preventDefault();
+
         if (!localStorage.getItem('token')) {
             window.location.href = 'login.html';
             return;
@@ -1278,15 +1410,26 @@ document.addEventListener('DOMContentLoaded', async () => {
                 window.userFavorites = window.userFavorites.filter(id => id !== adId);
 
                 // If we are on the favorites page, remove the card from UI
-                if (window.location.pathname.includes('favorites.html')) {
-                    const card = btn.closest('.grid > div');
+                if (window.location.href.includes('favorites.html')) {
+                    const card = btn.closest('.group') || btn.closest('.grid > div');
                     if (card) {
                         card.classList.add('opacity-0', 'scale-95');
                         setTimeout(() => {
                             card.remove();
-                            // If no cards left, show empty message
-                            const container = document.querySelector('.grid');
-                            if (container && container.children.length === 0) {
+                            // Update count badge if it exists
+                            const countBadge = document.getElementById('favorites-count');
+                            const container = document.getElementById('favorites-container') || document.querySelector('.grid');
+                            const remaining = container ? container.querySelectorAll('.group, [onclick*="ad-details"]').length : 0;
+                            
+                            if (countBadge) {
+                                if (remaining === 0) {
+                                    countBadge.classList.add('hidden');
+                                    window.location.reload(); // Reload to show hollow state message
+                                } else {
+                                    const lang = window.currentLang || 'en';
+                                    countBadge.textContent = `${remaining} ${lang === 'ar' ? 'إعلان' : 'items'}`;
+                                }
+                            } else if (remaining === 0 && container) {
                                 container.innerHTML = '<div class="col-span-full text-center py-20 text-gray-500">You haven\'t saved any ads yet.</div>';
                             }
                         }, 300);
@@ -1314,29 +1457,54 @@ document.addEventListener('DOMContentLoaded', async () => {
     };
 
     // --- Chat Widget Initialization ---
+    // --- Chat Widget Initialization ---
     function initChatWidget() {
         const lang = localStorage.getItem('lang') || 'en';
+        const user = JSON.parse(localStorage.getItem('user'));
+        
+        let welcomeMsg = translations[lang].chatWelcome;
+        let showEmailInput = !user;
+
+        if (user) {
+            welcomeMsg = translations[lang].chatLoggedInWelcome.replace('{name}', user.name.split(' ')[0]);
+        } else {
+            welcomeMsg = translations[lang].chatGuestWelcome;
+        }
+
         const widgetHtml = `
         <div class="chat-widget" id="chatWidget">
             <div class="chat-window" id="chatWindow">
                 <div class="chat-header">
-                    <span class="font-bold" data-translate="chatSupport">${translations[lang].chatSupport}</span>
-                    <button id="closeChat" class="text-white hover:text-gray-300">
-                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
-                        </svg>
-                    </button>
+                    <div class="flex items-center gap-2">
+                        <div class="w-2 h-2 bg-green-500 rounded-full animate-pulse"></div>
+                        <span class="font-bold text-sm" data-translate="chatSupport">${translations[lang].chatSupport}</span>
+                    </div>
+                    <div class="flex items-center gap-2">
+                        <button id="resetChat" title="New Chat" class="text-white hover:text-gray-300 transition">
+                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" /></svg>
+                        </button>
+                        <button id="closeChat" class="text-white hover:text-gray-300">
+                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+                            </svg>
+                        </button>
+                    </div>
                 </div>
-                <div class="chat-messages" id="chatMessages">
-                    <div class="message support" data-translate="chatWelcome">${translations[lang].chatWelcome}</div>
+                <div class="chat-messages thin-scrollbar" id="chatMessages">
+                    <div class="message support">${welcomeMsg}</div>
                 </div>
-                <div class="chat-input-area">
-                    <input type="text" id="chatInput" class="chat-input" placeholder="${translations[lang].chatPlaceholder}" data-translate="chatPlaceholder">
-                    <button id="sendMessage" class="chat-send">
-                        <svg class="w-5 h-5 transform rtl:rotate-180" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8"></path>
-                        </svg>
-                    </button>
+                <div class="chat-input-area flex-col gap-2">
+                    <div id="chatEmailWrapper" class="${showEmailInput ? '' : 'hidden'}">
+                        <input type="email" id="chatGuestEmail" class="chat-input w-full mb-1" placeholder="${translations[lang].chatEmailPlaceholder}" data-translate="chatEmailPlaceholder">
+                    </div>
+                    <div class="flex w-full gap-2">
+                        <input type="text" id="chatInput" class="chat-input" placeholder="${translations[lang].chatPlaceholder}" data-translate="chatPlaceholder">
+                        <button id="sendMessage" class="chat-send">
+                            <svg class="w-5 h-5 transform rtl:rotate-180" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8"></path>
+                            </svg>
+                        </button>
+                    </div>
                 </div>
             </div>
             <button class="chat-toggle" id="chatToggle" aria-label="Open Chat">
@@ -1345,7 +1513,7 @@ document.addEventListener('DOMContentLoaded', async () => {
                 </svg>
             </button>
         </div>
-    `;
+        `;
 
         document.body.insertAdjacentHTML('beforeend', widgetHtml);
 
@@ -1354,11 +1522,19 @@ document.addEventListener('DOMContentLoaded', async () => {
         const closeBtn = document.getElementById('closeChat');
         const sendBtn = document.getElementById('sendMessage');
         const input = document.getElementById('chatInput');
+        const emailInput = document.getElementById('chatGuestEmail');
+        const emailWrapper = document.getElementById('chatEmailWrapper');
         const messages = document.getElementById('chatMessages');
+
+        let currentRequestId = sessionStorage.getItem('supportRequestId');
 
         if (toggle) {
             toggle.addEventListener('click', () => {
                 windowChat.classList.toggle('active');
+                if (windowChat.classList.contains('active') && currentRequestId) {
+                    joinSupportRoom(currentRequestId);
+                    loadChatHistory(currentRequestId);
+                }
             });
         }
 
@@ -1368,26 +1544,113 @@ document.addEventListener('DOMContentLoaded', async () => {
             });
         }
 
+        const resetBtn = document.getElementById('resetChat');
+        if (resetBtn) {
+            resetBtn.addEventListener('click', () => {
+                if (!confirm('Start a new conversation?')) return;
+                sessionStorage.removeItem('supportRequestId');
+                currentRequestId = null;
+                messages.innerHTML = `<div class="message support">${welcomeMsg}</div>`;
+                if (emailWrapper) emailWrapper.classList.remove('hidden');
+                // Optional: Notify server? No, just start fresh locally.
+            });
+        }
+
         function addMessage(text, type) {
             const msgDiv = document.createElement('div');
             msgDiv.className = `message ${type}`;
             msgDiv.textContent = text;
             messages.appendChild(msgDiv);
             messages.scrollTop = messages.scrollHeight;
+            return msgDiv;
         }
 
-        function handleSend() {
-            const text = input.value.trim();
-            if (text) {
-                addMessage(text, 'user');
-                input.value = '';
+        function joinSupportRoom(id) {
+            const socket = window.initGlobalSocket ? window.initGlobalSocket() : window.socket;
+            if (socket) {
+                socket.emit('join_support', id);
+                // Clean old listener
+                socket.off('new_support_message');
+                socket.on('new_support_message', (msg) => {
+                    if (msg.requestId == id && msg.isAdmin) {
+                        addMessage(msg.message, 'support');
+                    }
+                });
+            }
+        }
 
-                // Simulate support response
-                setTimeout(() => {
-                    const currentLang = localStorage.getItem('lang') || 'en';
-                    const response = currentLang === 'ar' ? 'شكراً لتواصلك معنا. سنرد عليك في أقرب وقت ممكن.' : 'Thank you for reaching out. We will get back to you shortly.';
-                    addMessage(response, 'support');
-                }, 1000);
+        async function loadChatHistory(id) {
+            try {
+                const res = await fetch(`/api/support/${id}/messages`);
+                const data = await res.json();
+                if (data.success) {
+                    messages.innerHTML = '';
+                    addMessage(welcomeMsg, 'support');
+                    data.data.forEach(m => {
+                        addMessage(m.message, m.isAdmin ? 'support' : 'user');
+                    });
+                }
+            } catch (err) { console.error(err); }
+        }
+
+        async function handleSend() {
+            const text = input.value.trim();
+            const guestEmail = emailInput ? emailInput.value.trim() : (user ? user.email : null);
+
+            if (!text) return;
+            if (!guestEmail && !user) {
+                if (emailInput) {
+                    emailInput.classList.add('border-red-500');
+                    emailInput.focus();
+                }
+                return;
+            }
+
+            // Disable UI
+            input.disabled = true;
+            sendBtn.disabled = true;
+            
+            addMessage(text, 'user');
+            input.value = '';
+
+            try {
+                if (!currentRequestId) {
+                    // Create NEW Request
+                    const response = await fetch('/api/support', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({
+                            name: user ? user.name : 'Guest User',
+                            email: guestEmail,
+                            subject: 'Live Chat Support',
+                            message: text
+                        })
+                    });
+                    const data = await response.json();
+                    if (data.success) {
+                        currentRequestId = data.id;
+                        sessionStorage.setItem('supportRequestId', currentRequestId);
+                        if (emailWrapper) emailWrapper.classList.add('hidden');
+                        joinSupportRoom(currentRequestId);
+                    }
+                } else {
+                    // Send to EXISTING thread
+                    await fetch(`/api/support/${currentRequestId}/messages`, {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({
+                            message: text,
+                            senderName: user ? user.name : 'Guest User',
+                            isAdmin: false
+                        })
+                    });
+                }
+            } catch (err) {
+                console.error(err);
+                addMessage(translations[lang].chatError, 'support');
+            } finally {
+                input.disabled = false;
+                sendBtn.disabled = false;
             }
         }
 
@@ -1656,5 +1919,23 @@ async function loadGlobalHeader() {
         }
     } catch (err) {
         console.error('Error loading global header:', err);
+    }
+}
+
+// --- Global Footer Loader ---
+async function loadGlobalFooter() {
+    const placeholder = document.getElementById('global-footer-placeholder');
+    if (!placeholder) return;
+
+    try {
+        const response = await fetch('components/footer.html');
+        if (!response.ok) throw new Error('Footer not found');
+        const html = await response.text();
+        placeholder.innerHTML = html;
+
+        // Ensure translations are applied after footer is loaded
+        if (window.updateLanguage) window.updateLanguage(window.currentLang);
+    } catch (err) {
+        console.error('Error loading global footer:', err);
     }
 }

@@ -46,4 +46,13 @@ router.delete('/ads/:id', deleteAd);
 router.get('/reports', getAllReports);
 router.put('/reports/:id', reviewReport);
 
+// Universal Upload
+const { upload, resizePostImage } = require('../middleware/upload');
+router.post('/upload', upload.single('image'), resizePostImage, (req, res) => {
+    if (!req.file) {
+        return res.status(400).json({ success: false, message: 'No file uploaded' });
+    }
+    res.json({ success: true, url: req.file.path });
+});
+
 module.exports = router;

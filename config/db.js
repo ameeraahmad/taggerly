@@ -175,6 +175,10 @@ const connectDB = async () => {
                             console.log('🏗️ Adding missing column: longitude to Ads table');
                             await queryInterface.addColumn('Ads', 'longitude', { type: Sequelize.DOUBLE, allowNull: true });
                         }
+                        if (!tableInfo.paymentMethod) {
+                            console.log('🏗️ Adding missing column: paymentMethod to Ads table');
+                            await queryInterface.addColumn('Ads', 'paymentMethod', { type: Sequelize.STRING, allowNull: true });
+                        }
                         
                         // Ensure Favorites table exists
                         const tables = await queryInterface.showAllTables();
@@ -220,6 +224,52 @@ const connectDB = async () => {
                         }
                     } catch (mErr) {
                         console.log('ℹ️ SQLite columns for ChatMessages might already exist.');
+                    }
+                }
+
+                // Check support_requests table
+                const supportTableInfo = await queryInterface.describeTable('support_requests').catch(() => ({}));
+                if (supportTableInfo.id) {
+                    try {
+                        if (!supportTableInfo.status) {
+                            console.log('➕ Adding "status" column to support_requests...');
+                            await queryInterface.addColumn('support_requests', 'status', { type: Sequelize.STRING, defaultValue: 'pending' });
+                        }
+                        if (!supportTableInfo.isRead) {
+                            console.log('➕ Adding "isRead" column to support_requests...');
+                            await queryInterface.addColumn('support_requests', 'isRead', { type: Sequelize.BOOLEAN, defaultValue: false });
+                        }
+                        if (!supportTableInfo.isReplied) {
+                            console.log('➕ Adding "isReplied" column to support_requests...');
+                            await queryInterface.addColumn('support_requests', 'isReplied', { type: Sequelize.BOOLEAN, defaultValue: false });
+                        }
+                        if (!supportTableInfo.replyMessage) {
+                            console.log('➕ Adding "replyMessage" column to support_requests...');
+                            await queryInterface.addColumn('support_requests', 'replyMessage', { type: Sequelize.TEXT, allowNull: true });
+                        }
+                        if (!supportTableInfo.phone) {
+                            console.log('➕ Adding "phone" column to support_requests...');
+                            await queryInterface.addColumn('support_requests', 'phone', { type: Sequelize.STRING, allowNull: true });
+                        }
+                        if (!supportTableInfo.isImportant) {
+                            console.log('➕ Adding "isImportant" column to support_requests...');
+                            await queryInterface.addColumn('support_requests', 'isImportant', { type: Sequelize.BOOLEAN, defaultValue: false });
+                        }
+                    } catch (mErr) {
+                        console.log('ℹ️ support_requests columns might already exist.');
+                    }
+                }
+
+                // Check blog_posts table
+                const blogTableInfo = await queryInterface.describeTable('blog_posts').catch(() => ({}));
+                if (blogTableInfo.id) {
+                    try {
+                        if (!blogTableInfo.isImportant) {
+                            console.log('➕ Adding "isImportant" column to blog_posts...');
+                            await queryInterface.addColumn('blog_posts', 'isImportant', { type: Sequelize.BOOLEAN, defaultValue: false });
+                        }
+                    } catch (mErr) {
+                        console.log('ℹ️ blog_posts columns might already exist.');
                     }
                 }
             }

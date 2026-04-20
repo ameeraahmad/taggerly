@@ -197,6 +197,10 @@
                             <span class="text-gray-500" data-translate="area">Area</span>
                             <span id="detail-area" class="font-medium text-gray-900">-</span>
                         </div>
+                        <div id="item-payment-method" class="flex justify-between border-b pb-2 hidden">
+                            <span class="text-gray-500" data-translate="paymentMethod">Payment Method</span>
+                            <span id="detail-payment-method" class="font-medium text-gray-900">-</span>
+                        </div>
                     </div>
 
                 </div>
@@ -440,62 +444,8 @@
         </div>
     </div>
 
-    <!-- Footer -->
-    <footer
-        class="site-footer bg-gray-900 text-white pt-12 pb-8 mt-20 border-t border-gray-800 transition-colors duration-300">
-        <div class="footer-container max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div class="grid grid-cols-1 md:grid-cols-4 gap-8 mb-8">
-                <div>
-                    <h3 class="text-xl font-bold mb-4">Taggerly</h3>
-                    <p class="text-gray-400 text-sm" data-translate="footerText">The best place to buy and sell
-                        anything.</p>
-                </div>
-                <div>
-                    <h4 class="font-bold mb-4 text-gray-300" data-translate="quickLinks">Quick Links</h4>
-                    <ul class="space-y-2 text-sm text-gray-400">
-                        <li><a href="about.html" class="hover:text-white transition" data-translate="aboutUs">About
-                                Us</a></li>
-                        <li><a href="contact.html" class="hover:text-white transition"
-                                data-translate="contactUs">Contact Us</a></li>
-                        <li><a href="#" class="hover:text-white transition" data-translate="careers">Careers</a></li>
-                    </ul>
-                </div>
-                <div>
-                    <h4 class="font-bold mb-4 text-gray-300" data-translate="support">Support</h4>
-                    <ul class="space-y-2 text-sm text-gray-400">
-                        <li><a href="help.html" class="hover:text-white transition" data-translate="helpCenter">Help
-                                Center</a></li>
-                        <li><a href="privacy.html" class="hover:text-white transition"
-                                data-translate="privacyPolicy">Privacy Policy</a></li>
-                        <li><a href="#" class="hover:text-white transition" data-translate="safetyTips">Safety Tips</a>
-                        </li>
-                        <li><a href="#" class="hover:text-white transition" data-translate="termsOfUse">Terms &
-                                Conditions</a></li>
-                    </ul>
-                </div>
-                <div>
-                    <h4 class="font-bold mb-4 text-gray-300" data-translate="followUs">Follow Us</h4>
-                    <div class="flex space-x-4 rtl:space-x-reverse">
-                        <a href="#" class="text-gray-400 hover:text-white transition">
-                            <svg class="w-6 h-6" fill="currentColor" viewBox="0 0 24 24">
-                                <path
-                                    d="M24 4.557c-.883.392-1.832.656-2.828.775 1.017-.609 1.798-1.574 2.165-2.724-.951.564-2.005.974-3.127 1.195-.897-.957-2.178-1.555-3.594-1.555-3.179 0-5.515 2.966-4.797 6.045-4.091-.205-7.719-2.165-10.148-5.144-1.29 2.213-.669 5.108 1.523 6.574-.806-.026-1.566-.247-2.229-.616-.054 2.281 1.581 4.415 3.949 4.89-.693.188-1.452.232-2.224.084.626 1.956 2.444 3.379 4.6 3.419-2.07 1.623-4.678 2.348-7.29 2.04 2.179 1.397 4.768 2.212 7.548 2.212 9.142 0 14.307-7.721 13.995-14.646.962-.695 1.797-1.562 2.457-2.549z" />
-                            </svg>
-                        </a>
-                        <a href="#" class="text-gray-400 hover:text-white transition">
-                            <svg class="w-6 h-6" fill="currentColor" viewBox="0 0 24 24">
-                                <path
-                                    d="M12 2.163c3.204 0 3.584.012 4.85.072 3.269.156 5.093 1.824 5.248 5.093.057 1.266.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.987 4.881-5.248 5.093-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.156-5.094-1.824-5.248-5.093-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.987-4.881 5.248-5.093 1.265-.06 1.644-.072 4.849-.072zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.206-6.788 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.789 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.206 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z" />
-                            </svg>
-                        </a>
-                    </div>
-                </div>
-            </div>
-            <div class="border-t border-gray-800 pt-8 text-center text-sm text-gray-500">
-                <p data-translate="rights">&copy; 2026 Taggerly. All rights reserved.</p>
-            </div>
-        </div>
-    </footer>
+    <!-- Footer Placeholder -->
+    <div id="global-footer-placeholder"></div>
 
     <script src="assets/js/en.js"></script>
     <script src="assets/js/ar.js"></script>
@@ -611,8 +561,7 @@
                         favoriteBtn.querySelector('svg').setAttribute('fill', 'currentColor');
                     }
                     favoriteBtn.onclick = (e) => {
-                        e.stopPropagation();
-                        window.toggleFav(ad.id, favoriteBtn);
+                        window.toggleFav(e, ad.id, favoriteBtn);
                     };
                 }
 
@@ -620,16 +569,40 @@
                 if (document.getElementById('detail-category')) document.getElementById('detail-category').textContent = ad.category || '-';
                 if (document.getElementById('detail-city')) document.getElementById('detail-city').textContent = ad.city || '-';
 
-                // Show/Hide Year
-                if (ad.year && ad.year !== '0' && ad.year !== 0) {
+                const toggleField = (id, value, displayValue) => {
+                    const el = document.getElementById(`detail-${id}`);
+                    const container = document.getElementById(`item-${id}`);
+                    if (!el || !container) return; // Skip if elements are missing
+
+                    if (value !== undefined && value !== null && value !== '' && value !== 0 || (id === 'kilometers' && value === 0)) {
+                        el.textContent = displayValue || value;
+                        container.classList.remove('hidden');
+                        container.style.display = 'flex';
+                    } else {
+                        container.classList.add('hidden');
+                        container.style.display = 'none';
+                    }
+                };
+
+                const isProperty = ad.category && ad.category.toLowerCase() === 'property';
+                const isMotors = ad.category && ad.category.toLowerCase() === 'motors';
+
+                toggleField('bedrooms', isProperty ? ad.bedrooms : null);
+                toggleField('bathrooms', isProperty ? ad.bathrooms : null);
+                toggleField('property-type', isProperty ? ad.propertyType : null);
+                toggleField('area', isProperty ? ad.area : null, ad.area ? `${ad.area.toLocaleString()} Sq Ft` : '');
+                toggleField('payment-method', ad.paymentMethod);
+
+                // Show/Hide Year (only for Motors)
+                if (isMotors && ad.year && ad.year !== '0' && ad.year !== 0) {
                     if (document.getElementById('detail-year')) document.getElementById('detail-year').textContent = ad.year;
                     if (document.getElementById('item-year')) document.getElementById('item-year').style.display = 'flex';
                 } else {
                     if (document.getElementById('item-year')) document.getElementById('item-year').style.display = 'none';
                 }
 
-                // Show/Hide Kilometers
-                if (ad.kilometers !== undefined && ad.kilometers !== null && ad.kilometers !== '') {
+                // Show/Hide Kilometers (only for Motors)
+                if (isMotors && ad.kilometers !== undefined && ad.kilometers !== null && ad.kilometers !== '') {
                     if (document.getElementById('detail-kilometers')) document.getElementById('detail-kilometers').textContent = ad.kilometers.toLocaleString();
                     if (document.getElementById('item-kilometers')) document.getElementById('item-kilometers').style.display = 'flex';
                 } else {
@@ -648,26 +621,6 @@
                 } else {
                     if (document.getElementById('item-condition')) document.getElementById('item-condition').style.display = 'none';
                 }
-
-                const toggleField = (id, value, displayValue) => {
-                    const el = document.getElementById(`detail-${id}`);
-                    const container = document.getElementById(`item-${id}`);
-                    if (!el || !container) return; // Skip if elements are missing
-
-                    if (value !== undefined && value !== null && value !== '' && value !== 0 || (id === 'kilometers' && value === 0)) {
-                        el.textContent = displayValue || value;
-                        container.classList.remove('hidden');
-                        container.style.display = 'flex';
-                    } else {
-                        container.classList.add('hidden');
-                        container.style.display = 'none';
-                    }
-                };
-
-                toggleField('bedrooms', ad.bedrooms);
-                toggleField('bathrooms', ad.bathrooms);
-                toggleField('property-type', ad.propertyType);
-                toggleField('area', ad.area, ad.area ? `${ad.area.toLocaleString()} Sq Ft` : '');
 
                 // Breadcrumb Category translation
                 const breadcrumbCat = document.querySelector('[data-translate="motors"]');
@@ -769,7 +722,14 @@
                 }
 
                 if (callBtn) {
-                    callBtn.addEventListener('click', () => {
+                    callBtn.addEventListener('click', async () => {
+                        const token = localStorage.getItem('token');
+                        if (!token) {
+                            await customAlert(window.currentLang === 'ar' ? 'يرجى تسجيل الدخول لعرض رقم الهاتف' : 'Please login to see the phone number');
+                            window.location.href = 'login.html';
+                            return;
+                        }
+
                         // Use per-ad phone if set, fallback to user profile phone
                         const phoneUser = { ...ad.user, phone: ad.phone || (ad.user && ad.user.phone) };
                         showPhoneModal(phoneUser);
@@ -927,9 +887,11 @@
         <!-- Modal Box -->
         <div
             class="relative bg-white dark:bg-gray-800 rounded-2xl shadow-2xl p-8 w-full max-w-sm mx-4 text-center animate-fade-in">
-            <!-- Close Button -->
-            <button onclick="closePhoneModal()"
-                class="absolute top-4 right-4 text-gray-400 hover:text-gray-600 dark:hover:text-white text-xl">&times;</button>
+            <button onclick="closePhoneModal()" class="absolute top-5 right-5 text-gray-400 hover:text-gray-600 dark:hover:text-gray-200 transition-colors z-10" type="button">
+                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+                </svg>
+            </button>
 
             <!-- Seller Avatar -->
             <div id="modal-avatar"
@@ -1254,10 +1216,7 @@
             }
         });
     </script>
-    <script src="assets/js/en.js"></script>
-    <script src="assets/js/ar.js"></script>
-    <script src="assets/js/api-client.js"></script>
-    <script src="assets/js/main.js"></script>
+
 </body>
 
 </html>

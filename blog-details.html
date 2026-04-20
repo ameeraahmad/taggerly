@@ -1,0 +1,214 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Article - Taggerly Blog</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: {
+                        primary: '#0B2447',
+                        accent: '#FF6B00',
+                    }
+                }
+            }
+        }
+    </script>
+    <script>
+        if (localStorage.getItem('theme') === 'dark' || (!('theme' in localStorage) && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
+            document.documentElement.classList.add('dark');
+        } else {
+            document.documentElement.classList.remove('dark');
+        }
+    </script>
+    <link href="assets/css/style.css" rel="stylesheet">
+    <style>
+        .blog-content h1 { @apply text-3xl font-bold mb-6 mt-8; }
+        .blog-content h2 { @apply text-2xl font-bold mb-4 mt-8; }
+        .blog-content h3 { @apply text-xl font-bold mb-3 mt-6; }
+        .blog-content p { @apply mb-4 leading-relaxed text-gray-700 dark:text-gray-300; }
+        .blog-content ul { @apply list-disc list-inside mb-4; }
+        .blog-content ol { @apply list-decimal list-inside mb-4; }
+        .blog-content img { @apply rounded-2xl my-8 transition-transform hover:scale-[1.02]; }
+        .blog-content blockquote { @apply border-l-4 border-accent pl-4 italic my-6 text-gray-600 dark:text-gray-400; }
+        
+        .glass-nav {
+            background: rgba(255, 255, 255, 0.8);
+            backdrop-filter: blur(10px);
+        }
+        .dark .glass-nav {
+            background: rgba(17, 24, 39, 0.8);
+        }
+    </style>
+</head>
+
+<body class="bg-gray-50 dark:bg-gray-900 text-gray-900 dark:text-gray-100 transition-colors duration-300">
+
+    <!-- Header Placeholder -->
+    <div id="global-header-placeholder"></div>
+
+    <main class="pt-24 pb-20">
+        <!-- Skeleton Loader -->
+        <div id="loading-state" class="max-w-4xl mx-auto px-4">
+            <div class="h-96 bg-gray-200 dark:bg-gray-800 rounded-3xl animate-pulse mb-8"></div>
+            <div class="h-10 bg-gray-200 dark:bg-gray-800 rounded-lg animate-pulse mb-4 w-3/4"></div>
+            <div class="h-6 bg-gray-200 dark:bg-gray-800 rounded-lg animate-pulse mb-12 w-1/4"></div>
+            <div class="space-y-4">
+                <div class="h-4 bg-gray-200 dark:bg-gray-800 rounded animate-pulse"></div>
+                <div class="h-4 bg-gray-200 dark:bg-gray-800 rounded animate-pulse"></div>
+                <div class="h-4 bg-gray-200 dark:bg-gray-800 rounded animate-pulse w-5/6"></div>
+            </div>
+        </div>
+
+        <!-- Article Content -->
+        <article id="article-container" class="hidden">
+            <!-- Article Header -->
+            <div class="max-w-4xl mx-auto px-4 mb-12">
+                <nav class="flex mb-8 text-sm text-gray-500 gap-2 items-center">
+                    <a href="blog.html" class="hover:text-accent transition" data-translate="blog">Blog</a>
+                    <span>/</span>
+                    <span id="breadcrumb-category" class="font-medium text-accent"> Category </span>
+                </nav>
+                
+                <h1 id="post-title" class="text-4xl md:text-5xl font-extrabold mb-8 leading-tight">
+                    <!-- Title goes here -->
+                </h1>
+
+                <div class="flex items-center justify-between border-b dark:border-gray-800 pb-8">
+                    <div class="flex items-center gap-4">
+                        <img id="author-avatar" src="" class="w-12 h-12 rounded-full border-2 border-accent/20">
+                        <div>
+                            <p id="author-name" class="font-bold text-gray-900 dark:text-gray-100"></p>
+                            <p id="post-date" class="text-sm text-gray-500"></p>
+                        </div>
+                    </div>
+                    <div class="flex items-center gap-4">
+                        <button onclick="shareArticle()" class="p-2 rounded-full bg-gray-100 dark:bg-gray-800 hover:bg-accent hover:text-white transition">
+                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8.684 13.342C8.886 12.938 9 12.482 9 12c0-.482-.114-.938-.316-1.342m0 2.684a3 3 0 110-2.684m0 2.684l6.632 3.316m-6.632-6l6.632-3.316m0 0a3 3 0 100-2.684 3 3 0 000 2.684zm0 9a3 3 0 100-2.684 3 3 0 000 2.684z"/></svg>
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Featured Image -->
+            <div class="max-w-5xl mx-auto px-4 mb-12">
+                <img id="post-image" src="" alt="" class="w-full h-[500px] object-cover rounded-[2.5rem] shadow-2xl">
+            </div>
+
+            <!-- Content -->
+            <div class="max-w-3xl mx-auto px-4">
+                <div id="post-content" class="blog-content prose prose-lg dark:prose-invert max-w-none">
+                    <!-- Post content goes here -->
+                </div>
+
+                <!-- Footer of Article -->
+                <div class="mt-20 pt-10 border-t dark:border-gray-800">
+                    <div class="bg-accent/5 rounded-3xl p-8 flex flex-col md:flex-row items-center gap-8 text-center md:text-left rtl:md:text-right">
+                        <img id="author-avatar-bottom" src="" class="w-20 h-20 rounded-full border-4 border-white dark:border-gray-800">
+                        <div>
+                            <h4 class="text-xl font-bold mb-2" data-translate="postedBy">Published by</h4>
+                            <p id="author-name-bottom" class="text-lg font-medium text-accent mb-2"></p>
+                            <p class="text-gray-600 dark:text-gray-400 text-sm">Expert guide and storyteller at the Taggerly Team. passion for sharing knowledge that helps our community grow.</p>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="mt-12 flex justify-center">
+                    <a href="blog.html" class="flex items-center gap-2 text-accent font-bold hover:gap-4 transition-all">
+                        <svg class="w-5 h-5 rtl:rotate-180" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 16l-4-4m0 0l4-4m-4 4h18"/></svg>
+                        <span data-translate="backToBlog">Back to Blog</span>
+                    </a>
+                </div>
+            </div>
+        </article>
+    </main>
+
+    <!-- Footer Placeholder -->
+    <div id="global-footer-placeholder"></div>
+
+    <script src="assets/js/en.js"></script>
+    <script src="assets/js/ar.js"></script>
+    <script src="assets/js/main.js"></script>
+    <script>
+        async function loadArticle() {
+            const urlParams = new URLSearchParams(window.location.search);
+            const slug = urlParams.get('slug');
+            const lang = window.currentLang || 'en';
+
+            if (!slug) {
+                window.location.href = 'blog.html';
+                return;
+            }
+
+            try {
+                const response = await fetch(`/api/blog/post/${slug}`);
+                const resData = await response.json();
+
+                if (resData.success) {
+                    const post = resData.data;
+                    
+                    // Populate UI
+                    document.title = `${lang === 'ar' ? post.title_ar : post.title_en} - Taggerly Blog`;
+                    document.getElementById('post-title').textContent = lang === 'ar' ? post.title_ar : post.title_en;
+                    const catKey = `category${post.category.charAt(0).toUpperCase() + post.category.slice(1)}`;
+                    document.getElementById('breadcrumb-category').textContent = window.translations?.[lang]?.[catKey] || post.category;
+                    document.getElementById('post-date').textContent = new Date(post.createdAt).toLocaleDateString(lang === 'ar' ? 'ar-EG' : 'en-US', {
+                        year: 'numeric',
+                        month: 'long',
+                        day: 'numeric'
+                    });
+                    
+                    document.getElementById('post-image').src = post.featuredImage || 'assets/images/placeholder-blog.jpg';
+                    document.getElementById('post-content').innerHTML = lang === 'ar' ? post.content_ar : post.content_en;
+                    
+                    const authorName = post.author?.name || 'Taggerly Team';
+                    const authorAvatar = post.author?.avatar || 'https://www.gravatar.com/avatar/?d=mp';
+                    
+                    document.getElementById('author-name').textContent = authorName;
+                    document.getElementById('author-name-bottom').textContent = authorName;
+                    document.getElementById('author-avatar').src = authorAvatar;
+                    document.getElementById('author-avatar-bottom').src = authorAvatar;
+
+                    // Show content, hide loader
+                    document.getElementById('loading-state').classList.add('hidden');
+                    document.getElementById('article-container').classList.remove('hidden');
+                    
+                    // Trigger translation again to catch any new elements
+                    if (window.translatePage) window.translatePage();
+                } else {
+                    window.location.href = '404.html';
+                }
+            } catch (err) {
+                console.error('Error loading article:', err);
+                window.location.href = '404.html';
+            }
+        }
+
+        function shareArticle() {
+            if (navigator.share) {
+                navigator.share({
+                    title: document.title,
+                    url: window.location.href
+                }).catch(console.error);
+            } else {
+                // Fallback: Copy to clipboard
+                navigator.clipboard.writeText(window.location.href);
+                window.customAlert(window.currentLang === 'ar' ? 'تم نسخ الرابط!' : 'Link copied to clipboard!');
+            }
+        }
+
+        document.addEventListener('DOMContentLoaded', loadArticle);
+        
+        // Align with main.js dynamic update pattern
+        window.updateDynamicContent = function(country, lang) {
+            loadArticle();
+        };
+    </script>
+</body>
+
+</html>

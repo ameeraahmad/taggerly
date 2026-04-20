@@ -47,7 +47,7 @@
             <div>
                 <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2"
                     data-translate="categoryLabel">Category</label>
-                <select id="ad-category"
+                <select id="ad-category" name="category"
                     class="block w-full border border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-white rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-accent focus:border-accent sm:text-sm">
                     <option value="" disabled data-translate="selectCategory">Select Category</option>
                     <option value="Motors" data-translate="motors">Motors</option>
@@ -63,7 +63,7 @@
                 <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2"
                     data-translate="adTitleLabel">Ad
                     Title</label>
-                <input type="text" id="ad-title"
+                <input type="text" id="ad-title" name="title"
                     class="block w-full border border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-white rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-accent focus:border-accent sm:text-sm"
                     placeholder="e.g. iPhone 14 Pro Max for Sale" data-translate="adTitlePlaceholder">
             </div>
@@ -72,7 +72,7 @@
                 <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2"
                     data-translate="priceLabel">Price
                     (<span class="currency-label">AED</span>)</label>
-                <input type="number" id="ad-price"
+                <input type="number" id="ad-price" name="price"
                     class="block w-1/2 border border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-white rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-accent focus:border-accent sm:text-sm"
                     placeholder="e.g. 3500" data-translate="pricePlaceholder">
             </div>
@@ -80,7 +80,7 @@
             <div>
                 <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2"
                     data-translate="descriptionLabel">Description</label>
-                <textarea id="ad-description" rows="5"
+                <textarea id="ad-description" name="description" rows="5"
                     class="block w-full border border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-white rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-accent focus:border-accent sm:text-sm"
                     placeholder="Describe your item..." data-translate="descriptionPlaceholder"></textarea>
             </div>
@@ -90,14 +90,14 @@
                 <div>
                     <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2"
                         data-translate="year">Year</label>
-                    <input type="number" id="ad-year"
+                    <input type="number" id="ad-year" name="year"
                         class="block w-full border border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-white rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-accent focus:border-accent sm:text-sm"
                         placeholder="e.g. 2024">
                 </div>
                 <div>
                     <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2"
                         data-translate="kilometers">Kilometers</label>
-                    <input type="number" id="ad-kilometers"
+                    <input type="number" id="ad-kilometers" name="kilometers"
                         class="block w-full border border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-white rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-accent focus:border-accent sm:text-sm"
                         placeholder="e.g. 15000">
                 </div>
@@ -106,7 +106,7 @@
             <div>
                 <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2"
                     data-translate="condition">Condition</label>
-                <select id="ad-condition"
+                <select id="ad-condition" name="itemCondition"
                     class="block w-full border border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-white rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-accent focus:border-accent sm:text-sm">
                     <option value="New">New</option>
                     <option value="Used">Used</option>
@@ -123,7 +123,7 @@
             <!-- Status Toggle -->
             <div>
                 <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Status</label>
-                <select id="ad-status"
+                <select id="ad-status" name="status"
                     class="block w-full border border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-white rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-accent focus:border-accent sm:text-sm">
                     <option value="active">Active</option>
                     <option value="sold">Sold</option>
@@ -160,9 +160,8 @@
 
             <!-- Location -->
             <div>
-                <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2"
-                    data-translate="locationLabel">Location</label>
-                <select id="post-ad-location" data-dynamic-location="true"
+                <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Location (Governorate/City)</label>
+                <select id="post-ad-location" name="city" data-dynamic-location="true"
                     class="block w-full border border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-white rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-accent focus:border-accent sm:text-sm">
                     <option data-translate="dubai">Dubai</option>
                     <option data-translate="abuDhabi">Abu Dhabi</option>
@@ -185,7 +184,7 @@
                             </path>
                         </svg>
                     </div>
-                    <input type="tel" id="ad-phone"
+                    <input type="tel" id="ad-phone" name="phone"
                         class="block w-full pl-10 rtl:pr-10 rtl:pl-3 border border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-white rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-accent focus:border-accent sm:text-sm"
                         placeholder="e.g. +971 50 123 4567" data-translate="phonePlaceholder">
                 </div>
@@ -204,6 +203,10 @@
 
         </form>
     </div>
+
+    <!-- Footer Placeholder -->
+    <div id="global-footer-placeholder"></div>
+
 
     <script src="assets/js/en.js"></script>
     <script src="assets/js/ar.js"></script>
@@ -351,28 +354,23 @@
             form.addEventListener('submit', async (e) => {
                 e.preventDefault();
 
-                const formData = new FormData();
-                formData.append('title', document.getElementById('ad-title').value);
-                formData.append('description', document.getElementById('ad-description').value);
-                formData.append('price', document.getElementById('ad-price').value);
-                formData.append('category', categorySelect.value);
-                formData.append('city', document.getElementById('post-ad-location').value);
-                formData.append('country', window.selectedCountry || 'uae');
-                formData.append('year', document.getElementById('ad-year').value);
-                formData.append('kilometers', document.getElementById('ad-kilometers').value);
-                formData.append('itemCondition', document.getElementById('ad-condition').value);
-                formData.append('phone', document.getElementById('ad-phone').value);
-                formData.append('status', document.getElementById('ad-status').value);
+                const formData = new FormData(form);
                 
-                // Send list of existing images to keep
-                formData.append('existingImages', JSON.stringify(existingImages));
-
-                // Add new images
+                // Ensure correct names for critical fields if IDs differ from names
+                if (!formData.has('category')) formData.append('category', categorySelect.value || '');
+                if (!formData.has('city')) formData.append('city', document.getElementById('post-ad-location')?.value || '');
+                if (!formData.has('country')) formData.append('country', window.selectedCountry || localStorage.getItem('selectedCountry') || 'uae');
+                
+                // Handle images properly
+                formData.delete('images'); // Remove any empty file inputs from the raw form
                 if (selectedFiles.length > 0) {
                     selectedFiles.forEach(file => {
                         formData.append('images', file);
                     });
                 }
+                
+                // Add existing images as a stringified array
+                formData.append('existingImages', JSON.stringify(existingImages));
 
                 try {
                     const submitBtn = form.querySelector('button[type="submit"]');
@@ -383,7 +381,11 @@
                     await customAlert('Ad updated successfully!');
                     window.location.href = 'dashboard.html';
                 } catch (err) {
-                    await customAlert(err.message);
+                    let errorMsg = err.message || 'Validation failed';
+                    if (err.errors && Array.isArray(err.errors)) {
+                        errorMsg = err.errors.map(e => Object.values(e)[0]).join('\n');
+                    }
+                    await customAlert(errorMsg);
                     const submitBtn = form.querySelector('button[type="submit"]');
                     submitBtn.disabled = false;
                     submitBtn.textContent = 'Update Ad';

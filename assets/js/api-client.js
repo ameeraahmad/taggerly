@@ -1,6 +1,6 @@
-const API_URL = '/api';
+var API_URL = '/api';
 
-const apiClient = {
+var apiClient = {
     async fetch(endpoint, options = {}) {
         const token = localStorage.getItem('token');
         const headers = {
@@ -15,6 +15,7 @@ const apiClient = {
             headers['Authorization'] = `Bearer ${token}`;
         }
 
+        console.log(`📡 API Request: ${options.method || 'GET'} ${API_URL}${endpoint}`);
         const response = await fetch(`${API_URL}${endpoint}`, {
             ...options,
             headers,
@@ -24,6 +25,7 @@ const apiClient = {
         const contentType = response.headers.get("content-type");
         if (contentType && contentType.indexOf("application/json") !== -1) {
             const data = await response.json();
+            console.log(`✅ API Response [${endpoint}]:`, data);
             if (!response.ok) {
                 throw new Error(data.message || 'Something went wrong');
             }
@@ -220,6 +222,18 @@ const apiClient = {
         return this.fetch('/users/update-password', {
             method: 'PUT',
             body: JSON.stringify(passwordData)
+        });
+    },
+
+    // Unified Image Upload
+    async uploadImage(file, folder = 'general') {
+        const formData = new FormData();
+        formData.append('image', file);
+        formData.append('folder', folder);
+
+        return this.fetch('/admin/upload', {
+            method: 'POST',
+            body: formData
         });
     }
 };

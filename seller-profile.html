@@ -60,7 +60,7 @@
                                     d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z"
                                     clip-rule="evenodd"></path>
                             </svg>
-                            Verified
+                            <span data-translate="verified">Verified</span>
                         </span>
                     </div>
                     <p id="seller-location-text"
@@ -74,18 +74,12 @@
                     </p>
                 </div>
                 <div class="flex gap-3 pb-2">
-                    <button
-                        class="bg-primary text-white px-6 py-3 rounded-2xl font-bold hover:bg-slate-800 transition shadow-lg shadow-primary/20 flex items-center gap-2">
+                    <button id="share-profile-btn"
+                        class="bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-200 px-6 py-3 rounded-2xl font-bold hover:bg-gray-200 dark:hover:bg-gray-600 transition flex items-center gap-2" data-translate="share">
                         <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z">
-                            </path>
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8.684 13.342C8.886 12.938 9 12.482 9 12c0-.482-.114-.938-.316-1.342m0 2.684a3 3 0 110-2.684m0 2.684l6.632 3.316m-6.632-6l6.632-3.316m0 0a3 3 0 105.367-2.684 3 3 0 00-5.367 2.684zm0 9.316a3 3 0 105.368 2.684 3 3 0 00-5.368-2.684z"></path>
                         </svg>
-                        Chat
-                    </button>
-                    <button
-                        class="bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-200 px-6 py-3 rounded-2xl font-bold hover:bg-gray-200 dark:hover:bg-gray-600 transition">
-                        Share
+                        <span>Share</span>
                     </button>
                 </div>
             </div>
@@ -94,25 +88,25 @@
                 class="px-8 py-6 bg-gray-50 dark:bg-gray-800/50 border-t dark:border-gray-700 flex flex-wrap gap-12 justify-center md:justify-start">
                 <div>
                     <span
-                        class="block text-xs uppercase font-black text-gray-400 dark:text-gray-500 tracking-widest mb-1">Success
+                        class="block text-xs uppercase font-black text-gray-400 dark:text-gray-500 tracking-widest mb-1" data-translate="successRate">Success
                         Rate</span>
-                    <span class="text-xl font-black text-gray-900 dark:text-white">98%</span>
+                    <span id="seller-success-rate" class="text-xl font-black text-gray-900 dark:text-white">-</span>
                 </div>
                 <div>
                     <span
-                        class="block text-xs uppercase font-black text-gray-400 dark:text-gray-500 tracking-widest mb-1">Active
+                        class="block text-xs uppercase font-black text-gray-400 dark:text-gray-500 tracking-widest mb-1" data-translate="activeAds">Active
                         Ads</span>
                     <span id="active-ads-count" class="text-xl font-black text-gray-900 dark:text-white">-</span>
                 </div>
                 <div>
                     <span
-                        class="block text-xs uppercase font-black text-gray-400 dark:text-gray-500 tracking-widest mb-1">Sold
+                        class="block text-xs uppercase font-black text-gray-400 dark:text-gray-500 tracking-widest mb-1" data-translate="soldItems">Sold
                         Items</span>
-                    <span class="text-xl font-black text-gray-900 dark:text-white">24</span>
+                    <span id="sold-items-count" class="text-xl font-black text-gray-900 dark:text-white">-</span>
                 </div>
                 <div>
                     <span
-                        class="block text-xs uppercase font-black text-gray-400 dark:text-gray-500 tracking-widest mb-1">Joined</span>
+                        class="block text-xs uppercase font-black text-gray-400 dark:text-gray-500 tracking-widest mb-1" data-translate="joined">Joined</span>
                     <span id="member-since" class="text-xl font-black text-gray-900 dark:text-white">-</span>
                 </div>
             </div>
@@ -122,15 +116,15 @@
             <!-- Left: Ads -->
             <div class="lg:col-span-2 space-y-8">
                 <div class="flex justify-between items-center">
-                    <h2 class="text-2xl font-black text-gray-900 dark:text-white">Active Listings</h2>
-                    <div class="text-sm font-bold text-accent">Latest First</div>
+                    <h2 class="text-2xl font-black text-gray-900 dark:text-white" data-translate="activeListings">Active Listings</h2>
+                    <div class="text-sm font-bold text-accent" data-translate="latestFirst">Latest First</div>
                 </div>
 
                 <div id="seller-ads-grid" class="grid grid-cols-1 sm:grid-cols-2 gap-6">
                     <!-- Ads injected via JS -->
                     <div
                         class="text-center py-20 bg-white dark:bg-gray-800 rounded-3xl border border-dashed dark:border-gray-700 col-span-full">
-                        <div class="animate-pulse text-gray-400">Loading listings...</div>
+                        <div class="animate-pulse text-gray-400" data-translate="loading">Loading listings...</div>
                     </div>
                 </div>
 
@@ -146,7 +140,7 @@
             <div class="space-y-8">
                 <!-- About -->
                 <div class="bg-white dark:bg-gray-800 rounded-3xl shadow-sm p-8 border dark:border-gray-700">
-                    <h2 class="text-xl font-black mb-4 dark:text-white">About Seller</h2>
+                    <h2 class="text-xl font-black mb-4 dark:text-white" data-translate="aboutSeller">About Seller</h2>
                     <p id="seller-bio" class="text-gray-600 dark:text-gray-400 leading-relaxed italic">
                         No bio available.
                     </p>
@@ -155,7 +149,7 @@
                 <!-- Reviews -->
                 <div class="bg-white dark:bg-gray-800 rounded-3xl shadow-sm p-8 border dark:border-gray-700">
                     <div class="flex justify-between items-center mb-6">
-                        <h2 class="text-xl font-black dark:text-white">Reviews</h2>
+                        <h2 class="text-xl font-black dark:text-white" data-translate="reviews">Reviews</h2>
                         <span id="avg-rating"
                             class="bg-accent/10 text-accent font-black px-3 py-1 rounded-full text-sm">★ 0.0</span>
                     </div>
@@ -166,7 +160,7 @@
                     </div>
 
                     <button id="add-review-btn"
-                        class="w-full mt-8 border border-gray-200 dark:border-gray-700 py-3 rounded-2xl font-bold hover:bg-gray-50 dark:hover:bg-gray-700 transition dark:text-white">
+                        class="w-full mt-8 border border-gray-200 dark:border-gray-700 py-3 rounded-2xl font-bold hover:bg-gray-50 dark:hover:bg-gray-700 transition dark:text-white" data-translate="writeReview">
                         Write a Review
                     </button>
                 </div>
@@ -177,7 +171,12 @@
     <!-- Review Modal -->
     <div id="review-modal"
         class="fixed inset-0 z-[100] hidden items-center justify-center bg-black/50 backdrop-blur-sm p-4">
-        <div class="bg-white dark:bg-gray-800 w-full max-w-md rounded-3xl shadow-2xl p-8 animate-fade-in">
+        <div class="bg-white dark:bg-gray-800 w-full max-w-md rounded-3xl shadow-2xl p-8 animate-fade-in relative">
+            <button onclick="closeReviewModal()" class="absolute top-5 right-5 text-gray-400 hover:text-gray-600 dark:hover:text-gray-200 transition-colors z-10" type="button">
+                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+                </svg>
+            </button>
             <h2 class="text-2xl font-black mb-6 dark:text-white">Rate your experience</h2>
             <form id="review-form" class="space-y-6">
                 <div>
@@ -212,7 +211,8 @@
         </div>
     </div>
 
-    <footer id="main-footer"></footer>
+    <!-- Footer Placeholder -->
+    <div id="global-footer-placeholder"></div>
 
     <script src="assets/js/en.js"></script>
     <script src="assets/js/ar.js"></script>
@@ -248,6 +248,44 @@
                 }
                 document.getElementById('review-modal').classList.replace('hidden', 'flex');
             };
+
+            // Share Logic
+            document.getElementById('share-profile-btn').onclick = async () => {
+                const name = document.getElementById('seller-name-heading').textContent;
+                const shareData = {
+                    title: `${name}'s Profile - Taggerly`,
+                    text: `Check out ${name}'s profile on Taggerly.`,
+                    url: window.location.href
+                };
+
+                if (navigator.share) {
+                    try {
+                        await navigator.share(shareData);
+                    } catch (err) {
+                        console.log('Share failed:', err);
+                    }
+                } else {
+                    // Fallback to copy to clipboard
+                    try {
+                        await navigator.clipboard.writeText(window.location.href);
+                        const lang = window.currentLang || 'en';
+                        const msg = (translations[lang] && translations[lang].linkCopied) || 'Profile link copied to clipboard!';
+                        await customAlert(msg);
+                    } catch (err) {
+                        console.error('Copy failed:', err);
+                    }
+                }
+            };
+
+            window.addEventListener('languageChanged', () => {
+                loadSellerProfile();
+                loadSellerAds();
+                loadSellerReviews();
+            });
+
+            window.addEventListener('countryChanged', () => {
+                loadSellerAds();
+            });
         });
 
         async function loadSellerProfile() {
@@ -273,6 +311,14 @@
                     avatarInitials.classList.add('hidden');
                 } else {
                     avatarInitials.textContent = user.name.split(' ').map(n => n[0]).join('').toUpperCase();
+                }
+
+                // Update Stats
+                document.getElementById('seller-success-rate').textContent = `${user.successRate}%`;
+                document.getElementById('sold-items-count').textContent = user.soldItemsCount;
+                // Active ads count is also updated in loadSellerAds, but let's set it here too if available
+                if (user.activeAdsCount !== undefined) {
+                    document.getElementById('active-ads-count').textContent = user.activeAdsCount;
                 }
             } catch (err) {
                 console.error(err);
@@ -303,7 +349,7 @@
                             </div>
                             <div class="p-4">
                                 <h3 class="font-bold text-gray-900 dark:text-white truncate">${ad.title}</h3>
-                                <div class="text-accent font-black mt-1">${ad.price.toLocaleString()} AED</div>
+                                <div class="text-accent font-black mt-1">${ad.price.toLocaleString()} <span class="currency-label">${window.getCurrencySymbol()}</span></div>
                                 <div class="text-[10px] text-gray-400 mt-2 uppercase flex justify-between">
                                     <span>${ad.city}</span>
                                     <span>${new Date(ad.createdAt).toLocaleDateString()}</span>
@@ -314,6 +360,7 @@
                     grid.insertAdjacentHTML('beforeend', adCard);
                 });
 
+                if (window.updateCurrencyLabels) window.updateCurrencyLabels();
                 renderPagination(response.page, response.totalPages);
             } catch (err) {
                 console.error(err);

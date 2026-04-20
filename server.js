@@ -58,6 +58,9 @@ const authLimiter = rateLimit({
     message: { success: false, message: 'Too many login attempts, please try again after 15 minutes.' }
 });
 
+// Favicon handler - prevents 404 in console if missing
+app.get('/favicon.ico', (req, res) => res.status(204).end());
+
 // Apply stricter limit to auth routes
 app.use('/api/auth', authLimiter);
 
@@ -66,7 +69,12 @@ app.use('/api', limiter);
 
 // Pass io to controllers (lazy load)
 app.use((req, res, next) => {
-    req.io = global.io || { emit: () => {} };
+    // Safer mock that supports .to().emit()
+    const mockIo = { 
+        emit: () => {}, 
+        to: () => ({ emit: () => {} }) 
+    };
+    req.io = global.io || mockIo;
     next();
 });
 
@@ -81,6 +89,9 @@ const adminRoutes = require('./routes/adminRoutes');
 const reportRoutes = require('./routes/reportRoutes');
 const notificationRoutes = require('./routes/notificationRoutes');
 const paymentRoutes = require('./routes/paymentRoutes');
+const newsletterRoutes = require('./routes/newsletterRoutes');
+const blogRoutes = require('./routes/blogRoutes');
+const supportRoutes = require('./routes/supportRoutes');
 
 app.use('/api/ads', adRoutes);
 app.use('/api/auth', authRoutes);
@@ -92,6 +103,16 @@ app.use('/api/admin', adminRoutes);
 app.use('/api/reports', reportRoutes);
 app.use('/api/notifications', notificationRoutes);
 app.use('/api/payments', paymentRoutes);
+app.use('/api/newsletter', newsletterRoutes);
+app.use('/api/blog', (req, res, next) => {
+    if (req.method !== 'GET') {
+        console.log(`[BLOG API] ${req.method} ${req.url}`, req.body);
+    } else {
+        console.log(`[BLOG API] ${req.method} ${req.url}`);
+    }
+    next();
+}, blogRoutes);
+app.use('/api/support', supportRoutes);
 
 // Health check
 app.get('/api/health', (req, res) => {
@@ -242,10 +263,26 @@ if (require.main === module) {
     initCronJobs(io_instance);
 
     io_instance.on('connection', (socket) => {
-        console.log('👤 User connected:', socket.id);
-        socket.on('join_user', (userId) => { socket.join(`user_${userId}`); });
-        socket.on('join_conversation', (convoId) => { socket.join(`convo_${convoId}`); });
-        socket.on('disconnect', () => { console.log('👤 User disconnected'); });
+        console.log(`👤 Socket connected: ${socket.id}`);
+        
+        socket.on('join_user', (userId) => { 
+            console.log(`🔗 Socket ${socket.id} joining room: user_${userId}`);
+            socket.join(`user_${userId}`); 
+        });
+        
+        socket.on('join_conversation', (convoId) => { 
+            console.log(`🔗 Socket ${socket.id} joining room: convo_${convoId}`);
+            socket.join(`convo_${convoId}`); 
+        });
+        
+        socket.on('join_support', (requestId) => { 
+            console.log(`🔗 Socket ${socket.id} joining room: support_${requestId}`);
+            socket.join(`support_${requestId}`); 
+        });
+        
+        socket.on('disconnect', () => { 
+            console.log(`👤 Socket disconnected: ${socket.id}`); 
+        });
     });
 
     server.listen(PORT, '0.0.0.0', () => {

@@ -1,5 +1,6 @@
 const Ad = require('../models/Ad');
 const { Op } = require('sequelize');
+const { sequelize } = require('../config/db');
 
 // @desc    Get all ads
 // @route   GET /api/ads
@@ -16,7 +17,13 @@ exports.getAllAds = async (req, res) => {
 
         if (category) where.category = category;
         if (subCategory) where.subCategory = subCategory;
-        if (city) where.city = city;
+        
+        // City filtering - make it more robust and handle "all_" prefix
+        if (city && city !== 'all' && !city.startsWith('all_')) {
+            // Use case-insensitive match for city to handle 'dubai' vs 'Dubai'
+            where.city = { [Op.like]: `%${city}%` };
+        }
+        
         if (country) where.country = country;
         if (condition) where.itemCondition = condition;
         if (isFeatured) where.isFeatured = isFeatured === 'true';
@@ -49,22 +56,44 @@ exports.getAllAds = async (req, res) => {
             if (maxKm) where.kilometers[Op.lte] = Number(maxKm);
         }
         
-        // Exact location radius filtering (Box Search Approximation)
+        // Exact location radius filtering (Box Search Approximation) with City Fallback
         if (lat && lng) {
             const latitude = parseFloat(lat);
             const longitude = parseFloat(lng);
             const r = parseFloat(radius) || 50; // Default 50km
             
-            // Degrees approx
-            const degLat = r / 111;
-            const degLng = r / (111 * Math.cos(latitude * Math.PI / 180));
+            const degLat = r / 111.32;
+            const degLng = r / (111.32 * Math.cos(latitude * Math.PI / 180));
             
-            where.latitude = { [Op.between]: [latitude - degLat, latitude + degLat] };
-            where.longitude = { [Op.between]: [longitude - degLng, longitude + degLng] };
+            const gpsCondition = {
+                [Op.and]: [
+                    { latitude: { [Op.between]: [latitude - degLat, latitude + degLat] } },
+                    { longitude: { [Op.between]: [longitude - degLng, longitude + degLng] } }
+                ]
+            };
+
+            const cityFallback = req.query.city || req.query.loc;
             
-            // If searching by lat/lng, we might want to prioritize it over purely city-name
-            // but for now we keep existing filters.
+            if (cityFallback && cityFallback !== 'all' && !cityFallback.startsWith('all_')) {
+                // If we are doing a GPS search, we want EITHER a GPS match OR a city match (for ads without GPS).
+                // We remove the top-level city filter if it exists to allow the OR condition to handle it.
+                delete where.city;
+                
+                where[Op.or] = [
+                    gpsCondition,
+                    {
+                        [Op.and]: [
+                            { city: { [Op.like]: `%${cityFallback}%` } },
+                            { latitude: null }
+                        ]
+                    }
+                ];
+            } else {
+                where.latitude = gpsCondition[Op.and][0].latitude;
+                where.longitude = gpsCondition[Op.and][1].longitude;
+            }
         }
+
 
         if (search) {
             const words = search.split(' ').filter(word => word.length > 0);
@@ -75,16 +104,29 @@ exports.getAllAds = async (req, res) => {
                 ]
             }));
 
-            // If there's already an [Op.or] for multiple fields, we wrap it
-            if (where[Op.or]) {
+            // If we have other conditions, we combine them with search using Op.and
+            if (Object.keys(where).length > 0 || where[Op.or]) {
+                const otherConditions = { ...where };
+                // If we had an Op.or (from GPS), we must move it into the AND array
+                const baseConditions = [];
+                
+                // Extract Op.or if it exists
+                if (otherConditions[Op.or]) {
+                    baseConditions.push({ [Op.or]: otherConditions[Op.or] });
+                    delete otherConditions[Op.or];
+                }
+                
+                // Add remaining simple where conditions
+                if (Object.keys(otherConditions).length > 0) {
+                    baseConditions.push(otherConditions);
+                }
+
                 where = {
                     [Op.and]: [
-                        { [Op.or]: where[Op.or] },
+                        ...baseConditions,
                         ...searchConditions
-                    ],
-                    ...where
+                    ]
                 };
-                delete where[Op.or];
             } else {
                 where[Op.and] = searchConditions;
             }
@@ -236,14 +278,25 @@ exports.updateAd = async (req, res) => {
             return res.status(403).json({ success: false, message: 'Not authorized' });
         }
 
-        // Apply restrictions for non-admin users only if they are changing CONTENT (title, description, price)
+        // Security: Only admins can directly set an ad to 'active'. 
+        // If a user tries to set it to 'active' from any other state, it must go to 'pending'.
+        if (req.user.role !== 'admin') {
+            if (req.body.status === 'active' && ad.status !== 'active') {
+                req.body.status = 'pending';
+            }
+        }
+
+        // Apply restrictions for non-admin users ONLY if they are changing CONTENT and the ad is NOT rejected
         if (req.user.role !== 'admin') {
             const isChangingContent = req.body.title && req.body.title !== ad.title ||
                                       req.body.description && req.body.description !== ad.description ||
                                       req.body.price && Number(req.body.price) !== Number(ad.price);
 
-            if (isChangingContent) {
-                // 1. Check max edits (3 times)
+            // If the ad is REJECTED, we allow editing without cooldown to let them fix it immediately
+            const isRejected = ad.status === 'rejected';
+
+            if (isChangingContent && !isRejected) {
+                // 1. Check max edits (3 times) - only for non-rejected ads
                 if (ad.editCount >= 3) {
                     return res.status(400).json({ 
                         success: false, 
@@ -251,7 +304,7 @@ exports.updateAd = async (req, res) => {
                     });
                 }
 
-                // 2. Check cooldown (3 hours)
+                // 2. Check cooldown (3 hours) - only for non-rejected ads
                 if (ad.lastEditedAt) {
                     const threeHoursInMs = 3 * 60 * 60 * 1000;
                     const timeDiff = new Date() - new Date(ad.lastEditedAt);
@@ -266,10 +319,15 @@ exports.updateAd = async (req, res) => {
                     }
                 }
 
-                // 3. Mark for re-approval and update statistics
-                req.body.status = 'pending';
+                // Update statistics for normal edits
                 req.body.editCount = ad.editCount + 1;
                 req.body.lastEditedAt = new Date();
+            }
+
+            // Always mark for re-approval if content or status is being updated by user
+            if (isChangingContent || req.body.status === 'active' || isRejected) {
+                req.body.status = 'pending';
+                req.body.rejectionReason = null; // Clear old rejection reason so admin sees it as new
             }
         }
 
@@ -297,34 +355,76 @@ exports.updateAd = async (req, res) => {
             req.body.images = [...imagesToKeep, ...newImages];
         }
 
-        // If relisting from rejected/deleted, clear rejection reason
-        if (req.body.status === 'pending') {
-            req.body.rejectionReason = null;
-        }
+        // Sanitize numeric fields to avoid "empty string" validation errors in SQLite/Sequelize
+        ['price', 'year', 'kilometers', 'bedrooms', 'bathrooms', 'latitude', 'longitude'].forEach(field => {
+            if (req.body[field] === '') {
+                req.body[field] = null;
+            } else if (req.body[field] !== undefined) {
+                req.body[field] = Number(req.body[field]);
+            }
+        });
 
         await ad.update(req.body);
         res.status(200).json({ success: true, data: ad });
     } catch (err) {
         console.error('🔥 Update Ad Error:', err);
-        res.status(400).json({ success: false, message: err.message || 'Validation failed' });
+        // If it's a Sequelize Validation Error, try to get more specific
+        let message = err.message || 'Validation failed';
+        if (err.errors && err.errors.length > 0) {
+            message = err.errors.map(e => e.message).join(', ');
+        }
+        res.status(400).json({ success: false, message });
     }
 };
 
 // @desc    Permanently delete ad
 // @route   DELETE /api/ads/:id/permanent
 exports.permanentlyDeleteAd = async (req, res) => {
+    const { Conversation, ChatMessage, Favorite, Review, Report, Payment } = require('../models/associations');
+    const t = await sequelize.transaction();
+    
     try {
         const ad = await Ad.findByPk(req.params.id);
-        if (!ad) return res.status(404).json({ success: false, message: 'Ad not found' });
+        if (!ad) {
+            await t.rollback();
+            return res.status(404).json({ success: false, message: 'Ad not found' });
+        }
 
         // Ensure user owns the ad or is admin
         if (ad.userId !== req.user.id && req.user.role !== 'admin') {
+            await t.rollback();
             return res.status(403).json({ success: false, message: 'Not authorized' });
         }
 
-        await ad.destroy();
+        const adId = ad.id;
+
+        // 1. Delete Favorites
+        await Favorite.destroy({ where: { adId }, transaction: t });
+
+        // 2. Clear Ad references in Reviews
+        await Review.update({ adId: null }, { where: { adId }, transaction: t });
+
+        // 3. Delete Reports (Report requires adId)
+        await Report.destroy({ where: { adId }, transaction: t });
+
+        // 4. Update Payments (set adId to null)
+        await Payment.update({ adId: null }, { where: { adId }, transaction: t });
+
+        // 5. Handle Conversations and Messages
+        const conversations = await Conversation.findAll({ where: { adId }, transaction: t });
+        for (const convo of conversations) {
+            await ChatMessage.destroy({ where: { conversationId: convo.id }, transaction: t });
+            await convo.destroy({ transaction: t });
+        }
+
+        // 6. Finally delete the Ad
+        await ad.destroy({ transaction: t });
+
+        await t.commit();
         res.status(200).json({ success: true, message: 'Ad permanently deleted' });
     } catch (err) {
+        if (t) await t.rollback();
+        console.error('Permanent delete error:', err);
         res.status(500).json({ success: false, message: err.message });
     }
 };

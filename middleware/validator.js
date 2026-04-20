@@ -5,13 +5,14 @@ exports.validate = (req, res, next) => {
     if (errors.isEmpty()) {
         return next();
     }
-    const extractedErrors = [];
-    errors.array().map(err => extractedErrors.push({ [err.path]: err.msg }));
+    
+    const errorMessages = errors.array().map(err => err.msg).join(', ');
+
+    console.error('❌ Validation Errors:', errorMessages);
 
     return res.status(422).json({
         success: false,
-        message: 'Validation failed',
-        errors: extractedErrors,
+        message: errorMessages // Return specific error messages
     });
 };
 
@@ -27,9 +28,9 @@ exports.loginValidation = [
 ];
 
 exports.adValidation = [
-    check('title', 'Title is required and should be at least 5 chars').isLength({ min: 5 }).trim(),
-    check('price', 'Please provide a valid price').isNumeric(),
-    check('category', 'Category is required').not().isEmpty(),
+    check('title', 'Title should be at least 5 chars').optional({ checkFalsy: true }).isLength({ min: 5 }).trim(),
+    check('price', 'Please provide a valid price').optional({ checkFalsy: true }).isNumeric(),
+    check('category', 'Category is required').optional({ checkFalsy: true }).not().isEmpty(),
 ];
 
 exports.reviewValidation = [

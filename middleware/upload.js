@@ -114,6 +114,33 @@ const resizeChatImage = async (req, res, next) => {
     }
 };
 
+const resizePostImage = async (req, res, next) => {
+    if (!req.file || process.env.CLOUDINARY_CLOUD_NAME) return next();
+
+    const filename = `blog-${Date.now()}.webp`;
+    const filepath = path.join(__dirname, '../uploads', filename);
+
+    if (!process.env.VERCEL) {
+        if (!fs.existsSync(path.join(__dirname, '../uploads'))) {
+            fs.mkdirSync(path.join(__dirname, '../uploads'), { recursive: true });
+        }
+    }
+
+    try {
+        await sharp(req.file.buffer)
+            .resize(1200, 800, { fit: 'cover' })
+            .toFormat('webp')
+            .webp({ quality: 80 })
+            .toFile(filepath);
+
+        req.file.path = `/uploads/${filename}`;
+        next();
+    } catch (err) {
+        console.error('Error resizing blog image:', err);
+        return res.status(500).json({ success: false, message: 'Image processing failed' });
+    }
+};
+
 // Check file type
 function checkFileType(file, cb) {
     const filetypes = /jpeg|jpg|png|gif|webp|heic|heif|jfif|avif|bmp|tiff/;
@@ -127,5 +154,5 @@ function checkFileType(file, cb) {
     }
 }
 
-module.exports = { upload, resizeImages, resizeAvatar, resizeChatImage };
+module.exports = { upload, resizeImages, resizeAvatar, resizeChatImage, resizePostImage };
 

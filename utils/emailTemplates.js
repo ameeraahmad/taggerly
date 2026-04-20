@@ -221,3 +221,34 @@ exports.adExpiringSoonEmail = (options) => `
     ${emailFooter}
 </div>
 `;
+
+/**
+ * Newsletter Welcome Template
+ */
+exports.newsletterWelcomeEmail = (options) => `
+<div style="${containerStyle}">
+    ${emailHeader}
+    <div style="padding: 40px; font-family: sans-serif; line-height: 1.6; color: #333;">
+        <h2 style="color: ${secondaryColor};">Welcome to the Taggerly Newsletter!</h2>
+        <p>Hi there,</p>
+        <p>Thanks for subscribing to our newsletter! You're now on the list to receive the latest tips, news, and best deals straight to your inbox.</p>
+        
+        <p>What you can expect from us:</p>
+        <ul style="padding-left: 20px;">
+            <li>Exclusive buying and selling tips to help you get the best value.</li>
+            <li>Early access to new features and community updates.</li>
+            <li>Curated highlights of the most interesting listings each week.</li>
+        </ul>
+        
+        <p>We're excited to help you make the most of Taggerly!</p>
+        
+        <div style="text-align: center; margin: 30px 0;">
+            <a href="https://taggerly.com" style="background-color: ${brandColor}; color: white; padding: 12px 30px; text-decoration: none; border-radius: 50px; font-weight: bold;">Browse Latest Ads</a>
+        </div>
+        
+        <p>If you ever want to stop receiving these emails, you can <a href="${options.unsubscribeURL}" style="color: ${secondaryColor};">unsubscribe here</a> at any time.</p>
+        <p>Best regards,<br>The Taggerly Team</p>
+    </div>
+    ${emailFooter}
+</div>
+`;

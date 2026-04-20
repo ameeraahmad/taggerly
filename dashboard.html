@@ -50,11 +50,14 @@
             <div class="w-full md:w-64 flex-shrink-0">
                 <div class="bg-white rounded-xl shadow-sm overflow-hidden border dark:border-gray-700">
                     <div class="p-6 bg-primary text-white text-center">
-                        <div
-                            class="w-20 h-20 bg-white rounded-full mx-auto flex items-center justify-center text-3xl font-bold text-primary mb-3 shadow-inner">
-                            JD</div>
-                        <h2 class="font-bold text-lg">John Doe</h2>
-                        <p class="text-sm text-blue-200" data-translate="memberSince">Member since 2024</p>
+                        <div id="user-avatar-container"
+                            class="w-20 h-20 bg-white rounded-full mx-auto flex items-center justify-center text-3xl font-bold text-primary mb-3 shadow-inner overflow-hidden">
+                            --</div>
+                        <h2 id="user-display-name" class="font-bold text-lg">Loading...</h2>
+                        <p class="text-sm text-blue-200">
+                            <span data-translate="memberSince">Member since</span>
+                            <span id="user-member-since">...</span>
+                        </p>
                     </div>
                     <nav class="p-4 space-y-1">
                         <a href="#" onclick="showSection('ads')" id="nav-ads"
@@ -109,15 +112,14 @@
                             <span
                                 class="unread-badge ml-auto bg-red-500 text-white text-xs font-bold px-2 py-0.5 rounded-full rtl:mr-auto rtl:ml-0 hidden">0</span>
                         </a>
-                        <a href="#" onclick="showSection('archive')" id="nav-archive"
+                        <a href="#" onclick="showSection('rejected')" id="nav-rejected"
                             class="sidebar-nav-link flex items-center px-4 py-3 text-gray-600 hover:bg-gray-50 hover:text-primary rounded-lg transition">
-                            <svg class="w-5 h-5 mr-3 rtl:ml-3 rtl:mr-0" fill="none" stroke="currentColor"
-                                viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                    d="M5 8h14M5 8a2 2 0 110-4h14a2 2 0 110 4M5 8v10a2 2 0 002 2h10a2 2 0 002-2V8m-9 4h4"></path>
+                            <svg class="w-5 h-5 mr-3 rtl:ml-3 rtl:mr-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2m7-2a9 9 0 11-18 0 9 9 0 0118 0z" />
                             </svg>
-                            <span data-translate="archive">Archive</span>
+                            <span data-translate="rejectedAds">Rejected Ads</span>
                         </a>
+                        <a href="#" onclick="showSection('archive')" id="nav-archive"
                         <a href="profile.html"
                             class="sidebar-nav-link flex items-center px-4 py-3 text-gray-600 hover:bg-gray-50 hover:text-primary rounded-lg transition">
                             <svg class="w-5 h-5 mr-3 rtl:ml-3 rtl:mr-0" fill="none" stroke="currentColor"
@@ -170,7 +172,7 @@
                     class="dashboard-section bg-white rounded-xl shadow-sm overflow-hidden anim-fade-in border dark:border-gray-700">
                     <div class="px-6 py-4 border-b flex justify-between items-center bg-gray-50/50 dark:bg-gray-800/50">
                         <h3 class="font-bold text-gray-900 dark:text-white" data-translate="activeAdsList">Active/Pending Ads</h3>
-                        <a href="post-ad.html"
+                        <a href="select-category.html"
                             class="text-xs bg-accent text-white px-3 py-1.5 rounded-full font-bold hover:shadow-md transition"
                             data-translate="postNew">Post New</a>
                     </div>
@@ -179,11 +181,22 @@
                     </div>
                 </div>
 
-                <!-- Archive Section (Sold/Rejected/Deleted) -->
+                <!-- Rejected Ads Section -->
+                <div id="section-rejected"
+                    class="dashboard-section hidden bg-white rounded-xl shadow-sm overflow-hidden anim-fade-in border dark:border-gray-700">
+                    <div class="px-6 py-4 border-b flex justify-between items-center bg-red-50/50 dark:bg-red-900/10">
+                        <h3 class="font-bold text-gray-900 dark:text-white" data-translate="rejectedAdsList">Rejected Ads</h3>
+                    </div>
+                    <div id="rejected-container" class="divide-y divide-gray-100 dark:divide-gray-700">
+                        <!-- Loaded via JS -->
+                    </div>
+                </div>
+
+                <!-- Archive Section (Sold/Deleted) -->
                 <div id="section-archive"
                     class="dashboard-section hidden bg-white rounded-xl shadow-sm overflow-hidden anim-fade-in border dark:border-gray-700">
                     <div class="px-6 py-4 border-b bg-gray-50/50 dark:bg-gray-800/50">
-                        <h3 class="font-bold text-gray-900 dark:text-white" data-translate="archiveList">Archive (Sold, Rejected, Deleted)</h3>
+                        <h3 class="font-bold text-gray-900 dark:text-white" data-translate="archiveList">Archive (Sold, Deleted)</h3>
                     </div>
                     <div id="archive-container" class="divide-y divide-gray-100 dark:divide-gray-700">
                         <!-- Loaded via JS -->
@@ -248,62 +261,8 @@
             </div>
         </div>
     </div>
-    <!-- Footer -->
-    <footer
-        class="site-footer bg-gray-900 text-white pt-12 pb-8 mt-20 border-t border-gray-800 transition-colors duration-300">
-        <div class="footer-container max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div class="grid grid-cols-1 md:grid-cols-4 gap-8 mb-8">
-                <div>
-                    <h3 class="text-xl font-bold mb-4">Taggerly</h3>
-                    <p class="text-gray-400 text-sm" data-translate="footerText">The best place to buy and sell
-                        anything.</p>
-                </div>
-                <div>
-                    <h4 class="font-bold mb-4 text-gray-300" data-translate="quickLinks">Quick Links</h4>
-                    <ul class="space-y-2 text-sm text-gray-400">
-                        <li><a href="about.html" class="hover:text-white transition" data-translate="aboutUs">About
-                                Us</a></li>
-                        <li><a href="contact.html" class="hover:text-white transition"
-                                data-translate="contactUs">Contact Us</a></li>
-                        <li><a href="#" class="hover:text-white transition" data-translate="careers">Careers</a></li>
-                    </ul>
-                </div>
-                <div>
-                    <h4 class="font-bold mb-4 text-gray-300" data-translate="support">Support</h4>
-                    <ul class="space-y-2 text-sm text-gray-400">
-                        <li><a href="help.html" class="hover:text-white transition" data-translate="helpCenter">Help
-                                Center</a></li>
-                        <li><a href="privacy.html" class="hover:text-white transition"
-                                data-translate="privacyPolicy">Privacy Policy</a></li>
-                        <li><a href="#" class="hover:text-white transition" data-translate="safetyTips">Safety Tips</a>
-                        </li>
-                        <li><a href="#" class="hover:text-white transition" data-translate="termsOfUse">Terms &
-                                Conditions</a></li>
-                    </ul>
-                </div>
-                <div>
-                    <h4 class="font-bold mb-4 text-gray-300" data-translate="followUs">Follow Us</h4>
-                    <div class="flex space-x-4 rtl:space-x-reverse">
-                        <a href="#" class="text-gray-400 hover:text-white transition">
-                            <svg class="w-6 h-6" fill="currentColor" viewBox="0 0 24 24">
-                                <path
-                                    d="M24 4.557c-.883.392-1.832.656-2.828.775 1.017-.609 1.798-1.574 2.165-2.724-.951.564-2.005.974-3.127 1.195-.897-.957-2.178-1.555-3.594-1.555-3.179 0-5.515 2.966-4.797 6.045-4.091-.205-7.719-2.165-10.148-5.144-1.29 2.213-.669 5.108 1.523 6.574-.806-.026-1.566-.247-2.229-.616-.054 2.281 1.581 4.415 3.949 4.89-.693.188-1.452.232-2.224.084.626 1.956 2.444 3.379 4.6 3.419-2.07 1.623-4.678 2.348-7.29 2.04 2.179 1.397 4.768 2.212 7.548 2.212 9.142 0 14.307-7.721 13.995-14.646.962-.695 1.797-1.562 2.457-2.549z" />
-                            </svg>
-                        </a>
-                        <a href="#" class="text-gray-400 hover:text-white transition">
-                            <svg class="w-6 h-6" fill="currentColor" viewBox="0 0 24 24">
-                                <path
-                                    d="M12 2.163c3.204 0 3.584.012 4.85.072 3.269.156 5.093 1.824 5.248 5.093.057 1.266.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.987 4.881-5.248 5.093-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.156-5.094-1.824-5.248-5.093-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.987-4.881 5.248-5.093 1.265-.06 1.644-.072 4.849-.072zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.206-6.788 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.789 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.206 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z" />
-                            </svg>
-                        </a>
-                    </div>
-                </div>
-            </div>
-            <div class="border-t border-gray-800 pt-8 text-center text-sm text-gray-500">
-                <p data-translate="rights">&copy; 2026 Taggerly. All rights reserved.</p>
-            </div>
-        </div>
-    </footer>
+    <!-- Footer Placeholder -->
+    <div id="global-footer-placeholder"></div>
 
     <script src="assets/js/en.js"></script>
     <script src="assets/js/ar.js"></script>
@@ -318,16 +277,49 @@
 
             const user = JSON.parse(localStorage.getItem('user'));
             // Update Sidebar Profile
-            if (user) {
-                const initials = user.name.split(' ').map(n => n[0]).join('').toUpperCase();
-                document.querySelector('.w-20.h-20').textContent = initials;
-                document.querySelector('h2.font-bold.text-lg').textContent = user.name;
+            try {
+                const response = await apiClient.getProfile();
+                const user = response.data;
+                
+                if (user) {
+                    const avatarContainer = document.getElementById('user-avatar-container');
+                    const nameContainer = document.getElementById('user-display-name');
+                    const joinedContainer = document.getElementById('user-member-since');
+
+                    // 1. Update Profile Image/Avatar
+                    if (avatarContainer) {
+                        if (user.avatar && !user.avatar.includes('gravatar.com/avatar/00000000000000000000000000000000')) {
+                            avatarContainer.innerHTML = `<img src="${user.avatar}" class="w-full h-full object-cover">`;
+                        } else {
+                            const initials = user.name.split(' ').map(n => n[0]).join('').toUpperCase();
+                            avatarContainer.textContent = initials;
+                        }
+                    }
+
+                    // 2. Update Display Name
+                    if (nameContainer) nameContainer.textContent = user.name;
+
+                    // 3. Update Join Date
+                    if (joinedContainer && user.createdAt) {
+                        joinedContainer.textContent = new Date(user.createdAt).getFullYear();
+                    }
+                }
+            } catch (err) {
+                console.warn('Dashboard profile load error:', err);
+                // Fallback to localStorage if API fails
+                const localUser = JSON.parse(localStorage.getItem('user'));
+                if (localUser) {
+                    document.getElementById('user-display-name').textContent = localUser.name;
+                    const initials = localUser.name.split(' ').map(n => n[0]).join('').toUpperCase();
+                    document.getElementById('user-avatar-container').textContent = initials;
+                }
             }
 
-            // Initial load
+            // Initial load from URL params
             const urlParams = new URLSearchParams(window.location.search);
             const section = urlParams.get('section');
             if (section) {
+                console.log('🎯 Deep-linking to section:', section);
                 showSection(section);
             } else {
                 loadAds();
@@ -353,7 +345,7 @@
             }
 
             // Load data if needed
-            if (sectionId === 'ads' || sectionId === 'archive') loadAds();
+            if (sectionId === 'ads' || sectionId === 'archive' || sectionId === 'rejected') loadAds();
             if (sectionId === 'payments') loadPayments();
             if (sectionId === 'analytics') console.log('Analytics section active');
         }
@@ -373,10 +365,12 @@
                     return ad.status === 'active' || ad.status === 'pending' || isNewRecentChange;
                 });
 
+                const rejectedAds = allAds.filter(ad => ad.status === 'rejected');
+
                 const archiveAds = allAds.filter(ad => {
                     const isOldChange = (ad.status === 'sold' || ad.status === 'deleted') && 
                                        (now - new Date(ad.updatedAt).getTime() >= fifteenMinutes);
-                    return ad.status === 'rejected' || isOldChange;
+                    return isOldChange;
                 });
 
                 // Update Stats (only count active for the counter)
@@ -398,6 +392,7 @@
                 }
 
                 renderAdList(activeAds, 'ads-container', false);
+                renderAdList(rejectedAds, 'rejected-container', false, true); // Use special flag for rejected
                 renderAdList(archiveAds, 'archive-container', true);
                 
                 // Initialize analytics chart if data exists
@@ -459,16 +454,22 @@
             });
         }
 
-        function renderAdList(ads, containerId, isArchive) {
+        function renderAdList(ads, containerId, isArchive, isRejected = false) {
             const container = document.getElementById(containerId);
             container.innerHTML = '';
 
             if (ads.length === 0) {
                 const lang = localStorage.getItem('lang') || 'en';
-                const msg = isArchive ? 
-                    (translations[lang]?.noArchivedAds || "No archived ads.") : 
-                    (translations[lang]?.noActiveAds || "You haven't posted any active ads yet.");
+                let msg = '';
+                if (isRejected) {
+                    msg = translations[lang]?.noRejectedAds || "No rejected ads.";
+                } else if (isArchive) {
+                    msg = translations[lang]?.noArchivedAds || "No archived ads.";
+                } else {
+                    msg = translations[lang]?.noActiveAds || "You haven't posted any active ads yet.";
+                }
                 container.innerHTML = `<div class="p-12 text-center text-gray-500">${msg}</div>`;
+                if (window.translatePage) window.translatePage();
                 return;
             }
 
@@ -493,12 +494,20 @@
                             </div>
                             <div class="mt-2 flex items-center gap-2">
                                 <span class="px-2 py-0.5 rounded-full font-bold text-[9px] border uppercase ${statusColor}">
-                                    ${translations[localStorage.getItem('lang') || 'en'][ad.status] || ad.status}
+                                    ${(window.translations?.[localStorage.getItem('lang') || 'en']?.[ad.status]) || ad.status}
                                 </span>
                                 ${ad.status === 'deleted' && !isArchive ? `
                                     <span class="text-[10px] text-red-600 font-bold animate-pulse" data-translate="archivingSoon">Archiving soon...</span>
                                 ` : ''}
-                                ${ad.status === 'rejected' && ad.rejectionReason ? `<p class="text-[10px] text-red-500 mt-1">Reason: ${ad.rejectionReason}</p>` : ''}
+                                ${ad.status === 'rejected' && ad.rejectionReason ? `
+                                    <div class="mt-1 p-2 bg-red-50 dark:bg-red-900/10 rounded border border-red-100 dark:border-red-900/20 text-[10px] text-red-600 flex items-start gap-1">
+                                        <svg class="w-3 h-3 mt-0.5 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z" clip-rule="evenodd"></path></svg>
+                                        <div>
+                                            <span class="font-bold" data-translate="rejectionReasonLabel">Reason: </span>
+                                            <span>${ad.rejectionReason}</span>
+                                        </div>
+                                    </div>
+                                ` : ''}
                             </div>
                         </div>
                         <div class="flex items-center space-x-2 rtl:space-x-reverse">
@@ -534,6 +543,7 @@
                 `;
                 container.insertAdjacentHTML('beforeend', adItem);
             });
+            if (window.translatePage) window.translatePage();
         }
 
         async function relistAd(id) {
@@ -609,6 +619,7 @@
                     `;
                     list.insertAdjacentHTML('beforeend', row);
                 });
+                if (window.translatePage) window.translatePage();
             } catch (err) {
                 list.innerHTML = `<tr><td colspan="5" class="p-12 text-center text-red-500">${err.message}</td></tr>`;
             }

@@ -8,10 +8,17 @@ const Review = require('./Review');
 const Report = require('./Report');
 const Notification = require('./Notification');
 const Payment = require('./Payment');
+const BlogPost = require('./BlogPost');
+const SupportRequest = require('./SupportRequest');
+const SupportMessage = require('./SupportMessage');
 
 // User - Ad
 User.hasMany(Ad, { foreignKey: 'userId', as: 'ads' });
 Ad.belongsTo(User, { foreignKey: 'userId', as: 'user' });
+
+// User - BlogPost
+User.hasMany(BlogPost, { foreignKey: 'authorId', as: 'posts' });
+BlogPost.belongsTo(User, { foreignKey: 'authorId', as: 'author' });
 
 // User - Notification
 User.hasMany(Notification, { foreignKey: 'userId', as: 'notifications' });
@@ -19,7 +26,8 @@ Notification.belongsTo(User, { foreignKey: 'userId', as: 'user' });
 
 // User - Favorite - Ad
 User.belongsToMany(Ad, { through: Favorite, foreignKey: 'userId', as: 'favoriteAds' });
-Ad.belongsToMany(User, { through: Favorite, foreignKey: 'adId', as: 'favoritedBy' });
+Ad.belongsToMany(User, { through: Favorite, foreignKey: 'adId', as: 'favoritedBy', onDelete: 'CASCADE' });
+Ad.hasMany(Favorite, { foreignKey: 'adId', onDelete: 'CASCADE', hooks: true });
 
 // Chat Associations
 User.hasMany(Conversation, { foreignKey: 'buyerId', as: 'buyerConversations' });
@@ -27,7 +35,7 @@ User.hasMany(Conversation, { foreignKey: 'sellerId', as: 'sellerConversations' }
 Conversation.belongsTo(User, { foreignKey: 'buyerId', as: 'buyer' });
 Conversation.belongsTo(User, { foreignKey: 'sellerId', as: 'seller' });
 
-Ad.hasMany(Conversation, { foreignKey: 'adId', as: 'conversations' });
+Ad.hasMany(Conversation, { foreignKey: 'adId', as: 'conversations', onDelete: 'CASCADE', hooks: true });
 Conversation.belongsTo(Ad, { foreignKey: 'adId', as: 'ad' });
 
 Conversation.hasMany(ChatMessage, { foreignKey: 'conversationId', as: 'messages' });
@@ -42,19 +50,24 @@ User.hasMany(Review, { foreignKey: 'reviewerId', as: 'givenReviews' });
 Review.belongsTo(User, { foreignKey: 'sellerId', as: 'seller' });
 Review.belongsTo(User, { foreignKey: 'reviewerId', as: 'reviewer' });
 Review.belongsTo(Ad, { foreignKey: 'adId', as: 'ad' });
-Ad.hasMany(Review, { foreignKey: 'adId', as: 'reviews' });
+Ad.hasMany(Review, { foreignKey: 'adId', as: 'reviews', onDelete: 'CASCADE', hooks: true });
 
 // Report Associations
 User.hasMany(Report, { foreignKey: 'reporterId', as: 'reports' });
 Report.belongsTo(User, { foreignKey: 'reporterId', as: 'reporter' });
-Ad.hasMany(Report, { foreignKey: 'adId', as: 'reports' });
+Ad.hasMany(Report, { foreignKey: 'adId', as: 'reports', onDelete: 'CASCADE', hooks: true });
 Report.belongsTo(Ad, { foreignKey: 'adId', as: 'ad' });
 
 // Payment Associations
 User.hasMany(Payment, { foreignKey: 'userId', as: 'payments' });
 Payment.belongsTo(User, { foreignKey: 'userId', as: 'user' });
-Ad.hasMany(Payment, { foreignKey: 'adId', as: 'payments' });
+Ad.hasMany(Payment, { foreignKey: 'adId', as: 'payments', onDelete: 'CASCADE', hooks: true });
 Payment.belongsTo(Ad, { foreignKey: 'adId', as: 'ad' });
+
+// Support Associations
+SupportRequest.hasMany(SupportMessage, { foreignKey: 'requestId', as: 'messages', onDelete: 'CASCADE' });
+SupportMessage.belongsTo(SupportRequest, { foreignKey: 'requestId', as: 'request' });
+SupportMessage.belongsTo(User, { foreignKey: 'senderId', as: 'sender' });
 
 module.exports = {
     User,
@@ -66,5 +79,8 @@ module.exports = {
     Review,
     Report,
     Notification,
-    Payment
+    Payment,
+    BlogPost,
+    SupportRequest,
+    SupportMessage
 };
