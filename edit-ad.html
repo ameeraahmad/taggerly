@@ -85,8 +85,8 @@
                     placeholder="Describe your item..." data-translate="descriptionPlaceholder"></textarea>
             </div>
 
-            <!-- Additional Details -->
-            <div id="additional-details" class="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <!-- Motor Details (Conditional) -->
+            <div id="motor-details" class="grid grid-cols-1 md:grid-cols-2 gap-6 hidden">
                 <div>
                     <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2"
                         data-translate="year">Year</label>
@@ -103,7 +103,137 @@
                 </div>
             </div>
 
-            <div>
+            <!-- Property Details (Conditional) -->
+            <div id="property-details" class="grid grid-cols-1 md:grid-cols-2 gap-6 hidden">
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2"
+                        data-translate="bedRooms">Bedrooms</label>
+                    <input type="number" id="ad-bedrooms" name="bedrooms"
+                        class="block w-full border border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-white rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-accent focus:border-accent sm:text-sm"
+                        placeholder="e.g. 3">
+                </div>
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2"
+                        data-translate="bathRooms">Bathrooms</label>
+                    <input type="number" id="ad-bathrooms" name="bathrooms"
+                        class="block w-full border border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-white rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-accent focus:border-accent sm:text-sm"
+                        placeholder="e.g. 2">
+                </div>
+                <div class="md:col-span-2">
+                    <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2"
+                        data-translate="propertyType">Property Type</label>
+                    <select id="ad-property-type" name="propertyType"
+                        class="block w-full border border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-white rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-accent focus:border-accent sm:text-sm">
+                        <option value="Apartment" data-translate="apartment">Apartment</option>
+                        <option value="Villa" data-translate="villa">Villa</option>
+                        <option value="Townhouse" data-translate="townHouse">Townhouse</option>
+                        <option value="Penthouse" data-translate="pentHouse">Penthouse</option>
+                        <option value="Duplex" data-translate="duplex">Duplex</option>
+                        <option value="Twin House" data-translate="twinHouse">Twin House</option>
+                        <option value="Roof" data-translate="roof">Roof</option>
+                        <option value="Commercial" data-translate="commercial">Commercial</option>
+                    </select>
+                </div>
+                <div class="md:col-span-2">
+                    <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2"
+                        data-translate="areaLabel">Area (Sq. Ft)</label>
+                    <input type="number" id="ad-area-size" name="area"
+                        class="block w-full border border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-white rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-accent focus:border-accent sm:text-sm"
+                        placeholder="1500">
+                </div>
+
+                <!-- Completion Status -->
+                <div class="md:col-span-2">
+                    <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2" data-translate="completionStatus">Completion status*</label>
+                    <div class="flex flex-wrap gap-2">
+                        <label class="cursor-pointer">
+                            <input type="radio" name="completionStatus" value="Ready" class="peer hidden" checked>
+                            <span class="px-4 py-2 border rounded-full text-sm font-medium border-gray-300 peer-checked:border-accent peer-checked:bg-orange-50 peer-checked:text-accent transition block" data-translate="ready">Ready</span>
+                        </label>
+                        <label class="cursor-pointer">
+                            <input type="radio" name="completionStatus" value="Resale" class="peer hidden">
+                            <span class="px-4 py-2 border rounded-full text-sm font-medium border-gray-300 peer-checked:border-accent peer-checked:bg-orange-50 peer-checked:text-accent transition block" data-translate="resale">Resale</span>
+                        </label>
+                        <label class="cursor-pointer">
+                            <input type="radio" name="completionStatus" value="Off-plan" class="peer hidden">
+                            <span class="px-4 py-2 border rounded-full text-sm font-medium border-gray-300 peer-checked:border-accent peer-checked:bg-orange-50 peer-checked:text-accent transition block" data-translate="offPlan">Off-plan</span>
+                        </label>
+                    </div>
+                </div>
+
+                <!-- Furnished -->
+                <div class="md:col-span-2">
+                    <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2" data-translate="furnished">Furnished*</label>
+                    <div class="flex gap-2">
+                        <label class="cursor-pointer">
+                            <input type="radio" name="furnished" value="Yes" class="peer hidden">
+                            <span class="px-6 py-2 border rounded-full text-sm font-medium border-gray-300 peer-checked:border-accent peer-checked:bg-orange-50 peer-checked:text-accent transition block" data-translate="yes">Yes</span>
+                        </label>
+                        <label class="cursor-pointer">
+                            <input type="radio" name="furnished" value="No" class="peer hidden" checked>
+                            <span class="px-6 py-2 border rounded-full text-sm font-medium border-gray-300 peer-checked:border-accent peer-checked:bg-orange-50 peer-checked:text-accent transition block" data-translate="no">No</span>
+                        </label>
+                    </div>
+                </div>
+
+                <!-- Amenities -->
+                <div class="md:col-span-2">
+                    <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2" data-translate="amenities">Amenities*</label>
+                    <div class="flex flex-wrap gap-2">
+                        <label class="cursor-pointer">
+                            <input type="checkbox" name="amenities" value="Security" class="peer hidden">
+                            <span class="px-4 py-2 border rounded-full text-sm font-medium border-gray-300 peer-checked:border-accent peer-checked:bg-orange-50 peer-checked:text-accent transition block" data-translate="security">Security</span>
+                        </label>
+                        <label class="cursor-pointer">
+                            <input type="checkbox" name="amenities" value="Covered Parking" class="peer hidden">
+                            <span class="px-4 py-2 border rounded-full text-sm font-medium border-gray-300 peer-checked:border-accent peer-checked:bg-orange-50 peer-checked:text-accent transition block" data-translate="coveredParking">Covered Parking</span>
+                        </label>
+                        <label class="cursor-pointer">
+                            <input type="checkbox" name="amenities" value="Private Garden" class="peer hidden">
+                            <span class="px-4 py-2 border rounded-full text-sm font-medium border-gray-300 peer-checked:border-accent peer-checked:bg-orange-50 peer-checked:text-accent transition block" data-translate="privateGarden">Private Garden</span>
+                        </label>
+                        <label class="cursor-pointer">
+                            <input type="checkbox" name="amenities" value="Maids Room" class="peer hidden">
+                            <span class="px-4 py-2 border rounded-full text-sm font-medium border-gray-300 peer-checked:border-accent peer-checked:bg-orange-50 peer-checked:text-accent transition block" data-translate="maidsRoom">Maids Room</span>
+                        </label>
+                        <label class="cursor-pointer">
+                            <input type="checkbox" name="amenities" value="Elevator" class="peer hidden">
+                            <span class="px-4 py-2 border rounded-full text-sm font-medium border-gray-300 peer-checked:border-accent peer-checked:bg-orange-50 peer-checked:text-accent transition block" data-translate="elevator">Elevator</span>
+                        </label>
+                        <label class="cursor-pointer">
+                            <input type="checkbox" name="amenities" value="Pool" class="peer hidden">
+                            <span class="px-4 py-2 border rounded-full text-sm font-medium border-gray-300 peer-checked:border-accent peer-checked:bg-orange-50 peer-checked:text-accent transition block" data-translate="pool">Pool</span>
+                        </label>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Payment Method -->
+            <div id="payment-method-details" class="mb-6">
+                <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2" data-translate="paymentMethod">Payment Method</label>
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-3">
+                    <label class="flex items-center gap-3 p-3 border-2 border-gray-200 dark:border-gray-600 rounded-xl cursor-pointer hover:border-accent transition has-[:checked]:border-accent has-[:checked]:bg-orange-50 dark:has-[:checked]:bg-orange-900/20">
+                        <input type="radio" name="paymentMethod" value="Cash" class="accent-accent w-4 h-4" checked>
+                        <div>
+                            <span class="block font-semibold text-sm text-gray-800 dark:text-gray-100" data-translate="paymentCash">Cash</span>
+                        </div>
+                    </label>
+                    <label class="flex items-center gap-3 p-3 border-2 border-gray-200 dark:border-gray-600 rounded-xl cursor-pointer hover:border-accent transition has-[:checked]:border-accent has-[:checked]:bg-orange-50 dark:has-[:checked]:bg-orange-900/20">
+                        <input type="radio" name="paymentMethod" value="Installment" class="accent-accent w-4 h-4">
+                        <div>
+                            <span class="block font-semibold text-sm text-gray-800 dark:text-gray-100" data-translate="paymentInstallment">Installment</span>
+                        </div>
+                    </label>
+                    <label class="flex items-center gap-3 p-3 border-2 border-gray-200 dark:border-gray-600 rounded-xl cursor-pointer hover:border-accent transition has-[:checked]:border-accent has-[:checked]:bg-orange-50 dark:has-[:checked]:bg-orange-900/20">
+                        <input type="radio" name="paymentMethod" value="Cash or Installment" class="accent-accent w-4 h-4">
+                        <div>
+                            <span class="block font-semibold text-sm text-gray-800 dark:text-gray-100" data-translate="paymentBoth">Cash or Installment</span>
+                        </div>
+                    </label>
+                </div>
+            </div>
+
+            <div id="condition-details">
                 <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2"
                     data-translate="condition">Condition</label>
                 <select id="ad-condition" name="itemCondition"
@@ -323,6 +453,29 @@
                 document.getElementById('ad-year').value = ad.year || '';
                 document.getElementById('ad-kilometers').value = ad.kilometers || '';
                 document.getElementById('ad-condition').value = ad.itemCondition || 'Used';
+                
+                // Property Fields
+                if (document.getElementById('ad-bedrooms')) document.getElementById('ad-bedrooms').value = ad.bedrooms || '';
+                if (document.getElementById('ad-bathrooms')) document.getElementById('ad-bathrooms').value = ad.bathrooms || '';
+                if (document.getElementById('ad-area-size')) document.getElementById('ad-area-size').value = ad.area || '';
+                if (document.getElementById('ad-property-type')) document.getElementById('ad-property-type').value = ad.propertyType || 'Apartment';
+                
+                if (ad.category === 'Property') {
+                    if (ad.completionStatus) {
+                        const csRadio = document.querySelector(`input[name="completionStatus"][value="${ad.completionStatus}"]`);
+                        if (csRadio) csRadio.checked = true;
+                    }
+                    if (ad.furnished) {
+                        const fRadio = document.querySelector(`input[name="furnished"][value="${ad.furnished}"]`);
+                        if (fRadio) fRadio.checked = true;
+                    }
+                    if (ad.amenities && Array.isArray(ad.amenities)) {
+                        ad.amenities.forEach(amenity => {
+                            const cb = document.querySelector(`input[name="amenities"][value="${amenity}"]`);
+                            if (cb) cb.checked = true;
+                        });
+                    }
+                }
 
                 // Populate cities based on ad's country THEN set the city value
                 populateCities(ad.country || 'uae');
@@ -339,9 +492,38 @@
                     const names = { 'uae': 'UAE', 'egypt': 'Egypt', 'ksa': 'Saudi Arabia', 'qatar': 'Qatar' };
                     window.setCountry(ad.country, flags[ad.country] || '🌐', names[ad.country] || ad.country);
                 }
+                if (ad.paymentMethod) {
+                    const payRadio = document.querySelector(`input[name="paymentMethod"][value="${ad.paymentMethod}"]`);
+                    if (payRadio) payRadio.checked = true;
+                }
 
                 // Toggle fields based on category
-                additionalDetails.style.display = ad.category === 'Motors' ? 'grid' : 'none';
+                const motorDetails = document.getElementById('motor-details');
+                const propertyDetails = document.getElementById('property-details');
+                const conditionDetails = document.getElementById('condition-details');
+                const paymentMethodDetails = document.getElementById('payment-method-details');
+
+                if (ad.category === 'Motors') {
+                    motorDetails.classList.remove('hidden');
+                    propertyDetails.classList.add('hidden');
+                    conditionDetails.classList.remove('hidden');
+                    if (paymentMethodDetails) paymentMethodDetails.classList.remove('hidden');
+                } else if (ad.category === 'Property') {
+                    propertyDetails.classList.remove('hidden');
+                    motorDetails.classList.add('hidden');
+                    conditionDetails.classList.add('hidden');
+                    if (paymentMethodDetails) paymentMethodDetails.classList.remove('hidden');
+                } else if (ad.category === 'Electronics' || ad.category === 'Classifieds') {
+                    motorDetails.classList.add('hidden');
+                    propertyDetails.classList.add('hidden');
+                    conditionDetails.classList.remove('hidden');
+                    if (paymentMethodDetails) paymentMethodDetails.classList.remove('hidden');
+                } else {
+                    motorDetails.classList.add('hidden');
+                    propertyDetails.classList.add('hidden');
+                    conditionDetails.classList.add('hidden');
+                    if (paymentMethodDetails) paymentMethodDetails.classList.add('hidden');
+                }
 
                 // Store and render existing images
                 existingImages = ad.images || [];
@@ -353,7 +535,32 @@
             }
 
             categorySelect.addEventListener('change', () => {
-                additionalDetails.style.display = categorySelect.value === 'Motors' ? 'grid' : 'none';
+                const motorDetails = document.getElementById('motor-details');
+                const propertyDetails = document.getElementById('property-details');
+                const conditionDetails = document.getElementById('condition-details');
+                const paymentMethodDetails = document.getElementById('payment-method-details');
+
+                if (categorySelect.value === 'Motors') {
+                    motorDetails.classList.remove('hidden');
+                    propertyDetails.classList.add('hidden');
+                    conditionDetails.classList.remove('hidden');
+                    if (paymentMethodDetails) paymentMethodDetails.classList.remove('hidden');
+                } else if (categorySelect.value === 'Property') {
+                    propertyDetails.classList.remove('hidden');
+                    motorDetails.classList.add('hidden');
+                    conditionDetails.classList.add('hidden');
+                    if (paymentMethodDetails) paymentMethodDetails.classList.remove('hidden');
+                } else if (categorySelect.value === 'Electronics' || categorySelect.value === 'Classifieds') {
+                    motorDetails.classList.add('hidden');
+                    propertyDetails.classList.add('hidden');
+                    conditionDetails.classList.remove('hidden');
+                    if (paymentMethodDetails) paymentMethodDetails.classList.remove('hidden');
+                } else {
+                    motorDetails.classList.add('hidden');
+                    propertyDetails.classList.add('hidden');
+                    conditionDetails.classList.add('hidden');
+                    if (paymentMethodDetails) paymentMethodDetails.classList.add('hidden');
+                }
             });
 
             fileInput.addEventListener('change', () => {
@@ -372,6 +579,13 @@
                 if (!formData.has('category')) formData.append('category', categorySelect.value || '');
                 if (!formData.has('city')) formData.append('city', document.getElementById('post-ad-location')?.value || '');
                 if (!formData.has('country')) formData.append('country', window.selectedCountry || localStorage.getItem('selectedCountry') || 'uae');
+                
+                // Handle amenities specifically (collect all checked boxes)
+                if (categorySelect.value === 'Property') {
+                    const amenities = Array.from(document.querySelectorAll('input[name="amenities"]:checked')).map(cb => cb.value);
+                    formData.delete('amenities'); 
+                    formData.append('amenities', JSON.stringify(amenities));
+                }
                 
                 // Handle images properly
                 formData.delete('images'); // Remove any empty file inputs from the raw form

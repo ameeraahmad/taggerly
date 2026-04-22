@@ -140,6 +140,71 @@
                         class="block w-full border border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-white rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-accent focus:border-accent sm:text-sm"
                         placeholder="1500">
                 </div>
+
+                <!-- Completion Status -->
+                <div class="md:col-span-2">
+                    <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2" data-translate="completionStatus">Completion status*</label>
+                    <div class="flex flex-wrap gap-2">
+                        <label class="cursor-pointer">
+                            <input type="radio" name="completion-status" value="Ready" class="peer hidden" checked>
+                            <span class="px-4 py-2 border rounded-full text-sm font-medium border-gray-300 peer-checked:border-accent peer-checked:bg-orange-50 peer-checked:text-accent transition block" data-translate="ready">Ready</span>
+                        </label>
+                        <label class="cursor-pointer">
+                            <input type="radio" name="completion-status" value="Resale" class="peer hidden">
+                            <span class="px-4 py-2 border rounded-full text-sm font-medium border-gray-300 peer-checked:border-accent peer-checked:bg-orange-50 peer-checked:text-accent transition block" data-translate="resale">Resale</span>
+                        </label>
+                        <label class="cursor-pointer">
+                            <input type="radio" name="completion-status" value="Off-plan" class="peer hidden">
+                            <span class="px-4 py-2 border rounded-full text-sm font-medium border-gray-300 peer-checked:border-accent peer-checked:bg-orange-50 peer-checked:text-accent transition block" data-translate="offPlan">Off-plan</span>
+                        </label>
+                    </div>
+                </div>
+
+                <!-- Furnished -->
+                <div class="md:col-span-2">
+                    <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2" data-translate="furnished">Furnished*</label>
+                    <div class="flex gap-2">
+                        <label class="cursor-pointer">
+                            <input type="radio" name="furnished" value="Yes" class="peer hidden">
+                            <span class="px-6 py-2 border rounded-full text-sm font-medium border-gray-300 peer-checked:border-accent peer-checked:bg-orange-50 peer-checked:text-accent transition block" data-translate="yes">Yes</span>
+                        </label>
+                        <label class="cursor-pointer">
+                            <input type="radio" name="furnished" value="No" class="peer hidden" checked>
+                            <span class="px-6 py-2 border rounded-full text-sm font-medium border-gray-300 peer-checked:border-accent peer-checked:bg-orange-50 peer-checked:text-accent transition block" data-translate="no">No</span>
+                        </label>
+                    </div>
+                </div>
+
+                <!-- Amenities -->
+                <div class="md:col-span-2">
+                    <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2" data-translate="amenities">Amenities*</label>
+                    <div class="flex flex-wrap gap-2">
+                        <label class="cursor-pointer">
+                            <input type="checkbox" name="amenities" value="Security" class="peer hidden">
+                            <span class="px-4 py-2 border rounded-full text-sm font-medium border-gray-300 peer-checked:border-accent peer-checked:bg-orange-50 peer-checked:text-accent transition block" data-translate="security">Security</span>
+                        </label>
+                        <label class="cursor-pointer">
+                            <input type="checkbox" name="amenities" value="Covered Parking" class="peer hidden">
+                            <span class="px-4 py-2 border rounded-full text-sm font-medium border-gray-300 peer-checked:border-accent peer-checked:bg-orange-50 peer-checked:text-accent transition block" data-translate="coveredParking">Covered Parking</span>
+                        </label>
+                        <label class="cursor-pointer">
+                            <input type="checkbox" name="amenities" value="Private Garden" class="peer hidden">
+                            <span class="px-4 py-2 border rounded-full text-sm font-medium border-gray-300 peer-checked:border-accent peer-checked:bg-orange-50 peer-checked:text-accent transition block" data-translate="privateGarden">Private Garden</span>
+                        </label>
+                        <label class="cursor-pointer">
+                            <input type="checkbox" name="amenities" value="Maids Room" class="peer hidden">
+                            <span class="px-4 py-2 border rounded-full text-sm font-medium border-gray-300 peer-checked:border-accent peer-checked:bg-orange-50 peer-checked:text-accent transition block" data-translate="maidsRoom">Maids Room</span>
+                        </label>
+                        <label class="cursor-pointer">
+                            <input type="checkbox" name="amenities" value="Elevator" class="peer hidden">
+                            <span class="px-4 py-2 border rounded-full text-sm font-medium border-gray-300 peer-checked:border-accent peer-checked:bg-orange-50 peer-checked:text-accent transition block" data-translate="elevator">Elevator</span>
+                        </label>
+                        <label class="cursor-pointer">
+                            <input type="checkbox" name="amenities" value="Pool" class="peer hidden">
+                            <span class="px-4 py-2 border rounded-full text-sm font-medium border-gray-300 peer-checked:border-accent peer-checked:bg-orange-50 peer-checked:text-accent transition block" data-translate="pool">Pool</span>
+                        </label>
+                    </div>
+                </div>
             </div>
 
             <div id="condition-details">
@@ -368,6 +433,10 @@
                     document.getElementById('ad-bedrooms').value = '';
                     document.getElementById('ad-bathrooms').value = '';
                     document.getElementById('ad-area-size').value = '';
+                    // Reset Radio/Checkboxes
+                    document.querySelector('input[name="completion-status"][value="Ready"]').checked = true;
+                    document.querySelector('input[name="furnished"][value="No"]').checked = true;
+                    document.querySelectorAll('input[name="amenities"]').forEach(cb => cb.checked = false);
                 }
             };
 
@@ -676,6 +745,17 @@
                 formData.append('bedrooms', bedrooms);
                 formData.append('bathrooms', bathrooms);
                 formData.append('area', areaSize);
+
+                if (category === 'Property') {
+                    const completionStatus = document.querySelector('input[name="completion-status"]:checked')?.value || '';
+                    const furnished = document.querySelector('input[name="furnished"]:checked')?.value || '';
+                    const amenities = Array.from(document.querySelectorAll('input[name="amenities"]:checked')).map(cb => cb.value);
+                    
+                    formData.append('completionStatus', completionStatus);
+                    formData.append('furnished', furnished);
+                    formData.append('amenities', JSON.stringify(amenities));
+                }
+
                 const paymentMethod = document.querySelector('input[name="payment-method"]:checked')?.value || '';
                 if (paymentMethod) formData.append('paymentMethod', paymentMethod);
                 formData.append('country', window.selectedCountry || 'uae');

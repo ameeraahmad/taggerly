@@ -251,13 +251,17 @@ exports.createAd = async (req, res) => {
             kilometers: kilometers ? Number(kilometers) : null,
             bedrooms: bedrooms ? Number(bedrooms) : null,
             bathrooms: bathrooms ? Number(bathrooms) : null,
+            completionStatus: req.body.completionStatus || null,
+            furnished: req.body.furnished || null,
+            amenities: req.body.amenities ? (typeof req.body.amenities === 'string' ? JSON.parse(req.body.amenities) : req.body.amenities) : [],
             propertyType,
             itemCondition,
             phone: phone || null,
             latitude: req.body.latitude ? Number(req.body.latitude) : null,
             longitude: req.body.longitude ? Number(req.body.longitude) : null,
             images: Array.isArray(images) ? images : [],
-            userId: req.user ? req.user.id : null
+            userId: req.user ? req.user.id : null,
+            paymentMethod: req.body.paymentMethod || null
         });
         res.status(201).json({ success: true, data: ad });
     } catch (err) {
@@ -363,6 +367,15 @@ exports.updateAd = async (req, res) => {
                 req.body[field] = Number(req.body[field]);
             }
         });
+
+        // Handle Property specific fields
+        if (req.body.amenities) {
+            try {
+                req.body.amenities = typeof req.body.amenities === 'string' ? JSON.parse(req.body.amenities) : req.body.amenities;
+            } catch (pErr) {
+                req.body.amenities = ad.amenities; // Fallback to current if parse fails
+            }
+        }
 
         await ad.update(req.body);
         res.status(200).json({ success: true, data: ad });

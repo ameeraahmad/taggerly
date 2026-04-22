@@ -265,9 +265,19 @@ if (require.main === module) {
     io_instance.on('connection', (socket) => {
         console.log(`👤 Socket connected: ${socket.id}`);
         
-        socket.on('join_user', (userId) => { 
+        socket.on('join_user', async (userId) => { 
             console.log(`🔗 Socket ${socket.id} joining room: user_${userId}`);
-            socket.join(`user_${userId}`); 
+            socket.join(`user_${userId}`);
+            socket.userId = userId;
+
+            // Update user status to online
+            try {
+                const User = require('./models/User');
+                await User.update({ isOnline: true, lastActive: new Date() }, { where: { id: userId } });
+                io_instance.emit('user_status_changed', { userId, isOnline: true });
+            } catch (err) {
+                console.error('Error updating user status (online):', err);
+            }
         });
         
         socket.on('join_conversation', (convoId) => { 
@@ -280,8 +290,21 @@ if (require.main === module) {
             socket.join(`support_${requestId}`); 
         });
         
-        socket.on('disconnect', () => { 
+        socket.on('disconnect', async () => { 
             console.log(`👤 Socket disconnected: ${socket.id}`); 
+            if (socket.userId) {
+                try {
+                    const User = require('./models/User');
+                    // Check if user has other active connections before marking offline
+                    const sockets = await io_instance.in(`user_${socket.userId}`).fetchSockets();
+                    if (sockets.length === 0) {
+                        await User.update({ isOnline: false, lastActive: new Date() }, { where: { id: socket.userId } });
+                        io_instance.emit('user_status_changed', { userId: socket.userId, isOnline: false, lastActive: new Date() });
+                    }
+                } catch (err) {
+                    console.error('Error updating user status (offline):', err);
+                }
+            }
         });
     });
 

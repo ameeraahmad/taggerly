@@ -192,6 +192,14 @@
                 <span id="support-badge"
                     class="ml-auto bg-blue-500 text-white text-[10px] px-1.5 py-0.5 rounded-full hidden">0</span>
             </div>
+            <div class="sidebar-link" onclick="showTab('customer_services')" id="nav-customer_services">
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                        d="M17 8h2a2 2 0 012 2v6a2 2 0 01-2 2h-2v4l-4-4H9a1.994 1.994 0 01-1.414-.586m0 0L11 14h4a2 2 0 002-2V6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2v4l.586-.586z" />
+                </svg>
+                <span>Customers Services</span>
+                <span id="customer-services-badge" class="ml-auto bg-green-500 text-white text-[10px] px-1.5 py-0.5 rounded-full hidden">0</span>
+            </div>
             <div class="sidebar-link" onclick="showTab('moderation')" id="nav-moderation">
                 <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
@@ -736,6 +744,63 @@
                 </div>
             </div>
 
+            <!-- ==================== CUSTOMER SERVICES (LIVE CHAT) TAB ==================== -->
+            <div id="tab-customer_services" class="tab-content">
+                <div class="flex items-center justify-between mb-4">
+                    <h2 class="font-bold text-lg">🎧 Customers Services (Live Chat)</h2>
+                    <button onclick="loadCustomerServices()"
+                        class="btn-sm bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300 hover:bg-gray-200 flex items-center gap-1">
+                        🔄 Refresh
+                    </button>
+                </div>
+
+                <div class="grid grid-cols-1 lg:grid-cols-3 gap-6 h-[70vh]">
+                    <!-- Chat Sessions List -->
+                    <div class="lg:col-span-1 bg-white dark:bg-gray-800 rounded-2xl border border-gray-100 dark:border-gray-700 flex flex-col overflow-hidden">
+                        <div class="p-4 border-b dark:border-gray-700 bg-gray-50 dark:bg-gray-800/50">
+                            <h3 class="font-bold text-sm">Active Conversations</h3>
+                        </div>
+                        <div id="chat-sessions-list" class="flex-1 overflow-y-auto divide-y dark:divide-gray-700">
+                            <!-- Sessions injected by JS -->
+                            <div class="p-8 text-center text-gray-400 text-sm">Loading chats...</div>
+                        </div>
+                    </div>
+
+                    <!-- Chat Window -->
+                    <div class="lg:col-span-2 bg-white dark:bg-gray-800 rounded-2xl border border-gray-100 dark:border-gray-700 flex flex-col overflow-hidden shadow-sm">
+                        <div id="chat-window-header" class="p-4 border-b dark:border-gray-700 bg-gray-50 dark:bg-gray-800/50 flex items-center justify-between">
+                            <div class="flex items-center gap-3">
+                                <div class="w-10 h-10 bg-accent/10 rounded-full flex items-center justify-center text-accent">
+                                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"/></svg>
+                                </div>
+                                <div>
+                                    <p id="active-chat-name" class="font-bold text-sm">Select a conversation</p>
+                                    <p id="active-chat-status" class="text-[10px] text-gray-400">Offline</p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div id="admin-chat-messages" class="flex-1 p-6 overflow-y-auto space-y-4 bg-gray-50/30 dark:bg-gray-900/10">
+                            <!-- Messages injected by JS -->
+                            <div class="h-full flex flex-col items-center justify-center text-center opacity-30">
+                                <svg class="w-16 h-16 mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z"/></svg>
+                                <p class="text-sm font-medium">Select a customer to start chatting</p>
+                            </div>
+                        </div>
+
+                        <div class="p-4 border-t dark:border-gray-700">
+                            <div class="flex gap-2">
+                                <input type="text" id="admin-chat-input" placeholder="Type your message..." 
+                                    class="flex-1 bg-gray-100 dark:bg-gray-700 border-none rounded-xl px-4 py-3 text-sm focus:ring-2 focus:ring-accent outline-none" disabled>
+                                <button id="admin-send-chat-btn" class="bg-accent text-white p-3 rounded-xl hover:opacity-90 transition disabled:opacity-50" disabled>
+                                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8"/></svg>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
         </div>
     </main>
 
@@ -831,7 +896,8 @@
             ads: { title: 'Ads', subtitle: 'Manage all listings' },
             reports: { title: 'Reports', subtitle: 'Review flagged content' },
             moderation: { title: 'Pending Ads', subtitle: 'Moderation queue — approve or reject ads' },
-            support: { title: 'Support Requests', subtitle: 'Messages from Contact and Support forms' }
+            support: { title: 'Support Requests', subtitle: 'Messages from Contact and Support forms' },
+            customer_services: { title: 'Customers Services', subtitle: 'Live Chat Support conversations' }
         };
 
         function showTab(tabId) {
@@ -850,6 +916,7 @@
             if (tabId === 'moderation') loadPendingAds();
             if (tabId === 'blog') loadBlogPosts();
             if (tabId === 'support') loadSupportRequests();
+            if (tabId === 'customer_services') loadCustomerServices();
 
             // Close mobile sidebar
             if (window.innerWidth < 768) toggleSidebar(false);
@@ -930,13 +997,21 @@
                 const data = await response.json();
                 
                 if (data.success && data.data.length > 0) {
-                    // Sort: Important first, then by date (Backend already does this, but keeping it for UI consistency if needed)
-                    const sortedData = data.data.sort((a, b) => {
+                    // Filter out Live Chat Support messages
+                    const filteredData = data.data.filter(req => req.subject !== 'Live Chat Support');
+
+                    // Sort: Important first, then by date
+                    const sortedData = filteredData.sort((a, b) => {
                         if (a.isImportant === b.isImportant) {
                             return new Date(b.createdAt) - new Date(a.createdAt);
                         }
                         return a.isImportant ? -1 : 1;
                     });
+
+                    if (sortedData.length === 0) {
+                        tbody.innerHTML = '<tr><td colspan="6" class="px-6 py-12 text-center text-gray-400">No general support requests found.</td></tr>';
+                        return;
+                    }
 
                     tbody.innerHTML = sortedData.map(req => {
                         const isRead = req.isRead || req.status !== 'pending';
@@ -1010,30 +1085,223 @@
             socket.on('new_support_request', (data) => {
                 playSupportSound();
                 showAdminToast(`New Support Request from ${data.name}`);
-                updateSupportBadge(true);
-                if (window.showTab && document.getElementById('tab-support').classList.contains('active')) {
-                    loadSupportRequests();
+                
+                const isLiveChat = data.subject === 'Live Chat Support';
+                
+                // Only show red dot on Support Requests if it's NOT a live chat
+                if (!isLiveChat) {
+                    updateSupportBadge(true);
                 }
+                
+                const supportTabActive = document.getElementById('tab-support').classList.contains('active');
+                const customerTabActive = document.getElementById('tab-customer_services').classList.contains('active');
+                
+                if (supportTabActive) loadSupportRequests();
+                if (customerTabActive) loadCustomerServices(false);
             });
 
             socket.on('admin_notification', (data) => {
                 if (data.type === 'support_message') {
                     playSupportSound();
                     showAdminToast(data.message);
-                    updateSupportBadge(true);
-                    if (window.showTab && document.getElementById('tab-support').classList.contains('active')) {
-                        loadSupportRequests();
-                    }
+                    
+                    // We don't have the subject here, so we check which tab is affected or just refresh both
+                    // But to be safe and avoid ghost notifications, we'll refresh counts
+                    loadCustomerServices(false);
+                    loadSupportRequests();
                 }
             });
 
             socket.on('new_support_message', (msg) => {
                 if (currentChatRequestId == msg.requestId) {
-                    appendChatMessage(msg);
+                    // Check if we are in customer services tab
+                    const customerTabActive = document.getElementById('tab-customer_services').classList.contains('active');
+                    if (customerTabActive) {
+                        appendAdminChatMessage(msg);
+                    } else {
+                        // Fallback for the support modal
+                        if (typeof appendChatMessage === 'function') {
+                            appendChatMessage(msg);
+                        }
+                    }
+                }
+                // Refresh list if visible
+                if (document.getElementById('tab-customer_services').classList.contains('active')) {
+                    loadCustomerServices(false); // background refresh
                 }
             });
         }
         initAdminSocket();
+
+        // ===================== CUSTOMER SERVICES (LIVE CHAT) LOGIC =====================
+        let activeChats = [];
+        
+        async function loadCustomerServices(showLoading = true) {
+            const listEl = document.getElementById('chat-sessions-list');
+            if (showLoading) listEl.innerHTML = '<div class="p-8 text-center text-gray-400 text-sm">Loading chats...</div>';
+            
+            try {
+                const response = await fetch('/api/support');
+                const data = await response.json();
+                
+                if (data.success) {
+                    // Filter for Live Chat only
+                    activeChats = data.data.filter(req => req.subject === 'Live Chat Support');
+                    
+                    if (activeChats.length === 0) {
+                        listEl.innerHTML = '<div class="p-8 text-center text-gray-400 text-sm">No live chat sessions found.</div>';
+                        return;
+                    }
+
+                    // Update badge
+                    const badge = document.getElementById('customer-services-badge');
+                    const unreadCount = activeChats.filter(c => c.status === 'pending').length;
+                    if (badge) {
+                        badge.textContent = unreadCount;
+                        badge.classList.toggle('hidden', unreadCount === 0);
+                    }
+
+                    listEl.innerHTML = activeChats.map(chat => `
+                        <div onclick="openAdminChat(${chat.id})" 
+                             class="p-4 cursor-pointer hover:bg-gray-50 dark:hover:bg-gray-700/50 transition-colors ${currentChatRequestId == chat.id ? 'bg-accent/5 border-l-4 border-accent' : ''}">
+                            <div class="flex items-center justify-between mb-1">
+                                <span class="font-bold text-sm">${chat.name}</span>
+                                <span class="text-[9px] text-gray-400">${new Date(chat.createdAt).toLocaleDateString()}</span>
+                            </div>
+                            <div class="flex items-center justify-between mb-2">
+                                <span class="text-[10px] text-gray-400 truncate max-w-[150px]">${chat.email}</span>
+                                <span class="text-[9px] text-gray-400">${new Date(chat.createdAt).toLocaleTimeString([], {hour:'2-digit', minute:'2-digit'})}</span>
+                            </div>
+                            <p class="text-xs text-gray-500 truncate italic">"${chat.message}"</p>
+                            ${chat.status === 'pending' ? '<span class="inline-block w-2 h-2 bg-green-500 rounded-full mt-1"></span>' : ''}
+                        </div>
+                    `).join('');
+                }
+            } catch (err) {
+                console.error('Error loading customer services:', err);
+            }
+        }
+
+        async function openAdminChat(id) {
+            currentChatRequestId = id;
+            const chat = activeChats.find(c => c.id == id);
+            if (!chat) return;
+
+            // Update UI
+            const nameEl = document.getElementById('active-chat-name');
+            nameEl.innerHTML = `${chat.name} <span class="text-xs font-normal text-gray-400 ml-2">(${chat.email})</span>`;
+            
+            const dateStr = new Date(chat.createdAt).toLocaleString();
+            document.getElementById('active-chat-status').textContent = `Chat started: ${dateStr}`;
+            document.getElementById('admin-chat-input').disabled = false;
+            document.getElementById('admin-send-chat-btn').disabled = false;
+            
+            // Highlight in list
+            loadCustomerServices(false);
+
+            const messagesContainer = document.getElementById('admin-chat-messages');
+            messagesContainer.innerHTML = '<div class="text-center py-4 text-gray-400 text-xs">Loading conversation...</div>';
+
+            try {
+                // Join room
+                socket.emit('join_support', id);
+
+                // Fetch history
+                const res = await fetch(`/api/support/${id}/messages`);
+                const history = await res.json();
+                
+                messagesContainer.innerHTML = '';
+                if (history.success && history.data.length > 0) {
+                    history.data.forEach(msg => appendAdminChatMessage(msg));
+                } else {
+                    // Initial message from user
+                    appendAdminChatMessage({
+                        isAdmin: false,
+                        message: chat.message,
+                        createdAt: chat.createdAt
+                    });
+                }
+
+                // Scroll to bottom
+                messagesContainer.scrollTop = messagesContainer.scrollHeight;
+
+                // Mark as read/active
+                await fetch(`/api/support/${id}`, {
+                    method: 'PATCH',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ status: 'active' })
+                });
+
+            } catch (err) {
+                messagesContainer.innerHTML = '<div class="text-center py-4 text-red-400 text-xs">Error loading history.</div>';
+            }
+        }
+
+        function appendAdminChatMessage(msg) {
+            const container = document.getElementById('admin-chat-messages');
+            const isMe = msg.isAdmin;
+            const div = document.createElement('div');
+            div.className = `flex ${isMe ? 'justify-end' : 'justify-start'}`;
+            
+            const time = new Date(msg.createdAt).toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'});
+            
+            div.innerHTML = `
+                <div class="max-w-[80%]">
+                    <div class="p-3 rounded-2xl text-sm ${isMe 
+                        ? 'bg-accent text-white rounded-tr-none shadow-sm' 
+                        : 'bg-white dark:bg-gray-800 dark:text-gray-200 border dark:border-gray-700 rounded-tl-none shadow-sm'}">
+                        <p class="whitespace-pre-wrap">${msg.message}</p>
+                    </div>
+                    <p class="text-[9px] mt-1 text-gray-400 ${isMe ? 'text-right' : 'text-left'}">${time}</p>
+                </div>
+            `;
+            container.appendChild(div);
+            container.scrollTop = container.scrollHeight;
+        }
+
+        async function sendAdminChatMessage() {
+            const input = document.getElementById('admin-chat-input');
+            const text = input.value.trim();
+            if (!text || !currentChatRequestId) return;
+
+            const btn = document.getElementById('admin-send-chat-btn');
+            btn.disabled = true;
+            input.disabled = true;
+
+            try {
+                const res = await fetch(`/api/support/${currentChatRequestId}/reply`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ replyMessage: text, isAdmin: true })
+                });
+                const data = await res.json();
+                
+                if (data.success) {
+                    input.value = '';
+                    // Message will be appended via socket event 'new_support_message'
+                }
+            } catch (err) {
+                console.error('Send error:', err);
+            } finally {
+                btn.disabled = false;
+                input.disabled = false;
+                input.focus();
+            }
+        }
+
+        // Add event listener for Enter key in chat input
+        document.addEventListener('DOMContentLoaded', () => {
+            const chatInput = document.getElementById('admin-chat-input');
+            if (chatInput) {
+                chatInput.addEventListener('keydown', (e) => {
+                    if (e.key === 'Enter') sendAdminChatMessage();
+                });
+            }
+            const sendBtn = document.getElementById('admin-send-chat-btn');
+            if (sendBtn) {
+                sendBtn.addEventListener('click', sendAdminChatMessage);
+            }
+        });
 
         function playSupportSound() {
             try { new Audio('https://assets.mixkit.co/active_storage/sfx/2358/2358-preview.mp3').play(); } catch(e){}

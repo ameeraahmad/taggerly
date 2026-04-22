@@ -11,7 +11,7 @@ const { protect } = require('../middleware/authMiddleware');
  * @desc    Submit a support or contact request
  * @access  Private
  */
-router.post('/', protect, async (req, res) => {
+router.post('/', async (req, res) => {
     try {
         const { name, email, subject, message, phone } = req.body;
 

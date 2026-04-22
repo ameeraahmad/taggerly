@@ -197,9 +197,25 @@
                             <span class="text-gray-500" data-translate="area">Area</span>
                             <span id="detail-area" class="font-medium text-gray-900">-</span>
                         </div>
+                        <div id="item-completion-status" class="flex justify-between border-b pb-2 hidden">
+                            <span class="text-gray-500" data-translate="completionStatus">Completion Status</span>
+                            <span id="detail-completion-status" class="font-medium text-gray-900">-</span>
+                        </div>
+                        <div id="item-furnished" class="flex justify-between border-b pb-2 hidden">
+                            <span class="text-gray-500" data-translate="furnished">Furnished</span>
+                            <span id="detail-furnished" class="font-medium text-gray-900">-</span>
+                        </div>
                         <div id="item-payment-method" class="flex justify-between border-b pb-2 hidden">
                             <span class="text-gray-500" data-translate="paymentMethod">Payment Method</span>
                             <span id="detail-payment-method" class="font-medium text-gray-900">-</span>
+                        </div>
+                    </div>
+
+                    <!-- Amenities Chips -->
+                    <div id="amenities-section" class="hidden mt-6 pt-6 border-t dark:border-gray-700">
+                        <h4 class="font-bold text-gray-900 dark:text-white mb-3" data-translate="amenities">Amenities</h4>
+                        <div id="amenities-list" class="flex flex-wrap gap-2">
+                            <!-- Injected via JS -->
                         </div>
                     </div>
 
@@ -587,11 +603,56 @@
                 const isProperty = ad.category && ad.category.toLowerCase() === 'property';
                 const isMotors = ad.category && ad.category.toLowerCase() === 'motors';
 
+                // Helper to translate values like "Ready", "Yes", etc.
+                const lang = window.currentLang || localStorage.getItem('lang') || 'en';
+                const dict = (window.translations && window.translations[lang]) || {};
+                
+                const translateVal = (val) => {
+                    if (!val) return val;
+                    const mapping = {
+                        'Ready': 'ready',
+                        'Resale': 'resale',
+                        'Off-plan': 'offPlan',
+                        'Yes': 'yes',
+                        'No': 'no'
+                    };
+                    const key = mapping[val] || val.toLowerCase();
+                    return dict[key] || val;
+                };
+
                 toggleField('bedrooms', isProperty ? ad.bedrooms : null);
                 toggleField('bathrooms', isProperty ? ad.bathrooms : null);
                 toggleField('property-type', isProperty ? ad.propertyType : null);
                 toggleField('area', isProperty ? ad.area : null, ad.area ? `${ad.area.toLocaleString()} Sq Ft` : '');
+                toggleField('completion-status', isProperty ? translateVal(ad.completionStatus) : null);
+                toggleField('furnished', isProperty ? translateVal(ad.furnished) : null);
                 toggleField('payment-method', ad.paymentMethod);
+
+                // Render Amenities
+                const amenitiesSection = document.getElementById('amenities-section');
+                const amenitiesList = document.getElementById('amenities-list');
+                if (isProperty && ad.amenities && Array.isArray(ad.amenities) && ad.amenities.length > 0) {
+                    amenitiesSection.classList.remove('hidden');
+                    amenitiesList.innerHTML = ad.amenities.map(item => {
+                        const amenityMapping = {
+                            'Security': 'security',
+                            'Covered Parking': 'coveredParking',
+                            'Private Garden': 'privateGarden',
+                            'Maids Room': 'maidsRoom',
+                            'Elevator': 'elevator',
+                            'Pool': 'pool'
+                        };
+                        const key = amenityMapping[item] || item.toLowerCase();
+                        const translatedName = dict[key] || item;
+                        return `
+                            <span class="px-3 py-1 bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300 rounded-full text-xs font-medium border dark:border-gray-600">
+                                ${translatedName}
+                            </span>
+                        `;
+                    }).join('');
+                } else {
+                    if (amenitiesSection) amenitiesSection.classList.add('hidden');
+                }
 
                 // Show/Hide Year (only for Motors)
                 if (isMotors && ad.year && ad.year !== '0' && ad.year !== 0) {

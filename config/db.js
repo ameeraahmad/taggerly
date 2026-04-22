@@ -179,6 +179,18 @@ const connectDB = async () => {
                             console.log('🏗️ Adding missing column: paymentMethod to Ads table');
                             await queryInterface.addColumn('Ads', 'paymentMethod', { type: Sequelize.STRING, allowNull: true });
                         }
+                        if (!tableInfo.completionStatus) {
+                            console.log('🏗️ Adding missing column: completionStatus to Ads table');
+                            await queryInterface.addColumn('Ads', 'completionStatus', { type: Sequelize.STRING, allowNull: true });
+                        }
+                        if (!tableInfo.furnished) {
+                            console.log('🏗️ Adding missing column: furnished to Ads table');
+                            await queryInterface.addColumn('Ads', 'furnished', { type: Sequelize.STRING, allowNull: true });
+                        }
+                        if (!tableInfo.amenities) {
+                            console.log('🏗️ Adding missing column: amenities to Ads table');
+                            await queryInterface.addColumn('Ads', 'amenities', { type: Sequelize.TEXT, allowNull: true, defaultValue: '[]' });
+                        }
                         
                         // Ensure Favorites table exists
                         const tables = await queryInterface.showAllTables();

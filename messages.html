@@ -165,12 +165,12 @@
         window.currentConversationId = null;
         let currentUser = JSON.parse(localStorage.getItem('user'));
         
-        // Ensure socket is initialized manually if main.js delayed it
-        if (!window.socket && typeof io !== 'undefined') {
-            window.socket = io();
-            if (currentUser && currentUser.id) {
-                window.socket.emit('join_user', currentUser.id);
-            }
+        // Initial status update for chat header (will be overridden by live events)
+        function initChatHeader(otherUser) {
+            const statusDot = document.getElementById('status-indicator-header');
+            const statusLabel = document.getElementById('user-status-label');
+            if (statusDot) statusDot.setAttribute('data-user-status-id', otherUser.id);
+            if (statusLabel) statusLabel.setAttribute('data-user-status-id', otherUser.id);
         }
 
         document.addEventListener('DOMContentLoaded', async () => {
@@ -190,8 +190,13 @@
                 openConversation(convoIdFromUrl);
             }
 
-            // Socket Listeners
-            if (window.socket) {
+            // --- Socket Setup ---
+            const setupSocketListeners = () => {
+                if (!window.socket) {
+                    setTimeout(setupSocketListeners, 100);
+                    return;
+                }
+
                 window.socket.on('receive_message', (msg) => {
                     // Ignore our own messages from socket since we manually append them immediately
                     if (msg.senderId === currentUser.id) return;
@@ -227,7 +232,33 @@
                         });
                     }
                 });
+
+                window.socket.on('user_status_changed', (data) => {
+                    // Update all status indicators on the page for this user
+                    const statusElements = document.querySelectorAll(`[data-user-status-id="${data.userId}"]`);
+                    statusElements.forEach(el => {
+                        if (el.tagName === 'SPAN') {
+                            // This is the text label in the header
+                            const lang = window.currentLang || 'en';
+                            if (data.isOnline) {
+                                el.textContent = (window.translations?.[lang]?.online) || 'Online';
+                                el.setAttribute('data-translate', 'online');
+                            } else {
+                                const offlineLabel = (window.translations?.[lang]?.offline) || 'Offline';
+                                const timeStr = new Date(data.lastActive || Date.now()).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+                                el.textContent = `${offlineLabel} - ${timeStr}`;
+                                el.removeAttribute('data-translate');
+                            }
+                        } else {
+                            // This is the dot (header or list)
+                            el.className = el.className.replace(/bg-(green|gray)-\d+/g, '');
+                            el.classList.add(data.isOnline ? 'bg-green-500' : 'bg-gray-400');
+                        }
+                    });
+                });
             }
+
+            setupSocketListeners();
 
             // Handle input for typing status
             const messageInput = document.getElementById('message-input');
@@ -284,17 +315,22 @@
                     const otherUser = isBuyer ? convo.seller : convo.buyer;
                     const isActive = convo.id == window.currentConversationId;
                     const unreadCount = convo.unreadCount || 0;
-
+                    const isDefaultAvatar = !otherUser.avatar || otherUser.avatar.includes('gravatar.com/avatar/00000000000000000000000000000000');
                     const initials = otherUser.name ? otherUser.name.split(' ').map(n => n[0]).join('').toUpperCase() : '?';
+                    const avatarContent = isDefaultAvatar 
+                        ? initials 
+                        : `<img src="${otherUser.avatar}" class="w-full h-full rounded-full object-cover">`;
 
                     const item = `
-                        <div onclick="openConversation(${convo.id})" data-convo-id="${convo.id}" class="group conversation-item p-4 border-b dark:border-gray-700 flex items-center cursor-pointer hover:bg-gray-100 dark:hover:bg-gray-700 transition ${isActive ? 'active' : ''}">
-                            <div class="relative">
-                                <div class="w-12 h-12 rounded-full bg-gray-300 flex items-center justify-center font-bold text-gray-600 mr-3 rtl:ml-3 rtl:mr-0">
-                                    ${otherUser.avatar ? `<img src="${otherUser.avatar}" class="w-full h-full rounded-full object-cover">` : initials}
+                        <div onclick="openConversation(${convo.id})" 
+                             class="p-4 border-b dark:border-gray-700 cursor-pointer transition flex items-center relative hover:bg-gray-50 dark:hover:bg-gray-700/50 ${isActive ? 'bg-orange-50 dark:bg-accent/10 border-l-4 border-l-accent' : ''}">
+                            <div class="relative flex-shrink-0">
+                                <div class="w-12 h-12 rounded-full ${isDefaultAvatar ? 'bg-accent' : ''} flex items-center justify-center text-white font-bold overflow-hidden">
+                                    ${avatarContent}
                                 </div>
-                                <div data-user-status-id="${otherUser.id}" class="absolute bottom-0 right-3 w-3 h-3 rounded-full border-2 border-white dark:border-gray-800 ${otherUser.isOnline ? 'bg-green-500' : 'bg-gray-400'}"></div>
+                                <div data-user-status-id="${otherUser.id}" class="absolute bottom-0 right-0 w-3 h-3 rounded-full border-2 border-white dark:border-gray-800 ${otherUser.isOnline ? 'bg-green-500' : 'bg-gray-400'}"></div>
                             </div>
+
                             <div class="flex-grow min-w-0 min-h-[48px]">
                                 <div class="flex justify-between items-baseline">
                                     <h4 class="font-bold text-sm dark:text-white truncate">${otherUser.name}</h4>
@@ -383,13 +419,23 @@
                     document.getElementById('chat-with-name').textContent = otherUser.name;
                     document.getElementById('chat-ad-title').textContent = convo.ad ? convo.ad.title : '';
                     document.getElementById('view-ad-link').href = `ad-details.html?id=${convo.adId}`;
-                    const initials = otherUser.name ? otherUser.name.split(' ').map(n => n[0]).join('').toUpperCase() : '?';
-                    document.getElementById('chat-with-avatar').textContent = initials;
+                    
+                    const avatarContainer = document.getElementById('chat-with-avatar');
+                    const isDefaultAvatar = !otherUser.avatar || otherUser.avatar.includes('gravatar.com/avatar/00000000000000000000000000000000');
+                    if (!isDefaultAvatar) {
+                        avatarContainer.innerHTML = `<img src="${otherUser.avatar}" class="w-full h-full rounded-full object-cover">`;
+                        avatarContainer.classList.remove('bg-accent');
+                    } else {
+                        const initials = otherUser.name ? otherUser.name.split(' ').map(n => n[0]).join('').toUpperCase() : '?';
+                        avatarContainer.textContent = initials;
+                        avatarContainer.classList.add('bg-accent');
+                    }
 
                     // Update Status Indicator
                     const statusDot = document.getElementById('status-indicator-header');
                     const statusLabel = document.getElementById('user-status-label');
                     statusDot.setAttribute('data-user-status-id', otherUser.id);
+                    statusLabel.setAttribute('data-user-status-id', otherUser.id);
 
                     const lang = window.currentLang || 'en';
                     if (otherUser.isOnline) {

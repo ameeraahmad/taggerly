@@ -45,7 +45,7 @@ function translatePage() {
     document.querySelectorAll('[data-translate]').forEach(el => {
         const key = el.getAttribute('data-translate');
         const value = dicts[lang][key] || dicts['en'][key];
-        
+
         if (!value) {
             console.debug(`No translation found for key: "${key}" in language: "${lang}"`);
             return;
@@ -255,10 +255,31 @@ window.closeModal = function () {
 
 document.addEventListener('DOMContentLoaded', async () => {
     // --- Initialize Global State from LocalStorage IMMEDIATELY ---
-    window.selectedCountry = localStorage.getItem('selectedCountry') || 'uae';
     window.currentLang = localStorage.getItem('lang') || 'en';
+    // 1. Detect Country First (To avoid flicker)
+    const storedCountry = localStorage.getItem('selectedCountry');
+    if (!storedCountry) {
+        try {
+            const res = await fetch('https://ipapi.co/json/');
+            const ipData = await res.json();
+            const countryCode = ipData.country_code?.toLowerCase();
+            const countryMap = { 'ae': 'uae', 'eg': 'egypt', 'sa': 'ksa', 'qa': 'qatar' };
+            const detectedCountry = countryMap[countryCode] || 'uae';
+            const flags = { 'uae': '🇦🇪', 'egypt': '🇪🇬', 'ksa': '🇸🇦', 'qatar': '🇶🇦' };
+            const names = { 'uae': (window.currentLang === 'ar' ? 'الإمارات' : 'UAE'), 'egypt': (window.currentLang === 'ar' ? 'مصر' : 'Egypt'), 'ksa': (window.currentLang === 'ar' ? 'السعودية' : 'KSA'), 'qatar': (window.currentLang === 'ar' ? 'قطر' : 'Qatar') };
 
-    // 1. First Load Global Header/Footer if placeholders exist
+            window.selectedCountry = detectedCountry;
+            localStorage.setItem('selectedCountry', detectedCountry);
+            localStorage.setItem('selectedCountryFlag', flags[detectedCountry]);
+            localStorage.setItem('selectedCountryName', names[detectedCountry]);
+        } catch (err) {
+            window.selectedCountry = 'uae'; // Final fallback
+        }
+    } else {
+        window.selectedCountry = storedCountry;
+    }
+
+    // 2. Load Global Header/Footer
     await loadGlobalHeader();
     await loadGlobalFooter();
     await loadUserFavorites();
@@ -331,14 +352,14 @@ document.addEventListener('DOMContentLoaded', async () => {
     // Already handled at the top
 
     // --- Socket.io Global Initialization & Notifications ---
-    window.initGlobalSocket = function() {
+    window.initGlobalSocket = function () {
         if (typeof io === 'undefined') return;
         if (window.socket) return window.socket;
 
         window.socket = io();
         const user = JSON.parse(localStorage.getItem('user'));
         const token = localStorage.getItem('token');
-        
+
         if (user && user.id && token) {
             window.socket.emit('join_user', user.id);
         }
@@ -454,102 +475,102 @@ document.addEventListener('DOMContentLoaded', async () => {
     }
 
 
-// --- Global helper to update dynamic content across the site ---
-// --- Global helper to update dynamic content across the site ---
-window.updateDynamicContent = updateDynamicContent;
-function updateDynamicContent(country, lang = window.currentLang || 'en') {
-    if (!translations[lang]) return;
+    // --- Global helper to update dynamic content across the site ---
+    // --- Global helper to update dynamic content across the site ---
+    window.updateDynamicContent = updateDynamicContent;
+    function updateDynamicContent(country, lang = window.currentLang || 'en') {
+        if (!translations[lang]) return;
 
-    console.log(`🌐 Updating dynamic content for: ${country} [${lang}]`);
-    const countryName = translations[lang][country] || translations['en'][country] || country;
+        console.log(`🌐 Updating dynamic content for: ${country} [${lang}]`);
+        const countryName = translations[lang][country] || translations['en'][country] || country;
 
-    const countryCities = {
-        uae: ['dubai', 'abuDhabi', 'sharjah', 'ajman', 'umAlQuwain', 'rasAlKhaimah', 'fujairah', 'alAin'],
-        egypt: ['cairo', 'alexandria', 'giza', 'sharm', 'hurghada', 'dahab', 'suez', 'portSaid', 'luxor', 'aswan', 'mansoura', 'tanta', 'dakahlia', 'gharbia', 'monufia', 'sharqia', 'kafrElSheikh', 'damietta', 'matrouh', 'beheira', 'ismailia', 'beniSuef', 'faiyum', 'minya', 'asyut', 'sohag', 'qena', 'redSea', 'newValley', 'qalyubia', 'northSinai', 'southSinai'],
-        ksa: ['riyadh', 'jeddah', 'dammam', 'mecca', 'medina', 'khobar', 'abha', 'tabuk', 'buraydah'],
-        qatar: ['doha', 'wakrah', 'rayyan', 'khor', 'shamal']
-    };
+        const countryCities = {
+            uae: ['dubai', 'abuDhabi', 'sharjah', 'ajman', 'umAlQuwain', 'rasAlKhaimah', 'fujairah', 'alAin'],
+            egypt: ['cairo', 'alexandria', 'giza', 'sharm', 'hurghada', 'dahab', 'suez', 'portSaid', 'luxor', 'aswan', 'mansoura', 'tanta', 'dakahlia', 'gharbia', 'monufia', 'sharqia', 'kafrElSheikh', 'damietta', 'matrouh', 'beheira', 'ismailia', 'beniSuef', 'faiyum', 'minya', 'asyut', 'sohag', 'qena', 'redSea', 'newValley', 'qalyubia', 'northSinai', 'southSinai'],
+            ksa: ['riyadh', 'jeddah', 'dammam', 'mecca', 'medina', 'khobar', 'abha', 'tabuk', 'buraydah'],
+            qatar: ['doha', 'wakrah', 'rayyan', 'khor', 'shamal']
+        };
 
-    // --- 1. Update Currencies ---
-    const currencyLabels = document.querySelectorAll('.currency-label');
-    const currencyKey = `currency_${country}`;
-    const currencyText = translations[lang][currencyKey] || translations['en'][currencyKey] || "AED";
-    currencyLabels.forEach(el => el.textContent = currencyText);
+        // --- 1. Update Currencies ---
+        const currencyLabels = document.querySelectorAll('.currency-label');
+        const currencyKey = `currency_${country}`;
+        const currencyText = translations[lang][currencyKey] || translations['en'][currencyKey] || "AED";
+        currencyLabels.forEach(el => el.textContent = currencyText);
 
-    // Update Price Label in search filters if exists
-    const priceLabel = document.querySelector('[data-translate="priceLabel"]');
-    if (priceLabel) {
-        priceLabel.textContent = `${translations[lang].priceLabel?.split('(')[0] || 'Price'} (${currencyText})`;
-    }
-
-    // --- 2. Update Country Labels ---
-    const countryLabels = document.querySelectorAll('.country-label');
-    countryLabels.forEach(el => el.textContent = countryName);
-
-    // --- 3. Update Dynamic Location Dropdowns ---
-    const currentCountryNameEl = document.getElementById('current-country-name');
-    if (currentCountryNameEl) {
-        currentCountryNameEl.textContent = countryName;
-        currentCountryNameEl.setAttribute('data-translate', country);
-    }
-
-    // --- 5. Update Footer & Community Labels ---
-    const footerTemplate = translations[lang].footerText || translations['en'].footerText;
-    if (footerTemplate) {
-        const footerTextElements = document.querySelectorAll('[data-translate="footerText"]');
-        footerTextElements.forEach(el => {
-            el.textContent = footerTemplate.replace('UAE', countryName).replace('الإمارات', countryName);
-        });
-    }
-
-    const allUAELabels = document.querySelectorAll('[data-translate="allUAE"]');
-    allUAELabels.forEach(el => {
-        const prefix = lang === 'ar' ? 'كل ' : 'All ';
-        el.textContent = prefix + countryName;
-    });
-
-    // --- 6. Update Dynamic Location Dropdowns ---
-    const dynamicDropdowns = document.querySelectorAll('[data-dynamic-location="true"]');
-    dynamicDropdowns.forEach(dropdown => {
-        const cities = countryCities[country] || countryCities['uae'];
-        const includeAll = dropdown.getAttribute('data-include-all') === 'true';
-        
-        const currentValue = dropdown.value;
-        dropdown.innerHTML = '';
-        if (includeAll) {
-            const allKey = `all_${country}`;
-            const allOpt = document.createElement('option');
-            allOpt.value = allKey;
-            allOpt.textContent = translations[lang][allKey] || translations['en'][allKey] || (lang === 'ar' ? 'كل ' : 'All ') + countryName;
-            allOpt.setAttribute('data-translate', allKey);
-            dropdown.appendChild(allOpt);
+        // Update Price Label in search filters if exists
+        const priceLabel = document.querySelector('[data-translate="priceLabel"]');
+        if (priceLabel) {
+            priceLabel.textContent = `${translations[lang].priceLabel?.split('(')[0] || 'Price'} (${currencyText})`;
         }
-        cities.forEach(c => {
-            const opt = document.createElement('option');
-            opt.value = c;
-            opt.textContent = translations[lang][c] || translations['en'][c] || c;
-            opt.setAttribute('data-translate', c);
-            dropdown.appendChild(opt);
+
+        // --- 2. Update Country Labels ---
+        const countryLabels = document.querySelectorAll('.country-label');
+        countryLabels.forEach(el => el.textContent = countryName);
+
+        // --- 3. Update Dynamic Location Dropdowns ---
+        const currentCountryNameEl = document.getElementById('current-country-name');
+        if (currentCountryNameEl) {
+            currentCountryNameEl.textContent = countryName;
+            currentCountryNameEl.setAttribute('data-translate', country);
+        }
+
+        // --- 5. Update Footer & Community Labels ---
+        const footerTemplate = translations[lang].footerText || translations['en'].footerText;
+        if (footerTemplate) {
+            const footerTextElements = document.querySelectorAll('[data-translate="footerText"]');
+            footerTextElements.forEach(el => {
+                el.textContent = footerTemplate.replace('UAE', countryName).replace('الإمارات', countryName);
+            });
+        }
+
+        const allUAELabels = document.querySelectorAll('[data-translate="allUAE"]');
+        allUAELabels.forEach(el => {
+            const prefix = lang === 'ar' ? 'كل ' : 'All ';
+            el.textContent = prefix + countryName;
         });
-        if (currentValue) dropdown.value = currentValue;
-    });
 
-    // --- 7. Re-populate Ads for the new country ---
-    const adsContainer = document.querySelector('.featured-ads .grid');
-    const allSliders = document.querySelectorAll('.flex.overflow-x-auto[id*="slider"]');
+        // --- 6. Update Dynamic Location Dropdowns ---
+        const dynamicDropdowns = document.querySelectorAll('[data-dynamic-location="true"]');
+        dynamicDropdowns.forEach(dropdown => {
+            const cities = countryCities[country] || countryCities['uae'];
+            const includeAll = dropdown.getAttribute('data-include-all') === 'true';
 
-    if (adsContainer) {
-        adsContainer.innerHTML = '<div class="col-span-full flex justify-center py-10"><div class="animate-spin rounded-full h-10 w-10 border-b-2 border-accent"></div></div>';
-        if (window.populateAdsGrid) window.populateAdsGrid(adsContainer, country);
+            const currentValue = dropdown.value;
+            dropdown.innerHTML = '';
+            if (includeAll) {
+                const allKey = `all_${country}`;
+                const allOpt = document.createElement('option');
+                allOpt.value = allKey;
+                allOpt.textContent = translations[lang][allKey] || translations['en'][allKey] || (lang === 'ar' ? 'كل ' : 'All ') + countryName;
+                allOpt.setAttribute('data-translate', allKey);
+                dropdown.appendChild(allOpt);
+            }
+            cities.forEach(c => {
+                const opt = document.createElement('option');
+                opt.value = c;
+                opt.textContent = translations[lang][c] || translations['en'][c] || c;
+                opt.setAttribute('data-translate', c);
+                dropdown.appendChild(opt);
+            });
+            if (currentValue) dropdown.value = currentValue;
+        });
+
+        // --- 7. Re-populate Ads for the new country ---
+        const adsContainer = document.querySelector('.featured-ads .grid');
+        const allSliders = document.querySelectorAll('.flex.overflow-x-auto[id*="slider"]');
+
+        if (adsContainer) {
+            adsContainer.innerHTML = '<div class="col-span-full flex justify-center py-10"><div class="animate-spin rounded-full h-10 w-10 border-b-2 border-accent"></div></div>';
+            if (window.populateAdsGrid) window.populateAdsGrid(adsContainer, country);
+        }
+
+        allSliders.forEach(slider => {
+            slider.innerHTML = '<div class="p-10 text-center w-full flex justify-center items-center"><div class="animate-spin inline-block rounded-full h-8 w-8 border-b-2 border-accent"></div></div>';
+        });
+        if (window.loadCategorySliders) window.loadCategorySliders(country);
+
+        translatePage();
     }
-
-    allSliders.forEach(slider => {
-        slider.innerHTML = '<div class="p-10 text-center w-full flex justify-center items-center"><div class="animate-spin inline-block rounded-full h-8 w-8 border-b-2 border-accent"></div></div>';
-    });
-    if (window.loadCategorySliders) window.loadCategorySliders(country);
-
-    translatePage();
-}
 
     window.detectLocation = function () {
         const btn = document.getElementById('detect-location-btn') || document.getElementById('detect-location-btn-mobile');
@@ -576,7 +597,7 @@ function updateDynamicContent(country, lang = window.currentLang || 'en') {
                 // Fetch in English to match our keys consistently
                 const response = await fetch(`https://nominatim.openstreetmap.org/reverse?format=json&lat=${latitude}&lon=${longitude}&accept-language=en`);
                 const data = await response.json();
-                
+
                 const addr = data.address;
                 // Identify the governorate/state level
                 const detectedName = addr.state || addr.province || addr.region || addr.city || addr.town || addr.county;
@@ -638,10 +659,10 @@ function updateDynamicContent(country, lang = window.currentLang || 'en') {
                     const detectedCountryName = countryNames[detectedCountry] || detectedCountry;
                     const currentCountryName = countryNames[window.selectedCountry] || window.selectedCountry;
 
-                    const msg = lang === 'ar' 
+                    const msg = lang === 'ar'
                         ? `لقد اكتشفنا أنك في ${detectedCountryName}. هل تود الانتقال إلى موقعنا في ${detectedCountryName}؟ (أنت حالياً تتصفح موقع ${currentCountryName})`
                         : `We detected you are in ${detectedCountryName}. Would you like to switch to our site for that country? (You are currently viewing ${currentCountryName})`;
-                    
+
                     const switchConfirm = await customConfirm(msg);
                     if (switchConfirm) {
                         const flags = { 'uae': '🇦🇪', 'egypt': '🇪🇬', 'ksa': '🇸🇦', 'qatar': '🇶🇦' };
@@ -652,7 +673,7 @@ function updateDynamicContent(country, lang = window.currentLang || 'en') {
                 }
 
                 await customAlert(`${dicts[lang].locationActive || 'Location Set'}: ${finalLocDisplayName}`);
-                
+
                 // Construct search URL - ensure country is explicitly passed if we just switched it
                 const currentCountry = localStorage.getItem('selectedCountry') || window.selectedCountry || 'uae';
                 const searchUrl = `search.html?country=${currentCountry}&city=${encodeURIComponent(finalLocKey)}&lat=${latitude}&lng=${longitude}&radius=50&loc=${encodeURIComponent(finalLocDisplayName)}`;
@@ -694,13 +715,8 @@ function updateDynamicContent(country, lang = window.currentLang || 'en') {
         window.dispatchEvent(new CustomEvent('countryChanged', { detail: { country } }));
     };
 
-    window.initCountryDropdown = async function () {
+    window.initCountryDropdown = function () {
         const countryOptions = document.querySelectorAll('.country-option');
-        const currentCountryFlag = document.getElementById('current-country-flag');
-        const currentCountryName = document.getElementById('current-country-name');
-
-        const storedCountry = localStorage.getItem('selectedCountry');
-
         if (countryOptions.length > 0) {
             countryOptions.forEach(opt => {
                 opt.onclick = (e) => {
@@ -711,29 +727,6 @@ function updateDynamicContent(country, lang = window.currentLang || 'en') {
                     window.setCountry(country, flag, name);
                 };
             });
-
-            if (storedCountry) {
-                // If we have a stored preference, use it
-                const storedFlag = localStorage.getItem('selectedCountryFlag') || '🇦🇪';
-                const storedName = localStorage.getItem('selectedCountryName') || 'uae';
-                window.setCountry(storedCountry, storedFlag, storedName);
-            } else {
-                // IP-based Geo-location (First time visit)
-                try {
-                    const res = await fetch('https://ipapi.co/json/');
-                    const ipData = await res.json();
-                    const countryCode = ipData.country_code?.toLowerCase();
-                    const countryMap = { 'ae': 'uae', 'eg': 'egypt', 'sa': 'ksa', 'qa': 'qatar' };
-                    const detectedCountry = countryMap[countryCode] || 'uae';
-                    const flags = { 'uae': '🇦🇪', 'egypt': '🇪🇬', 'ksa': '🇸🇦', 'qatar': '🇶🇦' };
-                    const names = { 'uae': (window.currentLang === 'ar' ? 'الإمارات' : 'UAE'), 'egypt': (window.currentLang === 'ar' ? 'مصر' : 'Egypt'), 'ksa': (window.currentLang === 'ar' ? 'السعودية' : 'KSA'), 'qatar': (window.currentLang === 'ar' ? 'قطر' : 'Qatar') };
-
-                    window.setCountry(detectedCountry, flags[detectedCountry], names[detectedCountry]);
-                } catch (err) {
-                    // Fallback to UAE if geo-detection fails
-                    window.setCountry('uae', '🇦🇪', 'UAE');
-                }
-            }
         }
     };
 
@@ -773,6 +766,11 @@ function updateDynamicContent(country, lang = window.currentLang || 'en') {
             window.updateLanguage(newLang);
         });
     }
+
+    // Apply saved country UI state (Sync flag and name in dropdown)
+    const initFlag = localStorage.getItem('selectedCountryFlag') || '🇦🇪';
+    const initName = localStorage.getItem('selectedCountryName') || 'UAE';
+    window.setCountry(window.selectedCountry || 'uae', initFlag, initName);
 
     // Apply saved language on every page load
     window.updateLanguage(window.currentLang);
@@ -1233,7 +1231,7 @@ function updateDynamicContent(country, lang = window.currentLang || 'en') {
     // --- Ads Grid population ---
     const adsContainer = document.querySelector('.featured-ads .grid');
     const hasSliders = document.querySelectorAll('[id*="-slider"]').length > 0;
-    
+
     if (window.apiClient) {
         if (adsContainer) {
             populateAdsGrid(adsContainer, window.selectedCountry);
@@ -1431,7 +1429,7 @@ function updateDynamicContent(country, lang = window.currentLang || 'en') {
                             const countBadge = document.getElementById('favorites-count');
                             const container = document.getElementById('favorites-container') || document.querySelector('.grid');
                             const remaining = container ? container.querySelectorAll('.group, [onclick*="ad-details"]').length : 0;
-                            
+
                             if (countBadge) {
                                 if (remaining === 0) {
                                     countBadge.classList.add('hidden');
@@ -1472,7 +1470,7 @@ function updateDynamicContent(country, lang = window.currentLang || 'en') {
     function initChatWidget() {
         const lang = localStorage.getItem('lang') || 'en';
         const user = JSON.parse(localStorage.getItem('user'));
-        
+
         let welcomeMsg = translations[lang].chatWelcome;
         let showEmailInput = !user;
 
@@ -1549,6 +1547,13 @@ function updateDynamicContent(country, lang = window.currentLang || 'en') {
             });
         }
 
+        // Auto-join if already has a request
+        if (currentRequestId) {
+            joinSupportRoom(currentRequestId);
+            // Optionally load history if window is already open or should be pre-loaded
+            loadChatHistory(currentRequestId);
+        }
+
         if (closeBtn) {
             closeBtn.addEventListener('click', () => {
                 windowChat.classList.remove('active');
@@ -1596,21 +1601,25 @@ function updateDynamicContent(country, lang = window.currentLang || 'en') {
                 const data = await res.json();
                 if (data.success) {
                     messages.innerHTML = '';
-                    addMessage(welcomeMsg, 'support');
+                    const lang = localStorage.getItem('lang') || 'en';
+                    const guestWelcome = translations[lang]?.chatWelcome || 'How can we help you?';
+                    addMessage(guestWelcome, 'support');
                     data.data.forEach(m => {
                         addMessage(m.message, m.isAdmin ? 'support' : 'user');
                     });
+                    messages.scrollTop = messages.scrollHeight;
                 }
-            } catch (err) { console.error(err); }
+            } catch (err) { console.error('Failed to load chat history:', err); }
         }
 
         async function handleSend() {
             const text = input.value.trim();
-            const guestEmail = emailInput ? emailInput.value.trim() : (user ? user.email : null);
+            const senderName = user ? user.name : 'Guest User';
+            const senderEmail = user ? user.email : (emailInput ? emailInput.value.trim() : null);
 
             if (!text) return;
-            if (!guestEmail && !user) {
-                if (emailInput) {
+            if (!senderEmail) {
+                if (emailInput && !user) {
                     emailInput.classList.add('border-red-500');
                     emailInput.focus();
                 }
@@ -1620,7 +1629,7 @@ function updateDynamicContent(country, lang = window.currentLang || 'en') {
             // Disable UI
             input.disabled = true;
             sendBtn.disabled = true;
-            
+
             addMessage(text, 'user');
             input.value = '';
 
@@ -1631,8 +1640,8 @@ function updateDynamicContent(country, lang = window.currentLang || 'en') {
                         method: 'POST',
                         headers: { 'Content-Type': 'application/json' },
                         body: JSON.stringify({
-                            name: user ? user.name : 'Guest User',
-                            email: guestEmail,
+                            name: senderName,
+                            email: senderEmail,
                             subject: 'Live Chat Support',
                             message: text
                         })
@@ -1651,7 +1660,7 @@ function updateDynamicContent(country, lang = window.currentLang || 'en') {
                         headers: { 'Content-Type': 'application/json' },
                         body: JSON.stringify({
                             message: text,
-                            senderName: user ? user.name : 'Guest User',
+                            senderName: senderName,
                             isAdmin: false
                         })
                     });
@@ -1869,13 +1878,57 @@ function updateDynamicContent(country, lang = window.currentLang || 'en') {
         };
     }
 
-    // Socket listener for real-time notifications
-    if (window.socket) {
-        window.socket.on('new_notification', (notification) => {
-            loadNotifications();
-            showNotificationToast(notification);
-            playNotificationSound();
-        });
+    // --- Global Socket Initialization ---
+    window.initGlobalSocket = function () {
+        const userJson = localStorage.getItem('user');
+        const user = userJson ? JSON.parse(userJson) : null;
+
+        if (!window.io) return null;
+
+        if (!window.socket) {
+            window.socket = io();
+            console.log('🔌 Global socket initialized');
+
+            // Join user room for private events if logged in
+            if (user && user.id) {
+                window.socket.emit('join_user', user.id);
+            }
+
+            // Global listeners
+            window.socket.on('new_notification', (notification) => {
+                if (window.loadNotifications) window.loadNotifications();
+                if (typeof showNotificationToast === 'function') showNotificationToast(notification);
+                if (typeof playNotificationSound === 'function') playNotificationSound();
+            });
+
+            // Re-join on reconnect
+            window.socket.on('connect', () => {
+                if (user && user.id) {
+                    window.socket.emit('join_user', user.id);
+                }
+                if (window.currentConversationId) {
+                    window.socket.emit('join_conversation', window.currentConversationId);
+                }
+                // Re-join support room if active
+                const supportId = sessionStorage.getItem('supportRequestId');
+                if (supportId) {
+                    window.socket.emit('join_support', supportId);
+                }
+            });
+        }
+        return window.socket;
+    };
+
+    // Auto-load socket.io if missing (needed for support chat even if not logged in)
+    if (typeof io === 'undefined') {
+        const script = document.createElement('script');
+        script.src = '/socket.io/socket.io.js';
+        script.onload = () => {
+            if (typeof io !== 'undefined') window.initGlobalSocket();
+        };
+        document.head.appendChild(script);
+    } else {
+        window.initGlobalSocket();
     }
 });
 
@@ -1907,11 +1960,8 @@ async function loadGlobalHeader() {
         if (window.initCountryDropdown) window.initCountryDropdown();
         if (window.initTheme) window.initTheme();
         if (window.initMobileMenu) window.initMobileMenu();
+        // Ensure auth state is applied after header is loaded
         if (window.updateAuthState) window.updateAuthState();
-
-        // Ensure translations and dynamic content are applied after header is loaded
-        if (window.updateLanguage) window.updateLanguage(window.currentLang);
-        if (window.updateDynamicContent) window.updateDynamicContent(window.selectedCountry, window.currentLang);
 
         // Check for deep link params (section/tab)
         const urlParams = new URLSearchParams(window.location.search);
@@ -1944,8 +1994,7 @@ async function loadGlobalFooter() {
         const html = await response.text();
         placeholder.innerHTML = html;
 
-        // Ensure translations are applied after footer is loaded
-        if (window.updateLanguage) window.updateLanguage(window.currentLang);
+        // Translations handled by main cycle
     } catch (err) {
         console.error('Error loading global footer:', err);
     }

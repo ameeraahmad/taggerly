@@ -101,10 +101,6 @@ const Ad = sequelize.define('Ad', {
         type: DataTypes.DATE,
         allowNull: true
     },
-    rejectionReason: {
-        type: DataTypes.TEXT,
-        allowNull: true
-    },
     latitude: {
         type: DataTypes.FLOAT,
         allowNull: true
@@ -116,6 +112,25 @@ const Ad = sequelize.define('Ad', {
     paymentMethod: {
         type: DataTypes.STRING,
         allowNull: true
+    },
+    completionStatus: {
+        type: DataTypes.STRING, // Ready, Resale, Off-plan
+        allowNull: true
+    },
+    furnished: {
+        type: DataTypes.STRING, // Yes, No
+        allowNull: true
+    },
+    amenities: {
+        type: DataTypes.TEXT, // Array of amenities stored as JSON
+        defaultValue: '[]',
+        get() {
+            const val = this.getDataValue('amenities');
+            return val ? JSON.parse(val) : [];
+        },
+        set(val) {
+            this.setDataValue('amenities', JSON.stringify(val || []));
+        }
     }
 }, {
     timestamps: true,
