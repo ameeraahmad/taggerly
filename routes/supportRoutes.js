@@ -160,6 +160,7 @@ router.post('/:id/reply', async (req, res) => {
         request.isReplied = true;
         request.status = 'replied';
         request.replyMessage = replyMessage;
+        request.message = replyMessage; // Update preview with last message
         await request.save();
 
         // Also save as a SupportMessage for the history and emit socket
@@ -230,9 +231,11 @@ router.post('/:id/messages', async (req, res) => {
         if (isAdmin) {
             request.isReplied = true;
             request.status = 'replied';
+            request.message = message; // Update preview for admin reply
         } else {
             request.isRead = false;
             request.status = 'pending';
+            request.message = message; // Update preview for user message
         }
         await request.save();
 

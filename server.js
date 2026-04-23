@@ -285,9 +285,18 @@ if (require.main === module) {
             socket.join(`convo_${convoId}`); 
         });
         
-        socket.on('join_support', (requestId) => { 
-            console.log(`🔗 Socket ${socket.id} joining room: support_${requestId}`);
-            socket.join(`support_${requestId}`); 
+        socket.on('join_support', (data) => { 
+            const requestId = typeof data === 'object' ? data.requestId : data;
+            const isAdmin = typeof data === 'object' ? data.isAdmin : false;
+
+            console.log(`🔗 Socket ${socket.id} joining room: support_${requestId} (Admin: ${isAdmin})`);
+            socket.join(`support_${requestId}`);
+            
+            if (!isAdmin) {
+                socket.supportRequestId = requestId;
+                // Only notify if a customer joins
+                io_instance.emit('support_online_status', { requestId, isOnline: true });
+            }
         });
         
         socket.on('disconnect', async () => { 
@@ -303,6 +312,14 @@ if (require.main === module) {
                     }
                 } catch (err) {
                     console.error('Error updating user status (offline):', err);
+                }
+            }
+
+            // Handle Support Online Status
+            if (socket.supportRequestId) {
+                const supportSockets = await io_instance.in(`support_${socket.supportRequestId}`).fetchSockets();
+                if (supportSockets.length === 0) {
+                    io_instance.emit('support_online_status', { requestId: socket.supportRequestId, isOnline: false });
                 }
             }
         });

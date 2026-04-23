@@ -198,8 +198,9 @@ window.customAlert = function (message) {
 
         const closeBtn = document.createElement('button');
         closeBtn.type = 'button';
-        closeBtn.className = 'absolute top-5 right-5 text-gray-400 hover:text-gray-600 dark:hover:text-gray-200 transition-colors z-10';
-        closeBtn.innerHTML = '<svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>';
+        closeBtn.className = 'absolute top-4 right-4 text-gray-400 hover:text-red-500 transition-all duration-200 p-2 hover:bg-red-50 dark:hover:bg-red-900/20 rounded-full z-10';
+        closeBtn.innerHTML = '<svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>';
+        closeBtn.title = 'Close';
         modal.appendChild(closeBtn);
 
         const icon = document.createElement('div');
@@ -371,6 +372,11 @@ document.addEventListener('DOMContentLoaded', async () => {
             const isMessagesPage = window.location.pathname.includes('messages.html');
             const isInActiveConvo = isMessagesPage && (typeof currentConversationId !== 'undefined') && (window.currentConversationId == msg.conversationId);
             if (!isInActiveConvo) showNotificationToast(msg);
+        });
+
+        window.socket.on('new_notification', (notification) => {
+            playNotificationSound();
+            showNotificationToast(notification);
         });
 
         window.socket.on('user_status_change', (data) => {
@@ -1537,15 +1543,28 @@ document.addEventListener('DOMContentLoaded', async () => {
 
         let currentRequestId = sessionStorage.getItem('supportRequestId');
 
+        window.toggleChat = (force = null) => {
+            if (force === true) windowChat.classList.add('active');
+            else if (force === false) windowChat.classList.remove('active');
+            else windowChat.classList.toggle('active');
+
+            if (windowChat.classList.contains('active') && currentRequestId) {
+                joinSupportRoom(currentRequestId);
+                loadChatHistory(currentRequestId);
+            }
+        };
+
         if (toggle) {
-            toggle.addEventListener('click', () => {
-                windowChat.classList.toggle('active');
-                if (windowChat.classList.contains('active') && currentRequestId) {
-                    joinSupportRoom(currentRequestId);
-                    loadChatHistory(currentRequestId);
-                }
-            });
+            toggle.addEventListener('click', () => window.toggleChat());
         }
+
+        // Global listener for any element that wants to open the chat
+        document.addEventListener('click', (e) => {
+            if (e.target.closest('[data-action="open-chat"]')) {
+                e.preventDefault();
+                window.toggleChat(true);
+            }
+        });
 
         // Auto-join if already has a request
         if (currentRequestId) {

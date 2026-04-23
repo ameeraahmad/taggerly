@@ -124,8 +124,7 @@
                 <div
                     class="bg-white dark:bg-gray-800 rounded-xl shadow-sm overflow-hidden mb-8 border dark:border-gray-700">
                     <div class="gallery-main-container group">
-                        <img id="mainImage" src="https://placehold.co/800x500?text=Loading..."
-                            alt="Ad Main Image">
+                        <img id="mainImage" src="https://placehold.co/800x500?text=Loading..." alt="Ad Main Image">
                         <!-- Navigation Arrows (Optional but nice) -->
                         <div
                             class="absolute inset-0 flex justify-between items-center px-4 opacity-0 group-hover:opacity-100 transition-opacity">
@@ -213,7 +212,8 @@
 
                     <!-- Amenities Chips -->
                     <div id="amenities-section" class="hidden mt-6 pt-6 border-t dark:border-gray-700">
-                        <h4 class="font-bold text-gray-900 dark:text-white mb-3" data-translate="amenities">Amenities</h4>
+                        <h4 class="font-bold text-gray-900 dark:text-white mb-3" data-translate="amenities">Amenities
+                        </h4>
                         <div id="amenities-list" class="flex flex-wrap gap-2">
                             <!-- Injected via JS -->
                         </div>
@@ -278,10 +278,13 @@
                 <!-- Price Card -->
                 <div class="bg-white dark:bg-gray-800 rounded-xl shadow-sm p-6 border dark:border-gray-700">
                     <div class="flex justify-between items-start mb-2">
-                        <h1 id="ad-title" class="text-2xl font-bold text-gray-900 dark:text-white leading-tight">Loading...</h1>
+                        <h1 id="ad-title" class="text-2xl font-bold text-gray-900 dark:text-white leading-tight">
+                            Loading...</h1>
                         <button id="favorite-btn" class="text-gray-400 hover:text-red-500 transition-colors p-1 group">
                             <svg class="w-7 h-7" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"></path>
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z">
+                                </path>
                             </svg>
                         </button>
                     </div>
@@ -299,7 +302,9 @@
                     </div>
 
                     <div class="bg-orange-50 dark:bg-accent/10 rounded-xl p-4 mb-6 relative">
-                        <div id="sold-badge" class="hidden absolute -top-3 -right-3 bg-red-600 text-white px-4 py-1.5 rounded-full font-bold shadow-lg transform rotate-12 z-10" data-translate="sold">
+                        <div id="sold-badge"
+                            class="hidden absolute -top-3 -right-3 bg-red-600 text-white px-4 py-1.5 rounded-full font-bold shadow-lg transform rotate-12 z-10"
+                            data-translate="sold">
                             SOLD
                         </div>
                         <div class="text-3xl font-bold text-accent mb-0">
@@ -359,7 +364,8 @@
                         <div class="ml-4 rtl:mr-4 rtl:ml-0">
                             <a href="#" id="seller-name-link" class="block hover:underline">
                                 <div id="seller-name"
-                                    class="font-bold text-primary dark:text-white flex items-center gap-1">Loading...</div>
+                                    class="font-bold text-primary dark:text-white flex items-center gap-1">Loading...
+                                </div>
                             </a>
                             <div id="seller-joined" class="text-sm text-gray-500"><span
                                     data-translate="memberSince">Member since</span>
@@ -372,22 +378,34 @@
                 </div>
 
                 <!-- Map Location (Dynamic) -->
-                <div id="sidebar-map-section" class="hidden bg-white dark:bg-gray-800 rounded-xl shadow-sm overflow-hidden border dark:border-gray-700 transition-all duration-500">
+                <div id="sidebar-map-section"
+                    class="hidden bg-white dark:bg-gray-800 rounded-xl shadow-sm overflow-hidden border dark:border-gray-700 transition-all duration-500">
                     <div id="sidebar-map-container" class="h-48 w-full bg-gray-100 dark:bg-gray-700 relative">
                         <!-- Loading State -->
-                        <div class="absolute inset-0 flex items-center justify-center bg-gray-100 dark:bg-gray-800 map-loader">
-                             <div class="animate-spin rounded-full h-8 w-8 border-b-2 border-accent"></div>
+                        <div
+                            class="absolute inset-0 flex items-center justify-center bg-gray-100 dark:bg-gray-800 map-loader">
+                            <div class="animate-spin rounded-full h-8 w-8 border-b-2 border-accent"></div>
                         </div>
                     </div>
-                    <div class="p-3 bg-gray-50 dark:bg-gray-800/50 border-t dark:border-gray-700 flex items-center justify-between">
-                         <div class="flex items-center gap-2">
-                            <svg class="w-4 h-4 text-accent" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M5.05 4.05a7 7 0 119.9 9.9L10 18.9l-4.95-4.95a7 7 0 010-9.9zM10 11a2 2 0 100-4 2 2 0 000 4z" clip-rule="evenodd"></path></svg>
-                            <span class="text-xs font-bold text-gray-700 dark:text-gray-300" data-translate="mapLocation">Map Location</span>
-                         </div>
-                         <a href="#" id="google-maps-link" target="_blank" class="text-[10px] text-accent hover:underline flex items-center gap-1">
-                             <span data-translate="viewOnGoogleMaps">View on Maps</span>
-                             <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path></svg>
-                         </a>
+                    <div
+                        class="p-3 bg-gray-50 dark:bg-gray-800/50 border-t dark:border-gray-700 flex items-center justify-between">
+                        <div class="flex items-center gap-2">
+                            <svg class="w-4 h-4 text-accent" fill="currentColor" viewBox="0 0 20 20">
+                                <path fill-rule="evenodd"
+                                    d="M5.05 4.05a7 7 0 119.9 9.9L10 18.9l-4.95-4.95a7 7 0 010-9.9zM10 11a2 2 0 100-4 2 2 0 000 4z"
+                                    clip-rule="evenodd"></path>
+                            </svg>
+                            <span class="text-xs font-bold text-gray-700 dark:text-gray-300"
+                                data-translate="mapLocation">Map Location</span>
+                        </div>
+                        <a href="#" id="google-maps-link" target="_blank"
+                            class="text-[10px] text-accent hover:underline flex items-center gap-1">
+                            <span data-translate="viewOnGoogleMaps">View on Maps</span>
+                            <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"
+                                    stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path>
+                            </svg>
+                        </a>
                     </div>
                 </div>
 
@@ -477,8 +495,8 @@
             if (!id) return;
 
             // Safe fallback functions to prevent crashing if SEO functions are undefined
-            const safeUpdateMetaTags = typeof updateMetaTags === 'function' ? updateMetaTags : () => {};
-            const safeInjectJSONLD = typeof injectJSONLD === 'function' ? injectJSONLD : () => {};
+            const safeUpdateMetaTags = typeof updateMetaTags === 'function' ? updateMetaTags : () => { };
+            const safeInjectJSONLD = typeof injectJSONLD === 'function' ? injectJSONLD : () => { };
 
             try {
                 const response = await apiClient.getAd(id);
@@ -488,7 +506,7 @@
                 // Update Title & Page Title
                 const siteTitle = `${ad.title} - Taggerly`;
                 document.title = siteTitle;
-                
+
                 // Update Meta Tags for SEO & Social Sharing
                 safeUpdateMetaTags(ad);
 
@@ -517,10 +535,10 @@
                                     L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
                                         attribution: '© OpenStreetMap'
                                     }).addTo(map);
-                                    
+
                                     // Add marker with custom popup
                                     const marker = L.marker([ad.latitude, ad.longitude]).addTo(map);
-                                    
+
                                     // Remove loader
                                     const loader = mapSection.querySelector('.map-loader');
                                     if (loader) loader.remove();
@@ -545,7 +563,7 @@
                 if (ad.status === 'sold') {
                     const soldBadge = document.getElementById('sold-badge');
                     if (soldBadge) soldBadge.classList.remove('hidden');
-                    
+
                     // Disable contact buttons if sold
                     const chatBtn = document.getElementById('chat-seller-btn');
                     const callBtn = document.getElementById('call-seller-btn');
@@ -606,7 +624,7 @@
                 // Helper to translate values like "Ready", "Yes", etc.
                 const lang = window.currentLang || localStorage.getItem('lang') || 'en';
                 const dict = (window.translations && window.translations[lang]) || {};
-                
+
                 const translateVal = (val) => {
                     if (!val) return val;
                     const mapping = {
@@ -704,10 +722,10 @@
 
                         // Show Avatar or Initials
                         if (avatarContainer) {
-                            const hasAvatar = ad.user.avatar && 
-                                            typeof ad.user.avatar === 'string' && 
-                                            !ad.user.avatar.includes('gravatar.com/avatar/00000000000000000000000000000000');
-                            
+                            const hasAvatar = ad.user.avatar &&
+                                typeof ad.user.avatar === 'string' &&
+                                !ad.user.avatar.includes('gravatar.com/avatar/00000000000000000000000000000000');
+
                             if (hasAvatar) {
                                 avatarContainer.innerHTML = `<img src="${ad.user.avatar}" class="w-full h-full rounded-full object-cover">`;
                                 avatarContainer.classList.remove('bg-gray-300', 'flex', 'items-center', 'justify-center', 'text-xl', 'font-bold', 'text-gray-600');
@@ -737,7 +755,7 @@
                         const pLink = document.getElementById('view-seller-profile');
                         const aLink = document.getElementById('seller-avatar-link');
                         const nLink = document.getElementById('seller-name-link');
-                        
+
                         if (pLink) pLink.href = profileUrl;
                         if (aLink) aLink.href = profileUrl;
                         if (nLink) nLink.href = profileUrl;
@@ -942,15 +960,18 @@
     <!-- Phone Modal -->
     <div id="phone-modal" class="fixed inset-0 z-[200] hidden items-center justify-center">
         <!-- Backdrop -->
-        <div id="phone-modal-backdrop" class="absolute inset-0 bg-black/60 backdrop-blur-sm"
-            onclick="closeModal()"></div>
+        <div id="phone-modal-backdrop" class="absolute inset-0 bg-black/60 backdrop-blur-sm" onclick="closeModal()">
+        </div>
 
         <!-- Modal Box -->
         <div
             class="relative bg-white dark:bg-gray-800 rounded-2xl shadow-2xl p-8 w-full max-w-sm mx-4 text-center animate-fade-in">
-            <button onclick="closeModal()" class="absolute top-5 right-5 text-gray-400 hover:text-gray-600 dark:hover:text-gray-200 transition-colors z-10" type="button">
+            <button onclick="closeModal()"
+                class="absolute top-5 right-5 text-gray-400 hover:text-gray-600 dark:hover:text-gray-200 transition-colors z-10"
+                type="button">
                 <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12">
+                    </path>
                 </svg>
             </button>
 
@@ -1127,21 +1148,21 @@
             const description = ad.description.substring(0, 160);
             const title = `${ad.title} - Taggerly`;
             const image = ad.images && ad.images.length > 0 ? ad.images[0] : 'assets/img/og-placeholder.png';
-            
+
             // Standard meta tags
             const metaDescription = document.querySelector('meta[name="description"]');
             if (metaDescription) metaDescription.setAttribute('content', description);
-            
+
             // OG tags
             const ogTitle = document.querySelector('meta[property="og:title"]');
             if (ogTitle) ogTitle.setAttribute('content', title);
-            
+
             const ogDescription = document.querySelector('meta[property="og:description"]');
             if (ogDescription) ogDescription.setAttribute('content', description);
-            
+
             const ogImage = document.querySelector('meta[property="og:image"]');
             if (ogImage) ogImage.setAttribute('content', image);
-            
+
             const ogUrl = document.querySelector('meta[property="og:url"]');
             if (ogUrl) ogUrl.setAttribute('content', window.location.href);
         }
@@ -1152,7 +1173,7 @@
         const showReviewBtn = document.getElementById('show-review-form-btn');
         const formContainer = document.getElementById('review-form-container');
         const cancelReviewBtn = document.getElementById('cancel-review-btn');
-        
+
         if (showReviewBtn) {
             showReviewBtn.onclick = async () => {
                 if (!localStorage.getItem('token')) {
@@ -1196,14 +1217,14 @@
             reviewForm.onsubmit = async (e) => {
                 e.preventDefault();
                 if (selectedRating === 0) { await customAlert('Please select a rating'); return; }
-                
+
                 const comment = document.getElementById('review-comment').value;
                 const submitBtn = e.target.querySelector('button[type="submit"]');
 
                 try {
                     submitBtn.disabled = true;
                     submitBtn.textContent = 'Submitting...';
-                    
+
                     const res = await apiClient.createReview({
                         sellerId: adData.userId,
                         adId: adId,
