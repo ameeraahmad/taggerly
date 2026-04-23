@@ -216,6 +216,13 @@
                 </svg>
                 <span>Blog Posts</span>
             </div>
+            <div class="sidebar-link" onclick="showTab('newsletter')" id="nav-newsletter">
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                        d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
+                </svg>
+                <span>Newsletter</span>
+            </div>
         </nav>
 
         <!-- Bottom -->
@@ -801,6 +808,40 @@
                 </div>
             </div>
 
+            <!-- ==================== NEWSLETTER TAB ==================== -->
+            <div id="tab-newsletter" class="tab-content">
+                <div class="flex items-center justify-between mb-6">
+                    <div>
+                        <h2 class="font-bold text-lg">📧 Newsletter Subscribers</h2>
+                        <p class="text-sm text-gray-500">Manage users who subscribed to your newsletter</p>
+                    </div>
+                    <button onclick="loadNewsletterSubscribers()"
+                        class="btn-sm bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300 hover:bg-gray-200 flex items-center gap-1">
+                        🔄 Refresh
+                    </button>
+                </div>
+
+                <div class="bg-white dark:bg-gray-800 rounded-2xl border border-gray-100 dark:border-gray-700 overflow-hidden shadow-sm">
+                    <div class="overflow-x-auto">
+                        <table class="w-full text-sm text-left">
+                            <thead class="bg-gray-50 dark:bg-gray-700/50 text-xs text-gray-500 uppercase font-bold tracking-wider">
+                                <tr>
+                                    <th class="px-6 py-4">Email Address</th>
+                                    <th class="px-6 py-4">Status</th>
+                                    <th class="px-6 py-4">Subscribed Date</th>
+                                    <th class="px-6 py-4 text-right">Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody id="newsletter-table-body" class="divide-y divide-gray-100 dark:divide-gray-700">
+                                <tr>
+                                    <td colspan="4" class="px-6 py-8 text-center text-gray-400">Loading subscribers...</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
         </div>
     </main>
 
@@ -896,7 +937,9 @@
             reports: { title: 'Reports', subtitle: 'Review flagged content' },
             moderation: { title: 'Pending Ads', subtitle: 'Moderation queue — approve or reject ads' },
             support: { title: 'Support Requests', subtitle: 'Messages from Contact and Support forms' },
-            customer_services: { title: 'Customers Services', subtitle: 'Live Chat Support conversations' }
+            customer_services: { title: 'Customers Services', subtitle: 'Live Chat Support conversations' },
+            blog: { title: 'Blog Management', subtitle: 'Create and manage articles' },
+            newsletter: { title: 'Newsletter Subscribers', subtitle: 'Manage email subscriptions' }
         };
 
         function showTab(tabId) {
@@ -916,6 +959,7 @@
             if (tabId === 'blog') loadBlogPosts();
             if (tabId === 'support') loadSupportRequests();
             if (tabId === 'customer_services') loadCustomerServices();
+            if (tabId === 'newsletter') loadNewsletterSubscribers();
 
             // Close mobile sidebar
             if (window.innerWidth < 768) toggleSidebar(false);
@@ -1069,6 +1113,55 @@
                 }
             } catch (err) {
                 tbody.innerHTML = '<tr><td colspan="6" class="px-6 py-8 text-center text-red-400">Failed to load requests.</td></tr>';
+            }
+        }
+
+        // ===================== NEWSLETTER MANAGEMENT =====================
+        async function loadNewsletterSubscribers() {
+            const tbody = document.getElementById('newsletter-table-body');
+            tbody.innerHTML = '<tr><td colspan="4" class="px-6 py-8 text-center text-gray-400">Loading subscribers...</td></tr>';
+
+            try {
+                const res = await apiClient.fetch('/newsletter/subscribers');
+                if (res.success) {
+                    if (res.data.length === 0) {
+                        tbody.innerHTML = '<tr><td colspan="4" class="px-6 py-8 text-center text-gray-400">No subscribers found yet.</td></tr>';
+                        return;
+                    }
+
+                    tbody.innerHTML = res.data.map(sub => `
+                        <tr class="table-row">
+                            <td class="px-6 py-4 font-medium">${sub.email}</td>
+                            <td class="px-6 py-4">
+                                <span class="badge ${sub.isActive ? 'bg-green-100 text-green-700' : 'bg-gray-100 text-gray-500'}">
+                                    ${sub.isActive ? 'Active' : 'Unsubscribed'}
+                                </span>
+                            </td>
+                            <td class="px-6 py-4 text-xs text-gray-500">${new Date(sub.createdAt).toLocaleDateString()}</td>
+                            <td class="px-6 py-4 text-right">
+                                <button onclick="deleteNewsletterSubscriber(${sub.id}, '${sub.email}')" class="p-2 text-red-400 hover:text-red-600 transition" title="Remove Subscriber">
+                                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" /></svg>
+                                </button>
+                            </td>
+                        </tr>
+                    `).join('');
+                }
+            } catch (err) {
+                tbody.innerHTML = `<tr><td colspan="4" class="px-6 py-8 text-center text-red-400">Error: ${err.message}</td></tr>`;
+            }
+        }
+
+        async function deleteNewsletterSubscriber(id, email) {
+            const confirmed = await customPrompt(`حذف مشترك`, `هل أنت متأكد من حذف الإيميل "${email}" من قائمة المشتركين؟`, 'YES');
+            if (confirmed !== 'YES') return;
+
+            try {
+                // We need a DELETE route for this
+                await apiClient.fetch(`/newsletter/subscribers/${id}`, { method: 'DELETE' });
+                loadNewsletterSubscribers();
+                showAdminToast('Subscriber removed successfully');
+            } catch (err) {
+                await customAlert('Failed to delete subscriber: ' + err.message);
             }
         }
 

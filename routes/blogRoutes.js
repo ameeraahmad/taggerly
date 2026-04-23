@@ -4,6 +4,9 @@ const BlogPost = require('../models/BlogPost');
 const User = require('../models/User');
 const { body, validationResult } = require('express-validator');
 const { upload, resizePostImage } = require('../middleware/upload');
+const NewsletterSubscriber = require('../models/NewsletterSubscriber');
+const sendEmail = require('../utils/email');
+const { newBlogPostEmail } = require('../utils/emailTemplates');
 
 // Middleware to check if user is admin (simple version)
 const isAdmin = async (req, res, next) => {
@@ -107,6 +110,31 @@ router.post('/', [
 
     try {
         const post = await BlogPost.create(req.body);
+        
+        // Notify all active newsletter subscribers asynchronously
+        const subscribers = await NewsletterSubscriber.findAll({ where: { isActive: true } });
+        
+        if (subscribers.length > 0) {
+            const postURL = `${req.protocol}://${req.get('host')}/blog-details.html?slug=${post.slug}`;
+            
+            // We use a separate loop to not block the response
+            subscribers.forEach(sub => {
+                const unsubscribeURL = `${req.protocol}://${req.get('host')}/api/newsletter/unsubscribe?token=${sub.unsubscribeToken}&email=${sub.email}`;
+                
+                sendEmail({
+                    email: sub.email,
+                    subject: `📰 New Article: ${post.title_en} / مقال جديد: ${post.title_ar}`,
+                    html: newBlogPostEmail({
+                        title: post.title_en, // You can choose to send based on user preference or both
+                        excerpt: post.excerpt_en,
+                        image: post.featuredImage,
+                        postURL,
+                        unsubscribeURL
+                    })
+                }).catch(err => console.error(`Newsletter send failed for ${sub.email}:`, err));
+            });
+        }
+
         res.status(201).json({ success: true, data: post });
     } catch (err) {
         console.error('Create Blog Post Error:', err);

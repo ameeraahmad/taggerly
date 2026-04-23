@@ -4,6 +4,7 @@ const NewsletterSubscriber = require('../models/NewsletterSubscriber');
 const sendEmail = require('../utils/email');
 const { newsletterWelcomeEmail } = require('../utils/emailTemplates');
 const { body, validationResult } = require('express-validator');
+const { protect, restrictTo } = require('../middleware/authMiddleware');
 
 /**
  * @route   POST /api/newsletter/subscribe
@@ -89,6 +90,42 @@ router.get('/unsubscribe', async (req, res) => {
     } catch (err) {
         console.error('Newsletter Unsubscribe Error:', err);
         res.status(500).send('Server error. Please try again later.');
+    }
+});
+
+/**
+ * @route   GET /api/newsletter/subscribers
+ * @desc    Get all newsletter subscribers (Admin only)
+ * @access  Private/Admin
+ */
+router.get('/subscribers', protect, restrictTo('admin'), async (req, res) => {
+    try {
+        const subscribers = await NewsletterSubscriber.findAll({
+            order: [['createdAt', 'DESC']]
+        });
+        res.status(200).json({ success: true, data: subscribers });
+    } catch (err) {
+        console.error('Newsletter Fetch Error:', err);
+        res.status(500).json({ success: false, message: 'Failed to fetch subscribers' });
+    }
+});
+
+/**
+ * @route   DELETE /api/newsletter/subscribers/:id
+ * @desc    Delete a newsletter subscriber (Admin only)
+ * @access  Private/Admin
+ */
+router.delete('/subscribers/:id', protect, restrictTo('admin'), async (req, res) => {
+    try {
+        const subscriber = await NewsletterSubscriber.findByPk(req.params.id);
+        if (!subscriber) {
+            return res.status(404).json({ success: false, message: 'Subscriber not found' });
+        }
+        await subscriber.destroy();
+        res.status(200).json({ success: true, message: 'Subscriber deleted successfully' });
+    } catch (err) {
+        console.error('Newsletter Delete Error:', err);
+        res.status(500).json({ success: false, message: 'Failed to delete subscriber' });
     }
 });
 

@@ -252,3 +252,30 @@ exports.newsletterWelcomeEmail = (options) => `
     ${emailFooter}
 </div>
 `;
+
+/**
+ * New Blog Post Notification Template
+ */
+exports.newBlogPostEmail = (options) => `
+<div style="${containerStyle}">
+    ${emailHeader}
+    <div style="padding: 40px; font-family: sans-serif; line-height: 1.6; color: #333;">
+        <p style="text-transform: uppercase; color: ${brandColor}; font-weight: bold; letter-spacing: 1px; font-size: 12px; margin-bottom: 10px;">New Article Published</p>
+        <h2 style="color: ${secondaryColor}; margin-top: 0;">${options.title}</h2>
+        
+        ${options.image ? `<div style="margin-bottom: 20px;"><img src="${options.image}" style="width: 100%; border-radius: 8px;" alt="${options.title}"></div>` : ''}
+        
+        <p>${options.excerpt}</p>
+        
+        <div style="text-align: center; margin: 30px 0;">
+            <a href="${options.postURL}" style="background-color: ${secondaryColor}; color: white; padding: 12px 30px; text-decoration: none; border-radius: 50px; font-weight: bold;">Read Full Article</a>
+        </div>
+        
+        <p>Stay informed with the latest tips and news from Taggerly!</p>
+        <hr style="border: 0; border-top: 1px solid #eee; margin: 30px 0;">
+        <p style="font-size: 11px; color: #999;">You're receiving this because you're subscribed to the Taggerly Newsletter. 
+        <a href="${options.unsubscribeURL}" style="color: ${secondaryColor};">Unsubscribe</a></p>
+    </div>
+    ${emailFooter}
+</div>
+`;
