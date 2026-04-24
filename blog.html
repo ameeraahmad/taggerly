@@ -100,11 +100,10 @@
             </div>
         </section>
 
-        <!-- Newsletter Subscription -->
         <section class="bg-gray-100 dark:bg-gray-800/50 py-20 transition-colors duration-300">
             <div class="max-w-4xl mx-auto px-4 text-center">
-                <h2 class="text-3xl font-bold mb-4" data-translate="followUs">Subscribe to our Newsletter</h2>
-                <p class="text-gray-600 dark:text-gray-400 mb-8" data-translate="blogSubtitle">Get the latest tips and
+                <h2 class="text-3xl font-bold mb-4" data-translate="newsletterTitle">Subscribe to our Newsletter</h2>
+                <p class="text-gray-600 dark:text-gray-400 mb-8" data-translate="newsletterSubtitle">Get the latest tips and
                     deals delivered straight to your inbox.</p>
                 <form id="newsletter-form" class="flex flex-col sm:flex-row gap-4 max-w-lg mx-auto">
                     <input type="email" id="newsletter-email" placeholder="Email address" data-translate="emailPlaceholder"
@@ -242,7 +241,7 @@
                         grid.innerHTML = `
                             <div class="col-span-full py-20 text-center">
                                 <div class="text-4xl mb-4">🔍</div>
-                                <p class="text-gray-400 font-bold">${t.noArticlesFound || 'No articles found matching your criteria.'}</p>
+                                <p class="text-gray-400 font-bold">${window.translations?.[lang]?.noArticlesFound || 'No articles found matching your criteria.'}</p>
                             </div>
                         `;
                         return;

@@ -85,7 +85,7 @@ router.get('/unsubscribe', async (req, res) => {
         subscriber.isActive = false;
         await subscriber.save();
 
-        res.send('<h1>Unsubscribed Successfully</h1><p>You have been removed from our mailing list. We are sorry to see you go!</p><a href="/">Go back to Taggerly</a>');
+        res.redirect('/unsubscribe.html');
 
     } catch (err) {
         console.error('Newsletter Unsubscribe Error:', err);

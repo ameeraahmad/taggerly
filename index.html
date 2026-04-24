@@ -591,6 +591,23 @@
         </div>
     </div>
 
+    <!-- Newsletter Subscription -->
+    <section class="bg-gray-100 dark:bg-gray-800/50 py-20 transition-colors duration-300">
+        <div class="max-w-4xl mx-auto px-4 text-center">
+            <h2 class="text-3xl font-bold mb-4" data-translate="newsletterTitle">Subscribe to our Newsletter</h2>
+            <p class="text-gray-600 dark:text-gray-400 mb-8" data-translate="newsletterSubtitle">Get the latest tips and
+                deals delivered straight to your inbox.</p>
+            <form id="newsletter-form" class="flex flex-col sm:flex-row gap-4 max-w-lg mx-auto">
+                <input type="email" id="newsletter-email" placeholder="Email address" data-translate="emailPlaceholder"
+                    class="flex-grow px-6 py-4 rounded-full border dark:border-gray-700 dark:bg-gray-900 focus:outline-none focus:ring-2 focus:ring-accent"
+                    required>
+                <button type="submit" id="newsletter-submit-btn"
+                    class="bg-accent text-white px-8 py-4 rounded-full font-bold hover:bg-orange-600 transition shadow-lg"
+                    data-translate="signUpBtn">Subscribe</button>
+            </form>
+        </div>
+    </section>
+
     <!-- Call to Action -->
     <section class="cta-section py-16 bg-primary text-white">
         <div class="cta-container max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
@@ -708,6 +725,39 @@
             const slider = document.getElementById(id);
             if (slider) slider.scrollBy({ left: distance, behavior: 'smooth' });
         };
+
+        // Newsletter subscription handler
+        document.getElementById('newsletter-form').addEventListener('submit', async function(e) {
+            e.preventDefault();
+            const emailInput = document.getElementById('newsletter-email');
+            const submitBtn = document.getElementById('newsletter-submit-btn');
+            const lang = window.currentLang || 'en';
+            
+            submitBtn.disabled = true;
+            submitBtn.innerHTML = '<svg class="animate-spin h-5 w-5 text-white mx-auto" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path></svg>';
+            
+            try {
+                const response = await fetch('/api/newsletter/subscribe', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ email: emailInput.value })
+                });
+                
+                const data = await response.json();
+                
+                if (data.success) {
+                    await customAlert(data.message);
+                    emailInput.value = '';
+                } else {
+                    throw new Error(data.message);
+                }
+            } catch (err) {
+                await customAlert(err.message || 'Something went wrong. Please try again.');
+            } finally {
+                submitBtn.disabled = false;
+                submitBtn.textContent = window.translations?.[lang]?.signUpBtn || 'Subscribe';
+            }
+        });
 
         // Initial load
         document.addEventListener('DOMContentLoaded', () => {

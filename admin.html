@@ -815,10 +815,16 @@
                         <h2 class="font-bold text-lg">📧 Newsletter Subscribers</h2>
                         <p class="text-sm text-gray-500">Manage users who subscribed to your newsletter</p>
                     </div>
-                    <button onclick="loadNewsletterSubscribers()"
-                        class="btn-sm bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300 hover:bg-gray-200 flex items-center gap-1">
-                        🔄 Refresh
-                    </button>
+                    <div class="flex gap-2">
+                        <button onclick="exportNewsletterToCSV()"
+                            class="btn-sm bg-green-100 dark:bg-green-900/30 text-green-700 dark:text-green-400 hover:bg-green-200 flex items-center gap-1">
+                            📊 Export CSV
+                        </button>
+                        <button onclick="loadNewsletterSubscribers()"
+                            class="btn-sm bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300 hover:bg-gray-200 flex items-center gap-1">
+                            🔄 Refresh
+                        </button>
+                    </div>
                 </div>
 
                 <div class="bg-white dark:bg-gray-800 rounded-2xl border border-gray-100 dark:border-gray-700 overflow-hidden shadow-sm">
@@ -1149,6 +1155,36 @@
             } catch (err) {
                 tbody.innerHTML = `<tr><td colspan="4" class="px-6 py-8 text-center text-red-400">Error: ${err.message}</td></tr>`;
             }
+        }
+
+        function exportNewsletterToCSV() {
+            const tbody = document.getElementById('newsletter-table-body');
+            const rows = Array.from(tbody.querySelectorAll('tr.table-row'));
+            
+            if (rows.length === 0) {
+                customAlert('No subscribers to export.');
+                return;
+            }
+
+            let csvContent = "Email,Status,Subscribed Date\n";
+            
+            rows.forEach(row => {
+                const cols = row.querySelectorAll('td');
+                const email = cols[0].innerText;
+                const status = cols[1].innerText.trim();
+                const date = cols[2].innerText;
+                csvContent += `"${email}","${status}","${date}"\n`;
+            });
+
+            const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+            const link = document.createElement("a");
+            const url = URL.createObjectURL(blob);
+            link.setAttribute("href", url);
+            link.setAttribute("download", `taggerly_subscribers_${new Date().toISOString().split('T')[0]}.csv`);
+            link.style.visibility = 'hidden';
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
         }
 
         async function deleteNewsletterSubscriber(id, email) {
@@ -2273,7 +2309,14 @@
                 }
 
                 tbody.innerHTML = res.data.map(ad => {
-                    const img = (JSON.parse(ad.images || '[]'))[0] || 'https://placehold.co/40';
+                    let img;
+                    try {
+                        const parsed = JSON.parse(ad.images || '[]');
+                        img = Array.isArray(parsed) ? parsed[0] : parsed;
+                    } catch(e) {
+                        img = ad.images || null;
+                    }
+                    img = img || 'https://placehold.co/40';
                     return `
                     <tr class="table-row">
                         <td class="px-6 py-4">
@@ -2295,7 +2338,7 @@
                                 ${ad.status === 'pending' ? `
                                     <button onclick="approveAd(${ad.id})" class="btn-sm bg-green-100 text-green-700 hover:bg-green-200">✅ Approve</button>
                                     <button onclick="rejectAdFromTable(${ad.id})" class="btn-sm bg-orange-100 text-orange-700 hover:bg-orange-200">❌ Reject</button>
-                                ` : (ad.status !== 'active' ? `<button onclick="approveAd(${ad.id})" class="btn-sm bg-green-100 text-green-700 hover:bg-green-200">Approve</button>` : '')}
+                                ` : (ad.status === 'rejected' ? `<button onclick="approveAd(${ad.id})" class="btn-sm bg-green-100 text-green-700 hover:bg-green-200">Approve</button>` : '')}
                                 <button onclick="deleteAd(${ad.id})" class="btn-sm bg-red-100 text-red-700 hover:bg-red-200">Delete</button>
                             </div>
                         </td>
