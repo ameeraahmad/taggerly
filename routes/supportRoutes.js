@@ -57,6 +57,37 @@ router.post('/', async (req, res) => {
 });
 
 /**
+ * @route   GET /api/support/my-chat
+ * @desc    Get the most recent Live Chat Support request for the current user (by email)
+ * @access  Private
+ */
+router.get('/my-chat', protect, async (req, res) => {
+    try {
+        const user = req.user;
+        if (!user || !user.email) {
+            return res.status(401).json({ success: false, message: 'Unauthorized' });
+        }
+
+        const request = await SupportRequest.findOne({
+            where: {
+                email: user.email,
+                subject: 'Live Chat Support'
+            },
+            order: [['createdAt', 'DESC']]
+        });
+
+        if (!request) {
+            return res.json({ success: true, data: null });
+        }
+
+        res.json({ success: true, data: request });
+    } catch (err) {
+        console.error('[SUPPORT] my-chat error:', err);
+        res.status(500).json({ success: false, message: 'Server Error' });
+    }
+});
+
+/**
  * @route   GET /api/support
  * @desc    Get all support requests (Admin only)
  * @access  Private/Admin

@@ -1472,18 +1472,24 @@ document.addEventListener('DOMContentLoaded', async () => {
     };
 
     // --- Chat Widget Initialization ---
-    // --- Chat Widget Initialization ---
     function initChatWidget() {
         const lang = localStorage.getItem('lang') || 'en';
-        const user = JSON.parse(localStorage.getItem('user'));
+        const user = JSON.parse(localStorage.getItem('user') || 'null');
 
-        let welcomeMsg = translations[lang].chatWelcome;
-        let showEmailInput = !user;
+        // Storage key — localStorage for logged-in users so it survives page refresh,
+        // sessionStorage for guests so it clears when they close the tab.
+        const STORAGE = user ? localStorage : sessionStorage;
+        const STORAGE_KEY = user ? `supportRequestId_${user.id}` : 'supportRequestId';
+        const existingRequestId = STORAGE.getItem(STORAGE_KEY);
+
+        let welcomeMsg;
+        // Hide email input if: user is logged in, OR guest already has an active session
+        const showEmailInput = !user && !existingRequestId;
 
         if (user) {
-            welcomeMsg = translations[lang].chatLoggedInWelcome.replace('{name}', user.name.split(' ')[0]);
+            welcomeMsg = (translations[lang]?.chatLoggedInWelcome || 'Welcome back, {name}!').replace('{name}', user.name.split(' ')[0]);
         } else {
-            welcomeMsg = translations[lang].chatGuestWelcome;
+            welcomeMsg = translations[lang]?.chatGuestWelcome || translations[lang]?.chatWelcome || 'How can we help you?';
         }
 
         const widgetHtml = `
@@ -1492,7 +1498,7 @@ document.addEventListener('DOMContentLoaded', async () => {
                 <div class="chat-header">
                     <div class="flex items-center gap-2">
                         <div class="w-2 h-2 bg-green-500 rounded-full animate-pulse"></div>
-                        <span class="font-bold text-sm" data-translate="chatSupport">${translations[lang].chatSupport}</span>
+                        <span class="font-bold text-sm">${translations[lang]?.chatSupport || 'Support Chat'}</span>
                     </div>
                     <div class="flex items-center gap-2">
                         <button id="resetChat" title="New Chat" class="text-white hover:text-gray-300 transition">
@@ -1510,10 +1516,10 @@ document.addEventListener('DOMContentLoaded', async () => {
                 </div>
                 <div class="chat-input-area flex-col gap-2">
                     <div id="chatEmailWrapper" class="${showEmailInput ? '' : 'hidden'}">
-                        <input type="email" id="chatGuestEmail" class="chat-input w-full mb-1" placeholder="${translations[lang].chatEmailPlaceholder}" data-translate="chatEmailPlaceholder">
+                        <input type="email" id="chatGuestEmail" class="chat-input w-full mb-1" placeholder="${translations[lang]?.chatEmailPlaceholder || 'Your email address'}">
                     </div>
                     <div class="flex w-full gap-2">
-                        <input type="text" id="chatInput" class="chat-input" placeholder="${translations[lang].chatPlaceholder}" data-translate="chatPlaceholder">
+                        <input type="text" id="chatInput" class="chat-input" placeholder="${translations[lang]?.chatPlaceholder || 'Type a message...'}">
                         <button id="sendMessage" class="chat-send">
                             <svg class="w-5 h-5 transform rtl:rotate-180" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8"></path>
@@ -1526,39 +1532,57 @@ document.addEventListener('DOMContentLoaded', async () => {
                 <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 10h.01M12 10h.01M16 10h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z"></path>
                 </svg>
+                <span id="chatUnreadBadge" class="chat-unread-badge hidden"></span>
             </button>
         </div>
         `;
 
         document.body.insertAdjacentHTML('beforeend', widgetHtml);
 
-        const toggle = document.getElementById('chatToggle');
-        const windowChat = document.getElementById('chatWindow');
-        const closeBtn = document.getElementById('closeChat');
-        const sendBtn = document.getElementById('sendMessage');
-        const input = document.getElementById('chatInput');
-        const emailInput = document.getElementById('chatGuestEmail');
+        const toggle       = document.getElementById('chatToggle');
+        const windowChat   = document.getElementById('chatWindow');
+        const closeBtn     = document.getElementById('closeChat');
+        const sendBtn      = document.getElementById('sendMessage');
+        const input        = document.getElementById('chatInput');
+        const emailInput   = document.getElementById('chatGuestEmail');
         const emailWrapper = document.getElementById('chatEmailWrapper');
-        const messages = document.getElementById('chatMessages');
+        const messages     = document.getElementById('chatMessages');
+        const unreadBadge  = document.getElementById('chatUnreadBadge');
 
-        let currentRequestId = sessionStorage.getItem('supportRequestId');
+        let currentRequestId = STORAGE.getItem(STORAGE_KEY);
+        let unreadCount = 0;
 
+        // --- Badge helpers ---
+        function showBadge(count) {
+            if (!unreadBadge) return;
+            if (count > 0) {
+                unreadBadge.textContent = count > 9 ? '9+' : count;
+                unreadBadge.classList.remove('hidden');
+            } else {
+                unreadBadge.classList.add('hidden');
+            }
+        }
+
+        // --- Open/Close ---
         window.toggleChat = (force = null) => {
-            if (force === true) windowChat.classList.add('active');
+            if (force === true)       windowChat.classList.add('active');
             else if (force === false) windowChat.classList.remove('active');
-            else windowChat.classList.toggle('active');
+            else                      windowChat.classList.toggle('active');
 
-            if (windowChat.classList.contains('active') && currentRequestId) {
-                joinSupportRoom(currentRequestId);
-                loadChatHistory(currentRequestId);
+            if (windowChat.classList.contains('active')) {
+                unreadCount = 0;
+                showBadge(0);
+                if (currentRequestId) {
+                    joinSupportRoom(currentRequestId);
+                    loadChatHistory(currentRequestId);
+                }
+                setTimeout(() => { if (input) input.focus(); }, 150);
             }
         };
 
-        if (toggle) {
-            toggle.addEventListener('click', () => window.toggleChat());
-        }
+        if (toggle) toggle.addEventListener('click', () => window.toggleChat());
 
-        // Global listener for any element that wants to open the chat
+        // Global listener — any element with data-action="open-chat" opens the widget
         document.addEventListener('click', (e) => {
             if (e.target.closest('[data-action="open-chat"]')) {
                 e.preventDefault();
@@ -1566,95 +1590,150 @@ document.addEventListener('DOMContentLoaded', async () => {
             }
         });
 
-        // Auto-join if already has a request
-        if (currentRequestId) {
-            joinSupportRoom(currentRequestId);
-            // Optionally load history if window is already open or should be pre-loaded
-            loadChatHistory(currentRequestId);
-        }
+        if (closeBtn) closeBtn.addEventListener('click', () => windowChat.classList.remove('active'));
 
-        if (closeBtn) {
-            closeBtn.addEventListener('click', () => {
-                windowChat.classList.remove('active');
-            });
-        }
-
+        // --- Reset chat ---
         const resetBtn = document.getElementById('resetChat');
         if (resetBtn) {
-            resetBtn.addEventListener('click', () => {
-                if (!confirm('Start a new conversation?')) return;
-                sessionStorage.removeItem('supportRequestId');
+            resetBtn.addEventListener('click', async () => {
+                const confirmMsg = translations[localStorage.getItem('lang') || 'en']?.confirmNewChat || 'Start a new conversation?';
+                if (!confirm(confirmMsg)) return;
+                STORAGE.removeItem(STORAGE_KEY);
                 currentRequestId = null;
+                unreadCount = 0;
+                showBadge(0);
                 messages.innerHTML = `<div class="message support">${welcomeMsg}</div>`;
-                if (emailWrapper) emailWrapper.classList.remove('hidden');
-                // Optional: Notify server? No, just start fresh locally.
+                if (emailWrapper && !user) emailWrapper.classList.remove('hidden');
             });
         }
 
-        function addMessage(text, type) {
+        // --- Message helpers ---
+        function addMessage(text, type, time = null) {
             const msgDiv = document.createElement('div');
             msgDiv.className = `message ${type}`;
-            msgDiv.textContent = text;
+
+            const textNode = document.createElement('span');
+            textNode.textContent = text;
+            msgDiv.appendChild(textNode);
+
+            if (time) {
+                const timeNode = document.createElement('div');
+                timeNode.className = 'message-time';
+                timeNode.textContent = new Date(time).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+                msgDiv.appendChild(timeNode);
+            }
+
             messages.appendChild(msgDiv);
             messages.scrollTop = messages.scrollHeight;
             return msgDiv;
         }
 
+        function addTypingIndicator() {
+            const div = document.createElement('div');
+            div.className = 'message support typing-indicator';
+            div.id = 'typingIndicator';
+            div.innerHTML = '<span></span><span></span><span></span>';
+            messages.appendChild(div);
+            messages.scrollTop = messages.scrollHeight;
+        }
+
+        function removeTypingIndicator() {
+            const el = document.getElementById('typingIndicator');
+            if (el) el.remove();
+        }
+
+        // --- Socket room ---
         function joinSupportRoom(id) {
             const socket = window.initGlobalSocket ? window.initGlobalSocket() : window.socket;
-            if (socket) {
-                socket.emit('join_support', id);
-                // Clean old listener
-                socket.off('new_support_message');
-                socket.on('new_support_message', (msg) => {
-                    if (msg.requestId == id && msg.isAdmin) {
-                        addMessage(msg.message, 'support');
-                    }
-                });
-            }
+            if (!socket) return;
+            socket.emit('join_support', id);
+            socket.off('new_support_message');
+            socket.on('new_support_message', (msg) => {
+                if (String(msg.requestId) !== String(id)) return;
+                if (!msg.isAdmin) return; // only show admin replies in widget
+                removeTypingIndicator();
+                addMessage(msg.message, 'support', msg.createdAt);
+                // If widget is closed, bump badge
+                if (!windowChat.classList.contains('active')) {
+                    unreadCount++;
+                    showBadge(unreadCount);
+                }
+            });
         }
 
+        // --- Load full history ---
         async function loadChatHistory(id) {
             try {
-                const res = await fetch(`/api/support/${id}/messages`);
+                const res  = await fetch(`/api/support/${id}/messages`);
                 const data = await res.json();
-                if (data.success) {
-                    messages.innerHTML = '';
-                    const lang = localStorage.getItem('lang') || 'en';
-                    const guestWelcome = translations[lang]?.chatWelcome || 'How can we help you?';
-                    addMessage(guestWelcome, 'support');
-                    data.data.forEach(m => {
-                        addMessage(m.message, m.isAdmin ? 'support' : 'user');
-                    });
-                    messages.scrollTop = messages.scrollHeight;
-                }
-            } catch (err) { console.error('Failed to load chat history:', err); }
+                if (!data.success) return;
+                messages.innerHTML = '';
+                const l = localStorage.getItem('lang') || 'en';
+                addMessage(translations[l]?.chatWelcome || 'How can we help you?', 'support');
+                data.data.forEach(m => addMessage(m.message, m.isAdmin ? 'support' : 'user', m.createdAt));
+                messages.scrollTop = messages.scrollHeight;
+            } catch (err) {
+                console.error('[Chat] Failed to load history:', err);
+            }
         }
 
-        async function handleSend() {
-            const text = input.value.trim();
-            const senderName = user ? user.name : 'Guest User';
-            const senderEmail = user ? user.email : (emailInput ? emailInput.value.trim() : null);
-
-            if (!text) return;
-            if (!senderEmail) {
-                if (emailInput && !user) {
-                    emailInput.classList.add('border-red-500');
-                    emailInput.focus();
-                }
+        // --- Auto-resume for logged-in users ---
+        async function tryResumeSession() {
+            if (!user) return; // guests rely on sessionStorage only
+            if (currentRequestId) {
+                joinSupportRoom(currentRequestId);
                 return;
             }
+            try {
+                const token = localStorage.getItem('token');
+                if (!token) return;
+                const res  = await fetch('/api/support/my-chat', {
+                    headers: { 'Authorization': `Bearer ${token}` }
+                });
+                const data = await res.json();
+                if (data.success && data.data) {
+                    currentRequestId = data.data.id;
+                    STORAGE.setItem(STORAGE_KEY, currentRequestId);
+                    joinSupportRoom(currentRequestId);
+                }
+            } catch (err) {
+                console.warn('[Chat] Could not resume session:', err);
+            }
+        }
 
-            // Disable UI
-            input.disabled = true;
+        tryResumeSession();
+
+        // --- Send message ---
+        async function handleSend() {
+            const text        = input.value.trim();
+            const senderName  = user ? user.name : 'Guest User';
+
+            if (!text) return;
+
+            // Email is only required when starting a NEW thread.
+            // For existing threads, the email is already stored on the server.
+            if (!currentRequestId) {
+                const senderEmail = user ? user.email : (emailInput ? emailInput.value.trim() : null);
+                if (!senderEmail) {
+                    if (emailInput && !user) {
+                        emailInput.classList.add('border-red-500');
+                        emailInput.focus();
+                    }
+                    return;
+                }
+            }
+
+            const senderEmail = user ? user.email : (emailInput ? emailInput.value.trim() : null);
+
+            input.disabled  = true;
             sendBtn.disabled = true;
-
-            addMessage(text, 'user');
+            addMessage(text, 'user', new Date().toISOString());
             input.value = '';
+            addTypingIndicator();
 
             try {
                 if (!currentRequestId) {
-                    // Create NEW Request
+                    // First message — create a new support request
                     const response = await fetch('/api/support', {
                         method: 'POST',
                         headers: { 'Content-Type': 'application/json' },
@@ -1668,12 +1747,12 @@ document.addEventListener('DOMContentLoaded', async () => {
                     const data = await response.json();
                     if (data.success) {
                         currentRequestId = data.id;
-                        sessionStorage.setItem('supportRequestId', currentRequestId);
+                        STORAGE.setItem(STORAGE_KEY, currentRequestId);
                         if (emailWrapper) emailWrapper.classList.add('hidden');
                         joinSupportRoom(currentRequestId);
                     }
                 } else {
-                    // Send to EXISTING thread
+                    // Follow-up message in existing thread
                     await fetch(`/api/support/${currentRequestId}/messages`, {
                         method: 'POST',
                         headers: { 'Content-Type': 'application/json' },
@@ -1685,34 +1764,32 @@ document.addEventListener('DOMContentLoaded', async () => {
                     });
                 }
             } catch (err) {
-                console.error(err);
-                addMessage(translations[lang].chatError, 'support');
+                console.error('[Chat] Send error:', err);
+                removeTypingIndicator();
+                const l = localStorage.getItem('lang') || 'en';
+                addMessage(translations[l]?.chatError || 'Something went wrong, please try again.', 'support');
             } finally {
-                input.disabled = false;
+                input.disabled  = false;
                 sendBtn.disabled = false;
+                input.focus();
             }
         }
 
-        if (sendBtn) {
-            sendBtn.addEventListener('click', handleSend);
-        }
-
-        if (input) {
-            input.addEventListener('keypress', (e) => {
-                if (e.key === 'Enter') handleSend();
-            });
-        }
+        if (sendBtn) sendBtn.addEventListener('click', handleSend);
+        if (input)   input.addEventListener('keypress', (e) => { if (e.key === 'Enter') handleSend(); });
     }
 
-    // Ensure the widget is initialized
+    // Ensure the widget is initialized (skip on admin page — admins reply, not initiate)
+    const isAdminPage = window.location.pathname.includes('admin.html');
     if (document.readyState === 'loading') {
         document.addEventListener('DOMContentLoaded', () => {
-            initChatWidget();
+            if (!isAdminPage) initChatWidget();
             initNewFeatures();
         });
     } else {
-        initChatWidget();
+        if (!isAdminPage) initChatWidget();
         initNewFeatures();
+
     }
 
     // --- New Features Initialization ---
