@@ -277,16 +277,19 @@
                     <!-- Dropdown Menu -->
                     <div class="absolute right-0 mt-3 w-48 bg-white dark:bg-gray-800 rounded-xl shadow-xl opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-300 transform origin-top-right scale-95 group-hover:scale-100 border border-gray-100 dark:border-gray-700 overflow-hidden z-[100]">
                         <div class="p-2 space-y-1">
-                            <a href="#" class="country-option flex items-center gap-3 px-3 py-2 hover:bg-gray-50 dark:hover:bg-gray-700 rounded-lg transition" data-country="uae" data-flag="🇦🇪">
+                            <a href="#" class="country-option flex items-center gap-3 px-3 py-2 hover:bg-gray-50 dark:hover:bg-gray-700 rounded-lg transition" data-country="all" data-flag="🌍" data-name="All Countries">
+                                <span>🌍</span> <span class="font-bold text-sm">All Countries</span>
+                            </a>
+                            <a href="#" class="country-option flex items-center gap-3 px-3 py-2 hover:bg-gray-50 dark:hover:bg-gray-700 rounded-lg transition" data-country="uae" data-flag="🇦🇪" data-name="UAE">
                                 <span>🇦🇪</span> <span class="font-bold text-sm">UAE</span>
                             </a>
-                            <a href="#" class="country-option flex items-center gap-3 px-3 py-2 hover:bg-gray-50 dark:hover:bg-gray-700 rounded-lg transition" data-country="egypt" data-flag="🇪🇬">
+                            <a href="#" class="country-option flex items-center gap-3 px-3 py-2 hover:bg-gray-50 dark:hover:bg-gray-700 rounded-lg transition" data-country="egypt" data-flag="🇪🇬" data-name="Egypt">
                                 <span>🇪🇬</span> <span class="font-bold text-sm">Egypt</span>
                             </a>
-                            <a href="#" class="country-option flex items-center gap-3 px-3 py-2 hover:bg-gray-50 dark:hover:bg-gray-700 rounded-lg transition" data-country="ksa" data-flag="🇸🇦">
+                            <a href="#" class="country-option flex items-center gap-3 px-3 py-2 hover:bg-gray-50 dark:hover:bg-gray-700 rounded-lg transition" data-country="ksa" data-flag="🇸🇦" data-name="KSA">
                                 <span>🇸🇦</span> <span class="font-bold text-sm">KSA</span>
                             </a>
-                            <a href="#" class="country-option flex items-center gap-3 px-3 py-2 hover:bg-gray-50 dark:hover:bg-gray-700 rounded-lg transition" data-country="qatar" data-flag="🇶🇦">
+                            <a href="#" class="country-option flex items-center gap-3 px-3 py-2 hover:bg-gray-50 dark:hover:bg-gray-700 rounded-lg transition" data-country="qatar" data-flag="🇶🇦" data-name="Qatar">
                                 <span>🇶🇦</span> <span class="font-bold text-sm">Qatar</span>
                             </a>
                         </div>
@@ -623,9 +626,9 @@
                 <div class="flex gap-3 mb-4">
                     <select id="report-status-filter" onchange="loadReports()"
                         class="text-sm border border-gray-200 dark:border-gray-600 rounded-xl px-3 py-2 bg-white dark:bg-gray-800 focus:outline-none focus:ring-2 focus:ring-accent">
-                        <option value="">All Reports</option>
-                        <option value="pending">Pending</option>
+                        <option value="pending" selected>Pending</option>
                         <option value="resolved">Resolved</option>
+                        <option value="">All Reports</option>
                     </select>
                 </div>
 
@@ -910,6 +913,56 @@
         </div>
     </div>
     
+    <!-- Report Details Modal -->
+    <div id="report-details-modal" class="fixed inset-0 z-[100] hidden">
+        <div class="absolute inset-0 bg-black/60 backdrop-blur-sm" onclick="closeReportDetailsModal()"></div>
+        <div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-full max-w-3xl bg-white dark:bg-gray-800 rounded-3xl shadow-2xl overflow-hidden transform transition-all scale-95 duration-200">
+            <div class="p-6 border-b border-gray-100 dark:border-gray-700 flex justify-between items-center bg-gray-50 dark:bg-gray-700/50">
+                <h3 class="text-xl font-bold flex items-center gap-2">
+                    <svg class="w-6 h-6 text-accent" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"/></svg>
+                    <span>Review Report</span>
+                </h3>
+                <button onclick="closeReportDetailsModal()" class="p-2 hover:bg-gray-200 dark:hover:bg-gray-600 rounded-full transition">
+                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>
+                </button>
+            </div>
+            <div class="p-8 grid grid-cols-1 md:grid-cols-2 gap-8">
+                <!-- Report Info -->
+                <div class="space-y-4">
+                    <div>
+                        <label class="block text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-1">Reason</label>
+                        <p id="modal-report-reason" class="text-lg font-bold text-primary dark:text-white capitalize"></p>
+                    </div>
+                    <div>
+                        <label class="block text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-1">Reporter's Comment</label>
+                        <div id="modal-report-description" class="text-sm text-gray-600 dark:text-gray-300 whitespace-pre-wrap bg-gray-50 dark:bg-gray-900/50 p-4 rounded-xl min-h-[100px]"></div>
+                    </div>
+                    <div class="pt-4 border-t dark:border-gray-700">
+                        <label class="block text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-1">Reporter</label>
+                        <p id="modal-report-reporter" class="font-bold text-sm text-gray-700 dark:text-gray-200"></p>
+                    </div>
+                </div>
+
+                <!-- Ad Preview -->
+                <div class="bg-gray-50 dark:bg-gray-900/50 rounded-2xl p-4 space-y-4 border dark:border-gray-700">
+                    <label class="block text-[10px] font-bold text-accent uppercase tracking-widest">Ad Preview</label>
+                    <img id="modal-report-ad-image" src="" class="w-full h-40 object-cover rounded-xl shadow-sm border dark:border-gray-700">
+                    <div>
+                        <h4 id="modal-report-ad-title" class="font-bold text-base mb-1 truncate"></h4>
+                        <p id="modal-report-ad-description" class="text-xs text-gray-500 line-clamp-3 leading-relaxed"></p>
+                    </div>
+                    <a id="modal-report-ad-link" href="#" target="_blank" class="block w-full text-center py-2.5 bg-primary dark:bg-gray-700 text-white rounded-xl font-bold text-xs hover:opacity-90 transition">
+                        Open Full Ad in New Tab
+                    </a>
+                </div>
+            </div>
+            <div class="p-6 border-t dark:border-gray-700 flex justify-end gap-3 bg-gray-50 dark:bg-gray-700/50">
+                <button id="modal-report-resolve-btn" class="px-6 py-2.5 bg-gray-200 dark:bg-gray-600 text-gray-700 dark:text-gray-200 rounded-xl font-bold hover:opacity-80 transition">Dismiss Report</button>
+                <button id="modal-report-delete-btn" class="px-6 py-2.5 bg-red-500 text-white rounded-xl font-bold hover:bg-red-600 transition shadow-lg shadow-red-500/20">Delete Ad</button>
+            </div>
+        </div>
+    </div>
+    
 
 
 
@@ -931,7 +984,7 @@
         // ===================== UTILS & CONFIG =====================
         window.currencyMap = { uae: 'AED', egypt: 'EGP', ksa: 'SAR', qatar: 'QAR' };
         window.getCurrency = function() {
-            const country = localStorage.getItem('selectedCountry') || 'uae';
+            const country = localStorage.getItem('selectedCountry') || 'all';
             return window.currencyMap[country] || 'AED';
         };
 
@@ -2109,7 +2162,7 @@
         async function loadStats() {
             try {
                 const currency = getCurrency();
-                const country = localStorage.getItem('selectedCountry') || 'uae';
+                const country = localStorage.getItem('selectedCountry') || 'all';
                 const res = await apiClient.fetch(`/admin/stats?currency=${currency}&country=${country}`);
                 const d = res.data;
 
@@ -2148,7 +2201,7 @@
         async function loadRevenue() {
             const period = document.getElementById('revenue-period').value;
             const currency = getCurrency();
-            const country = localStorage.getItem('selectedCountry') || 'uae';
+            const country = localStorage.getItem('selectedCountry') || 'all';
             try {
                 const res = await apiClient.fetch(`/admin/revenue?period=${period}&currency=${currency}&country=${country}`);
                 const d = res.data;
@@ -2299,7 +2352,7 @@
                 if (status) params.set('status', status);
                 if (featured !== '') params.set('featured', featured);
                 
-                const country = localStorage.getItem('selectedCountry') || 'uae';
+                const country = localStorage.getItem('selectedCountry') || 'all';
                 if (country && country !== 'all') params.set('country', country);
 
                 const res = await apiClient.fetch(`/admin/ads?${params}`);
@@ -2399,7 +2452,7 @@
         // ===================== MODERATION QUEUE =====================
         async function loadPendingCount() {
             try {
-                const country = localStorage.getItem('selectedCountry') || 'uae';
+                const country = localStorage.getItem('selectedCountry') || 'all';
             const res = await apiClient.fetch(`/admin/ads/pending?limit=1&country=${country}`);
                 const count = res.total || 0;
                 const badge = document.getElementById('pending-ads-badge');
@@ -2417,7 +2470,7 @@
             emptyState.classList.add('hidden');
 
             try {
-                const country = localStorage.getItem('selectedCountry') || 'uae';
+                const country = localStorage.getItem('selectedCountry') || 'all';
             const res = await apiClient.fetch(`/admin/ads/pending?limit=50&country=${country}`);
                 loading.classList.add('hidden');
 
@@ -2568,7 +2621,7 @@
             try {
                 const params = new URLSearchParams({ limit: 50 });
                 if (status) params.set('status', status);
-                const country = localStorage.getItem('selectedCountry') || 'uae';
+                const country = localStorage.getItem('selectedCountry') || 'all';
             const res = await apiClient.fetch(`/admin/reports?${params}&country=${country}`);
 
                 if (!res.data.length) {
@@ -2579,21 +2632,30 @@
                 tbody.innerHTML = res.data.map(r => `
                     <tr class="table-row">
                         <td class="px-6 py-4">
-                            <a href="ad-details.html?id=${r.adId}" target="_blank" class="text-accent underline text-sm hover:text-orange-700">${r.ad?.title || 'View Ad'}</a>
+                            <div class="flex items-center gap-2">
+                                <a href="ad-details.html?id=${r.adId}" target="_blank" class="text-accent underline text-sm font-bold hover:text-orange-700">${r.ad?.title || 'View Ad'}</a>
+                            </div>
                         </td>
                         <td class="px-6 py-4 text-sm">${r.reporter?.name || 'Unknown'}<br><span class="text-xs text-gray-400">${r.reporter?.email || ''}</span></td>
-                        <td class="px-6 py-4"><span class="text-sm font-medium capitalize">${r.reason}</span></td>
+                        <td class="px-6 py-4">
+                            <span class="text-sm font-bold capitalize block">${r.reason}</span>
+                            <span class="text-[10px] text-gray-400 truncate max-w-[150px] block">${r.description || ''}</span>
+                        </td>
                         <td class="px-6 py-4">${statusBadge(r.status)}</td>
                         <td class="px-6 py-4">
                             <div class="flex items-center justify-end gap-2">
+                                <button onclick='viewReportDetails(${JSON.stringify(r).replace(/'/g, "&apos;")})' class="btn-sm bg-blue-50 text-blue-600 hover:bg-blue-100">Review</button>
                                 ${r.status === 'pending' ? `
-                                    <button onclick="resolveReport(${r.id})" class="btn-sm bg-green-100 text-green-700 hover:bg-green-200">✅ Resolve</button>
-                                    <button onclick="deleteReportedAd(${r.adId}, ${r.id})" class="btn-sm bg-red-100 text-red-700 hover:bg-red-200">Delete Ad</button>
-                                ` : '<span class="text-xs text-gray-400">Resolved</span>'}
+                                    <button onclick="resolveReport(${r.id})" class="btn-sm bg-green-50 text-green-700 hover:bg-green-100">Resolve</button>
+                                    <button onclick="deleteReportedAd(${r.adId}, ${r.id})" class="btn-sm bg-red-50 text-red-700 hover:bg-red-100">Delete Ad</button>
+                                ` : '<span class="text-xs text-gray-400">Handled</span>'}
                             </div>
                         </td>
                     </tr>
                 `).join('');
+                
+                // Store reports globally for modal access if needed, but passing object is easier for small data
+                window.currentReports = res.data;
             } catch (err) {
                 tbody.innerHTML = `<tr><td colspan="5" class="px-6 py-8 text-center text-red-400">${err.message}</td></tr>`;
             }
@@ -2603,6 +2665,7 @@
             try {
                 await apiClient.fetch(`/admin/reports/${id}`, { method: 'PUT', body: JSON.stringify({ status: 'resolved' }) });
                 loadReports();
+                loadStats();
             } catch (e) { await customAlert(e.message); }
         }
 
@@ -2611,9 +2674,50 @@
             try {
                 await apiClient.fetch(`/admin/ads/${adId}`, { method: 'DELETE' });
                 await apiClient.fetch(`/admin/reports/${reportId}`, { method: 'PUT', body: JSON.stringify({ status: 'resolved' }) });
+                closeReportDetailsModal();
                 loadReports();
                 loadStats();
             } catch (e) { await customAlert(e.message); }
+        }
+
+        window.viewReportDetails = function(r) {
+            document.getElementById('modal-report-reason').textContent = r.reason;
+            document.getElementById('modal-report-description').textContent = r.description || 'No comment provided';
+            document.getElementById('modal-report-reporter').textContent = `${r.reporter?.name} (${r.reporter?.email})`;
+            
+            // Ad Preview
+            let img = 'https://placehold.co/300x200?text=No+Image';
+            if (r.ad?.images) {
+                try {
+                    const imgs = JSON.parse(r.ad.images);
+                    img = Array.isArray(imgs) ? imgs[0] : imgs;
+                } catch(e) { img = r.ad.images; }
+            }
+            
+            document.getElementById('modal-report-ad-image').src = img;
+            document.getElementById('modal-report-ad-title').textContent = r.ad?.title || 'Unknown Ad';
+            document.getElementById('modal-report-ad-description').textContent = r.ad?.description || 'No description available';
+            document.getElementById('modal-report-ad-link').href = `ad-details.html?id=${r.adId}`;
+            
+            // Buttons
+            document.getElementById('modal-report-resolve-btn').onclick = () => {
+                closeReportDetailsModal();
+                resolveReport(r.id);
+            };
+            document.getElementById('modal-report-delete-btn').onclick = () => {
+                deleteReportedAd(r.adId, r.id);
+            };
+
+            const modal = document.getElementById('report-details-modal');
+            modal.classList.remove('hidden');
+            modal.querySelector('div:nth-child(2)').classList.remove('scale-95');
+            modal.querySelector('div:nth-child(2)').classList.add('scale-100');
+        }
+
+        window.closeReportDetailsModal = function() {
+            const modal = document.getElementById('report-details-modal');
+            modal.querySelector('div:nth-child(2)').classList.add('scale-95');
+            setTimeout(() => modal.classList.add('hidden'), 200);
         }
 
         // ===================== ANALYTICS =====================
@@ -2622,7 +2726,7 @@
         async function loadAnalytics() {
             try {
                 const currency = getCurrency();
-                const country = localStorage.getItem('selectedCountry') || 'uae';
+                const country = localStorage.getItem('selectedCountry') || 'all';
                 const res = await apiClient.fetch(`/admin/analytics?currency=${currency}&country=${country}`);
                 const d = res.data;
 
@@ -2728,16 +2832,31 @@
         // ===================== INIT =====================
         document.addEventListener('DOMContentLoaded', () => {
             // Set initial country selector UI based on localStorage
-            const currentCountry = localStorage.getItem('selectedCountry') || 'uae';
-            const flagMap = { uae: '🇦🇪', egypt: '🇪🇬', ksa: '🇸🇦', qatar: '🇶🇦' };
-            const nameMap = { uae: 'UAE', egypt: 'Egypt', ksa: 'KSA', qatar: 'Qatar' };
+            const currentCountry = localStorage.getItem('selectedCountry') || 'all';
+            const flagMap = { all: '🌍', uae: '🇦🇪', egypt: '🇪🇬', ksa: '🇸🇦', qatar: '🇶🇦' };
+            const nameMap = { all: 'All', uae: 'UAE', egypt: 'Egypt', ksa: 'KSA', qatar: 'Qatar' };
             const fl = document.getElementById('current-country-flag');
             const nm = document.getElementById('current-country-name');
-            if(fl) fl.textContent = flagMap[currentCountry] || '🇦🇪';
-            if(nm) nm.textContent = nameMap[currentCountry] || 'UAE';
+            if(fl) fl.textContent = flagMap[currentCountry] || '🌍';
+            if(nm) nm.textContent = nameMap[currentCountry] || 'All';
 
             loadStats();
             loadAnalytics();
+
+            // Handle country change event from main.js
+            window.addEventListener('countryChanged', () => {
+                const newCountry = localStorage.getItem('selectedCountry') || 'all';
+                if(fl) fl.textContent = flagMap[newCountry] || '🌍';
+                if(nm) nm.textContent = nameMap[newCountry] || 'All';
+                
+                // Refresh current view
+                const activeTab = document.querySelector('.tab-content.active')?.id.replace('tab-', '');
+                loadStats();
+                loadAnalytics();
+                if (activeTab === 'reports') loadReports();
+                if (activeTab === 'ads') loadAds();
+                if (activeTab === 'moderation') loadPendingAds();
+            });
         });
     </script>
     <!-- Blog Post Modal -->

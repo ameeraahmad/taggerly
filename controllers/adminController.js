@@ -424,9 +424,9 @@ exports.getAllReports = async (req, res) => {
         ];
 
         if (country && country !== 'all') {
-            include.push({ model: Ad, as: 'ad', attributes: ['title', 'status', 'country'], where: { country: country.toLowerCase() }, required: true });
+            include.push({ model: Ad, as: 'ad', attributes: ['title', 'status', 'country', 'images', 'description'], where: { country: country.toLowerCase() }, required: true });
         } else {
-            include.push({ model: Ad, as: 'ad', attributes: ['title', 'status', 'country'] });
+            include.push({ model: Ad, as: 'ad', attributes: ['title', 'status', 'country', 'images', 'description'] });
         }
 
         const reports = await Report.findAndCountAll({
