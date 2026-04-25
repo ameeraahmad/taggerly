@@ -1,6 +1,5 @@
 require('dotenv').config();
 const express = require('express');
-const serverless = require('@stormkit/serverless');
 const cors = require('cors');
 const helmet = require('helmet');
 const path = require('path');
@@ -335,7 +334,6 @@ if (require.main === module) {
 }
 
 module.exports = app;
-module.exports.handler = serverless(app);
 
 
 

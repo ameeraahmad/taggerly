@@ -6,21 +6,25 @@ const databaseUrl = process.env.DATABASE_URL;
 
 const sequelize = databaseUrl
     ? new Sequelize(databaseUrl, {
-        dialect: 'postgres',
-        protocol: 'postgres',
-        dialectOptions: {
+        dialect: process.env.DB_DIALECT || 'postgres',
+        protocol: process.env.DB_DIALECT || 'postgres',
+        dialectOptions: (process.env.DB_DIALECT || 'postgres') === 'postgres' ? {
             ssl: {
                 require: true,
                 rejectUnauthorized: false
             }
-        },
+        } : {},
         logging: false
     })
-    : new Sequelize({
+    : (process.env.DB_NAME ? new Sequelize(process.env.DB_NAME, process.env.DB_USER, process.env.DB_PASS, {
+        host: process.env.DB_HOST,
+        dialect: process.env.DB_DIALECT || 'mysql',
+        logging: false
+    }) : new Sequelize({
         dialect: 'sqlite',
         storage: path.join(__dirname, '../database.sqlite'),
         logging: false
-    });
+    }));
 
 let isSynced = false;
 let syncPromise = null;
