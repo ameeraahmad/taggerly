@@ -191,7 +191,7 @@ exports.adRejectedEmail = (options) => `
         
         <p>Please review our posting guidelines and update your ad details accordingly.</p>
         <div style="text-align: center; margin: 30px 0;">
-            <a href="https://taggerly.com/dashboard.html" style="background-color: ${secondaryColor}; color: white; padding: 12px 30px; text-decoration: none; border-radius: 50px; font-weight: bold;">Go to My Ads</a>
+            <a href="${process.env.FRONTEND_URL || 'http://localhost:5000'}/dashboard.html" style="background-color: ${secondaryColor}; color: white; padding: 12px 30px; text-decoration: none; border-radius: 50px; font-weight: bold;">Go to My Ads</a>
         </div>
         
         <p>Best regards,<br>The Taggerly Team</p>
@@ -243,7 +243,7 @@ exports.newsletterWelcomeEmail = (options) => `
         <p>We're excited to help you make the most of Taggerly!</p>
         
         <div style="text-align: center; margin: 30px 0;">
-            <a href="https://taggerly.com" style="background-color: ${brandColor}; color: white; padding: 12px 30px; text-decoration: none; border-radius: 50px; font-weight: bold;">Browse Latest Ads</a>
+            <a href="${process.env.FRONTEND_URL || 'http://localhost:5000'}" style="background-color: ${brandColor}; color: white; padding: 12px 30px; text-decoration: none; border-radius: 50px; font-weight: bold;">Browse Latest Ads</a>
         </div>
         
         <p>If you ever want to stop receiving these emails, you can <a href="${options.unsubscribeURL}" style="color: ${secondaryColor};">unsubscribe here</a> at any time.</p>

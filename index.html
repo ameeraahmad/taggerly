@@ -740,7 +740,10 @@
                 const response = await fetch('/api/newsletter/subscribe', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ email: emailInput.value })
+                    body: JSON.stringify({ 
+                        email: emailInput.value,
+                        country: localStorage.getItem('selectedCountry') || 'egypt'
+                    })
                 });
                 
                 const data = await response.json();

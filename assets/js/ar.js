@@ -338,6 +338,7 @@ var arTranslations = {
     maxPrice: "أقصى",
     priceLabel: "السعر",
     locationLabel: "الموقع",
+    locationPlaceholder: "مثال: المدينة، الدولة",
     featuredBadge: "مميز",
     ads: "إعلان",
     previous: "السابق",

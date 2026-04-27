@@ -123,6 +123,10 @@ const connectDB = async () => {
                             console.log('➕ Adding "isBanned" column to Users...');
                             await queryInterface.addColumn('Users', 'isBanned', { type: Sequelize.BOOLEAN, defaultValue: false });
                         }
+                        if (!userTableInfo.country) {
+                            console.log('➕ Adding "country" column to Users...');
+                            await queryInterface.addColumn('Users', 'country', { type: Sequelize.STRING, defaultValue: 'uae' });
+                        }
                     } catch (mErr) {
                         console.log('ℹ️ SQLite columns for Users might already exist.');
                     }
@@ -271,6 +275,10 @@ const connectDB = async () => {
                             console.log('➕ Adding "isImportant" column to support_requests...');
                             await queryInterface.addColumn('support_requests', 'isImportant', { type: Sequelize.BOOLEAN, defaultValue: false });
                         }
+                        if (!supportTableInfo.country) {
+                            console.log('➕ Adding "country" column to support_requests...');
+                            await queryInterface.addColumn('support_requests', 'country', { type: Sequelize.STRING, defaultValue: 'uae' });
+                        }
                     } catch (mErr) {
                         console.log('ℹ️ support_requests columns might already exist.');
                     }
@@ -284,8 +292,25 @@ const connectDB = async () => {
                             console.log('➕ Adding "isImportant" column to blog_posts...');
                             await queryInterface.addColumn('blog_posts', 'isImportant', { type: Sequelize.BOOLEAN, defaultValue: false });
                         }
+                        if (!blogTableInfo.country) {
+                            console.log('➕ Adding "country" column to blog_posts...');
+                            await queryInterface.addColumn('blog_posts', 'country', { type: Sequelize.STRING, defaultValue: 'uae' });
+                        }
                     } catch (mErr) {
                         console.log('ℹ️ blog_posts columns might already exist.');
+                    }
+                }
+
+                // Check newsletter_subscribers table
+                const newsletterTableInfo = await queryInterface.describeTable('newsletter_subscribers').catch(() => ({}));
+                if (newsletterTableInfo.id) {
+                    try {
+                        if (!newsletterTableInfo.country) {
+                            console.log('➕ Adding "country" column to newsletter_subscribers...');
+                            await queryInterface.addColumn('newsletter_subscribers', 'country', { type: Sequelize.STRING, defaultValue: 'uae' });
+                        }
+                    } catch (mErr) {
+                        console.log('ℹ️ newsletter_subscribers columns might already exist.');
                     }
                 }
             }

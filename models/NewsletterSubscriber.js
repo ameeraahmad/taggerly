@@ -30,6 +30,10 @@ const NewsletterSubscriber = sequelize.define('NewsletterSubscriber', {
     subscribedAt: {
         type: DataTypes.DATE,
         defaultValue: DataTypes.NOW
+    },
+    country: {
+        type: DataTypes.STRING,
+        allowNull: true
     }
 }, {
     tableName: 'newsletter_subscribers',

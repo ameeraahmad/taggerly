@@ -225,9 +225,8 @@ exports.createAd = async (req, res) => {
         }
         // 2) Handle Sharp-processed local files (set in req.body.images by middleware)
         else if (req.body.images && Array.isArray(req.body.images)) {
-            const protocol = req.protocol;
-            const host = req.get('host');
-            images = req.body.images.map(filename => `${protocol}://${host}/uploads/${filename}`);
+            const baseUrl = process.env.BACKEND_URL || `${protocol}://${host}`;
+            images = req.body.images.map(filename => `${baseUrl}/uploads/${filename}`);
         }
         // 3) Handle existing images or fallback
         else if (req.body.images) {

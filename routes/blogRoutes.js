@@ -39,8 +39,12 @@ const { Op } = require('sequelize');
  */
 router.get('/', async (req, res) => {
     try {
-        const { category, search } = req.query;
+        const { category, search, country } = req.query;
         let where = { status: 'published' };
+
+        if (country && country !== 'all') {
+            where.country = country.toLowerCase();
+        }
 
         if (category && category !== 'all') {
             where.category = category;
@@ -80,7 +84,14 @@ router.get('/', async (req, res) => {
  */
 router.get('/admin', async (req, res) => {
     try {
+        const { country } = req.query;
+        const where = {};
+        if (country && country !== 'all') {
+            where.country = country.toLowerCase();
+        }
+
         const posts = await BlogPost.findAll({
+            where,
             attributes: { exclude: ['content_en', 'content_ar', 'excerpt_en', 'excerpt_ar'] }, // Exclude all large text for admin table
             order: [
                 ['isImportant', 'DESC'],
@@ -115,11 +126,13 @@ router.post('/', [
         const subscribers = await NewsletterSubscriber.findAll({ where: { isActive: true } });
         
         if (subscribers.length > 0) {
-            const postURL = `${req.protocol}://${req.get('host')}/blog-details.html?slug=${post.slug}`;
+            const frontendURL = process.env.FRONTEND_URL || `${req.protocol}://${req.get('host')}`;
+            const backendURL = process.env.BACKEND_URL || `${req.protocol}://${req.get('host')}`;
+            const postURL = `${frontendURL}/blog-details.html?slug=${post.slug}`;
             
             // We use a separate loop to not block the response
             subscribers.forEach(sub => {
-                const unsubscribeURL = `${req.protocol}://${req.get('host')}/api/newsletter/unsubscribe?token=${sub.unsubscribeToken}&email=${sub.email}`;
+                const unsubscribeURL = `${backendURL}/api/newsletter/unsubscribe?token=${sub.unsubscribeToken}&email=${sub.email}`;
                 
                 sendEmail({
                     email: sub.email,

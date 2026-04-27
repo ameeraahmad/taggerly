@@ -138,7 +138,10 @@
                 const response = await fetch('/api/newsletter/subscribe', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ email: emailInput.value })
+                    body: JSON.stringify({ 
+                        email: emailInput.value,
+                        country: localStorage.getItem('selectedCountry') || 'egypt'
+                    })
                 });
                 
                 const data = await response.json();
@@ -221,7 +224,8 @@
                 }
 
                 const query = (searchInput?.value || '').trim().toLowerCase();
-                const response = await fetch(`/api/blog?category=${cat}&search=${encodeURIComponent(query)}`, {
+                const country = localStorage.getItem('selectedCountry') || 'egypt';
+                const response = await fetch(`/api/blog?category=${cat}&search=${encodeURIComponent(query)}&country=${country}`, {
                     signal: blogAbortController.signal
                 });
                 

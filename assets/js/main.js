@@ -259,22 +259,42 @@ document.addEventListener('DOMContentLoaded', async () => {
     window.currentLang = localStorage.getItem('lang') || 'en';
     // 1. Detect Country First (To avoid flicker)
     const storedCountry = localStorage.getItem('selectedCountry');
-    if (!storedCountry) {
+    const countrySource = localStorage.getItem('selectedCountrySource'); // 'manual' or 'auto'
+
+    // Only re-detect if no country is stored OR if it was auto-detected before (to keep it fresh)
+    if (!storedCountry || countrySource !== 'manual') {
         try {
             const res = await fetch('https://ipapi.co/json/');
             const ipData = await res.json();
             const countryCode = ipData.country_code?.toLowerCase();
             const countryMap = { 'ae': 'uae', 'eg': 'egypt', 'sa': 'ksa', 'qa': 'qatar' };
-            const detectedCountry = countryMap[countryCode] || 'uae';
-            const flags = { 'uae': '🇦🇪', 'egypt': '🇪🇬', 'ksa': '🇸🇦', 'qatar': '🇶🇦' };
-            const names = { 'uae': (window.currentLang === 'ar' ? 'الإمارات' : 'UAE'), 'egypt': (window.currentLang === 'ar' ? 'مصر' : 'Egypt'), 'ksa': (window.currentLang === 'ar' ? 'السعودية' : 'KSA'), 'qatar': (window.currentLang === 'ar' ? 'قطر' : 'Qatar') };
+            let detectedCountry = countryMap[countryCode];
 
-            window.selectedCountry = detectedCountry;
-            localStorage.setItem('selectedCountry', detectedCountry);
-            localStorage.setItem('selectedCountryFlag', flags[detectedCountry]);
-            localStorage.setItem('selectedCountryName', names[detectedCountry]);
+            if (!detectedCountry) {
+                const tz = Intl.DateTimeFormat().resolvedOptions().timeZone;
+                if (tz.includes('Cairo')) detectedCountry = 'egypt';
+                else if (tz.includes('Dubai')) detectedCountry = 'uae';
+                else if (tz.includes('Riyadh')) detectedCountry = 'ksa';
+                else if (tz.includes('Qatar')) detectedCountry = 'qatar';
+            }
+
+            detectedCountry = detectedCountry || 'egypt';
+            
+            // If it's a new country or was auto before, apply it
+            if (!storedCountry || (countrySource !== 'manual' && detectedCountry !== storedCountry)) {
+                const flags = { 'uae': '🇦🇪', 'egypt': '🇪🇬', 'ksa': '🇸🇦', 'qatar': '🇶🇦' };
+                const names = { 'uae': (window.currentLang === 'ar' ? 'الإمارات' : 'UAE'), 'egypt': (window.currentLang === 'ar' ? 'مصر' : 'Egypt'), 'ksa': (window.currentLang === 'ar' ? 'السعودية' : 'KSA'), 'qatar': (window.currentLang === 'ar' ? 'قطر' : 'Qatar') };
+                
+                window.selectedCountry = detectedCountry;
+                localStorage.setItem('selectedCountry', detectedCountry);
+                localStorage.setItem('selectedCountrySource', 'auto');
+                localStorage.setItem('selectedCountryFlag', flags[detectedCountry] || '🇪🇬');
+                localStorage.setItem('selectedCountryName', names[detectedCountry] || (window.currentLang === 'ar' ? 'مصر' : 'Egypt'));
+            } else {
+                window.selectedCountry = storedCountry;
+            }
         } catch (err) {
-            window.selectedCountry = 'uae'; // Final fallback
+            window.selectedCountry = storedCountry || 'egypt';
         }
     } else {
         window.selectedCountry = storedCountry;
@@ -708,7 +728,7 @@ document.addEventListener('DOMContentLoaded', async () => {
         });
     };
 
-    window.setCountry = function (country, flag, name) {
+    window.setCountry = function (country, flag, name, isAuto = false) {
         const currentCountryFlag = document.getElementById('current-country-flag');
         if (currentCountryFlag) currentCountryFlag.textContent = flag;
 
@@ -716,6 +736,7 @@ document.addEventListener('DOMContentLoaded', async () => {
         localStorage.setItem('selectedCountry', country);
         localStorage.setItem('selectedCountryFlag', flag);
         localStorage.setItem('selectedCountryName', name);
+        localStorage.setItem('selectedCountrySource', isAuto ? 'auto' : 'manual');
 
         window.updateDynamicContent(window.selectedCountry, window.currentLang);
         window.dispatchEvent(new CustomEvent('countryChanged', { detail: { country } }));
@@ -776,7 +797,8 @@ document.addEventListener('DOMContentLoaded', async () => {
     // Apply saved country UI state (Sync flag and name in dropdown)
     const initFlag = localStorage.getItem('selectedCountryFlag') || '🇦🇪';
     const initName = localStorage.getItem('selectedCountryName') || 'UAE';
-    window.setCountry(window.selectedCountry || 'uae', initFlag, initName);
+    const isAuto = localStorage.getItem('selectedCountrySource') === 'auto';
+    window.setCountry(window.selectedCountry || 'uae', initFlag, initName, isAuto);
 
     // Apply saved language on every page load
     window.updateLanguage(window.currentLang);
@@ -785,8 +807,9 @@ document.addEventListener('DOMContentLoaded', async () => {
     window.initTheme = function () {
         const themeBtn = document.getElementById('theme-toggle');
         const themeIcon = document.getElementById('theme-icon');
-        let isDark = localStorage.getItem('theme') === 'dark' ||
-            (!('theme' in localStorage) && window.matchMedia('(prefers-color-scheme: dark)').matches);
+        const storedTheme = localStorage.getItem('theme');
+        let isDark = storedTheme === 'dark' ||
+            (!storedTheme && window.matchMedia('(prefers-color-scheme: dark)').matches);
 
         function updateTheme(dark) {
             if (dark) {
@@ -800,13 +823,14 @@ document.addEventListener('DOMContentLoaded', async () => {
             }
         }
 
+        // Apply theme immediately based on localStorage/preference
+        updateTheme(isDark);
+
         if (themeBtn) {
             themeBtn.onclick = () => {
                 isDark = !document.documentElement.classList.contains('dark');
                 updateTheme(isDark);
             };
-            // Sync icon on load
-            updateTheme(document.documentElement.classList.contains('dark'));
         }
     };
 
@@ -1741,7 +1765,8 @@ document.addEventListener('DOMContentLoaded', async () => {
                             name: senderName,
                             email: senderEmail,
                             subject: 'Live Chat Support',
-                            message: text
+                            message: text,
+                            country: localStorage.getItem('selectedCountry') || 'egypt'
                         })
                     });
                     const data = await response.json();

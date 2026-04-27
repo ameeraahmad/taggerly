@@ -20,7 +20,8 @@ exports.forgotPassword = async (req, res) => {
         await user.save(); // Save tokens to DB
 
         // 3) Send it to user's email
-        const resetURL = `${req.protocol}://${req.get('host')}/reset-password.html?token=${resetToken}`;
+        const frontendURL = process.env.FRONTEND_URL || `${req.protocol}://${req.get('host')}`;
+        const resetURL = `${frontendURL}/reset-password.html?token=${resetToken}`;
 
         try {
             await sendEmail({
@@ -109,7 +110,7 @@ const generateToken = (id) => {
 
 exports.register = async (req, res) => {
     try {
-        const { name, email, password, phone } = req.body;
+        const { name, email, password, phone, country } = req.body;
 
         if (!name || !email || !password) {
             return res.status(400).json({ success: false, message: 'Please provide name, email and password' });
@@ -128,12 +129,14 @@ exports.register = async (req, res) => {
             email,
             password,
             phone,
+            country,
             emailVerificationToken: verificationToken
         });
 
         // Send Verification Email
         try {
-            const verifyURL = `${req.protocol}://${req.get('host')}/api/auth/verify-email/${verificationToken}`;
+            const frontendURL = process.env.FRONTEND_URL || `${req.protocol}://${req.get('host')}`;
+            const verifyURL = `${frontendURL}/api/auth/verify-email/${verificationToken}`;
             await sendEmail({
                 email: user.email,
                 subject: '🎉 Welcome to Taggerly - Verify Your Email',
@@ -175,7 +178,7 @@ exports.login = async (req, res) => {
 
         const user = await User.findOne({ where: { email } });
         if (!user) {
-            return res.status(401).json({ success: false, message: 'Invalid credentials' });
+            return res.status(401).json({ success: false, message: 'Invalid credentials or user not found' });
         }
 
         const isMatch = await user.correctPassword(password);
@@ -356,7 +359,8 @@ exports.resendVerification = async (req, res) => {
         user.emailVerificationToken = verificationToken;
         await user.save();
 
-        const verifyURL = `${req.protocol}://${req.get('host')}/api/auth/verify-email/${verificationToken}`;
+        const frontendURL = process.env.FRONTEND_URL || `${req.protocol}://${req.get('host')}`;
+        const verifyURL = `${frontendURL}/api/auth/verify-email/${verificationToken}`;
         await sendEmail({
             email: user.email,
             subject: '✉️ Verify Your Email - Taggerly',

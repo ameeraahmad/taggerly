@@ -484,7 +484,8 @@
                 email: document.getElementById('support-email').value,
                 phone: countryCode + ' ' + phoneVal,
                 subject: document.getElementById('support-subject').value,
-                message: document.getElementById('support-message').value
+                message: document.getElementById('support-message').value,
+                country: localStorage.getItem('selectedCountry') || 'uae'
             };
 
             btn.disabled = true;

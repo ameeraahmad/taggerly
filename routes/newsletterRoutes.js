@@ -20,7 +20,7 @@ router.post('/subscribe', [
     }
 
     try {
-        const { email } = req.body;
+        const { email, country } = req.body;
 
         // Check if already subscribed
         let subscriber = await NewsletterSubscriber.findOne({ where: { email } });
@@ -35,11 +35,15 @@ router.post('/subscribe', [
             }
         } else {
             // Create new subscriber
-            subscriber = await NewsletterSubscriber.create({ email });
+            subscriber = await NewsletterSubscriber.create({ 
+                email, 
+                country: country || null 
+            });
         }
 
         // Send welcome email
-        const unsubscribeURL = `${req.protocol}://${req.get('host')}/api/newsletter/unsubscribe?token=${subscriber.unsubscribeToken}&email=${subscriber.email}`;
+        const backendURL = process.env.BACKEND_URL || `${req.protocol}://${req.get('host')}`;
+        const unsubscribeURL = `${backendURL}/api/newsletter/unsubscribe?token=${subscriber.unsubscribeToken}&email=${subscriber.email}`;
         
         try {
             await sendEmail({
@@ -100,7 +104,14 @@ router.get('/unsubscribe', async (req, res) => {
  */
 router.get('/subscribers', protect, restrictTo('admin'), async (req, res) => {
     try {
+        const { country } = req.query;
+        const where = {};
+        if (country && country !== 'all') {
+            where.country = country.toLowerCase();
+        }
+
         const subscribers = await NewsletterSubscriber.findAll({
+            where,
             order: [['createdAt', 'DESC']]
         });
         res.status(200).json({ success: true, data: subscribers });

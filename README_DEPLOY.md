@@ -55,7 +55,8 @@ This guide will help you deploy **Taggerly** on Hostinger or any other Node.js h
    ```
 5. **Start with PM2**:
    ```bash
-   pm2 start server.js --name "taggerly"
+   # Use the ecosystem file for optimized production settings
+   pm2 start ecosystem.config.js --env production
    pm2 save
    pm2 startup
    ```
@@ -89,8 +90,9 @@ npm run seed
 
 ## 💡 Important Notes | ملاحظات هامة
 - **SSL**: Ensure your domain has an active SSL certificate (HTTPS).
+- **Email (SMTP)**: If using Gmail, you MUST use an **App Password** (كلمة مرور التطبيق) instead of your regular password.
 - **Security**: Never share your `.env` file or commit it to a public repository.
-- **Port**: Hostinger usually assigns a specific port; make sure to update it in `.env` if required.
+- **Port**: Hostinger usually assigns a specific port; make sure to update it in `.env` if required (e.g., `PORT=5000` or as provided by hPanel).
 
 ---
 

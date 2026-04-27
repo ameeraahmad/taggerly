@@ -58,6 +58,10 @@ const BlogPost = sequelize.define('BlogPost', {
     isImportant: {
         type: DataTypes.BOOLEAN,
         defaultValue: false
+    },
+    country: {
+        type: DataTypes.STRING,
+        allowNull: true
     }
 }, {
     tableName: 'blog_posts',

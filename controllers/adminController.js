@@ -43,7 +43,16 @@ exports.getStats = async (req, res) => {
         const paymentWhere = { status: 'completed' };
         if (currency) paymentWhere.currency = currency.toLowerCase();
 
-        const completedPayments = await Payment.findAll({ where: paymentWhere });
+        const paymentInclude = [{ model: User, as: 'user', attributes: ['country'], required: true }];
+        if (country && country !== 'all') {
+            paymentInclude[0].where = { country: country.toLowerCase() };
+        }
+
+        const completedPayments = await Payment.findAll({ 
+            where: paymentWhere,
+            include: paymentInclude
+        });
+
         const totalRevenue = completedPayments.reduce((sum, p) => sum + p.amount, 0);
         const monthlyRevenue = completedPayments
             .filter(p => {
@@ -56,7 +65,10 @@ exports.getStats = async (req, res) => {
         // New users this month
         const thisMonth = new Date();
         thisMonth.setDate(1);
-        const newUsersThisMonth = await User.count({ where: { createdAt: { [Op.gte]: thisMonth } } });
+        const userMonthWhere = { createdAt: { [Op.gte]: thisMonth } };
+        if (country && country !== 'all') userMonthWhere.country = country.toLowerCase();
+        
+        const newUsersThisMonth = await User.count({ where: userMonthWhere });
 
         res.status(200).json({
             success: true,
@@ -86,8 +98,11 @@ exports.getAnalytics = async (req, res) => {
         thirtyDaysAgo.setDate(thirtyDaysAgo.getDate() - 30);
 
         // Daily Users
+        const userChartsWhere = { createdAt: { [Op.gte]: thirtyDaysAgo } };
+        if (country && country !== 'all') userChartsWhere.country = country.toLowerCase();
+        
         const usersData = await User.findAll({
-            where: { createdAt: { [Op.gte]: thirtyDaysAgo } },
+            where: userChartsWhere,
             attributes: [
                 [require('sequelize').fn('date', require('sequelize').col('createdAt')), 'day'],
                 [require('sequelize').fn('count', require('sequelize').col('id')), 'count']
@@ -110,17 +125,23 @@ exports.getAnalytics = async (req, res) => {
             order: [['day', 'ASC']]
         });
 
-        // Daily Revenue - filter by currency
+        // Daily Revenue - filter by currency and country
         const revWhere = {
             status: 'completed',
             createdAt: { [Op.gte]: thirtyDaysAgo }
         };
         if (currency) revWhere.currency = currency.toLowerCase();
 
+        const revInclude = [{ model: User, as: 'user', attributes: [], required: true }];
+        if (country && country !== 'all') {
+            revInclude[0].where = { country: country.toLowerCase() };
+        }
+
         const revenueData = await Payment.findAll({
             where: revWhere,
+            include: revInclude,
             attributes: [
-                [require('sequelize').fn('date', require('sequelize').col('createdAt')), 'day'],
+                [require('sequelize').fn('date', require('sequelize').col('Payment.createdAt')), 'day'],
                 [require('sequelize').fn('sum', require('sequelize').col('amount')), 'total']
             ],
             group: ['day'],
@@ -144,13 +165,14 @@ exports.getAnalytics = async (req, res) => {
 // @route   GET /api/admin/users
 exports.getAllUsers = async (req, res) => {
     try {
-        const { q, page = 1, limit = 20, role } = req.query;
+        const { q, page = 1, limit = 20, role, country } = req.query;
         const where = {};
         if (q) where[Op.or] = [
             { name: { [Op.like]: `%${q}%` } },
             { email: { [Op.like]: `%${q}%` } }
         ];
         if (role) where.role = role;
+        if (country && country !== 'all') where.country = country.toLowerCase();
 
         const users = await User.findAndCountAll({
             where,
@@ -278,7 +300,8 @@ exports.approveAd = async (req, res) => {
 
         // Send HTML email notification
         if (ad.user && ad.user.email) {
-            const adURL = `${req.protocol}://${req.get('host')}/ad-details.html?id=${ad.id}`;
+            const frontendURL = process.env.FRONTEND_URL || `${req.protocol}://${req.get('host')}`;
+            const adURL = `${frontendURL}/ad-details.html?id=${ad.id}`;
             sendEmail({
                 email: ad.user.email,
                 subject: '✅ تم تفعيل إعلانك على Taggerly!',
@@ -475,12 +498,11 @@ exports.reviewReport = async (req, res) => {
         res.status(500).json({ success: false, message: err.message });
     }
 };
-
 // @desc    Get revenue and payment stats (admin)
 // @route   GET /api/admin/revenue
 exports.getRevenue = async (req, res) => {
     try {
-        const { period = '30', currency } = req.query;
+        const { period = '30', currency, country } = req.query;
         const since = new Date();
         since.setDate(since.getDate() - parseInt(period));
 
@@ -490,9 +512,20 @@ exports.getRevenue = async (req, res) => {
         };
         if (currency) where.currency = currency.toLowerCase();
 
+        const include = [{ 
+            model: User, 
+            as: 'user', 
+            attributes: ['name', 'email', 'country'],
+            required: true
+        }];
+
+        if (country && country !== 'all') {
+            include[0].where = { country: country.toLowerCase() };
+        }
+
         const payments = await Payment.findAll({
             where,
-            include: [{ model: User, as: 'user', attributes: ['name', 'email'] }],
+            include,
             order: [['createdAt', 'DESC']]
         });
 

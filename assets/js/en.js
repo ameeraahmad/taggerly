@@ -298,6 +298,7 @@ var enTranslations = {
     categoryLabel: "Category",
     priceLabel: "Price",
     locationLabel: "Location",
+    locationPlaceholder: "e.g. City, Country",
     featuredBadge: "FEATURED",
     ads: "ads",
     previous: "Previous",

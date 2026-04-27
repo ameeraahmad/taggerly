@@ -68,7 +68,7 @@ const initCronJobs = (io) => {
                             userName: ad.user.name,
                             adTitle: ad.title,
                             daysLeft: 3,
-                            dashboardURL: 'https://taggerly.com/dashboard.html'
+                            dashboardURL: `${process.env.FRONTEND_URL || 'http://localhost:5000'}/dashboard.html`
                         })
                     }).catch(err => console.error('Expiry reminder email failed:', err));
                 }

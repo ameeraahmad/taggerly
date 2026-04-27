@@ -13,7 +13,7 @@ const { protect } = require('../middleware/authMiddleware');
  */
 router.post('/', async (req, res) => {
     try {
-        const { name, email, subject, message, phone } = req.body;
+        const { name, email, subject, message, phone, country } = req.body;
 
         if (!name || !email || !subject || !message) {
             return res.status(400).json({ success: false, message: 'Please fill all fields' });
@@ -24,7 +24,8 @@ router.post('/', async (req, res) => {
             email,
             phone: phone || null,
             subject,
-            message
+            message,
+            country: country || null
         });
 
         // Also create the first message in the thread
@@ -94,7 +95,14 @@ router.get('/my-chat', protect, async (req, res) => {
  */
 router.get('/', async (req, res) => {
     try {
+        const { country } = req.query;
+        const where = {};
+        if (country && country !== 'all') {
+            where.country = country.toLowerCase();
+        }
+
         const requests = await SupportRequest.findAll({
+            where,
             order: [
                 ['isImportant', 'DESC'],
                 ['createdAt', 'DESC']

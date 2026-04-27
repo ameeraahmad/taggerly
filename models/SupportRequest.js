@@ -49,6 +49,10 @@ const SupportRequest = sequelize.define('SupportRequest', {
     isImportant: {
         type: DataTypes.BOOLEAN,
         defaultValue: false
+    },
+    country: {
+        type: DataTypes.STRING,
+        allowNull: true
     }
 }, {
     tableName: 'support_requests',

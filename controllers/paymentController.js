@@ -89,8 +89,8 @@ exports.createCheckoutSession = async (req, res) => {
                 quantity: 1
             }],
             metadata,
-            success_url: `${host}/plans.html?success=true&session_id={CHECKOUT_SESSION_ID}`,
-            cancel_url: `${host}/plans.html?canceled=true`
+            success_url: `${process.env.FRONTEND_URL || host}/plans.html?success=true&session_id={CHECKOUT_SESSION_ID}`,
+            cancel_url: `${process.env.FRONTEND_URL || host}/plans.html?canceled=true`
         });
 
         await Payment.create({

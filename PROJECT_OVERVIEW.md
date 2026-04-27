@@ -22,9 +22,9 @@
 ## 🚀 Key Features and Advantages
 
 ### 🌍 Global Reach & Localization
-- **Multi-Country Support**: Optimized for UAE, Egypt, Saudi Arabia, and Qatar.
+- **Smart Country Detection**: Automatically detects user location and switches context to Egypt, UAE, Saudi Arabia, or Qatar.
 - **Bilingual Interface**: Fully supports **Arabic and English** with perfect **RTL (Right-to-Left)** layout.
-- **Dynamic Localization**: Automatically adjusts currency (AED, EGP, SAR, QAR) and cities based on the selected region.
+- **Dynamic Localization**: Automatically adjusts currency (AED, EGP, SAR, QAR), phone codes, and city suggestions based on the selected region.
 
 ### 🏠 Listing Management
 - **Versatile Categories**: Dedicated sections for Motors, Properties, Electronics, Jobs, and Services.

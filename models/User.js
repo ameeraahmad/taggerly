@@ -71,6 +71,10 @@ const User = sequelize.define('User', {
     isBanned: {
         type: DataTypes.BOOLEAN,
         defaultValue: false
+    },
+    country: {
+        type: DataTypes.STRING,
+        allowNull: true
     }
 }, {
     timestamps: true,

@@ -449,6 +449,9 @@
                 const optionExists = Array.from(categorySelect.options).some(opt => opt.value === initialCategory);
                 if (optionExists) {
                     categorySelect.value = initialCategory;
+                    // Disable the select to prevent confusion as subcategory is fixed
+                    categorySelect.disabled = true;
+                    categorySelect.classList.add('bg-gray-100', 'cursor-not-allowed');
                 }
             }
 

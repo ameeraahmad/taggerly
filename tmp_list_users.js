@@ -4,7 +4,7 @@ const User = require('./models/User');
 (async () => {
     try {
         await connectDB();
-        const users = await User.findAll({ attributes: ['id', 'name', 'email', 'role', 'createdAt'] });
+        const users = await User.findAll({ attributes: ['id', 'name', 'email', 'country', 'role', 'createdAt'] });
         console.log('--- Current Users in Database ---');
         console.table(users.map(u => u.toJSON()));
         await sequelize.close();

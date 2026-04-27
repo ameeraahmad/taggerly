@@ -293,6 +293,7 @@
                     name: `${firstName} ${lastName}`,
                     email,
                     password,
+                    country: localStorage.getItem('selectedCountry') || 'uae',
                     captchaToken
                 });
                 await customAlert(currentLang === 'ar' ? 'تم إنشاء الحساب بنجاح!' : 'Account created successfully!');

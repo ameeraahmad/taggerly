@@ -542,6 +542,7 @@
                                 class="bg-gray-50 dark:bg-gray-700/50 text-xs text-gray-500 uppercase font-semibold tracking-wider">
                                 <tr>
                                     <th class="px-6 py-4">User</th>
+                                    <th class="px-6 py-4">Country</th>
                                     <th class="px-6 py-4">Role</th>
                                     <th class="px-6 py-4">Status</th>
                                     <th class="px-6 py-4">Joined</th>
@@ -550,7 +551,7 @@
                             </thead>
                             <tbody id="users-table-body" class="divide-y divide-gray-100 dark:divide-gray-700">
                                 <tr>
-                                    <td colspan="5" class="px-6 py-8 text-center text-gray-400">Loading users...</td>
+                                    <td colspan="6" class="px-6 py-8 text-center text-gray-400">Loading users...</td>
                                 </tr>
                             </tbody>
                         </table>
@@ -585,6 +586,10 @@
                         <option value="expired">Expired</option>
                         <option value="deleted">Deleted</option>
                     </select>
+                    <select id="ad-country-filter" onchange="loadAds()"
+                        class="text-sm border border-gray-200 dark:border-gray-600 rounded-xl px-3 py-2 bg-white dark:bg-gray-800 focus:outline-none focus:ring-2 focus:ring-accent">
+                        <option value="">All Countries</option>
+                    </select>
                     <select id="ad-featured-filter" onchange="loadAds()"
                         class="text-sm border border-gray-200 dark:border-gray-600 rounded-xl px-3 py-2 bg-white dark:bg-gray-800 focus:outline-none focus:ring-2 focus:ring-accent">
                         <option value="">All Ads</option>
@@ -601,6 +606,7 @@
                                 class="bg-gray-50 dark:bg-gray-700/50 text-xs text-gray-500 uppercase font-semibold tracking-wider">
                                 <tr>
                                     <th class="px-6 py-4">Ad</th>
+                                    <th class="px-6 py-4">Country</th>
                                     <th class="px-6 py-4">Owner</th>
                                     <th class="px-6 py-4">Status</th>
                                     <th class="px-6 py-4">Featured</th>
@@ -610,7 +616,7 @@
                             </thead>
                             <tbody id="ads-table-body" class="divide-y divide-gray-100 dark:divide-gray-700">
                                 <tr>
-                                    <td colspan="6" class="px-6 py-8 text-center text-gray-400">Loading ads...</td>
+                                    <td colspan="7" class="px-6 py-8 text-center text-gray-400">Loading ads...</td>
                                 </tr>
                             </tbody>
                         </table>
@@ -705,9 +711,10 @@
                             <thead class="bg-gray-50 dark:bg-gray-700/50 text-xs text-gray-500 uppercase font-bold tracking-wider">
                                 <tr>
                                     <th class="px-6 py-4">Title</th>
+                                    <th class="px-6 py-4 text-center">Country</th>
+                                    <th class="px-6 py-4 text-center">Important</th>
                                     <th class="px-6 py-4">Category</th>
                                     <th class="px-6 py-4">Status</th>
-                                    <th class="px-6 py-4">Date</th>
                                     <th class="px-6 py-4 text-right">Actions</th>
                                 </tr>
                             </thead>
@@ -737,6 +744,7 @@
                             <thead class="bg-gray-50 dark:bg-gray-700/50 text-xs text-gray-500 uppercase font-bold tracking-wider">
                                 <tr>
                                     <th class="px-6 py-4">Sender</th>
+                                    <th class="px-6 py-4">Country</th>
                                     <th class="px-6 py-4">Subject</th>
                                     <th class="px-6 py-4">Message</th>
                                     <th class="px-6 py-4">Date</th>
@@ -982,6 +990,7 @@
 
         // ===================== TABS =====================
         // ===================== UTILS & CONFIG =====================
+        window.flagMap = { uae: '🇦🇪', egypt: '🇪🇬', ksa: '🇸🇦', qatar: '🇶🇦', all: '🌍' };
         window.currencyMap = { uae: 'AED', egypt: 'EGP', ksa: 'SAR', qatar: 'QAR' };
         window.getCurrency = function() {
             const country = localStorage.getItem('selectedCountry') || 'all';
@@ -1032,7 +1041,8 @@
             const lang = window.currentLang || localStorage.getItem('lang') || 'en';
 
             try {
-                const res = await apiClient.fetch('/blog/admin');
+                const country = localStorage.getItem('selectedCountry') || 'all';
+                const res = await apiClient.fetch(`/blog/admin?country=${country}`);
                 const data = res; // apiClient.fetch returns data directly or handles response
                 
                 if (data.success && data.data.length > 0) {
@@ -1054,6 +1064,9 @@
                             </td>
                             <td class="px-6 py-4 capitalize text-xs">
                                 ${window.translations?.[lang]?.[`category${post.category.charAt(0).toUpperCase() + post.category.slice(1)}`] || post.category}
+                            </td>
+                            <td class="px-6 py-4 text-center">
+                                <span class="text-lg" title="${post.country}">${window.flagMap?.[post.country] || '🌍'}</span>
                             </td>
                             <td class="px-6 py-4">
                                 <span class="badge ${post.status === 'published' ? 'bg-green-100 text-green-700' : 'bg-gray-100 text-gray-600'}">
@@ -1082,7 +1095,7 @@
                         `;
                     }).join('');
                 } else {
-                    tbody.innerHTML = '<tr><td colspan="5" class="px-6 py-12 text-center text-gray-400">No articles found. Click "Create New Article" to start.</td></tr>';
+                    tbody.innerHTML = '<tr><td colspan="6" class="px-6 py-12 text-center text-gray-400">No articles found. Click "Create New Article" to start.</td></tr>';
                 }
             } catch (err) {
                 tbody.innerHTML = '<tr><td colspan="5" class="px-6 py-8 text-center text-red-400">Failed to load articles.</td></tr>';
@@ -1095,8 +1108,8 @@
             tbody.innerHTML = '<tr><td colspan="6" class="px-6 py-8 text-center text-gray-400">Loading requests...</td></tr>';
             
             try {
-                const response = await fetch('/api/support');
-                const data = await response.json();
+                const country = localStorage.getItem('selectedCountry') || 'all';
+                const data = await apiClient.fetch(`/support?country=${country}`);
                 
                 if (data.success && data.data.length > 0) {
                     // Filter out Live Chat Support messages
@@ -1142,6 +1155,10 @@
                                 </div>
                             </td>
                             <td class="px-6 py-4">
+                                <span class="text-lg" title="${req.country || 'unknown'}">${window.flagMap?.[req.country] || '❓'}</span>
+                                <span class="text-[10px] text-gray-400 block uppercase">${req.country || 'unknown'}</span>
+                            </td>
+                            <td class="px-6 py-4">
                                 <div class="font-medium ${!isRead ? 'font-bold' : ''}">${req.subject}</div>
                             </td>
                             <td class="px-6 py-4 text-xs">
@@ -1181,16 +1198,20 @@
             tbody.innerHTML = '<tr><td colspan="4" class="px-6 py-8 text-center text-gray-400">Loading subscribers...</td></tr>';
 
             try {
-                const res = await apiClient.fetch('/newsletter/subscribers');
+                const country = localStorage.getItem('selectedCountry') || 'all';
+                const res = await apiClient.fetch(`/newsletter/subscribers?country=${country}`);
                 if (res.success) {
                     if (res.data.length === 0) {
-                        tbody.innerHTML = '<tr><td colspan="4" class="px-6 py-8 text-center text-gray-400">No subscribers found yet.</td></tr>';
+                        tbody.innerHTML = '<tr><td colspan="5" class="px-6 py-8 text-center text-gray-400">No subscribers found yet.</td></tr>';
                         return;
                     }
 
                     tbody.innerHTML = res.data.map(sub => `
                         <tr class="table-row">
                             <td class="px-6 py-4 font-medium">${sub.email}</td>
+                            <td class="px-6 py-4 text-center">
+                                <span class="text-lg" title="${sub.country}">${window.flagMap?.[sub.country] || '🌍'}</span>
+                            </td>
                             <td class="px-6 py-4">
                                 <span class="badge ${sub.isActive ? 'bg-green-100 text-green-700' : 'bg-gray-100 text-gray-500'}">
                                     ${sub.isActive ? 'Active' : 'Unsubscribed'}
@@ -1335,8 +1356,8 @@
             if (showLoading) listEl.innerHTML = '<div class="p-8 text-center text-gray-400 text-sm">Loading chats...</div>';
             
             try {
-                const response = await fetch('/api/support');
-                const data = await response.json();
+                const country = localStorage.getItem('selectedCountry') || 'all';
+                const data = await apiClient.fetch(`/support?country=${country}`);
                 
                 if (data.success) {
                     // Filter for Live Chat only and Sort by updatedAt (most recent activity first)
@@ -1370,6 +1391,7 @@
                             
                             <div class="flex items-center justify-between mb-1">
                                 <div class="flex items-center gap-2">
+                                    <span class="text-xs" title="${chat.country || 'unknown'}">${window.flagMap?.[chat.country] || '❓'}</span>
                                     <span class="font-bold text-sm">${chat.name}</span>
                                     <button onclick="event.stopPropagation(); toggleChatStar(${chat.id})" 
                                             class="text-xs transition-colors ${chat.isImportant ? 'text-yellow-500' : 'text-gray-300 hover:text-yellow-400'}">
@@ -1414,8 +1436,7 @@
 
         async function toggleChatStar(id) {
             try {
-                const res = await fetch(`/api/support/${id}/important`, { method: 'PUT' });
-                const data = await res.json();
+                const data = await apiClient.fetch(`/support/${id}/important`, { method: 'PUT' });
                 if (data.success) {
                     loadCustomerServices(false);
                 }
@@ -1467,8 +1488,7 @@
             if (!confirmed) return;
             
             try {
-                const res = await fetch(`/api/support/${id}`, { method: 'DELETE' });
-                const data = await res.json();
+                const data = await apiClient.fetch(`/support/${id}`, { method: 'DELETE' });
                 if (data.success) {
                     if (currentChatRequestId == id) {
                         currentChatRequestId = null;
@@ -1506,8 +1526,7 @@
                 socket.emit('join_support', { requestId: id, isAdmin: true });
 
                 // Fetch history
-                const res = await fetch(`/api/support/${id}/messages`);
-                const history = await res.json();
+                const history = await apiClient.fetch(`/support/${id}/messages`);
                 
                 messagesContainer.innerHTML = '';
                 if (history.success && history.data.length > 0) {
@@ -1525,7 +1544,7 @@
                 messagesContainer.scrollTop = messagesContainer.scrollHeight;
 
                 // Mark as read/active
-                await fetch(`/api/support/${id}`, {
+                await apiClient.fetch(`/support/${id}`, {
                     method: 'PATCH',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({ status: 'active' })
@@ -1572,7 +1591,7 @@
 
             try {
                 // Use /messages endpoint instead of /reply to avoid slow email sending in live chat
-                const res = await fetch(`/api/support/${currentChatRequestId}/messages`, {
+                const data = await apiClient.fetch(`/support/${currentChatRequestId}/messages`, {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({ 
@@ -1581,7 +1600,6 @@
                         senderName: 'Admin'
                     })
                 });
-                const data = await res.json();
                 
                 if (!data.success) {
                     throw new Error(data.message);
@@ -1658,7 +1676,7 @@
             document.getElementById('send-reply-btn').onclick = () => submitReply(id, true);
 
             // Mark as read
-            fetch(`/api/support/${id}`, {
+            apiClient.fetch(`/support/${id}`, {
                 method: 'PATCH',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ isRead: true, status: 'read' })
@@ -1691,12 +1709,11 @@
             btn.textContent = 'Sending...';
 
             try {
-                const res = await fetch(`/api/support/${id}/reply`, {
+                const data = await apiClient.fetch(`/support/${id}/reply`, {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({ replyMessage: message })
                 });
-                const data = await res.json();
                 
                 if (data.success) {
                     closeSupportModal(); // Close first for better UX
@@ -1717,8 +1734,7 @@
         async function deleteSupport(id) {
             if (!(await window.customConfirm('Are you sure you want to delete this chat thread? This will permanently remove all messages.'))) return;
             try {
-                const res = await fetch(`/api/support/${id}`, { method: 'DELETE' });
-                const data = await res.json();
+                const data = await apiClient.fetch(`/support/${id}`, { method: 'DELETE' });
                 if (data.success) {
                     loadSupportRequests();
                 }
@@ -1748,12 +1764,20 @@
                 document.getElementById('content_en').value = post.content_en;
                 document.getElementById('content_ar').value = post.content_ar;
                 document.getElementById('post-category').value = post.category;
+                document.getElementById('post-country').value = post.country || 'uae';
                 document.getElementById('post-image-url').value = post.featuredImage;
                 document.getElementById('post-image-preview').src = post.featuredImage;
                 document.getElementById('post-status').value = post.status;
             } else {
                 document.getElementById('post-image-preview').src = 'https://placehold.co/600x400?text=Blog+Image';
                 document.getElementById('post-image-url').value = '';
+                // Default to current dashboard country filter if it's not 'all'
+                const currentFilter = localStorage.getItem('selectedCountry') || 'uae';
+                if (currentFilter !== 'all') {
+                    document.getElementById('post-country').value = currentFilter;
+                } else {
+                    document.getElementById('post-country').value = 'uae';
+                }
             }
             
             document.getElementById('blog-modal').classList.remove('hidden');
@@ -1822,6 +1846,7 @@
                     content_en: document.getElementById('content_en').value,
                     content_ar: document.getElementById('content_ar').value,
                     category: document.getElementById('post-category').value,
+                    country: document.getElementById('post-country').value || 'uae',
                     featuredImage: imageUrl || 'https://placehold.co/600x400?text=Blog+Image',
                     status: document.getElementById('post-status').value,
                     authorId: authorId
@@ -2127,15 +2152,20 @@
                 else if (tabId === 'nav-ads') loadAds();
                 else if (tabId === 'nav-moderation') loadPendingAds();
                 else if (tabId === 'nav-reports') loadReports();
+                else if (tabId === 'nav-users') loadUsers();
+                else if (tabId === 'nav-support') loadSupportRequests();
+                else if (tabId === 'nav-customer_services') loadCustomerServices();
+                else if (tabId === 'nav-blog') loadBlogPosts();
+                else if (tabId === 'nav-newsletter') loadNewsletterSubscribers();
             }
 
             // Sync Header UI elements
-            const flagMap = { uae: '🇦🇪', egypt: '🇪🇬', ksa: '🇸🇦', qatar: '🇶🇦' };
-            const nameMap = { uae: 'UAE', egypt: 'Egypt', ksa: 'KSA', qatar: 'Qatar' };
+            const flagMap = { all: '🌍', uae: '🇦🇪', egypt: '🇪🇬', ksa: '🇸🇦', qatar: '🇶🇦' };
+            const nameMap = { all: 'All', uae: 'UAE', egypt: 'Egypt', ksa: 'KSA', qatar: 'Qatar' };
             const fl = document.getElementById('current-country-flag');
             const nm = document.getElementById('current-country-name');
-            if(fl) fl.textContent = flagMap[country] || '🇦🇪';
-            if(nm) nm.textContent = nameMap[country] || 'UAE';
+            if(fl) fl.textContent = flagMap[country] || '🌍';
+            if(nm) nm.textContent = nameMap[country] || 'All';
 
             // Show confirmation toast
             const currency = getCurrency();
@@ -2254,9 +2284,11 @@
             tbody.innerHTML = '<tr><td colspan="5" class="px-6 py-8 text-center text-gray-400">Loading...</td></tr>';
 
             try {
+                const country = localStorage.getItem('selectedCountry') || 'all';
                 const params = new URLSearchParams({ page, limit: 15 });
                 if (q) params.set('q', q);
                 if (role) params.set('role', role);
+                if (country && country !== 'all') params.set('country', country);
 
                 const res = await apiClient.fetch(`/admin/users?${params}`);
                 if (!res.data.length) {
@@ -2273,6 +2305,12 @@
                                     <p class="font-semibold text-sm">${u.name}</p>
                                     <p class="text-xs text-gray-400">${u.email}</p>
                                 </div>
+                            </div>
+                        </td>
+                        <td class="px-6 py-4">
+                            <div class="flex items-center gap-2">
+                                <span>${window.flagMap?.[u.country || 'uae'] || '🇦🇪'}</span>
+                                <span class="text-xs font-medium uppercase text-gray-400">${u.country || 'uae'}</span>
                             </div>
                         </td>
                         <td class="px-6 py-4">
@@ -2377,6 +2415,9 @@
                                 <img src="${img}" class="w-10 h-10 rounded-lg object-cover flex-shrink-0" onerror="this.src='https://placehold.co/40'">
                                 <a href="ad-details.html?id=${ad.id}" target="_blank" class="font-medium text-sm hover:text-accent truncate">${ad.title}</a>
                             </div>
+                        </td>
+                        <td class="px-6 py-4">
+                            <span class="text-lg" title="${ad.country}">${window.flagMap?.[ad.country] || '🌍'}</span>
                         </td>
                         <td class="px-6 py-4 text-sm text-gray-500">${ad.user ? ad.user.name : 'Unknown'}</td>
                         <td class="px-6 py-4">${statusBadge(ad.status)}</td>
@@ -2840,23 +2881,28 @@
             if(fl) fl.textContent = flagMap[currentCountry] || '🌍';
             if(nm) nm.textContent = nameMap[currentCountry] || 'All';
 
+            // Initialize Country Dropdown Click Listeners
+            document.querySelectorAll('.country-option').forEach(opt => {
+                opt.addEventListener('click', (e) => {
+                    e.preventDefault();
+                    const country = opt.getAttribute('data-country');
+                    localStorage.setItem('selectedCountry', country);
+                    
+                    // Update Header UI
+                    if(fl) fl.textContent = flagMap[country] || '🌍';
+                    if(nm) nm.textContent = nameMap[country] || 'All';
+                    
+                    // Close dropdown (it closes automatically via CSS/Standard behavior usually, 
+                    // but we ensure focus is cleared if needed)
+                    opt.blur();
+
+                    // Dispatch global event for all components to reload
+                    window.dispatchEvent(new CustomEvent('countryChanged', { detail: { country } }));
+                });
+            });
+
             loadStats();
             loadAnalytics();
-
-            // Handle country change event from main.js
-            window.addEventListener('countryChanged', () => {
-                const newCountry = localStorage.getItem('selectedCountry') || 'all';
-                if(fl) fl.textContent = flagMap[newCountry] || '🌍';
-                if(nm) nm.textContent = nameMap[newCountry] || 'All';
-                
-                // Refresh current view
-                const activeTab = document.querySelector('.tab-content.active')?.id.replace('tab-', '');
-                loadStats();
-                loadAnalytics();
-                if (activeTab === 'reports') loadReports();
-                if (activeTab === 'ads') loadAds();
-                if (activeTab === 'moderation') loadPendingAds();
-            });
         });
     </script>
     <!-- Blog Post Modal -->
@@ -2913,7 +2959,7 @@
                     </div>
                 </div>
 
-                <div class="grid grid-cols-1 md:grid-cols-3 gap-6 pt-4 border-t dark:border-gray-700">
+                <div class="grid grid-cols-1 md:grid-cols-4 gap-4 pt-4 border-t dark:border-gray-700">
                     <div>
                         <label class="block text-xs font-bold text-gray-400 uppercase mb-1">Category</label>
                         <select id="post-category" class="w-full px-4 py-2.5 rounded-xl border dark:border-gray-700 dark:bg-gray-900 outline-none">
@@ -2926,18 +2972,13 @@
                         </select>
                     </div>
                     <div>
-                        <label class="block text-xs font-bold text-gray-400 uppercase mb-1">Featured Image</label>
-                        <div class="flex items-center gap-3">
-                            <label class="flex-1 flex flex-col items-center justify-center h-12 px-4 rounded-xl border-2 border-dashed border-gray-300 dark:border-gray-600 hover:border-accent cursor-pointer transition">
-                                <div class="flex items-center gap-2 text-gray-500">
-                                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12"/></svg>
-                                    <span class="text-xs font-bold">Upload Photo</span>
-                                </div>
-                                <input type="file" id="post-image-file" class="hidden" accept="image/*" onchange="previewPostImage(this)">
-                            </label>
-                            <img id="post-image-preview" src="https://placehold.co/600x400?text=Blog+Image" class="w-12 h-12 rounded-lg object-cover border dark:border-gray-700">
-                            <input type="hidden" id="post-image-url">
-                        </div>
+                        <label class="block text-xs font-bold text-gray-400 uppercase mb-1">Country</label>
+                        <select id="post-country" class="w-full px-4 py-2.5 rounded-xl border dark:border-gray-700 dark:bg-gray-900 outline-none">
+                            <option value="uae">UAE 🇦🇪</option>
+                            <option value="egypt">Egypt 🇪🇬</option>
+                            <option value="ksa">KSA 🇸🇦</option>
+                            <option value="qatar">Qatar 🇶🇦</option>
+                        </select>
                     </div>
                     <div>
                         <label class="block text-xs font-bold text-gray-400 uppercase mb-1">Status</label>
@@ -2945,6 +2986,20 @@
                             <option value="published">Published</option>
                             <option value="draft">Draft</option>
                         </select>
+                    </div>
+                    <div>
+                        <label class="block text-xs font-bold text-gray-400 uppercase mb-1">Featured Image</label>
+                        <div class="flex items-center gap-3">
+                            <label class="flex-1 flex flex-col items-center justify-center h-12 px-4 rounded-xl border-2 border-dashed border-gray-300 dark:border-gray-600 hover:border-accent cursor-pointer transition">
+                                <div class="flex items-center gap-2 text-gray-500">
+                                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12"/></svg>
+                                    <span class="text-xs font-bold">Upload</span>
+                                </div>
+                                <input type="file" id="post-image-file" class="hidden" accept="image/*" onchange="previewPostImage(this)">
+                            </label>
+                            <img id="post-image-preview" src="https://placehold.co/600x400?text=Blog+Image" class="w-10 h-10 rounded-lg object-cover border dark:border-gray-700">
+                            <input type="hidden" id="post-image-url">
+                        </div>
                     </div>
                 </div>
 

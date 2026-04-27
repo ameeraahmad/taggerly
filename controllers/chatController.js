@@ -180,9 +180,8 @@ exports.sendMessage = async (req, res) => {
 
         // 2) Email Notification (if offline and enabled)
         if (!recipientUser.isOnline && recipientUser.chatNotifications) {
-            const protocol = req.protocol;
-            const host = req.get('host');
-            const chatUrl = `${protocol}://${host}/messages.html?conversationId=${conversationId}`;
+            const frontendURL = process.env.FRONTEND_URL || `${req.protocol}://${req.get('host')}`;
+            const chatUrl = `${frontendURL}/messages.html?conversationId=${conversationId}`;
 
             sendEmail({
                 email: recipientUser.email,

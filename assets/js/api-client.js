@@ -47,8 +47,21 @@ var apiClient = {
             method: 'POST',
             body: JSON.stringify(body),
         });
+        
         localStorage.setItem('token', data.token);
         localStorage.setItem('user', JSON.stringify(data.data));
+
+        // Sync country from profile
+        if (data.data && data.data.country) {
+            const flags = { 'uae': '🇦🇪', 'egypt': '🇪🇬', 'ksa': '🇸🇦', 'qatar': '🇶🇦' };
+            const names = { 'uae': 'UAE', 'egypt': 'Egypt', 'ksa': 'KSA', 'qatar': 'Qatar' };
+            
+            localStorage.setItem('selectedCountry', data.data.country);
+            localStorage.setItem('selectedCountrySource', 'manual'); 
+            localStorage.setItem('selectedCountryFlag', flags[data.data.country] || '🌍');
+            localStorage.setItem('selectedCountryName', names[data.data.country] || data.data.country);
+        }
+
         return data;
     },
 
