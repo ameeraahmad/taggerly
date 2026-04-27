@@ -1772,11 +1772,11 @@
                 document.getElementById('post-image-preview').src = 'https://placehold.co/600x400?text=Blog+Image';
                 document.getElementById('post-image-url').value = '';
                 // Default to current dashboard country filter if it's not 'all'
-                const currentFilter = localStorage.getItem('selectedCountry') || 'uae';
+                const currentFilter = localStorage.getItem('selectedCountry') || 'egypt';
                 if (currentFilter !== 'all') {
                     document.getElementById('post-country').value = currentFilter;
                 } else {
-                    document.getElementById('post-country').value = 'uae';
+                    document.getElementById('post-country').value = 'egypt';
                 }
             }
             

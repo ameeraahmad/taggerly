@@ -386,7 +386,8 @@
         document.addEventListener('DOMContentLoaded', async () => {
             // Check auth
             if (!localStorage.getItem('token')) {
-                await customAlert('Please login to post an ad.');
+                const confirmed = await customAlert('Please login to post an ad.');
+                if (confirmed === false) return;
                 window.location.href = 'login.html';
                 return;
             }

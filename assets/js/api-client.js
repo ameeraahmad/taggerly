@@ -39,6 +39,21 @@ var apiClient = {
     },
 
     // Auth
+    _syncUserCountry(user) {
+        if (user && user.country) {
+            const flags = { 'uae': '🇦🇪', 'egypt': '🇪🇬', 'ksa': '🇸🇦', 'qatar': '🇶🇦' };
+            const names = { 'uae': 'UAE', 'egypt': 'Egypt', 'ksa': 'KSA', 'qatar': 'Qatar' };
+            
+            localStorage.setItem('selectedCountry', user.country);
+            localStorage.setItem('selectedCountrySource', 'manual'); 
+            localStorage.setItem('selectedCountryFlag', flags[user.country] || '🌍');
+            localStorage.setItem('selectedCountryName', names[user.country] || user.country);
+            
+            // Dispatch event so UI can update immediately
+            window.dispatchEvent(new CustomEvent('countryChanged', { detail: { country: user.country } }));
+        }
+    },
+
     async login(email, password, captchaToken = null) {
         const body = { email, password };
         if (captchaToken) body.captchaToken = captchaToken;
@@ -51,16 +66,7 @@ var apiClient = {
         localStorage.setItem('token', data.token);
         localStorage.setItem('user', JSON.stringify(data.data));
 
-        // Sync country from profile
-        if (data.data && data.data.country) {
-            const flags = { 'uae': '🇦🇪', 'egypt': '🇪🇬', 'ksa': '🇸🇦', 'qatar': '🇶🇦' };
-            const names = { 'uae': 'UAE', 'egypt': 'Egypt', 'ksa': 'KSA', 'qatar': 'Qatar' };
-            
-            localStorage.setItem('selectedCountry', data.data.country);
-            localStorage.setItem('selectedCountrySource', 'manual'); 
-            localStorage.setItem('selectedCountryFlag', flags[data.data.country] || '🌍');
-            localStorage.setItem('selectedCountryName', names[data.data.country] || data.data.country);
-        }
+        this._syncUserCountry(data.data);
 
         return data;
     },
@@ -72,6 +78,9 @@ var apiClient = {
         });
         localStorage.setItem('token', data.token);
         localStorage.setItem('user', JSON.stringify(data.data));
+        
+        this._syncUserCountry(data.data);
+        
         return data;
     },
 
@@ -82,6 +91,9 @@ var apiClient = {
         });
         localStorage.setItem('token', data.token);
         localStorage.setItem('user', JSON.stringify(data.data));
+
+        this._syncUserCountry(data.data);
+
         return data;
     },
 
@@ -92,6 +104,9 @@ var apiClient = {
         });
         localStorage.setItem('token', data.token);
         localStorage.setItem('user', JSON.stringify(data.data));
+
+        this._syncUserCountry(data.data);
+
         return data;
     },
 

@@ -229,17 +229,17 @@ window.customAlert = function (message) {
             modal.classList.remove('scale-95');
         });
 
-        const close = () => {
+        const close = (result = true) => {
             overlay.classList.add('opacity-0');
             modal.classList.add('scale-95');
             setTimeout(() => {
                 document.body.removeChild(overlay);
-                resolve();
+                resolve(result);
             }, 300);
         };
 
-        okBtn.onclick = close;
-        closeBtn.onclick = close;
+        okBtn.onclick = () => close(true);
+        closeBtn.onclick = () => close(false);
     });
 };
 
@@ -698,7 +698,8 @@ document.addEventListener('DOMContentLoaded', async () => {
                     }
                 }
 
-                await customAlert(`${dicts[lang].locationActive || 'Location Set'}: ${finalLocDisplayName}`);
+                const confirmed = await customAlert(`${dicts[lang].locationActive || 'Location Set'}: ${finalLocDisplayName}`);
+                if (confirmed === false) return;
 
                 // Construct search URL - ensure country is explicitly passed if we just switched it
                 const currentCountry = localStorage.getItem('selectedCountry') || window.selectedCountry || 'uae';
@@ -1358,6 +1359,7 @@ document.addEventListener('DOMContentLoaded', async () => {
 
     async function loadCategorySliders(country = null) {
         const configs = [
+            { category: null, sliderId: 'cat-all-slider' },
             { category: 'Motors', sliderId: 'cat-motors-slider' },
             { category: 'Property', sliderId: 'cat-property-slider' },
             { category: 'Electronics', sliderId: 'cat-electronics-slider' },
@@ -1373,7 +1375,8 @@ document.addEventListener('DOMContentLoaded', async () => {
             const slider = document.getElementById(config.sliderId);
             if (slider) {
                 try {
-                    const params = { category: config.category, limit: 12 };
+                    const params = { limit: 12 };
+                    if (config.category) params.category = config.category;
                     if (country) params.country = country;
                     const response = await apiClient.getAds(params);
                     const ads = response.data;

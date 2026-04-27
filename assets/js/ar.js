@@ -99,6 +99,7 @@ var arTranslations = {
     noAdsFound: "لا توجد إعلانات متاحة لهذه الدولة حالياً.",
     noAdsInCategory: "لا توجد إعلانات في هذا القسم لهذه المنطقة حالياً.",
     any: "الكل",
+    all: "الكل",
 
     // Header & Location
     myAccount: "حسابي",

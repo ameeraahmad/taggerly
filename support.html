@@ -451,7 +451,8 @@
             if (!token) {
                 const lang = window.currentLang || 'en';
                 const msg = (translations[lang] && translations[lang].loginToContact) || 'Please login to send a message.';
-                await customAlert(msg);
+                const confirmed = await customAlert(msg);
+                if (confirmed === false) return;
                 window.location.href = 'login.html';
                 return;
             }

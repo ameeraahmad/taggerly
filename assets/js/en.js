@@ -57,6 +57,7 @@ var enTranslations = {
     noAdsFound: "No ads available for this country yet.",
     noAdsInCategory: "No ads in this category for this region yet.",
     any: "Any",
+    all: "All",
 
     // Header & Location
     myAccount: "My Account",
