@@ -47,15 +47,22 @@
             <div>
                 <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2"
                     data-translate="categoryLabel">Category</label>
-                <select id="ad-category" name="category" disabled
-                    class="block w-full border border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-white rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-accent focus:border-accent sm:text-sm">
-                    <option value="" disabled data-translate="selectCategory">Select Category</option>
-                    <option value="Motors" data-translate="motors">Motors</option>
-                    <option value="Property" data-translate="property">Property</option>
-                    <option value="Classifieds" data-translate="classifieds">Classifieds</option>
-                    <option value="Furniture" data-translate="homeGarden">Furniture & Garden</option>
-                    <option value="Electronics" data-translate="electronics">Electronics</option>
-                </select>
+                <div class="flex gap-2">
+                    <select id="ad-category" name="category" disabled
+                        class="block w-full border border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-white rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-accent focus:border-accent sm:text-sm">
+                        <option value="" disabled selected data-translate="selectCategory">Select Category</option>
+                        <option value="Motors" data-translate="motorsTitle">Motors</option>
+                        <option value="Property" data-translate="propertyTitle">Property</option>
+                        <option value="Electronics" data-translate="electronicsCategoryTitle">Electronics</option>
+                        <option value="Classifieds" data-translate="classifiedsTitle">Classifieds</option>
+                        <option value="Jobs" data-translate="jobsTitle">Jobs</option>
+                        <option value="Services" data-translate="servicesTitle">Services</option>
+                    </select>
+                    <div id="sub-category-badge"
+                        class="hidden items-center bg-gray-100 dark:bg-gray-700 text-gray-600 dark:text-gray-300 px-3 py-2 rounded-md font-bold text-sm whitespace-nowrap">
+                        <!-- Subcategory text here -->
+                    </div>
+                </div>
             </div>
 
             <!-- Ad Details -->
@@ -282,10 +289,20 @@
 
             <!-- Location -->
             <div>
-                <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Location (Governorate/City)</label>
-                <select id="post-ad-location" name="city"
-                    class="block w-full border border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-white rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-accent focus:border-accent sm:text-sm">
-                    <!-- Populated by JS based on ad's country -->
+                <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2" data-translate="locationGovernorateCity">Location (Governorate/City)</label>
+                <div id="location-select-container" class="relative flex gap-2">
+                    <div class="relative flex-grow">
+                        <input type="text" id="location-search-input" placeholder="Search City/Governorate..."
+                            class="block w-full border border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-white rounded-md shadow-sm py-2 px-3 pr-10 focus:outline-none focus:ring-accent focus:border-accent sm:text-sm transition-colors">
+                        <svg class="w-5 h-5 text-gray-400 absolute right-3 top-2.5 pointer-events-none" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path></svg>
+                    </div>
+                    <div id="location-results"
+                        class="absolute z-[100] w-full bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg shadow-xl mt-1 hidden max-h-60 overflow-y-auto top-[42px]">
+                        <!-- Results populated dynamically -->
+                    </div>
+                </div>
+                <select id="post-ad-location" name="city" class="hidden" data-dynamic-location="true">
+                    <!-- Options populated dynamically -->
                 </select>
             </div>
 
@@ -343,8 +360,8 @@
             const adId = urlParams.get('id');
 
             if (!adId) {
-                await customAlert('No Ad ID provided');
-                window.location.href = 'dashboard.html';
+                const confirmed = await customAlert('No Ad ID provided');
+                if (confirmed) window.location.href = 'dashboard.html';
                 return;
             }
 
@@ -354,18 +371,79 @@
             const categorySelect = document.getElementById('ad-category');
             const additionalDetails = document.getElementById('additional-details');
 
-            // Populate city options based on country
-            const populateCities = (country) => {
-                const cityMap = {
-                    'uae':    ['Dubai', 'Abu Dhabi', 'Sharjah', 'Ajman', 'Ras Al Khaimah', 'Fujairah', 'Umm Al Quwain'],
-                    'egypt':  ['Cairo', 'Alexandria', 'Giza', 'Sharm El Sheikh', 'Hurghada', 'Luxor', 'Aswan', 'Mansoura', 'Tanta', 'Port Said'],
-                    'ksa':    ['Riyadh', 'Jeddah', 'Mecca', 'Medina', 'Dammam', 'Al Khobar', 'Tabuk', 'Abha', 'Taif'],
-                    'qatar':  ['Doha', 'Al Rayyan', 'Umm Salal', 'Al Wakrah', 'Al Khor']
-                };
-                const cities = cityMap[country] || cityMap['uae'];
+            const populateCities = () => {
+                const country = window.selectedCountry || localStorage.getItem('selectedCountry') || 'uae';
+                const cities = (window.locations && window.locations[country]) ? window.locations[country] : [];
                 const locationSelect = document.getElementById('post-ad-location');
-                locationSelect.innerHTML = cities.map(c => `<option value="${c}">${c}</option>`).join('');
+                locationSelect.innerHTML = '<option value="" disabled data-translate="selectLocation">Select Location</option>' + cities.map(c => `<option value="${c}">${c}</option>`).join('');
             };
+
+            const locSearchInput = document.getElementById('location-search-input');
+            const locResultsDiv = document.getElementById('location-results');
+            const hiddenSelect = document.getElementById('post-ad-location');
+
+            const updateLocationResults = (filter = '') => {
+                const country = window.selectedCountry || localStorage.getItem('selectedCountry') || 'uae';
+                const cities = (window.locations && window.locations[country]) ? window.locations[country] : [];
+                
+                const lowerFilter = filter.toLowerCase().trim();
+                let filtered = cities.filter(c => c.toLowerCase().includes(lowerFilter));
+                
+                locResultsDiv.innerHTML = '';
+                
+                if (filtered.length > 0) {
+                    filtered.forEach(city => {
+                        const div = document.createElement('div');
+                        div.className = 'px-4 py-2 hover:bg-gray-50 dark:hover:bg-gray-700 cursor-pointer text-sm text-gray-800 dark:text-gray-200';
+                        div.textContent = city;
+                        div.onclick = () => selectCity(city);
+                        locResultsDiv.appendChild(div);
+                    });
+                } else {
+                    const div = document.createElement('div');
+                    div.className = 'px-4 py-3 text-sm text-gray-500 flex flex-col gap-2';
+                    const lang = window.currentLang || 'en';
+                    const label = (window.translations && window.translations[lang] && window.translations[lang].useCustomLocation) || 'Use as location';
+                    
+                    div.innerHTML = `
+                        <span class="italic">No exact match found.</span>
+                        <button type="button" class="bg-blue-50 text-blue-600 px-3 py-1 rounded-md text-xs font-bold w-fit hover:bg-blue-100 dark:bg-blue-900/30 dark:text-blue-400">
+                            + ${label}: "${filter}"
+                        </button>
+                    `;
+                    div.querySelector('button').onclick = () => selectCity(filter);
+                    locResultsDiv.appendChild(div);
+                }
+                
+                locResultsDiv.classList.remove('hidden');
+            };
+
+            const selectCity = (city) => {
+                locSearchInput.value = city;
+                locResultsDiv.classList.add('hidden');
+                
+                // Add to hidden select if not exists
+                let exists = Array.from(hiddenSelect.options).some(o => o.value.toLowerCase() === city.toLowerCase());
+                if (!exists) {
+                    const opt = document.createElement('option');
+                    opt.value = city;
+                    opt.textContent = city;
+                    hiddenSelect.appendChild(opt);
+                }
+                hiddenSelect.value = city;
+            };
+
+            if (locSearchInput) {
+                locSearchInput.addEventListener('focus', () => updateLocationResults(locSearchInput.value));
+                locSearchInput.addEventListener('input', () => updateLocationResults(locSearchInput.value));
+                
+                document.addEventListener('click', (e) => {
+                    const container = document.getElementById('location-select-container');
+                    if (container && !container.contains(e.target)) {
+                        locResultsDiv.classList.add('hidden');
+                    }
+                });
+            }
 
             // Handle Image Management
             let selectedFiles = [];
@@ -436,19 +514,37 @@
                 const user = JSON.parse(localStorage.getItem('user'));
 
                 if (ad.userId !== user.id && user.role !== 'admin') {
-                    await customAlert('Not authorized to edit this ad');
-                    window.location.href = 'dashboard.html';
+                    const confirmed = await customAlert('Not authorized to edit this ad');
+                    if (confirmed) window.location.href = 'dashboard.html';
                     return;
                 }
 
-                // Fill Form
-                document.getElementById('ad-title').value = ad.title;
-                document.getElementById('ad-price').value = ad.price;
-                document.getElementById('ad-description').value = ad.description;
-
-                // Lock category - pre-select and disable
-                categorySelect.value = ad.category;
-                categorySelect.disabled = true;
+                // Populate basic fields
+                document.getElementById('ad-title').value = ad.title || '';
+                document.getElementById('ad-price').value = ad.price || '';
+                document.getElementById('ad-description').value = ad.description || '';
+                if (ad.category) {
+                    const catOptions = Array.from(categorySelect.options);
+                    const match = catOptions.find(o => o.value.toLowerCase() === ad.category.toLowerCase().trim());
+                    if (match) {
+                        categorySelect.value = match.value;
+                    } else {
+                        const newOpt = document.createElement('option');
+                        newOpt.value = ad.category;
+                        newOpt.textContent = ad.category;
+                        categorySelect.appendChild(newOpt);
+                        categorySelect.value = ad.category;
+                    }
+                    categorySelect.dispatchEvent(new Event('change'));
+                }// Subcategory badge
+                const subCategoryBadge = document.getElementById('sub-category-badge');
+                if (ad.subCategory) {
+                    subCategoryBadge.textContent = ad.subCategory;
+                    subCategoryBadge.classList.remove('hidden');
+                    subCategoryBadge.classList.add('flex');
+                    // Store it so we can send it back
+                    subCategoryBadge.dataset.sub = ad.subCategory;
+                }
 
                 document.getElementById('ad-year').value = ad.year || '';
                 document.getElementById('ad-kilometers').value = ad.kilometers || '';
@@ -478,8 +574,13 @@
                 }
 
                 // Populate cities based on ad's country THEN set the city value
-                populateCities(ad.country || 'uae');
-                document.getElementById('post-ad-location').value = ad.city || '';
+                populateCities();
+                const locSelect = document.getElementById('post-ad-location');
+                if (ad.city) {
+                    selectCity(ad.city);
+                } else {
+                    locSelect.value = '';
+                }
 
                 document.getElementById('ad-phone').value = ad.phone || '';
 
@@ -577,6 +678,12 @@
                 
                 // Ensure critical fields are included (category is disabled so must be appended manually)
                 if (!formData.has('category')) formData.append('category', categorySelect.value || '');
+                
+                const subCategoryBadge = document.getElementById('sub-category-badge');
+                if (subCategoryBadge && subCategoryBadge.dataset.sub) {
+                    formData.append('subCategory', subCategoryBadge.dataset.sub);
+                }
+
                 if (!formData.has('city')) formData.append('city', document.getElementById('post-ad-location')?.value || '');
                 if (!formData.has('country')) formData.append('country', window.selectedCountry || localStorage.getItem('selectedCountry') || 'uae');
                 
@@ -604,8 +711,8 @@
                     submitBtn.textContent = 'Updating...';
 
                     await apiClient.updateAd(adId, formData);
-                    await customAlert('Ad updated successfully!');
-                    window.location.href = 'dashboard.html';
+                    const confirmed = await customAlert('Ad updated successfully!');
+                    if (confirmed) window.location.href = 'dashboard.html';
                 } catch (err) {
                     let errorMsg = err.message || 'Validation failed';
                     if (err.errors && Array.isArray(err.errors)) {

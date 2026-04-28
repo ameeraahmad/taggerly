@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My Notifications - Taggerly</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: {
+                        primary: '#0B2447',
+                        secondary: '#F5F5F5',
+                        accent: '#FF6B00',
+                        success: '#00C853',
+                    },
+                    animation: {
+                        'fade-in': 'fadeIn 0.5s ease-out',
+                    },
+                    keyframes: {
+                        fadeIn: {
+                            '0%': { opacity: '0', transform: 'translateY(10px)' },
+                            '100%': { opacity: '1', transform: 'translateY(0)' },
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+    <link href="assets/css/style.css" rel="stylesheet">
+    <!-- Socket.io -->
+    <script src="/socket.io/socket.io.js"></script>
+</head>
+
+<body
+    class="bg-gray-100 dark:bg-gray-900 font-sans leading-normal tracking-normal text-gray-800 dark:text-gray-100 transition-colors duration-300">
+    <!-- Header Placeholder -->
+    <div id="global-header-placeholder"></div>
+
+    <div class="max-w-4xl mx-auto py-10 px-4 sm:px-6 lg:px-8 animate-fade-in min-h-[60vh]">
+        <div class="flex justify-between items-center mb-6">
+            <h1 class="text-3xl font-bold text-primary dark:text-white" data-translate="notifications">Notifications</h1>
+            <button id="mark-all-read-page" class="text-sm font-bold text-accent hover:underline bg-orange-50 dark:bg-orange-900/20 px-4 py-2 rounded-lg transition" data-translate="markAllRead">
+                Mark all as read
+            </button>
+        </div>
+
+        <div class="bg-white dark:bg-gray-800 rounded-xl shadow-sm overflow-hidden border dark:border-gray-700">
+            <div id="page-notif-list" class="divide-y divide-gray-100 dark:divide-gray-700">
+                <div class="p-10 text-center text-gray-500">
+                    <div class="animate-spin rounded-full h-8 w-8 border-b-2 border-accent mx-auto"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Footer Placeholder -->
+    <div id="global-footer-placeholder"></div>
+
+    <script src="assets/js/en.js"></script>
+    <script src="assets/js/ar.js"></script>
+    <script src="assets/js/api-client.js"></script>
+    <script src="assets/js/main.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', async () => {
+            const token = localStorage.getItem('token');
+            if (!token) {
+                window.location.href = 'login.html';
+                return;
+            }
+
+            const listContainer = document.getElementById('page-notif-list');
+            const lang = window.currentLang || localStorage.getItem('lang') || 'en';
+
+            async function loadPageNotifications() {
+                try {
+                    const res = await apiClient.fetch('/notifications');
+                    if (res.success) {
+                        renderNotifications(res.data);
+                    }
+                } catch (err) {
+                    console.error('Failed to load notifications:', err);
+                    listContainer.innerHTML = `<div class="p-10 text-center text-red-500">Error loading notifications</div>`;
+                }
+            }
+
+            function renderNotifications(notifications) {
+                if (notifications.length === 0) {
+                    const noNotifText = window.translations?.[lang]?.noNotifications || 'No notifications';
+                    listContainer.innerHTML = `
+                        <div class="p-10 text-center text-gray-500 flex flex-col items-center">
+                            <svg class="w-16 h-16 text-gray-300 dark:text-gray-600 mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9"></path></svg>
+                            <span data-translate="noNotifications">${noNotifText}</span>
+                        </div>
+                    `;
+                    return;
+                }
+
+                listContainer.innerHTML = notifications.map(n => `
+                    <div class="p-6 hover:bg-gray-50 dark:hover:bg-gray-700 transition cursor-pointer flex gap-4 ${!n.isRead ? 'bg-blue-50/50 dark:bg-blue-900/10 border-l-4 border-l-accent' : 'border-l-4 border-l-transparent'}" onclick="handlePageNotifClick(${n.id}, '${n.link || ''}')"> 
+                        <div class="w-10 h-10 bg-gray-100 dark:bg-gray-600 rounded-full flex items-center justify-center flex-shrink-0 text-accent">
+                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9"></path></svg>
+                        </div>
+                        <div class="flex-grow">
+                            <div class="flex justify-between items-start mb-1">
+                                <h3 class="text-base font-bold text-gray-900 dark:text-white ${!n.isRead ? 'text-primary' : ''}">${n.title}</h3>
+                                <span class="text-xs text-gray-400 whitespace-nowrap ml-2">${new Date(n.createdAt).toLocaleDateString()} ${new Date(n.createdAt).toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'})}</span>
+                            </div>
+                            <p class="text-sm text-gray-600 dark:text-gray-300 leading-relaxed">${n.message}</p>
+                        </div>
+                    </div>
+                `).join('');
+                
+                // Translate the dynamic HTML
+                if (window.translatePage) window.translatePage();
+            }
+
+            window.handlePageNotifClick = async function (id, link) {
+                try {
+                    await apiClient.fetch(`/notifications/${id}/read`, { method: 'PUT' });
+                    if (link && link !== 'null' && link.trim() !== '') {
+                        window.location.href = link;
+                    } else {
+                        loadPageNotifications();
+                    }
+                } catch (err) {
+                    console.error(err);
+                }
+            };
+
+            const markAllBtn = document.getElementById('mark-all-read-page');
+            if (markAllBtn) {
+                markAllBtn.addEventListener('click', async () => {
+                    try {
+                        markAllBtn.disabled = true;
+                        markAllBtn.innerHTML = '<div class="animate-spin h-4 w-4 border-b-2 border-accent mx-auto"></div>';
+                        await apiClient.fetch('/notifications/read-all', { method: 'PUT' });
+                        await loadPageNotifications();
+                    } catch (err) {
+                        console.error(err);
+                    } finally {
+                        markAllBtn.disabled = false;
+                        markAllBtn.textContent = window.translations?.[lang]?.markAllRead || 'Mark all as read';
+                    }
+                });
+            }
+
+            loadPageNotifications();
+            
+            // Re-fetch notifications if the global socket receives one
+            if (window.socket) {
+                window.socket.on('new_notification', () => {
+                    loadPageNotifications();
+                });
+            }
+        });
+    </script>
+</body>
+
+</html>

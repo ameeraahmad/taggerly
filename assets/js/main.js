@@ -1,9 +1,9 @@
 // Language Dictionary
 var translations = {
-    en: enTranslations,
-    ar: arTranslations
+    en: typeof enTranslations !== 'undefined' ? enTranslations : {},
+    ar: typeof arTranslations !== 'undefined' ? arTranslations : {}
 };
-// Make translations globally accessible from any HTML inline script or other JS file
+// Make translations globally accessible
 window.translations = translations;
 
 // ─── Dev Hot Reload (localhost only) ───
@@ -55,7 +55,10 @@ function translatePage() {
             el.setAttribute('placeholder', value);
         } else {
             if (el.id === 'user-btn-text' && localStorage.getItem('token')) {
-                const user = JSON.parse(localStorage.getItem('user'));
+                let user = null;
+                try {
+                    user = JSON.parse(localStorage.getItem('user'));
+                } catch (e) { console.error('Failed to parse user data'); }
                 el.textContent = user ? user.name : value;
             } else {
                 el.innerHTML = value;
@@ -212,10 +215,10 @@ window.customAlert = function (message) {
         text.textContent = message;
 
         const lang = window.currentLang || 'en';
-        const okText = window.translations?.[lang]?.done || 'OK';
+        const okText = lang === 'ar' ? 'موافق' : 'OK';
 
         const okBtn = document.createElement('button');
-        okBtn.className = 'w-full py-2.5 px-4 bg-primary hover:bg-blue-900 text-white rounded-xl font-bold transition shadow-lg shadow-blue-900/20';
+        okBtn.className = 'w-full py-2.5 px-4 bg-accent hover:bg-orange-600 text-white rounded-xl font-bold transition shadow-lg shadow-orange-500/30';
         okBtn.textContent = okText;
 
         modal.appendChild(icon);
@@ -255,6 +258,186 @@ window.closeModal = function () {
 };
 
 document.addEventListener('DOMContentLoaded', async () => {
+    // --- Define Core Functions First to Avoid Race Conditions ---
+    
+    window.loadNotifications = async function () {
+        if (!localStorage.getItem('token')) return;
+        try {
+            console.log('🔔 Loading notifications...');
+            const res = await apiClient.fetch('/notifications');
+            if (res.success) {
+                updateNotifUI(res.data);
+            }
+        } catch (err) {
+            console.error('Failed to load notifications:', err);
+        }
+    };
+
+    function updateNotifUI(notifications) {
+        const list = document.getElementById('notif-list');
+        const badge = document.getElementById('notif-badge');
+        if (!list) return;
+
+        const currentLang = window.currentLang || localStorage.getItem('lang') || 'en';
+        const unreadCount = notifications.filter(n => !n.isRead).length;
+
+        if (badge) {
+            if (unreadCount > 0) {
+                badge.textContent = unreadCount > 9 ? '9+' : unreadCount;
+                badge.classList.remove('hidden');
+            } else {
+                badge.classList.add('hidden');
+            }
+        }
+
+        if (notifications.length === 0) {
+            list.innerHTML = `<p class="text-center py-4 text-sm text-gray-500" data-translate="noNotifications">${(window.translations && window.translations[currentLang] && window.translations[currentLang].noNotifications) || 'No notifications'}</p>`;
+            return;
+        }
+
+        list.innerHTML = notifications.map(n => `
+            <div class="px-4 py-3 hover:bg-gray-50 dark:hover:bg-gray-700 transition cursor-pointer ${!n.isRead ? 'bg-blue-50/50 dark:bg-blue-900/10' : ''}" onclick="handleNotifClick(${n.id}, '${n.link || ''}')"> 
+                <p class="text-sm font-bold text-gray-900 dark:text-white">${n.title}</p>
+                <p class="text-xs text-gray-600 dark:text-gray-400 mt-0.5">${n.message}</p>
+                <p class="text-[10px] text-gray-400 mt-1">${new Date(n.createdAt).toLocaleString()}</p>
+            </div>
+        `).join('');
+    }
+
+    window.handleNotifClick = async function (id, link) {
+        try {
+            await apiClient.fetch(`/notifications/${id}/read`, { method: 'PUT' });
+            if (link && link !== 'null' && link.trim() !== '') {
+                window.location.href = link;
+            } else {
+                loadNotifications();
+            }
+        } catch (err) {
+            console.error(err);
+        }
+    };
+
+    window.refreshUnreadCount = async function () {
+        if (!localStorage.getItem('token') || !window.apiClient) return;
+
+        try {
+            const response = await apiClient.getUnreadCount();
+            const count = response.count;
+
+            const badges = document.querySelectorAll('.unread-badge');
+            badges.forEach(badge => {
+                if (count > 0) {
+                    badge.textContent = count > 99 ? '99+' : count;
+                    badge.classList.remove('hidden');
+                } else {
+                    badge.classList.add('hidden');
+                    badge.textContent = '0';
+                }
+            });
+        } catch (err) {
+            console.warn('Failed to refresh unread count:', err);
+        }
+    };
+
+    window.updateAuthState = function () {
+        const user = JSON.parse(localStorage.getItem('user'));
+        const token = localStorage.getItem('token');
+        const lang = window.currentLang || localStorage.getItem('lang') || 'en';
+        const trans = translations[lang] || translations['en'];
+
+        const userDropdown = document.getElementById('user-dropdown');
+        const userBtnText = document.getElementById('user-btn-text');
+        const headerImg = document.getElementById('header-profile-img');
+        const notifWrapper = document.getElementById('notif-wrapper');
+
+        if (headerImg) {
+            if (user && user.avatar) {
+                headerImg.src = user.avatar;
+            } else {
+                headerImg.src = 'https://www.gravatar.com/avatar/00000000000000000000000000000000?d=mp&f=y';
+            }
+        }
+
+        if (token && user) {
+            if (notifWrapper) notifWrapper.classList.remove('hidden');
+            if (typeof loadNotifications === 'function') loadNotifications();
+
+            if (!user.isEmailVerified) {
+                showVerificationBanner(user);
+            } else {
+                const banner = document.getElementById('verification-banner');
+                if (banner) banner.remove();
+            }
+
+            if (userBtnText) {
+                userBtnText.textContent = user.name;
+                userBtnText.removeAttribute('data-translate');
+            }
+
+            if (userDropdown) {
+                userDropdown.innerHTML = `
+                    <div class="px-4 py-3 border-b dark:border-gray-700">
+                        <p class="text-sm font-bold text-gray-900 dark:text-white truncate">${user.name}</p>
+                        <p class="text-xs text-gray-500 truncate">${user.email}</p>
+                    </div>
+                    <a href="messages.html" class="flex items-center justify-between px-4 py-2 text-sm text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-700 hover:text-accent font-bold">
+                        <span data-translate="messages">${trans.messages || 'Messages'}</span>
+                        <span class="unread-badge bg-red-500 text-white text-[10px] font-bold px-1.5 py-0.5 rounded-full hidden">0</span>
+                    </a>
+                    <a href="profile.html" class="block px-4 py-2 text-sm text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-700 hover:text-accent">
+                        <span data-translate="myProfile">${trans.myProfile || 'Profile'}</span>
+                    </a>
+                    <a href="dashboard.html" class="block px-4 py-2 text-sm text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-700 hover:text-accent">
+                        <span data-translate="myDashboard">${trans.myDashboard || 'Dashboard'}</span>
+                    </a>
+                    ${user.role === 'admin' ? `
+                    <a href="admin.html" class="block px-4 py-2 text-sm text-blue-600 hover:bg-blue-50 dark:hover:bg-gray-700 font-bold border-l-4 border-blue-600">
+                        <span data-translate="adminPanel">${trans.adminPanel || 'Admin Panel'}</span>
+                    </a>` : ''}
+                    <a href="favorites.html" class="block px-4 py-2 text-sm text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-700 hover:text-accent">
+                        <span data-translate="myFavorites">${trans.myFavorites || 'Favorites'}</span>
+                    </a>
+                    <div class="border-t dark:border-gray-700 my-1"></div>
+                    <a href="#" class="logout-action-btn block px-4 py-2 text-sm text-red-600 hover:bg-gray-100 dark:hover:bg-gray-700 font-bold">
+                        <span data-translate="logout">${trans.logout || 'Logout'}</span>
+                    </a>
+                `;
+            }
+        } else {
+            if (notifWrapper) notifWrapper.classList.add('hidden');
+            const banner = document.getElementById('verification-banner');
+            if (banner) banner.remove();
+
+            if (userBtnText) {
+                userBtnText.textContent = trans.login || 'Log in';
+                userBtnText.setAttribute('data-translate', 'login');
+            }
+
+            if (userDropdown) {
+                userDropdown.innerHTML = `
+                    <a href="login.html" class="block px-4 py-2 text-sm text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-700 hover:text-accent font-bold">
+                        <span data-translate="login">${trans.login || 'Log in'}</span>
+                    </a>
+                    <a href="login.html?mode=signup" class="block px-4 py-2 text-sm text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-700 hover:text-accent">
+                        <span data-translate="createAccount">${trans.createAccount || 'Sign Up'}</span>
+                    </a>
+                    <div class="border-t dark:border-gray-700 my-1"></div>
+                    <a href="plans.html" class="block px-4 py-2 text-sm text-orange-500 hover:bg-gray-100 dark:hover:bg-gray-700 hover:text-accent font-bold">
+                        <span data-translate="plansTitle">${trans.plansTitle || 'Pricing Plans'}</span>
+                    </a>
+                `;
+            }
+        }
+        
+        // Attach logout listeners
+        document.querySelectorAll('.logout-action-btn').forEach(btn => {
+            btn.onclick = (e) => {
+                e.preventDefault();
+                apiClient.logout();
+            };
+        });
+    };
+
     // --- Initialize Global State from LocalStorage IMMEDIATELY ---
     window.currentLang = localStorage.getItem('lang') || 'en';
     // 1. Detect Country First (To avoid flicker)
@@ -761,28 +944,6 @@ document.addEventListener('DOMContentLoaded', async () => {
     initCountryDropdown();
 
     // --- Global Unread Count Logic ---
-    window.refreshUnreadCount = async function () {
-        if (!localStorage.getItem('token') || !window.apiClient) return;
-
-        try {
-            const response = await apiClient.getUnreadCount();
-            const count = response.count;
-
-            // Update all badges with class 'unread-badge'
-            const badges = document.querySelectorAll('.unread-badge');
-            badges.forEach(badge => {
-                if (count > 0) {
-                    badge.textContent = count > 99 ? '99+' : count;
-                    badge.classList.remove('hidden');
-                } else {
-                    badge.classList.add('hidden');
-                    badge.textContent = '0';
-                }
-            });
-        } catch (err) {
-            console.warn('Failed to refresh unread count:', err);
-        }
-    };
 
     // --- Language Switching Logic ---
     // Set up the toggle button click listener (updateLanguage itself is defined globally at top of file)
@@ -1051,12 +1212,6 @@ document.addEventListener('DOMContentLoaded', async () => {
             resendBtn.onclick = async () => {
                 try {
                     resendBtn.disabled = true;
-                    resendBtn.textContent = 'Sending...';
-                    const res = await apiClient.fetch('/auth/resend-verification', { method: 'POST' });
-                    if (res.success) {
-                        alert('Verification link sent to your email!');
-                        resendBtn.textContent = 'Sent ✅';
-                    }
                 } catch (err) {
                     alert(err.message);
                     resendBtn.disabled = false;
@@ -1068,196 +1223,11 @@ document.addEventListener('DOMContentLoaded', async () => {
         if (window.updateLanguage) window.updateLanguage(window.currentLang);
     }
 
-    window.updateAuthState = function () {
-        const user = JSON.parse(localStorage.getItem('user'));
-        const token = localStorage.getItem('token');
-        const lang = window.currentLang || localStorage.getItem('lang') || 'en';
-        const trans = translations[lang] || translations['en'];
-
-        // Find the user dropdown by ID
-        const userDropdown = document.getElementById('user-dropdown');
-        const userBtnText = document.getElementById('user-btn-text');
-        const headerImg = document.getElementById('header-profile-img');
-        const notifWrapper = document.getElementById('notif-wrapper');
-
-        if (headerImg) {
-            if (user && user.avatar) {
-                headerImg.src = user.avatar;
-            } else {
-                headerImg.src = 'https://www.gravatar.com/avatar/00000000000000000000000000000000?d=mp&f=y';
-            }
-        }
-
-        if (token && user) {
-            // --- LOGGED IN STATE ---
-            if (notifWrapper) notifWrapper.classList.remove('hidden');
-            if (typeof loadNotifications === 'function') loadNotifications();
-
-            // Handle email verification banner
-            if (!user.isEmailVerified) {
-                showVerificationBanner(user);
-            } else {
-                const banner = document.getElementById('verification-banner');
-                if (banner) banner.remove();
-            }
-
-            // Update Header Button Text
-            if (userBtnText) {
-                userBtnText.textContent = user.name;
-                userBtnText.removeAttribute('data-translate');
-            }
-
-            // Update Dropdown Content
-            if (userDropdown) {
-                userDropdown.innerHTML = `
-                    <div class="px-4 py-3 border-b dark:border-gray-700">
-                        <p class="text-sm font-bold text-gray-900 dark:text-white truncate">${user.name}</p>
-                        <p class="text-xs text-gray-500 truncate">${user.email}</p>
-                    </div>
-                    <a href="messages.html" class="flex items-center justify-between px-4 py-2 text-sm text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-700 hover:text-accent font-bold">
-                        <span data-translate="messages">${trans.messages || 'Messages'}</span>
-                        <span class="unread-badge bg-red-500 text-white text-[10px] font-bold px-1.5 py-0.5 rounded-full hidden">0</span>
-                    </a>
-                    <a href="profile.html" class="block px-4 py-2 text-sm text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-700 hover:text-accent">
-                        <span data-translate="myProfile">${trans.myProfile || 'Profile'}</span>
-                    </a>
-                    <a href="dashboard.html" class="block px-4 py-2 text-sm text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-700 hover:text-accent">
-                        <span data-translate="myDashboard">${trans.myDashboard || 'Dashboard'}</span>
-                    </a>
-                    ${user.role === 'admin' ? `
-                    <a href="admin.html" class="block px-4 py-2 text-sm text-blue-600 hover:bg-blue-50 dark:hover:bg-gray-700 font-bold border-l-4 border-blue-600">
-                        <span data-translate="adminPanel">${trans.adminPanel || 'Admin Panel'}</span>
-                    </a>` : ''}
-                    <a href="favorites.html" class="block px-4 py-2 text-sm text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-700 hover:text-accent">
-                        <span data-translate="myFavorites">${trans.myFavorites || 'Favorites'}</span>
-                    </a>
-                    <div class="border-t dark:border-gray-700 my-1"></div>
-                    <a href="#" class="logout-action-btn block px-4 py-2 text-sm text-red-600 hover:bg-gray-100 dark:hover:bg-gray-700 font-bold">
-                        <span data-translate="logout">${trans.logout || 'Logout'}</span>
-                    </a>
-                `;
-            }
-        } else {
-            // --- LOGGED OUT STATE ---
-            if (notifWrapper) notifWrapper.classList.add('hidden');
-            const banner = document.getElementById('verification-banner');
-            if (banner) banner.remove();
-
-            // Update Header Button Text
-            if (userBtnText) {
-                userBtnText.textContent = trans.login || 'Log in';
-                userBtnText.setAttribute('data-translate', 'login');
-            }
-
-            // Update Dropdown Content
-            if (userDropdown) {
-                userDropdown.innerHTML = `
-                    <a href="login.html" class="block px-4 py-2 text-sm text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-700 hover:text-accent font-bold">
-                        <span data-translate="login">${trans.login || 'Log in'}</span>
-                    </a>
-                    <a href="login.html?mode=signup" class="block px-4 py-2 text-sm text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-700 hover:text-accent">
-                        <span data-translate="createAccount">${trans.createAccount || 'Sign Up'}</span>
-                    </a>
-                    <div class="border-t dark:border-gray-700 my-1"></div>
-                    <a href="plans.html" class="block px-4 py-2 text-sm text-orange-500 hover:bg-gray-100 dark:hover:bg-gray-700 hover:text-accent font-bold">
-                        <span data-translate="plansTitle">${trans.plansTitle || 'Pricing Plans'}</span>
-                    </a>
-                `;
-            }
-        }
-
-        // --- Mobile Menu: Update Dynamic Sections Only ---
-        const mobileUserName = document.getElementById('mobile-user-name');
-        const mobileUserEmail = document.getElementById('mobile-user-email');
-        const mobileProfileImg = document.getElementById('mobile-profile-img');
-        const mobileAuthLinks = document.getElementById('mobile-auth-links');
-
-        if (token && user) {
-            // --- Mobile: Logged In State ---
-            if (mobileProfileImg && user.avatar) mobileProfileImg.src = user.avatar;
-            if (mobileUserName) {
-                mobileUserName.textContent = user.name;
-                mobileUserName.removeAttribute('data-translate');
-            }
-            if (mobileUserEmail) {
-                mobileUserEmail.textContent = user.email;
-                mobileUserEmail.classList.remove('hidden');
-            }
-            // Update auth links to logged-in state
-            if (mobileAuthLinks) {
-                mobileAuthLinks.innerHTML = `
-                    <a href="messages.html" class="flex items-center gap-2 px-3 py-2 rounded-md text-base font-bold text-accent hover:bg-accent/5 transition">
-                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 10h.01M12 10h.01M16 10h.01M9 16H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-5l-5 5-1-5z"></path></svg>
-                        <span data-translate="messages">${trans.messages || 'Messages'}</span>
-                    </a>
-                    <a href="profile.html" class="flex items-center gap-2 px-3 py-2 rounded-md text-base font-medium text-gray-700 dark:text-gray-300 hover:text-accent hover:bg-gray-50 dark:hover:bg-gray-800 transition">
-                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"></path></svg>
-                        <span data-translate="myProfile">${trans.myProfile || 'Profile'}</span>
-                    </a>
-                    <a href="dashboard.html" class="flex items-center gap-2 px-3 py-2 rounded-md text-base font-medium text-gray-700 dark:text-gray-300 hover:text-accent hover:bg-gray-50 dark:hover:bg-gray-800 transition">
-                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 7v10a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2h-6l-2-2H5a2 2 0 00-2 2z"></path></svg>
-                        <span data-translate="myDashboard">${trans.myDashboard || 'Dashboard'}</span>
-                    </a>
-                    <a href="favorites.html" class="flex items-center gap-2 px-3 py-2 rounded-md text-base font-medium text-gray-700 dark:text-gray-300 hover:text-accent hover:bg-gray-50 dark:hover:bg-gray-800 transition">
-                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"></path></svg>
-                        <span data-translate="myFavorites">${trans.myFavorites || 'Favorites'}</span>
-                    </a>
-                    ${user.role === 'admin' ? `
-                    <a href="admin.html" class="flex items-center gap-2 px-3 py-2 rounded-md text-base font-bold text-blue-600 bg-blue-50 dark:bg-blue-900/20 hover:bg-blue-100 transition">
-                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"></path></svg>
-                        <span data-translate="adminPanel">${trans.adminPanel || 'Admin Panel'}</span>
-                    </a>` : ''}
-                    <a href="#" class="logout-action-btn flex items-center gap-2 px-3 py-2 rounded-md text-base font-medium text-red-600 hover:bg-red-50 dark:hover:bg-red-900/10 transition">
-                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"></path></svg>
-                        <span data-translate="logout">${trans.logout || 'Logout'}</span>
-                    </a>
-                `;
-            }
-        } else {
-            // --- Mobile: Logged Out State ---
-            if (mobileUserName) {
-                mobileUserName.textContent = trans.login || 'Log in';
-                mobileUserName.setAttribute('data-translate', 'login');
-            }
-            if (mobileUserEmail) mobileUserEmail.classList.add('hidden');
-            if (mobileAuthLinks) {
-                mobileAuthLinks.innerHTML = `
-                    <a href="login.html" class="block px-3 py-2 rounded-md text-base font-medium text-gray-700 dark:text-gray-300 hover:text-accent hover:bg-gray-50 dark:hover:bg-gray-800 transition" data-translate="login">${trans.login || 'Log in'}</a>
-                    <a href="login.html?mode=signup" class="block px-3 py-2 rounded-md text-base font-medium text-gray-700 dark:text-gray-300 hover:text-accent hover:bg-gray-50 dark:hover:bg-gray-800 transition" data-translate="createAccount">${trans.createAccount || 'Sign up'}</a>
-                `;
-            }
-        }
-
-        // Wire up mobile lang & theme toggles to match desktop buttons
-        const mobileLangToggle = document.getElementById('mobile-lang-toggle');
-        const mobileThemeToggle = document.getElementById('mobile-theme-toggle');
-        const desktopLangToggle = document.getElementById('lang-toggle');
-        const desktopThemeToggle = document.getElementById('theme-toggle');
-        if (mobileLangToggle && desktopLangToggle) {
-            mobileLangToggle.onclick = (e) => { e.preventDefault(); desktopLangToggle.click(); };
-        }
-        if (mobileThemeToggle && desktopThemeToggle) {
-            mobileThemeToggle.onclick = () => desktopThemeToggle.click();
-        }
-
-        // Attach logout listeners
-        document.querySelectorAll('.logout-action-btn').forEach(btn => {
-            btn.onclick = (e) => {
-                e.preventDefault();
-                apiClient.logout();
-            };
-        });
-
-        // Re-apply translations if the updateLanguage function is available
-        if (typeof window.updateLanguage === 'function') {
-            // We avoid infinite loop by check
-            // window.updateLanguage(lang); 
-        }
-    };
-
-    updateAuthState();
-    refreshUnreadCount();
-    setInterval(refreshUnreadCount, 30000);
+    if (typeof window.updateAuthState === 'function') window.updateAuthState();
+    if (typeof window.refreshUnreadCount === 'function') window.refreshUnreadCount();
+    setInterval(() => {
+        if (typeof window.refreshUnreadCount === 'function') window.refreshUnreadCount();
+    }, 30000);
 
     // --- Ads Grid population ---
     const adsContainer = document.querySelector('.featured-ads .grid');
@@ -1271,6 +1241,12 @@ document.addEventListener('DOMContentLoaded', async () => {
             loadCategorySliders(window.selectedCountry);
         }
     }
+
+    window.populateAdsGrid = populateAdsGrid;
+    window.loadCategorySliders = loadCategorySliders;
+    window.loadFeaturedAds = loadFeaturedAds;
+    window.createAdCard = createAdCard;
+    window.loadUserFavorites = loadUserFavorites;
 
     async function populateAdsGrid(container, country = null) {
         try {
@@ -1934,73 +1910,25 @@ document.addEventListener('DOMContentLoaded', async () => {
         });
     };
 
-    // --- Notification System ---
-    window.loadNotifications = async function () {
-        if (!localStorage.getItem('token')) return;
-        try {
-            const res = await apiClient.fetch('/notifications');
-            if (res.success) {
-                updateNotifUI(res.data);
-            }
-        } catch (err) {
-            console.error('Failed to load notifications:', err);
-        }
-    };
 
-    function updateNotifUI(notifications) {
-        const list = document.getElementById('notif-list');
-        const badge = document.getElementById('notif-badge');
-        if (!list) return;
 
-        const unreadCount = notifications.filter(n => !n.isRead).length;
+    document.addEventListener('click', async (e) => {
+        const markReadBtn = e.target.closest('#mark-notifs-read');
+        const notifBtn = e.target.closest('#notif-btn');
 
-        if (badge) {
-            if (unreadCount > 0) {
-                badge.textContent = unreadCount > 9 ? '9+' : unreadCount;
-                badge.classList.remove('hidden');
-            } else {
-                badge.classList.add('hidden');
-            }
-        }
-
-        if (notifications.length === 0) {
-            list.innerHTML = `<p class="text-center py-4 text-sm text-gray-500" data-translate="noNotifications">${translations[currentLang].noNotifications || 'No notifications'}</p>`;
-            return;
-        }
-
-        list.innerHTML = notifications.map(n => `
-        <div class="px-4 py-3 hover:bg-gray-50 dark:hover:bg-gray-700 transition cursor-pointer ${!n.isRead ? 'bg-blue-50/50 dark:bg-blue-900/10' : ''}" onclick="handleNotifClick(${n.id}, '${n.link || ''}')"> 
-            <p class="text-sm font-bold text-gray-900 dark:text-white">${n.title}</p>
-            <p class="text-xs text-gray-600 dark:text-gray-400 mt-0.5">${n.message}</p>
-            <p class="text-[10px] text-gray-400 mt-1">${new Date(n.createdAt).toLocaleString()}</p>
-        </div>
-    `).join('');
-    }
-
-    window.handleNotifClick = async function (id, link) {
-        try {
-            await apiClient.fetch(`/notifications/${id}/read`, { method: 'PUT' });
-            if (link && link !== 'null' && link.trim() !== '') {
-                window.location.href = link;
-            } else {
-                loadNotifications();
-            }
-        } catch (err) {
-            console.error(err);
-        }
-    };
-
-    const markReadBtn = document.getElementById('mark-notifs-read');
-    if (markReadBtn) {
-        markReadBtn.onclick = async () => {
+        if (markReadBtn) {
             try {
                 await apiClient.fetch('/notifications/read-all', { method: 'PUT' });
-                loadNotifications();
+                if (window.loadNotifications) window.loadNotifications();
             } catch (err) {
                 console.error(err);
             }
-        };
-    }
+        }
+
+        if (notifBtn) {
+            if (window.loadNotifications) window.loadNotifications();
+        }
+    });
 
     // --- Global Socket Initialization ---
     window.initGlobalSocket = function () {
@@ -2086,6 +2014,15 @@ async function loadGlobalHeader() {
         if (window.initMobileMenu) window.initMobileMenu();
         // Ensure auth state is applied after header is loaded
         if (window.updateAuthState) window.updateAuthState();
+        
+        // Translate the newly loaded header
+        if (window.updateLanguage) window.updateLanguage(window.currentLang || 'en');
+        
+        // Attach event listener for detection location in header
+        const detectBtn = document.getElementById('detect-location-btn');
+        if (detectBtn && window.detectLocation) {
+            detectBtn.addEventListener('click', window.detectLocation);
+        }
 
         // Check for deep link params (section/tab)
         const urlParams = new URLSearchParams(window.location.search);

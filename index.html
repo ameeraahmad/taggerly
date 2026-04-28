@@ -503,6 +503,276 @@
             </div>
         </div>
     </section>
+    <!--  -->
+    <!--  -->
+    <!-- Section: Category Tabs (Dynamic Sliders per Category) -->
+    <section id="categories-tabs-section"
+        class="py-12 bg-gray-50 dark:bg-gray-800 border-t border-gray-200 dark:border-gray-800 transition-colors duration-300">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between items-center mb-8">
+                <h2 class="text-3xl font-bold text-gray-900 dark:text-white" data-translate="featuredCategories">
+                    Featured Categories</h2>
+            </div>
+
+            <!-- Tabs Headers -->
+            <div
+                class="flex space-x-6 border-b border-gray-200 dark:border-gray-700 mb-6 overflow-x-auto hide-scrollbar whitespace-nowrap">
+                <button
+                    class="pb-3 px-1 border-b-2 border-accent font-bold text-accent focus:outline-none transition tab-btn"
+                    data-target="cat-all" data-group="maincats">
+                    <span data-translate="all">All</span>
+                </button>
+                <button
+                    class="pb-3 px-1 border-b-2 border-transparent font-medium text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200 focus:outline-none transition tab-btn"
+                    data-target="cat-motors" data-group="maincats">
+                    <span data-translate="motorsTitle">Motors</span>
+                </button>
+                <button
+                    class="pb-3 px-1 border-b-2 border-transparent font-medium text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200 focus:outline-none transition tab-btn"
+                    data-target="cat-property" data-group="maincats">
+                    <span data-translate="propertyTitle">Property</span>
+                </button>
+                <button
+                    class="pb-3 px-1 border-b-2 border-transparent font-medium text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200 focus:outline-none transition tab-btn"
+                    data-target="cat-electronics" data-group="maincats">
+                    <span data-translate="electronicsCategoryTitle">Electronics</span>
+                </button>
+                <button
+                    class="pb-3 px-1 border-b-2 border-transparent font-medium text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200 focus:outline-none transition tab-btn"
+                    data-target="cat-classifieds" data-group="maincats">
+                    <span data-translate="classifiedsTitle">Classifieds</span>
+                </button>
+                <button
+                    class="pb-3 px-1 border-b-2 border-transparent font-medium text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200 focus:outline-none transition tab-btn"
+                    data-target="cat-jobs" data-group="maincats">
+                    <span data-translate="jobsTitle">Jobs</span>
+                </button>
+                <button
+                    class="pb-3 px-1 border-b-2 border-transparent font-medium text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200 focus:outline-none transition tab-btn"
+                    data-target="cat-services" data-group="maincats">
+                    <span data-translate="servicesTitle">Services</span>
+                </button>
+            </div>
+
+            <!-- Tab Contents -->
+            <div class="relative">
+                <!-- All Content -->
+                <div id="cat-all" class="tab-content transition-opacity duration-300" data-group="maincats">
+                    <div class="relative group">
+                        <div id="cat-all-slider"
+                            class="flex overflow-x-auto space-x-6 pb-4 hide-scrollbar scroll-smooth snap-x snap-mandatory">
+                            <!-- Skeleton loaders could go here -->
+                        </div>
+                        <button
+                            class="absolute left-0 top-1/2 transform -translate-y-1/2 -ml-4 bg-white dark:bg-gray-700 p-3 rounded-full shadow-lg text-gray-700 dark:text-gray-200 hover:text-accent z-10 hidden md:block"
+                            onclick="scrollSlider('cat-all-slider', -300)">
+                            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M15 19l-7-7 7-7"></path>
+                            </svg>
+                        </button>
+                        <button
+                            class="absolute right-0 top-1/2 transform -translate-y-1/2 -mr-4 bg-white dark:bg-gray-700 p-3 rounded-full shadow-lg text-gray-700 dark:text-gray-200 hover:text-accent z-10 hidden md:block"
+                            onclick="scrollSlider('cat-all-slider', 300)">
+                            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7">
+                                </path>
+                            </svg>
+                        </button>
+                    </div>
+                    <div class="mt-4 text-center">
+                        <a href="search.html" class="text-primary dark:text-blue-400 hover:underline font-bold"
+                            data-translate="viewAll">View All Results</a>
+                    </div>
+                </div>
+
+                <!-- Motors Content -->
+                <div id="cat-motors" class="tab-content hidden transition-opacity duration-300" data-group="maincats">
+                    <div class="relative group">
+                        <div id="cat-motors-slider"
+                            class="flex overflow-x-auto space-x-6 pb-4 hide-scrollbar scroll-smooth snap-x snap-mandatory">
+                        </div>
+                        <button
+                            class="absolute left-0 top-1/2 transform -translate-y-1/2 -ml-4 bg-white dark:bg-gray-700 p-3 rounded-full shadow-lg text-gray-700 dark:text-gray-200 hover:text-accent z-10 hidden md:block"
+                            onclick="scrollSlider('cat-motors-slider', -300)">
+                            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M15 19l-7-7 7-7"></path>
+                            </svg>
+                        </button>
+                        <button
+                            class="absolute right-0 top-1/2 transform -translate-y-1/2 -mr-4 bg-white dark:bg-gray-700 p-3 rounded-full shadow-lg text-gray-700 dark:text-gray-200 hover:text-accent z-10 hidden md:block"
+                            onclick="scrollSlider('cat-motors-slider', 300)">
+                            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7">
+                                </path>
+                            </svg>
+                        </button>
+                    </div>
+                    <div class="mt-4 text-center">
+                        <a href="search.html?category=Motors"
+                            class="text-primary dark:text-blue-400 hover:underline font-bold"
+                            data-translate="viewAll">View All Results</a>
+                    </div>
+                </div>
+
+                <!-- Property Content -->
+                <div id="cat-property" class="tab-content hidden transition-opacity duration-300" data-group="maincats">
+                    <div class="relative group">
+                        <div id="cat-property-slider"
+                            class="flex overflow-x-auto space-x-6 pb-4 hide-scrollbar scroll-smooth snap-x snap-mandatory">
+                        </div>
+                        <button
+                            class="absolute left-0 top-1/2 transform -translate-y-1/2 -ml-4 bg-white dark:bg-gray-700 p-3 rounded-full shadow-lg text-gray-700 dark:text-gray-200 hover:text-accent z-10 hidden md:block"
+                            onclick="scrollSlider('cat-property-slider', -300)">
+                            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M15 19l-7-7 7-7"></path>
+                            </svg>
+                        </button>
+                        <button
+                            class="absolute right-0 top-1/2 transform -translate-y-1/2 -mr-4 bg-white dark:bg-gray-700 p-3 rounded-full shadow-lg text-gray-700 dark:text-gray-200 hover:text-accent z-10 hidden md:block"
+                            onclick="scrollSlider('cat-property-slider', 300)">
+                            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7">
+                                </path>
+                            </svg>
+                        </button>
+                    </div>
+                    <div class="mt-4 text-center">
+                        <a href="search.html?category=Property"
+                            class="text-primary dark:text-blue-400 hover:underline font-bold"
+                            data-translate="viewAll">View All Results</a>
+                    </div>
+                </div>
+
+                <!-- Electronics Content -->
+                <div id="cat-electronics" class="tab-content hidden transition-opacity duration-300"
+                    data-group="maincats">
+                    <div class="relative group">
+                        <div id="cat-electronics-slider"
+                            class="flex overflow-x-auto space-x-6 pb-4 hide-scrollbar scroll-smooth snap-x snap-mandatory">
+                        </div>
+                        <button
+                            class="absolute left-0 top-1/2 transform -translate-y-1/2 -ml-4 bg-white dark:bg-gray-700 p-3 rounded-full shadow-lg text-gray-700 dark:text-gray-200 hover:text-accent z-10 hidden md:block"
+                            onclick="scrollSlider('cat-electronics-slider', -300)">
+                            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M15 19l-7-7 7-7"></path>
+                            </svg>
+                        </button>
+                        <button
+                            class="absolute right-0 top-1/2 transform -translate-y-1/2 -mr-4 bg-white dark:bg-gray-700 p-3 rounded-full shadow-lg text-gray-700 dark:text-gray-200 hover:text-accent z-10 hidden md:block"
+                            onclick="scrollSlider('cat-electronics-slider', 300)">
+                            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7">
+                                </path>
+                            </svg>
+                        </button>
+                    </div>
+                    <div class="mt-4 text-center">
+                        <a href="search.html?category=Electronics"
+                            class="text-primary dark:text-blue-400 hover:underline font-bold"
+                            data-translate="viewAll">View All Results</a>
+                    </div>
+                </div>
+
+                <!-- Classifieds Content -->
+                <div id="cat-classifieds" class="tab-content hidden transition-opacity duration-300"
+                    data-group="maincats">
+                    <div class="relative group">
+                        <div id="cat-classifieds-slider"
+                            class="flex overflow-x-auto space-x-6 pb-4 hide-scrollbar scroll-smooth snap-x snap-mandatory">
+                        </div>
+                        <button
+                            class="absolute left-0 top-1/2 transform -translate-y-1/2 -ml-4 bg-white dark:bg-gray-700 p-3 rounded-full shadow-lg text-gray-700 dark:text-gray-200 hover:text-accent z-10 hidden md:block"
+                            onclick="scrollSlider('cat-classifieds-slider', -300)">
+                            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M15 19l-7-7 7-7"></path>
+                            </svg>
+                        </button>
+                        <button
+                            class="absolute right-0 top-1/2 transform -translate-y-1/2 -mr-4 bg-white dark:bg-gray-700 p-3 rounded-full shadow-lg text-gray-700 dark:text-gray-200 hover:text-accent z-10 hidden md:block"
+                            onclick="scrollSlider('cat-classifieds-slider', 300)">
+                            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7">
+                                </path>
+                            </svg>
+                        </button>
+                    </div>
+                    <div class="mt-4 text-center">
+                        <a href="search.html?category=Classifieds"
+                            class="text-primary dark:text-blue-400 hover:underline font-bold"
+                            data-translate="viewAll">View All Results</a>
+                    </div>
+                </div>
+
+                <!-- Jobs Content -->
+                <div id="cat-jobs" class="tab-content hidden transition-opacity duration-300" data-group="maincats">
+                    <div class="relative group">
+                        <div id="cat-jobs-slider"
+                            class="flex overflow-x-auto space-x-6 pb-4 hide-scrollbar scroll-smooth snap-x snap-mandatory">
+                        </div>
+                        <button
+                            class="absolute left-0 top-1/2 transform -translate-y-1/2 -ml-4 bg-white dark:bg-gray-700 p-3 rounded-full shadow-lg text-gray-700 dark:text-gray-200 hover:text-accent z-10 hidden md:block"
+                            onclick="scrollSlider('cat-jobs-slider', -300)">
+                            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M15 19l-7-7 7-7"></path>
+                            </svg>
+                        </button>
+                        <button
+                            class="absolute right-0 top-1/2 transform -translate-y-1/2 -mr-4 bg-white dark:bg-gray-700 p-3 rounded-full shadow-lg text-gray-700 dark:text-gray-200 hover:text-accent z-10 hidden md:block"
+                            onclick="scrollSlider('cat-jobs-slider', 300)">
+                            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7">
+                                </path>
+                            </svg>
+                        </button>
+                    </div>
+                    <div class="mt-4 text-center">
+                        <a href="search.html?category=Jobs"
+                            class="text-primary dark:text-blue-400 hover:underline font-bold"
+                            data-translate="viewAll">View All Results</a>
+                    </div>
+                </div>
+
+                <!-- Services Content -->
+                <div id="cat-services" class="tab-content hidden transition-opacity duration-300" data-group="maincats">
+                    <div class="relative group">
+                        <div id="cat-services-slider"
+                            class="flex overflow-x-auto space-x-6 pb-4 hide-scrollbar scroll-smooth snap-x snap-mandatory">
+                        </div>
+                        <button
+                            class="absolute left-0 top-1/2 transform -translate-y-1/2 -ml-4 bg-white dark:bg-gray-700 p-3 rounded-full shadow-lg text-gray-700 dark:text-gray-200 hover:text-accent z-10 hidden md:block"
+                            onclick="scrollSlider('cat-services-slider', -300)">
+                            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M15 19l-7-7 7-7"></path>
+                            </svg>
+                        </button>
+                        <button
+                            class="absolute right-0 top-1/2 transform -translate-y-1/2 -mr-4 bg-white dark:bg-gray-700 p-3 rounded-full shadow-lg text-gray-700 dark:text-gray-200 hover:text-accent z-10 hidden md:block"
+                            onclick="scrollSlider('cat-services-slider', 300)">
+                            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7">
+                                </path>
+                            </svg>
+                        </button>
+                    </div>
+                    <div class="mt-4 text-center">
+                        <a href="search.html?category=Services"
+                            class="text-primary dark:text-blue-400 hover:underline font-bold"
+                            data-translate="viewAll">View All Results</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+    <!--  -->
+
+
 
     <!-- Section: Featured Ads (Dynamic Slider) -->
     <section id="featured-ads-section" class="py-12 bg-white dark:bg-gray-900 transition-colors duration-300 hidden">
@@ -614,7 +884,7 @@
             <h2 class="text-3xl font-bold mb-4" data-translate="ctaTitle">Have something to sell?</h2>
             <p class="text-xl mb-8 max-w-2xl mx-auto text-gray-300" data-translate="ctaSubtitle">Post your ad for free
                 and reach millions of buyers today.</p>
-            <a href="post-ad.html"
+            <a href="select-category.html"
                 class="bg-accent text-white px-8 py-3 rounded-full text-lg font-bold hover:bg-orange-600 transition shadow-lg inline-block transform hover:-translate-y-1"
                 data-translate="ctaButton">Place
                 Your Ad Now</a>
@@ -727,27 +997,27 @@
         };
 
         // Newsletter subscription handler
-        document.getElementById('newsletter-form').addEventListener('submit', async function(e) {
+        document.getElementById('newsletter-form').addEventListener('submit', async function (e) {
             e.preventDefault();
             const emailInput = document.getElementById('newsletter-email');
             const submitBtn = document.getElementById('newsletter-submit-btn');
             const lang = window.currentLang || 'en';
-            
+
             submitBtn.disabled = true;
             submitBtn.innerHTML = '<svg class="animate-spin h-5 w-5 text-white mx-auto" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path></svg>';
-            
+
             try {
                 const response = await fetch('/api/newsletter/subscribe', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ 
+                    body: JSON.stringify({
                         email: emailInput.value,
                         country: localStorage.getItem('selectedCountry') || 'egypt'
                     })
                 });
-                
+
                 const data = await response.json();
-                
+
                 if (data.success) {
                     await customAlert(data.message);
                     emailInput.value = '';

@@ -387,8 +387,7 @@
             // Check auth
             if (!localStorage.getItem('token')) {
                 const confirmed = await customAlert('Please login to post an ad.');
-                if (confirmed === false) return;
-                window.location.href = 'login.html';
+                if (confirmed) window.location.href = 'login.html';
                 return;
             }
 
@@ -779,8 +778,8 @@
                     submitBtn.textContent = 'Posting...';
 
                     await apiClient.createAd(formData);
-                    await customAlert('Ad posted successfully!');
-                    window.location.href = 'index.html';
+                    const confirmed = await customAlert('Ad posted successfully!');
+                    if (confirmed) window.location.href = 'index.html';
                 } catch (err) {
                     await customAlert(err.message);
                     const submitBtn = form.querySelector('button[type="submit"]');

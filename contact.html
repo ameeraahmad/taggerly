@@ -219,8 +219,7 @@
                 const lang = window.currentLang || 'en';
                 const msg = (translations[lang] && translations[lang].loginToContact) || 'Please login to send a message.';
                 const confirmed = await customAlert(msg);
-                if (confirmed === false) return;
-                window.location.href = 'login.html';
+                if (confirmed) window.location.href = 'login.html';
                 return;
             }
 
