@@ -158,6 +158,7 @@ exports.register = async (req, res) => {
                 email: user.email,
                 role: user.role,
                 avatar: user.avatar,
+                country: user.country,
                 isEmailVerified: user.isEmailVerified
             }
         });
@@ -196,6 +197,7 @@ exports.login = async (req, res) => {
                 role: user.role,
                 avatar: user.avatar,
                 phone: user.phone,
+                country: user.country,
                 location: user.location,
                 isEmailVerified: user.isEmailVerified
             }
@@ -238,7 +240,8 @@ exports.updateProfile = async (req, res) => {
                     name: updatedUser.name,
                     email: updatedUser.email,
                     phone: updatedUser.phone,
-                    avatar: updatedUser.avatar
+                    avatar: updatedUser.avatar,
+                    country: updatedUser.country
                 }
             });
         }
@@ -286,7 +289,8 @@ exports.googleLogin = async (req, res) => {
                 id: user.id,
                 name: user.name,
                 email: user.email,
-                avatar: user.avatar
+                avatar: user.avatar,
+                country: user.country
             }
         });
 
@@ -336,7 +340,8 @@ exports.facebookLogin = async (req, res) => {
                 id: user.id,
                 name: user.name,
                 email: user.email,
-                avatar: user.avatar
+                avatar: user.avatar,
+                country: user.country
             }
         });
 

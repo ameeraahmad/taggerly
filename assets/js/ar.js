@@ -1,5 +1,9 @@
 var arTranslations = {
     // Menu & Header
+    uae: "الإمارات",
+    egypt: "مصر",
+    ksa: "السعودية",
+    qatar: "قطر",
     education: "تعليم",
     cleaning: "تنظيف",
     maintenance: "صيانة",

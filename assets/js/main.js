@@ -343,8 +343,24 @@ document.addEventListener('DOMContentLoaded', async () => {
     };
 
     window.updateAuthState = function () {
-        const user = JSON.parse(localStorage.getItem('user'));
+        const userStr = localStorage.getItem('user');
         const token = localStorage.getItem('token');
+        console.log('🔐 updateAuthState triggered. Token:', !!token, 'User present:', !!userStr);
+        
+        if (!userStr || !token) {
+            console.log('👋 No user/token found, skipping locked state.');
+            handleLoggedOutState();
+            return;
+        }
+
+        let user;
+        try {
+            user = JSON.parse(userStr);
+        } catch (e) {
+            console.error('❌ Failed to parse user data:', e);
+            return;
+        }
+
         const lang = window.currentLang || localStorage.getItem('lang') || 'en';
         const trans = translations[lang] || translations['en'];
 
@@ -406,7 +422,60 @@ document.addEventListener('DOMContentLoaded', async () => {
                     </a>
                 `;
             }
-        } else {
+
+            // --- USER-SUGGESTED FEATURE: LOCK COUNTRY DROPDOWN ---
+            if (user.country) {
+                console.log('📍 Locking country to:', user.country);
+                const countryKeys = { 'uae': 'uae', 'egypt': 'egypt', 'ksa': 'ksa', 'qatar': 'qatar' };
+                const userCountry = countryKeys[user.country.toLowerCase()] || user.country.toLowerCase();
+                
+                // If current selection mismatch with profile country, force sync
+                if (window.selectedCountry !== userCountry) {
+                    const flags = { 'uae': '🇦🇪', 'egypt': '🇪🇬', 'ksa': '🇸🇦', 'qatar': '🇶🇦' };
+                    const names = { 
+                        'uae': (trans.uae || 'UAE'), 
+                        'egypt': (trans.egypt || 'Egypt'), 
+                        'ksa': (trans.ksa || 'Saudi Arabia'), 
+                        'qatar': (trans.qatar || 'Qatar') 
+                    };
+                    if (window.setCountry) {
+                        window.setCountry(userCountry, flags[userCountry] || '🇪🇬', names[userCountry] || 'Egypt');
+                    }
+                }
+
+                const options = document.querySelectorAll('.country-option');
+                console.log(`Found ${options.length} country options to restrict.`);
+                
+                // Disable other options in dropdown
+                options.forEach(opt => {
+                    const optCountry = opt.getAttribute('data-country');
+                    if (optCountry !== userCountry) {
+                        opt.classList.add('opacity-40', 'grayscale', 'cursor-not-allowed', 'pointer-events-none');
+                        opt.setAttribute('title', lang === 'ar' ? 'قم بتسجيل الخروج لتغيير الدولة' : 'Logout to change country');
+                    } else {
+                        opt.classList.remove('opacity-40', 'grayscale', 'cursor-not-allowed', 'pointer-events-none');
+                        opt.removeAttribute('title');
+                    }
+                });
+
+                // Add visual lock indicator to main button
+                const countryBtn = document.querySelector('.country-btn');
+                if (countryBtn && !countryBtn.querySelector('.lock-icon')) {
+                    const lockSvg = `<svg class="lock-icon w-2.5 h-2.5 ml-1.5 text-gray-400 dark:text-gray-500" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M5 9V7a5 5 0 0110 0v2a2 2 0 012 2v5a2 2 0 01-2 2H5a2 2 0 01-2-2v-5a2 2 0 012-2zm8-2v2H7V7a3 3 0 016 0z" clip-rule="evenodd"></path></svg>`;
+                    countryBtn.insertAdjacentHTML('beforeend', lockSvg);
+                }
+            } else {
+                console.warn('⚠️ User object has no country property:', user);
+            }
+        }
+
+        function handleLoggedOutState() {
+            const userDropdown = document.getElementById('user-dropdown');
+            const userBtnText = document.getElementById('user-btn-text');
+            const notifWrapper = document.getElementById('notif-wrapper');
+            const lang = window.currentLang || localStorage.getItem('lang') || 'en';
+            const trans = translations[lang] || translations['en'];
+
             if (notifWrapper) notifWrapper.classList.add('hidden');
             const banner = document.getElementById('verification-banner');
             if (banner) banner.remove();
@@ -430,6 +499,14 @@ document.addEventListener('DOMContentLoaded', async () => {
                     </a>
                 `;
             }
+
+            // Unlock country dropdown
+            document.querySelectorAll('.country-option').forEach(opt => {
+                opt.classList.remove('opacity-40', 'grayscale', 'cursor-not-allowed', 'pointer-events-none');
+                opt.removeAttribute('title');
+            });
+            const lockIcon = document.querySelector('.lock-icon');
+            if (lockIcon) lockIcon.remove();
         }
         
         // Attach logout listeners
