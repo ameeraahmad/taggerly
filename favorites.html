@@ -111,7 +111,7 @@
                 countBadge.classList.remove('hidden');
 
                 // Sync global userFavorites array for header logic
-                window.userFavorites = ads.map(ad => ad.id);
+                window.userFavorites = ads.map(ad => String(ad.id));
 
                 ads.forEach(ad => {
                     const isFav = true; // They are in the favorites list

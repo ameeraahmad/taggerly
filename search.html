@@ -327,7 +327,7 @@
 
                 results.forEach(ad => {
                     const locationHTML = window.formatAdLocation(ad.city, ad.country, 'city-label');
-                    const isFav = (window.userFavorites || []).includes(ad.id);
+                    const isFav = (window.userFavorites || []).includes(String(ad.id));
                     const adCard = `
                         <div class="bg-white dark:bg-gray-800 border dark:border-gray-700 rounded-xl overflow-hidden shadow-sm hover:shadow-lg transition-all flex flex-col sm:flex-row group animate-fade-in relative cursor-pointer" onclick="window.location.href='ad-details.html?id=${ad.id}'">
                             <div class="h-48 sm:h-auto sm:w-64 bg-gray-200 dark:bg-gray-700 relative overflow-hidden flex-shrink-0">

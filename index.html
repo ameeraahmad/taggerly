@@ -899,103 +899,8 @@
     <script src="assets/js/ar.js"></script>
     <script src="assets/js/api-client.js"></script>
     <script src="assets/js/main.js"></script>
+
     <script>
-        // Global functions for main.js to call
-        window.populateAdsGrid = async function (container, country) {
-            try {
-                const response = await apiClient.getAds({ country, limit: 8 });
-                const ads = response.data;
-                container.innerHTML = '';
-
-                if (ads.length === 0) {
-                    const lang = window.currentLang || 'en';
-                    container.innerHTML = `<p class="col-span-full text-center py-10 text-gray-500" data-translate="noAdsFound">${translations[lang].noAdsFound || 'No ads found for this region.'}</p>`;
-                    return;
-                }
-
-                ads.forEach(ad => {
-                    const adLocation = formatAdLocation(ad.city, ad.country);
-                    const adCard = `
-                        <div class="bg-white dark:bg-gray-800 rounded-xl overflow-hidden shadow-sm hover:shadow-lg transition-all transform hover:-translate-y-1 group border border-gray-100 dark:border-gray-700">
-                            <a href="ad-details.html?id=${ad.id}" class="block">
-                                <div class="relative h-48 overflow-hidden">
-                                    <img src="${ad.images[0] || 'https://placehold.co/400x300?text=No+Image'}" 
-                                         class="w-full h-full object-cover transition duration-500 group-hover:scale-110" alt="${ad.title}">
-                                    <div class="absolute top-3 left-3 bg-accent text-white text-[10px] font-black px-2 py-1 rounded shadow-lg uppercase tracking-wider">
-                                        ${ad.category}
-                                    </div>
-                                </div>
-                                <div class="p-5">
-                                    <h3 class="font-bold text-gray-900 dark:text-white mb-2 line-clamp-1 group-hover:text-accent transition">${ad.title}</h3>
-                                    <div class="flex items-center text-xs text-gray-500 dark:text-gray-400 mb-3 uppercase tracking-wide font-bold">
-                                        <svg class="w-3.5 h-3.5 mr-1.5 text-accent" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"></path></svg>
-                                        ${adLocation}
-                                    </div>
-                                    <div class="text-xl font-black text-accent">
-                                        ${ad.price.toLocaleString()} <span class="text-xs font-bold currency-label">${getCurrencySymbol()}</span>
-                                    </div>
-                                </div>
-                            </a>
-                        </div>
-                    `;
-                    container.insertAdjacentHTML('beforeend', adCard);
-                });
-            } catch (err) {
-                console.error('Error populating ads grid:', err);
-                container.innerHTML = '<p class="col-span-full text-center text-red-500">Failed to load ads.</p>';
-            }
-        };
-
-        window.loadLatestFeaturedAds = async function (country) {
-            const section = document.getElementById('featured-ads-section');
-            const slider = document.getElementById('featured-ads-slider');
-            if (!slider) return;
-
-            try {
-                const response = await apiClient.getAds({ country, isFeatured: true, limit: 10 });
-                const ads = response.data;
-
-                if (ads.length > 0) {
-                    section?.classList.remove('hidden');
-                    slider.innerHTML = ads.map(ad => {
-                        const adLocation = formatAdLocation(ad.city, ad.country);
-                        return `
-                        <div class="snap-start flex-shrink-0 w-72 group">
-                            <a href="ad-details.html?id=${ad.id}" class="block bg-white dark:bg-gray-800 rounded-2xl overflow-hidden border border-gray-100 dark:border-gray-700 shadow-sm hover:shadow-xl transition-all">
-                                <div class="relative h-44 overflow-hidden">
-                                    <img src="${ad.images[0] || 'https://placehold.co/400x300?text=No+Image'}" 
-                                         class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110" alt="${ad.title}">
-                                    <div class="absolute top-3 left-3 bg-accent text-white text-[10px] font-black px-2.5 py-1 rounded-full shadow-lg uppercase">
-                                        ${ad.category}
-                                    </div>
-                                </div>
-                                <div class="p-5">
-                                    <h3 class="font-bold text-gray-900 dark:text-white mb-2 line-clamp-1 group-hover:text-accent transition">${ad.title}</h3>
-                                    <div class="text-lg font-black text-accent mb-3">
-                                        ${ad.price.toLocaleString()} <span class="text-xs font-bold currency-label">${getCurrencySymbol()}</span>
-                                    </div>
-                                    <div class="flex items-center text-[10px] font-bold text-gray-400 uppercase tracking-widest">
-                                        <svg class="w-3 h-3 mr-1 text-accent" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"></path></svg>
-                                        ${adLocation}
-                                    </div>
-                                </div>
-                            </a>
-                        </div>
-                    `;
-                    }).join('');
-                } else {
-                    section?.classList.add('hidden');
-                }
-            } catch (err) {
-                console.error('Error loading featured ads:', err);
-            }
-        };
-
-        window.scrollSlider = function (id, distance) {
-            const slider = document.getElementById(id);
-            if (slider) slider.scrollBy({ left: distance, behavior: 'smooth' });
-        };
-
         // Newsletter subscription handler
         document.getElementById('newsletter-form').addEventListener('submit', async function (e) {
             e.preventDefault();
@@ -1032,12 +937,11 @@
             }
         });
 
-        // Initial load
-        document.addEventListener('DOMContentLoaded', () => {
-            const country = localStorage.getItem('selectedCountry') || 'uae';
-            window.populateAdsGrid(document.getElementById('featured-ads-grid'), country);
-            window.loadLatestFeaturedAds(country);
-        });
+        // Global functions for main.js to call if needed, or for inline onclick handlers
+        window.scrollSlider = function (id, distance) {
+            const slider = document.getElementById(id);
+            if (slider) slider.scrollBy({ left: distance, behavior: 'smooth' });
+        };
     </script>
 </body>
 

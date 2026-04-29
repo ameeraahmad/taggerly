@@ -258,6 +258,9 @@ window.closeModal = function () {
 };
 
 document.addEventListener('DOMContentLoaded', async () => {
+    // --- Global Favorites state for current user ---
+    window.userFavorites = [];
+
     // --- Define Core Functions First to Avoid Race Conditions ---
     
     window.loadNotifications = async function () {
@@ -1276,12 +1279,11 @@ document.addEventListener('DOMContentLoaded', async () => {
     }
 
     // --- Global Favorites state for current user ---
-    window.userFavorites = [];
     async function loadUserFavorites() {
         if (!localStorage.getItem('token')) return;
         try {
             const res = await apiClient.getFavorites();
-            if (res.success) window.userFavorites = res.data.map(ad => ad.id);
+            if (res.success) window.userFavorites = res.data.map(ad => String(ad.id));
         } catch (err) {
             console.warn('Failed to load favorites:', err);
         }
@@ -1289,19 +1291,19 @@ document.addEventListener('DOMContentLoaded', async () => {
 
     function createAdCard(ad, isSlider = false) {
         const cardClass = isSlider
-            ? "min-w-[280px] w-[280px] md:min-w-[320px] md:w-[320px] bg-white dark:bg-gray-800 rounded-xl shadow border dark:border-gray-700 snap-center flex-shrink-0 cursor-pointer"
-            : "ad-card-main bg-white dark:bg-gray-800 border dark:border-gray-700 rounded-xl overflow-hidden shadow-sm hover:shadow-lg transition group cursor-pointer";
+            ? "min-w-[280px] w-[280px] md:min-w-[320px] md:w-[320px] bg-white dark:bg-gray-800 rounded-xl shadow border dark:border-gray-700 snap-center flex-shrink-0"
+            : "ad-card-main bg-white dark:bg-gray-800 border dark:border-gray-700 rounded-xl overflow-hidden shadow-sm hover:shadow-lg transition group";
 
         const locationHTML = window.formatAdLocation(ad.city, ad.country, "");
-        const isFav = window.userFavorites.includes(ad.id);
+        const isFav = window.userFavorites.includes(String(ad.id));
 
         return `
         <div class="${cardClass} relative">
-            <!-- Main Clickable Area -->
-            <div class="cursor-pointer" onclick="window.location.href='ad-details.html?id=${ad.id}'">
+            <!-- Card link wraps all content -->
+            <a href="ad-details.html?id=${ad.id}" class="block">
                 <div class="relative h-48 bg-gray-200 dark:bg-gray-700 overflow-hidden ${!isSlider ? 'rounded-t-xl' : ''}">
                     <img src="${ad.images[0] || 'https://placehold.co/300x200'}" alt="${ad.title}" class="w-full h-full object-cover transition duration-300 group-hover:scale-105">
-                    ${ad.isFeatured ? '<div class="badge-featured absolute top-2 right-2 bg-accent text-white text-xs font-bold px-2 py-1 rounded shadow-lg uppercase tracking-wider">FEATURED</div>' : ''}
+                    ${ad.isFeatured ? '<div class="badge-featured absolute top-2 left-2 bg-accent text-white text-xs font-bold px-2 py-1 rounded shadow-lg uppercase tracking-wider">FEATURED</div>' : ''}
                 </div>
                 <div class="p-4">
                     <div class="text-sm text-gray-500 dark:text-gray-400 mb-1">${ad.category}</div>
@@ -1321,10 +1323,10 @@ document.addEventListener('DOMContentLoaded', async () => {
                         ${locationHTML}
                     </div>
                 </div>
-            </div>
+            </a>
 
-            <!-- Favorite Button (Outside the main link div) -->
-            <button class="wishlist-btn absolute bottom-[110px] right-2 bg-white dark:bg-gray-700 p-2 rounded-full shadow hover:text-red-500 transition z-[30] ${isFav ? 'text-red-500' : ''}" onclick="window.toggleFav(event, ${ad.id}, this)">
+            <!-- Favorite button: sibling AFTER <a> in DOM, z-50 guarantees it's on top -->
+            <button class="wishlist-btn absolute top-2 right-2 z-50 bg-white dark:bg-gray-700 p-2 rounded-full shadow hover:text-red-500 transition ${isFav ? 'text-red-500' : ''}" onclick="window.toggleFav(event, ${ad.id}, this)">
                 <svg class="w-5 h-5" fill="${isFav ? 'currentColor' : 'none'}" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"></path>
                 </svg>
@@ -1419,13 +1421,13 @@ document.addEventListener('DOMContentLoaded', async () => {
                     svg.setAttribute('fill', 'currentColor');
                 }
                 btn.classList.add('text-red-500');
-                if (!window.userFavorites.includes(adId)) window.userFavorites.push(adId);
+                if (!window.userFavorites.includes(String(adId))) window.userFavorites.push(String(adId));
             } else {
                 if (svg) {
                     svg.setAttribute('fill', 'none');
                 }
                 btn.classList.remove('text-red-500');
-                window.userFavorites = window.userFavorites.filter(id => id !== adId);
+                window.userFavorites = window.userFavorites.filter(id => String(id) !== String(adId));
 
                 // If we are on the favorites page, remove the card from UI
                 if (window.location.href.includes('favorites.html')) {

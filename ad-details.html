@@ -597,11 +597,24 @@
                 // Handle Favorite Button
                 const favoriteBtn = document.getElementById('favorite-btn');
                 if (favoriteBtn) {
-                    const isFav = (window.userFavorites || []).includes(ad.id);
-                    if (isFav) {
-                        favoriteBtn.classList.add('text-red-500');
-                        favoriteBtn.querySelector('svg').setAttribute('fill', 'currentColor');
-                    }
+                    // Use a small delay or check to ensure main.js has loaded favorites
+                    const updateFavUI = () => {
+                        const isFav = (window.userFavorites || []).includes(String(ad.id));
+                        if (isFav) {
+                            favoriteBtn.classList.add('text-red-500');
+                            favoriteBtn.querySelector('svg').setAttribute('fill', 'currentColor');
+                        } else {
+                            favoriteBtn.classList.remove('text-red-500');
+                            favoriteBtn.querySelector('svg').setAttribute('fill', 'none');
+                        }
+                    };
+
+                    // Initial check
+                    updateFavUI();
+                    
+                    // Re-check after a short delay to account for main.js async loading
+                    setTimeout(updateFavUI, 500);
+
                     favoriteBtn.onclick = (e) => {
                         window.toggleFav(e, ad.id, favoriteBtn);
                     };

@@ -292,29 +292,29 @@ body {
 }
 
 /* --- Dropdown Hover Fix --- */
+/* Scoped ONLY to nav/header dropdowns, NOT card elements */
 /* This bridges the gap between the trigger and the dropdown menu to prevent flickering */
-.group>.absolute::before {
+.site-header .group>.absolute::before {
     content: "";
     position: absolute;
     top: -20px;
-    /* Sufficient height to cover mt-2 or translate-y-2 gaps */
     left: 0;
     right: 0;
     height: 20px;
     background: transparent;
 }
 
-/* Ensure dropdowns are interactive only when visible */
-.group .absolute {
+/* Ensure header dropdowns are interactive only when visible */
+.site-header .group .absolute {
     pointer-events: none;
 }
 
-.group:hover>.absolute {
+.site-header .group:hover>.absolute {
     pointer-events: auto;
 }
 
-/* Optional: Smooth transition for all dropdowns if not already present */
-.group>.absolute {
+/* Smooth transition for header dropdowns */
+.site-header .group>.absolute {
     transition: all 0.3s ease-in-out;
 }
 
