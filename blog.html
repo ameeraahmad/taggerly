@@ -307,25 +307,28 @@
             window.location.href = `blog-details.html?slug=${slug}`;
         }
 
+        // Listen for language or country changes from main.js
+        window.addEventListener('languageChanged', (e) => {
+            console.log('🌐 Blog: Language changed to', e.detail.lang);
+            const activeCat = document.querySelector('.active-cat')?.dataset.cat || 'all';
+            filterCategory(activeCat);
+        });
+
+        window.addEventListener('countryChanged', (e) => {
+            console.log('📍 Blog: Country changed to', e.detail.country);
+            const activeCat = document.querySelector('.active-cat')?.dataset.cat || 'all';
+            filterCategory(activeCat);
+        });
+
         // Initial load
-        let isInitialLoad = true;
         document.addEventListener('DOMContentLoaded', () => {
-            // Give main.js a moment to initialize currentLang
+            // Slight delay to ensure main.js is ready
             setTimeout(() => {
                 const activeCat = document.querySelector('.active-cat')?.dataset.cat || 'all';
                 filterCategory(activeCat);
-                isInitialLoad = false;
             }, 100);
         });
 
-        // Align with main.js dynamic update pattern
-        window.updateDynamicContent = function(country, lang) {
-            // Prevent redundant updates during initial page load
-            if (isInitialLoad) return;
-            
-            const activeCat = document.querySelector('.active-cat')?.dataset.cat || 'all';
-            filterCategory(activeCat);
-        };
     </script>
 </body>
 
