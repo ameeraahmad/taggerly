@@ -204,12 +204,18 @@
             }
         }
 
-        document.addEventListener('DOMContentLoaded', loadArticle);
-        
-        // Align with main.js dynamic update pattern
-        window.updateDynamicContent = function(country, lang) {
+        // Listen for language or country changes from main.js
+        window.addEventListener('languageChanged', (e) => {
+            console.log('🌐 Blog Details: Language changed to', e.detail.lang);
             loadArticle();
-        };
+        });
+
+        window.addEventListener('countryChanged', (e) => {
+            console.log('📍 Blog Details: Country changed to', e.detail.country);
+            loadArticle();
+        });
+
+        document.addEventListener('DOMContentLoaded', loadArticle);
     </script>
 </body>
 
