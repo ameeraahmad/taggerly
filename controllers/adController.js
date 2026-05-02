@@ -289,17 +289,17 @@ exports.updateAd = async (req, res) => {
             }
         }
 
-        // Apply restrictions for non-admin users ONLY if they are changing CONTENT and the ad is NOT rejected
+        const isRejected = ad.status === 'rejected';
+
+        // Apply restrictions for non-admin users
         if (req.user.role !== 'admin') {
             const isChangingContent = req.body.title && req.body.title !== ad.title ||
                                       req.body.description && req.body.description !== ad.description ||
                                       req.body.price && Number(req.body.price) !== Number(ad.price);
 
-            // If the ad is REJECTED, we allow editing without cooldown to let them fix it immediately
-            const isRejected = ad.status === 'rejected';
-
+            // If the ad is NOT already rejected, enforce edit limits and cooldown
             if (isChangingContent && !isRejected) {
-                // 1. Check max edits (3 times) - only for non-rejected ads
+                // 1. Check max edits (3 times)
                 if (ad.editCount >= 3) {
                     return res.status(400).json({ 
                         success: false, 
@@ -307,7 +307,7 @@ exports.updateAd = async (req, res) => {
                     });
                 }
 
-                // 2. Check cooldown (3 hours) - only for non-rejected ads
+                // 2. Check cooldown (3 hours)
                 if (ad.lastEditedAt) {
                     const threeHoursInMs = 3 * 60 * 60 * 1000;
                     const timeDiff = new Date() - new Date(ad.lastEditedAt);
@@ -331,6 +331,13 @@ exports.updateAd = async (req, res) => {
             if (isChangingContent || req.body.status === 'active' || isRejected) {
                 req.body.status = 'pending';
                 req.body.rejectionReason = null; // Clear old rejection reason so admin sees it as new
+            }
+        } else {
+            // Logic for admin users: if they edit a rejected ad, reset it to pending
+            // This ensures ads corrected by admin-users (like "admin UAE") reappear in the moderation queue.
+            if (isRejected && (req.body.status === 'rejected' || !req.body.status)) {
+                req.body.status = 'pending';
+                req.body.rejectionReason = null;
             }
         }
 

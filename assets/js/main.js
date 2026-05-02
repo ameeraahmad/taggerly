@@ -2118,6 +2118,66 @@ async function loadGlobalHeader() {
                 }
             }, 600); // Wait for animations/load
         }
+
+        // --- Notification Header Logic ---
+        const markAllReadBtn = document.getElementById('mark-notifs-read');
+        const notifBtn = document.getElementById('notif-btn');
+        const notifBadge = document.getElementById('notif-badge');
+
+        if (markAllReadBtn) {
+            markAllReadBtn.addEventListener('click', async (e) => {
+                e.preventDefault();
+                try {
+                    const res = await apiClient.fetch('/notifications/read-all', { method: 'PUT' });
+                    if (res.success) {
+                        if (notifBadge) notifBadge.classList.add('hidden');
+                        if (window.loadNotifications) window.loadNotifications();
+                    }
+                } catch (err) {
+                    console.error('Failed to mark all as read:', err);
+                }
+            });
+        }
+
+        if (notifBtn) {
+            // Also mark as read when clicking the bell icon itself
+            notifBtn.addEventListener('click', async () => {
+                if (notifBadge && !notifBadge.classList.contains('hidden')) {
+                    try {
+                        await apiClient.fetch('/notifications/read-all', { method: 'PUT' });
+                        notifBadge.classList.add('hidden');
+                        // Optionally reload list to show read state
+                        if (window.loadNotifications) window.loadNotifications();
+                    } catch (err) {
+                        console.error('Failed to mark all as read on click:', err);
+                    }
+                }
+            });
+        }
+
+        // Add hover listener to mark as read when dropdown is shown (it's a CSS hover)
+        const notifWrapper = document.getElementById('notif-wrapper');
+        if (notifWrapper) {
+            let readTimeout;
+            notifWrapper.addEventListener('mouseenter', () => {
+                // Wait 1.5 seconds of hovering before marking all as read to avoid accidents
+                readTimeout = setTimeout(async () => {
+                    if (notifBadge && !notifBadge.classList.contains('hidden')) {
+                        try {
+                            await apiClient.fetch('/notifications/read-all', { method: 'PUT' });
+                            notifBadge.classList.add('hidden');
+                            if (window.loadNotifications) window.loadNotifications();
+                        } catch (err) {
+                            console.error('Failed to mark all as read on hover:', err);
+                        }
+                    }
+                }, 1500);
+            });
+
+            notifWrapper.addEventListener('mouseleave', () => {
+                clearTimeout(readTimeout);
+            });
+        }
     } catch (err) {
         console.error('Error loading global header:', err);
     }

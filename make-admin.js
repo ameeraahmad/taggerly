@@ -1,35 +1,32 @@
-require('dotenv').config();
-const { connectDB } = require('./config/db');
 const User = require('./models/User');
+const { sequelize } = require('./config/db');
 
-const email = process.argv[2];
-
-if (!email) {
-    console.log("❌ Please provide an email address.");
-    console.log("Usage: node make-admin.js user@example.com");
-    process.exit(1);
-}
-
-const makeAdmin = async () => {
+async function makeAdmin(email) {
     try {
-        await connectDB();
-        const user = await User.findOne({ where: { email } });
+        await sequelize.authenticate();
+        console.log('Connected to database.');
 
+        const user = await User.findOne({ where: { email } });
         if (!user) {
-            console.log(`❌ User with email '${email}' not found in the database.`);
+            console.error(`User with email ${email} not found.`);
             process.exit(1);
         }
 
         user.role = 'admin';
         await user.save();
 
-        console.log(`✅ Success! The user '${user.name}' (${user.email}) is now an ADMIN.`);
-        console.log(`➡️ You can now log into the website as this user, and the 'Admin Panel' option will appear in your account menu.`);
+        console.log(`Success! User ${user.name} (${email}) is now an admin.`);
         process.exit(0);
     } catch (err) {
-        console.error("❌ Error:", err.message);
+        console.error('Error:', err.message);
         process.exit(1);
     }
-};
+}
 
-makeAdmin();
+const email = process.argv[2];
+if (!email) {
+    console.log('Usage: node make-admin.js <email>');
+    process.exit(1);
+}
+
+makeAdmin(email);

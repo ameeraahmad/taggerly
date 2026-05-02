@@ -380,6 +380,12 @@
                     const totalViews = allAds.reduce((acc, ad) => acc + (ad.views || 0), 0);
                     stats[1].textContent = totalViews.toLocaleString();
                     
+                    // Update Messages Count if possible
+                    try {
+                        const unreadData = await apiClient.getUnreadCount();
+                        if (stats[2]) stats[2].textContent = unreadData.count;
+                    } catch (err) { console.warn('Failed to fetch unread count for dashboard'); }
+                    
                     // Update Analytics Summary
                     const avgViews = allAds.length > 0 ? (totalViews / allAds.length).toFixed(1) : 0;
                     document.getElementById('avg-views').textContent = avgViews;
