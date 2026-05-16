@@ -1,8 +1,8 @@
-# 🚀 Taggerly - Ultimate Classifieds Platform
+# 🚀 Tagger - Ultimate Classifieds Platform
 
-![Taggerly Banner](https://images.unsplash.com/photo-1557821552-30d20356b326?ixlib=rb-4.0.3&auto=format&fit=crop&w=1200&q=80)
+![Tagger Banner](https://images.unsplash.com/photo-1557821552-30d20356b326?ixlib=rb-4.0.3&auto=format&fit=crop&w=1200&q=80)
 
-**Taggerly** is a high-performance, full-stack classifieds marketplace built to replicate and enhance the core features of platforms like Dubizzle and OLX. Designed as a scalable SaaS product, it features real-time interactions, secure payments, and a premium user experience.
+**Tagger** is a high-performance, full-stack classifieds marketplace built to replicate and enhance the core features of platforms like Dubizzle and OLX. Designed as a scalable SaaS product, it features real-time interactions, secure payments, and a premium user experience.
 
 ---
 
@@ -52,10 +52,10 @@
 ### 2. Installation
 ```bash
 # Clone the repository
-git clone https://github.com/ameeraahmad/taggerly.git
+git clone https://github.com/ameeraahmad/tagger.git
 
 # Navigate to the project
-cd taggerly
+cd tagger
 
 # Install dependencies
 npm install
@@ -65,7 +65,7 @@ npm install
 Create a `.env` file in the root directory based on `.env.example`:
 ```env
 PORT=5000
-DATABASE_URL=postgres://user:password@localhost:5432/taggerly
+DATABASE_URL=postgres://user:password@localhost:5432/tagger
 JWT_SECRET=your_super_secret_key
 # ... add your Cloudinary, Stripe, and OAuth keys
 ```
@@ -105,6 +105,7 @@ npm start
 ---
 
 ## 🤝 Support
-For support, email `support@taggerly.com` or join our developer forum.
+For support, email `support@tagger.com` or join our developer forum.
 
-Made with ❤️ by [Taggerly Team]
+Made with ❤️ by [Tagger Team]
+# tagger-web
