@@ -13,7 +13,7 @@
 8. أضف الروابط التالية في **Authorized JavaScript origins**:
    - `http://localhost:5000`
    - `http://localhost:3000`
-   - `https://taggerly-production.up.railway.app`
+   - `https://tagger-production.up.railway.app`
 9. اضغط **Create** وانسخ الـ `Client ID`.
 
 ---
@@ -27,7 +27,7 @@
 6. اختر **Web**.
 7. في الإعدادات (**Settings > Basic**)، ستجد الـ **App ID**.
 8. اذهب إلى **Facebook Login > Settings** وأضف الروابط التالية في **Valid OAuth Redirect URIs**:
-   - `https://taggerly-production.up.railway.app/`
+   - `https://tagger-production.up.railway.app/`
    - `http://localhost:5000/`
 
 ---

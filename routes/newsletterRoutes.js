@@ -48,7 +48,7 @@ router.post('/subscribe', [
         try {
             await sendEmail({
                 email: subscriber.email,
-                subject: 'Welcome to Taggerly Newsletter!',
+                subject: 'Welcome to Tagger Newsletter!',
                 html: newsletterWelcomeEmail({ unsubscribeURL })
             });
         } catch (emailErr) {

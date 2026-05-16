@@ -4,8 +4,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title data-translate="login">Login / Sign Up - Taggerly</title>
-    <meta name="description" content="Login or Create a new account on Taggerly.">
+    <title data-translate="login">Login / Sign Up - Tagger</title>
+    <meta name="description" content="Login or Create a new account on Tagger.">
     <link rel="icon" type="image/png" href="assets/images/favicon.png">
 
     <script src="https://cdn.tailwindcss.com"></script>
@@ -80,7 +80,7 @@
             <!-- Header Text -->
             <div class="text-center mb-8">
                 <h2 id="form-title" class="text-3xl font-bold text-gray-900 dark:text-white"
-                    data-translate="welcomeTitle">Join Taggerly</h2>
+                    data-translate="welcomeTitle">Join Tagger</h2>
 
                 <p id="form-subtitle" class="mt-2 text-gray-600 dark:text-gray-400" data-translate="welcomeSubtitle">
                     Start buying and selling today</p>
@@ -91,13 +91,13 @@
             <form id="login-form" class="space-y-4">
                 <div>
                     <label class="block text-sm font-medium mb-1" data-translate="emailPlaceholder">Email</label>
-                    <input id="login-email" type="email" required
+                    <input id="login-email" type="email" required autocomplete="email"
                         class="w-full px-4 py-3 rounded-lg border dark:border-gray-600 dark:bg-gray-700 focus:ring-2 focus:ring-accent outline-none transition"
                         placeholder="example@mail.com">
                 </div>
                 <div>
                     <label class="block text-sm font-medium mb-1" data-translate="passwordPlaceholder">Password</label>
-                    <input id="login-password" type="password" required
+                    <input id="login-password" type="password" required autocomplete="current-password"
                         class="w-full px-4 py-3 rounded-lg border dark:border-gray-600 dark:bg-gray-700 focus:ring-2 focus:ring-accent outline-none transition"
                         placeholder="••••••••">
                 </div>
@@ -141,14 +141,14 @@
                 </div>
                 <div>
                     <label class="block text-sm font-medium mb-1" data-translate="passwordPlaceholder">Password</label>
-                    <input id="signup-password" type="password" required
+                    <input id="signup-password" type="password" required autocomplete="new-password"
                         class="w-full px-4 py-3 rounded-lg border dark:border-gray-600 dark:bg-gray-700 focus:ring-2 focus:ring-accent outline-none transition"
                         placeholder="••••••••">
                 </div>
                 <div>
                     <label class="block text-sm font-medium mb-1" data-translate="confirmPasswordPlaceholder">Confirm
                         Password</label>
-                    <input id="signup-confirm-password" type="password" required
+                    <input id="signup-confirm-password" type="password" required autocomplete="new-password"
                         class="w-full px-4 py-3 rounded-lg border dark:border-gray-600 dark:bg-gray-700 focus:ring-2 focus:ring-accent outline-none transition"
                         placeholder="••••••••">
                 </div>
@@ -197,10 +197,32 @@
             </div>
     </main>
 
+    <!-- Country Mismatch Modal -->
+    <div id="country-mismatch-modal"
+        class="fixed inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center z-50 hidden"
+        role="dialog" aria-modal="true">
+        <div class="bg-white dark:bg-gray-800 rounded-2xl shadow-2xl p-8 max-w-sm w-full mx-4 animate-slide-up border dark:border-gray-700">
+            <div class="text-center mb-6">
+                <div class="text-5xl mb-3" id="cm-flag">🌍</div>
+                <h3 class="text-xl font-bold text-gray-900 dark:text-white" id="cm-title">Wrong Country</h3>
+                <p class="mt-2 text-sm text-gray-500 dark:text-gray-400" id="cm-body"></p>
+            </div>
+            <div class="flex flex-col gap-3">
+                <button id="cm-switch-btn"
+                    class="w-full bg-accent text-white py-3 rounded-xl font-bold hover:bg-orange-600 transition transform hover:-translate-y-0.5 shadow-md">
+                </button>
+                <button onclick="document.getElementById('country-mismatch-modal').classList.add('hidden')"
+                    class="w-full border dark:border-gray-600 text-gray-600 dark:text-gray-300 py-3 rounded-xl font-medium hover:bg-gray-50 dark:hover:bg-gray-700 transition">
+                    <span id="cm-cancel">Cancel</span>
+                </button>
+            </div>
+        </div>
+    </div>
+
     <!-- Footer -->
     <footer class="bg-gray-900 text-gray-400 py-8 text-center border-t border-gray-800">
         <div class="max-w-7xl mx-auto px-4">
-            <p class="text-sm" data-translate="rights">&copy; 2026 Taggerly. All rights reserved.</p>
+            <p class="text-sm" data-translate="rights">&copy; 2026 Tagger. All rights reserved.</p>
         </div>
     </footer>
 
@@ -252,10 +274,14 @@
             e.preventDefault();
             const email = document.getElementById('login-email').value;
             const password = document.getElementById('login-password').value;
+            const submitBtn = loginForm.querySelector('button[type="submit"]');
 
+            submitBtn.disabled = true;
+            submitBtn.textContent = currentLang === 'ar' ? 'جارٍ تسجيل الدخول...' : 'Signing in...';
+
+            // ✅ Bug Fix #1: declare captchaToken OUTSIDE try so catch can access it
+            let captchaToken = '';
             try {
-                // Get reCAPTCHA token
-                let captchaToken = '';
                 try {
                     captchaToken = await grecaptcha.execute('YOUR_SITE_KEY_HERE', { action: 'login' });
                 } catch (cErr) { console.warn('reCAPTCHA failed', cErr); }
@@ -263,8 +289,77 @@
                 const response = await apiClient.login(email, password, captchaToken);
                 const confirmed = await customAlert(currentLang === 'ar' ? 'تم تسجيل الدخول بنجاح!' : 'Login successful!');
                 if (confirmed) window.location.href = 'index.html';
+
             } catch (err) {
-                await customAlert(err.message);
+
+                // ── Handle Country Mismatch ───────────────────────────────────
+                if (err.code === 'COUNTRY_MISMATCH' || err.message.includes('registered in')) {
+                    const accountCountry = err.accountCountry;
+                    const countryNames    = { egypt: 'مصر 🇪🇬', uae: 'الإمارات 🇦🇪', ksa: 'السعودية 🇸🇦', qatar: 'قطر 🇶🇦' };
+                    const countryNamesEn  = { egypt: 'Egypt 🇪🇬', uae: 'UAE 🇦🇪', ksa: 'Saudi Arabia 🇸🇦', qatar: 'Qatar 🇶🇦' };
+
+                    const countryName = currentLang === 'ar'
+                        ? (countryNames[accountCountry]   || accountCountry)
+                        : (countryNamesEn[accountCountry] || accountCountry);
+
+                    // captchaToken is now in scope ✅
+                    showCountryMismatchModal(countryName, accountCountry, email, password, captchaToken);
+
+                // ── Handle Unverified Email ───────────────────────────────────
+                } else if (err.code === 'EMAIL_NOT_VERIFIED' || err.message.includes('verify your email')) {
+                    const msg = currentLang === 'ar'
+                        ? 'يجب التحقق من بريدك الإلكتروني أولاً. هل تريد إعادة إرسال رسالة التحقق؟'
+                        : 'Your email is not verified. Would you like to resend the verification email?';
+                    const resend = confirm(msg);
+                    if (resend) {
+                        try {
+                            await apiClient.fetch('/auth/resend-verification-public', {
+                                method: 'POST',
+                                body: JSON.stringify({ email })
+                            });
+                            await customAlert(currentLang === 'ar' ? 'تم إرسال رسالة التحقق!' : 'Verification email sent!');
+                        } catch (resendErr) {
+                            await customAlert(currentLang === 'ar' ? 'تعذر إرسال الرسالة. حاول مرة أخرى.' : 'Could not send email. Try again.');
+                        }
+                    }
+
+                // ── Suggest Reset after 3 attempts ───────────────────────────
+                } else if (err.suggestReset) {
+                    await customAlert(err.message);
+                    // Show a persistent reset hint below the form
+                    let hint = document.getElementById('reset-hint');
+                    if (!hint) {
+                        hint = document.createElement('div');
+                        hint.id = 'reset-hint';
+                        hint.className = 'mt-3 p-3 bg-orange-50 dark:bg-orange-900/30 rounded-xl text-sm text-center animate-fade-in';
+                        hint.innerHTML = `<span class="text-orange-700 dark:text-orange-300">
+                            ${currentLang === 'ar' ? 'هل نسيت كلمة السر؟' : 'Forgot your password?'}
+                            <a href="forgot-password.html" class="font-bold underline ml-1">
+                                ${currentLang === 'ar' ? 'استعادة الحساب' : 'Reset it now'}
+                            </a></span>`;
+                        loginForm.insertAdjacentElement('afterend', hint);
+                    }
+
+                // ── Account Locked: redirect to reset page ────────────────────
+                } else if (err.code === 'ACCOUNT_LOCKED') {
+                    await customAlert(
+                        currentLang === 'ar'
+                            ? 'تم قفل حسابك بسبب كثرة المحاولات الفاشلة. سيتم توجيهك لإعادة تعيين كلمة السر.'
+                            : 'Account locked due to too many failed attempts. Redirecting to password reset...'
+                    );
+                    window.location.href = 'forgot-password.html?locked=1';
+
+                // ── Generic error ─────────────────────────────────────────────
+                } else {
+                    await customAlert(err.message);
+                }
+
+            } finally {
+                submitBtn.disabled = false;
+                // ✅ Bug Fix #2: reset text explicitly — don't rely only on updatePageLanguage
+                submitBtn.textContent = currentLang === 'ar' ? 'تسجيل الدخول' : 'Sign In';
+                submitBtn.setAttribute('data-translate', 'signInBtn');
+                if (window.updatePageLanguage) window.updatePageLanguage();
             }
         });
 
@@ -276,6 +371,11 @@
             const email = document.getElementById('signup-email').value;
             const password = document.getElementById('signup-password').value;
             const confirmPassword = document.getElementById('signup-confirm-password').value;
+
+            if (password.length < 8) {
+                await customAlert(currentLang === 'ar' ? 'كلمة المرور يجب أن تكون 8 أحرف على الأقل!' : 'Password must be at least 8 characters!');
+                return;
+            }
 
             if (password !== confirmPassword) {
                 await customAlert(currentLang === 'ar' ? 'كلمات المرور غير متطابقة!' : 'Passwords do not match!');
@@ -350,6 +450,59 @@
                 await customAlert(currentLang === 'ar' ? 'فشل تسجيل الدخول عبر فيسبوك' : 'Facebook login failed');
             }
         }
+
+        // ── Country Mismatch Modal ────────────────────────────────────────────
+        function showCountryMismatchModal(countryName, accountCountry, email, password, captchaToken) {
+            const modal      = document.getElementById('country-mismatch-modal');
+            const flagEl     = document.getElementById('cm-flag');
+            const titleEl    = document.getElementById('cm-title');
+            const bodyEl     = document.getElementById('cm-body');
+            const switchBtn  = document.getElementById('cm-switch-btn');
+            const cancelText = document.getElementById('cm-cancel');
+
+            const flags = { egypt: '🇪🇬', uae: '🇦🇪', ksa: '🇸🇦', qatar: '🇶🇦' };
+            flagEl.textContent = flags[accountCountry] || '🌍';
+
+            if (currentLang === 'ar') {
+                titleEl.textContent  = 'حساب مسجل في بلد مختلف';
+                bodyEl.textContent   = `هذا الحساب مسجل في ${countryName}. هل تريد التبديل تلقائياً والدخول؟`;
+                switchBtn.textContent = `التبديل إلى ${countryName} وتسجيل الدخول`;
+                cancelText.textContent = 'إلغاء';
+            } else {
+                titleEl.textContent  = 'Account Registered in Different Country';
+                bodyEl.textContent   = `This account is registered in ${countryName}. Switch automatically and log in?`;
+                switchBtn.textContent = `Switch to ${countryName} & Sign In`;
+                cancelText.textContent = 'Cancel';
+            }
+
+            // When user clicks switch: update country then retry login
+            switchBtn.onclick = async () => {
+                modal.classList.add('hidden');
+
+                // Update localStorage to match the account's country
+                const countryFlags = { egypt: '🇪🇬', uae: '🇦🇪', ksa: '🇸🇦', qatar: '🇶🇦' };
+                const countryNamesEn = { egypt: 'Egypt', uae: 'UAE', ksa: 'KSA', qatar: 'Qatar' };
+                localStorage.setItem('selectedCountry', accountCountry);
+                localStorage.setItem('selectedCountrySource', 'account');
+                localStorage.setItem('selectedCountryFlag', countryFlags[accountCountry] || '🌍');
+                localStorage.setItem('selectedCountryName', countryNamesEn[accountCountry] || accountCountry);
+                window.dispatchEvent(new CustomEvent('countryChanged', { detail: { country: accountCountry } }));
+
+                // Retry login with the correct country now set
+                try {
+                    await apiClient.login(email, password, captchaToken);
+                    const confirmed = await customAlert(
+                        currentLang === 'ar' ? 'تم تسجيل الدخول بنجاح!' : 'Login successful!'
+                    );
+                    if (confirmed) window.location.href = 'index.html';
+                } catch (retryErr) {
+                    await customAlert(retryErr.message);
+                }
+            };
+
+            modal.classList.remove('hidden');
+        }
+        // ─────────────────────────────────────────────────────────────────────
     </script>
 </body>
 

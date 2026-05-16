@@ -7,7 +7,7 @@ const User = require('./models/User');
         
         const credentials = [
             { 
-                email: 'admin@taggerly.com', 
+                email: 'admin@tagger.com', 
                 password: 'Admin123!', 
                 name: 'System Admin', 
                 role: 'admin' 

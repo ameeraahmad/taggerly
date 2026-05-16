@@ -68,6 +68,26 @@ const User = sequelize.define('User', {
     passwordResetExpires: {
         type: DataTypes.DATE
     },
+    passwordChangedAt: {
+        type: DataTypes.DATE,
+        allowNull: true
+    },
+    resetOTP: {
+        type: DataTypes.STRING,
+        allowNull: true
+    },
+    resetOTPExpires: {
+        type: DataTypes.DATE,
+        allowNull: true
+    },
+    loginAttempts: {
+        type: DataTypes.INTEGER,
+        defaultValue: 0
+    },
+    lockUntil: {
+        type: DataTypes.DATE,
+        allowNull: true
+    },
     isBanned: {
         type: DataTypes.BOOLEAN,
         defaultValue: false
@@ -85,6 +105,8 @@ const User = sequelize.define('User', {
         beforeUpdate: async (user) => {
             if (user.changed('password')) {
                 user.password = await bcrypt.hash(user.password, 12);
+                // Track when password was changed to invalidate old tokens
+                user.passwordChangedAt = new Date(Date.now() - 1000); // -1s to ensure token issued after
             }
         }
     }
@@ -102,6 +124,20 @@ User.prototype.createPasswordResetToken = function () {
     this.passwordResetExpires = Date.now() + 10 * 60 * 1000; // 10 minutes
 
     return resetToken;
+};
+
+// Method to check if password was changed after a JWT was issued
+User.prototype.changedPasswordAfter = function (JWTTimestamp) {
+    if (this.passwordChangedAt) {
+        const changedTimestamp = parseInt(this.passwordChangedAt.getTime() / 1000, 10);
+        return JWTTimestamp < changedTimestamp;
+    }
+    return false;
+};
+
+// Check if account is currently locked
+User.prototype.isLocked = function () {
+    return this.lockUntil && this.lockUntil > Date.now();
 };
 
 // Method to check password

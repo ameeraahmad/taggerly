@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Admin Dashboard - Taggerly</title>
+    <title>Admin Dashboard - Tagger</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script>
         tailwind.config = {
@@ -131,7 +131,7 @@
                 <div class="w-9 h-9 bg-accent rounded-xl flex items-center justify-center text-white font-bold text-lg">
                     T</div>
                 <div>
-                    <p class="font-bold text-white text-lg leading-none">Taggerly</p>
+                    <p class="font-bold text-white text-lg leading-none">Tagger</p>
                     <p class="text-white/50 text-xs mt-0.5">Admin Panel</p>
                 </div>
             </div>
@@ -1254,7 +1254,7 @@
             const link = document.createElement("a");
             const url = URL.createObjectURL(blob);
             link.setAttribute("href", url);
-            link.setAttribute("download", `taggerly_subscribers_${new Date().toISOString().split('T')[0]}.csv`);
+            link.setAttribute("download", `tagger_subscribers_${new Date().toISOString().split('T')[0]}.csv`);
             link.style.visibility = 'hidden';
             document.body.appendChild(link);
             link.click();

@@ -25,6 +25,16 @@ const PORT = parseInt(process.env.PORT, 10) || 5000;
 console.log('🔍 Starting Server Initialization...');
 console.log(`📡 Attempting to listen on Port: ${PORT}`);
 
+// Critical Environment Variable Check
+const requiredEnv = ['JWT_SECRET', 'GOOGLE_CLIENT_ID'];
+const missing = requiredEnv.filter(k => !process.env[k]);
+if (missing.length > 0) {
+    console.error(`❌ CRITICAL ERROR: Missing required environment variables: ${missing.join(', ')}`);
+    if (process.env.NODE_ENV === 'production') {
+        process.exit(1);
+    }
+}
+
 // Connect to Database (Non-blocking)
 connectDB().catch(err => console.error('Delayed DB Connection Error:', err));
 
@@ -36,7 +46,9 @@ app.use('/api/payments/webhook', express.raw({ type: 'application/json' }));
 
 // Middleware
 app.use(helmet({
-    contentSecurityPolicy: false, // Disable CSP to allow CDN scripts like Tailwind/Google Fonts easily, or configure it specifically if needed
+    contentSecurityPolicy: false, // CSP is disabled to allow CDNs easily, but other headers (XSS, Frameguard) are active
+    crossOriginEmbedderPolicy: false,
+    crossOriginResourcePolicy: false
 }));
 app.use(cors());
 app.use(express.json({ limit: '10mb' })); // Limit JSON size

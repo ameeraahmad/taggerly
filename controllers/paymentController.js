@@ -201,10 +201,10 @@ async function fulfillOrder(session, io) {
         // Send Email Receipt
         const user = payment.user || await User.findByPk(userId);
         if (user && user.email) {
-            const planName = PLANS[plan]?.name || 'Taggerly Plan';
+            const planName = PLANS[plan]?.name || 'Tagger Plan';
             require('../utils/email')({
                 email: user.email,
-                subject: '🧾 Payment Receipt - Taggerly',
+                subject: '🧾 Payment Receipt - Tagger',
                 html: paymentReceiptEmail({
                     userName: user.name,
                     plan: planName,

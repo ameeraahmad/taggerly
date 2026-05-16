@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title id="page-title">Seller Profile - Taggerly</title>
+    <title id="page-title">Seller Profile - Tagger</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script>
         tailwind.config = {
@@ -253,8 +253,8 @@
             document.getElementById('share-profile-btn').onclick = async () => {
                 const name = document.getElementById('seller-name-heading').textContent;
                 const shareData = {
-                    title: `${name}'s Profile - Taggerly`,
-                    text: `Check out ${name}'s profile on Taggerly.`,
+                    title: `${name}'s Profile - Tagger`,
+                    text: `Check out ${name}'s profile on Tagger.`,
                     url: window.location.href
                 };
 
@@ -293,7 +293,7 @@
                 const response = await apiClient.getPublicProfile(sellerId);
                 const user = response.data;
 
-                document.getElementById('page-title').textContent = `${user.name}'s Profile - Taggerly`;
+                document.getElementById('page-title').textContent = `${user.name}'s Profile - Tagger`;
                 document.getElementById('seller-name-heading').textContent = user.name;
                 document.getElementById('seller-location-text').querySelector('span').textContent = user.location || 'UAE';
                 document.getElementById('seller-bio').textContent = user.bio || `Passionate seller since ${new Date(user.createdAt).getFullYear()}. Dealing in high quality items.`;

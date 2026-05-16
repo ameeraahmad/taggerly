@@ -1,7 +1,7 @@
 module.exports = {
   apps: [
     {
-      name: 'taggerly-backend',
+      name: 'tagger-backend',
       script: 'server.js',
       instances: 'max',
       exec_mode: 'cluster',

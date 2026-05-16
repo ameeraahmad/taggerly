@@ -1,6 +1,6 @@
-# 📖 Taggerly API Documentation
+# 📖 Tagger API Documentation
 
-This document outlines the available API endpoints for the Taggerly platform. All requests should use the base URL: `http://localhost:5000/api`.
+This document outlines the available API endpoints for the Tagger platform. All requests should use the base URL: `http://localhost:5000/api`.
 
 ---
 

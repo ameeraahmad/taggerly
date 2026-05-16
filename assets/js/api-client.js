@@ -27,7 +27,20 @@ var apiClient = {
             const data = await response.json();
             console.log(`✅ API Response [${endpoint}]:`, data);
             if (!response.ok) {
-                throw new Error(data.message || 'Something went wrong');
+                // If password was changed on another device → auto logout here
+                if (data.code === 'PASSWORD_CHANGED') {
+                    localStorage.removeItem('token');
+                    localStorage.removeItem('user');
+                    alert(data.message || 'Your password was changed. Please log in again.');
+                    window.location.href = '/login.html';
+                    return;
+                }
+                // Build a rich error so callers can inspect code / accountCountry etc.
+                const err = new Error(data.message || 'Something went wrong');
+                if (data.code)           err.code           = data.code;
+                if (data.accountCountry) err.accountCountry = data.accountCountry;
+                if (data.suggestReset)   err.suggestReset   = true;
+                throw err;
             }
             return data;
         } else {
@@ -58,6 +71,10 @@ var apiClient = {
         const body = { email, password };
         if (captchaToken) body.captchaToken = captchaToken;
 
+        // Send currently selected country so backend can validate it
+        const selectedCountry = localStorage.getItem('selectedCountry');
+        if (selectedCountry) body.selectedCountry = selectedCountry;
+
         const data = await this.fetch('/auth/login', {
             method: 'POST',
             body: JSON.stringify(body),
@@ -72,28 +89,26 @@ var apiClient = {
     },
 
     async googleLogin(tokenId) {
+        const selectedCountry = localStorage.getItem('selectedCountry') || '';
         const data = await this.fetch('/auth/google', {
             method: 'POST',
-            body: JSON.stringify({ tokenId })
+            body: JSON.stringify({ tokenId, selectedCountry })
         });
         localStorage.setItem('token', data.token);
         localStorage.setItem('user', JSON.stringify(data.data));
-        
         this._syncUserCountry(data.data);
-        
         return data;
     },
 
     async facebookLogin(accessToken) {
+        const selectedCountry = localStorage.getItem('selectedCountry') || '';
         const data = await this.fetch('/auth/facebook', {
             method: 'POST',
-            body: JSON.stringify({ accessToken })
+            body: JSON.stringify({ accessToken, selectedCountry })
         });
         localStorage.setItem('token', data.token);
         localStorage.setItem('user', JSON.stringify(data.data));
-
         this._syncUserCountry(data.data);
-
         return data;
     },
 

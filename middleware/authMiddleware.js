@@ -13,7 +13,10 @@ const protect = async (req, res, next) => {
     }
 
     try {
-        const decoded = jwt.verify(token, process.env.JWT_SECRET || 'taggerly_secret_key');
+        if (!process.env.JWT_SECRET) {
+            throw new Error('FATAL: JWT_SECRET is not defined');
+        }
+        const decoded = jwt.verify(token, process.env.JWT_SECRET);
         req.user = await User.findByPk(decoded.id, {
             attributes: { exclude: ['password'] }
         });
@@ -24,6 +27,15 @@ const protect = async (req, res, next) => {
 
         if (req.user.isBanned) {
             return res.status(403).json({ success: false, message: 'Your account has been suspended. Please contact support.' });
+        }
+
+        // If password was changed after token was issued → force re-login on all devices
+        if (req.user.changedPasswordAfter(decoded.iat)) {
+            return res.status(401).json({
+                success: false,
+                code: 'PASSWORD_CHANGED',
+                message: 'Your password was recently changed. Please log in again.'
+            });
         }
 
         next();

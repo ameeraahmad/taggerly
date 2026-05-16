@@ -304,7 +304,7 @@ exports.approveAd = async (req, res) => {
             const adURL = `${frontendURL}/ad-details.html?id=${ad.id}`;
             sendEmail({
                 email: ad.user.email,
-                subject: '✅ تم تفعيل إعلانك على Taggerly!',
+                subject: '✅ تم تفعيل إعلانك على Tagger!',
                 message: `تمت الموافقة على إعلانك "${ad.title}" وهو الآن متاح للمشترين.`,
                 html: adApprovedEmail({ userName: ad.user.name, adTitle: ad.title, adURL })
             }).catch(err => console.error('Ad approval email failed:', err));
@@ -341,7 +341,7 @@ exports.rejectAd = async (req, res) => {
         if (ad.user && ad.user.email) {
             sendEmail({
                 email: ad.user.email,
-                subject: '❌ تحديث بخصوص إعلانك على Taggerly',
+                subject: '❌ تحديث بخصوص إعلانك على Tagger',
                 message: `تم رفض إعلانك "${ad.title}". السبب: ${reason}`,
                 html: adRejectedEmail({ userName: ad.user.name, adTitle: ad.title, reason })
             }).catch(err => console.error('Ad rejection email failed:', err));

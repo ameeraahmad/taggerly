@@ -127,6 +127,26 @@ const connectDB = async () => {
                             console.log('➕ Adding "country" column to Users...');
                             await queryInterface.addColumn('Users', 'country', { type: Sequelize.STRING, defaultValue: 'uae' });
                         }
+                        if (!userTableInfo.passwordChangedAt) {
+                            console.log('➕ Adding "passwordChangedAt" column to Users...');
+                            await queryInterface.addColumn('Users', 'passwordChangedAt', { type: Sequelize.DATE, allowNull: true });
+                        }
+                        if (!userTableInfo.loginAttempts) {
+                            console.log('➕ Adding "loginAttempts" column to Users...');
+                            await queryInterface.addColumn('Users', 'loginAttempts', { type: Sequelize.INTEGER, defaultValue: 0 });
+                        }
+                        if (!userTableInfo.lockUntil) {
+                            console.log('➕ Adding "lockUntil" column to Users...');
+                            await queryInterface.addColumn('Users', 'lockUntil', { type: Sequelize.DATE, allowNull: true });
+                        }
+                        if (!userTableInfo.resetOTP) {
+                            console.log('➕ Adding "resetOTP" column to Users...');
+                            await queryInterface.addColumn('Users', 'resetOTP', { type: Sequelize.STRING, allowNull: true });
+                        }
+                        if (!userTableInfo.resetOTPExpires) {
+                            console.log('➕ Adding "resetOTPExpires" column to Users...');
+                            await queryInterface.addColumn('Users', 'resetOTPExpires', { type: Sequelize.DATE, allowNull: true });
+                        }
                     } catch (mErr) {
                         console.log('ℹ️ SQLite columns for Users might already exist.');
                     }

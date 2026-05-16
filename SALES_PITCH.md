@@ -1,9 +1,9 @@
-# 🚀 Taggerly: Professional Classifieds Platform Sales Pitch
+# 🚀 Tagger: Professional Classifieds Platform Sales Pitch
 
 ---
 ## 💠 [English Version]
 
-Taggerly is a premium, full-stack classifieds marketplace built for speed, scalability, and a superior user experience. Inspired by industry leaders like Dubizzle and OLX, it offers a production-ready solution for entrepreneurs looking to launch a high-performance marketplace.
+Tagger is a premium, full-stack classifieds marketplace built for speed, scalability, and a superior user experience. Inspired by industry leaders like Dubizzle and OLX, it offers a production-ready solution for entrepreneurs looking to launch a high-performance marketplace.
 
 ### ✨ Key Features & User Experience
 - 🌍 **Multi-Country & Localization:** Intelligent region switching (UAE, KSA, Egypt, Qatar) with automatic currency (AED, SAR, EGP, QAR) and language (English/Arabic) support.
@@ -41,8 +41,8 @@ Taggerly is a premium, full-stack classifieds marketplace built for speed, scala
 - **Media Storage:** Cloudinary - Cloud-based image optimization and fast CDN delivery.
 - **Security:** JWT (JSON Web Tokens) authentication, Helmet security headers, and Google reCAPTCHA v3 integration.
 
-### 💎 Why Invest in Taggerly?
-1. **Premium Branding:** Fully rebranded to "Taggerly"; no legacy references.
+### 💎 Why Invest in Tagger?
+1. **Premium Branding:** Fully rebranded to "Tagger"; no legacy references.
 2. **Production Ready:** Optimized for cloud providers like Vercel and Stormkit.
 3. **Scalable Architecture:** Easily add more categories, regions, or monetization tiers.
 
@@ -55,7 +55,7 @@ Taggerly is a premium, full-stack classifieds marketplace built for speed, scala
 ---
 ## 💠 [النسخة العربية]
 
-تعتبر "تاجرلي" (Taggerly) منصة متكاملة واحترافية للإعلانات المبوبة، صُممت لتوفير السرعة الفائقة، القابلية للتوسع، وتجربة مستخدم استثنائية. المنصة مستوحاة من رواد المجال مثل "دوبيزل" و"أوليكس"، وتقدم حلاً جاهزاً للإنتاج لرواد الأعمال الراغبين في إطلاق سوق إلكتروني عالي الأداء.
+تعتبر "تاجر" (Tagger) منصة متكاملة واحترافية للإعلانات المبوبة، صُممت لتوفير السرعة الفائقة، القابلية للتوسع، وتجربة مستخدم استثنائية. المنصة مستوحاة من رواد المجال مثل "دوبيزل" و"أوليكس"، وتقدم حلاً جاهزاً للإنتاج لرواد الأعمال الراغبين في إطلاق سوق إلكتروني عالي الأداء.
 
 ### ✨ أهم المميزات وتجربة المستخدم
 - 🌍 **دعم متعدد الدول:** نظام ذكي للتبديل بين المناطق (الإمارات، السعودية، مصر، قطر) مع دعم تلقائي للعملات (درهم، ريال، جنيه) واللغتين العربية والإنجليزية.
@@ -93,8 +93,8 @@ Taggerly is a premium, full-stack classifieds marketplace built for speed, scala
 - **التخزين السحابي:** Cloudinary - لتخزين الصور سحابياً ومعالجتها لسرعة أداء الموقع عبر CDN.
 - **الأمان:** توثيق JWT، حماية Helmet، ودمج نظام Google reCAPTCHA v3.
 
-### 💎 لماذا تستثمر في تاجرلي؟
-1. **علامة تجارية نظيفة:** تم تحديث الهوية بالكامل إلى "تاجرلي" في كافة الملفات (أكثر من 50 ملفاً)، دون أي إشارات لعلامات قديمة.
+### 💎 لماذا تستثمر في تاجر؟
+1. **علامة تجارية نظيفة:** تم تحديث الهوية بالكامل إلى "تاجر" في كافة الملفات (أكثر من 50 ملفاً)، دون أي إشارات لعلامات قديمة.
 2. **جاهز للإنتاج:** تم تحسين الكود ليعمل فوراً على مزودي الخدمات السحابية مثل Vercel و Stormkit.
 3. **بنية قابلة للتوسع:** يمكنك إضافة أقسام أو دول أو خطط ربحية جديدة بسهولة تامة.
 

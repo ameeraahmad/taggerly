@@ -4,11 +4,11 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Ad Details - Taggerly</title>
+    <title>Ad Details - Tagger</title>
     <!-- Dynamic Meta Tags for SEO & Social Sharing -->
-    <meta name="description" content="Check out this ad on Taggerly - The best marketplace.">
-    <meta property="og:title" content="Ad Details - Taggerly">
-    <meta property="og:description" content="Check out this luxury item on Taggerly.">
+    <meta name="description" content="Check out this ad on Tagger - The best marketplace.">
+    <meta property="og:title" content="Ad Details - Tagger">
+    <meta property="og:description" content="Check out this luxury item on Tagger.">
     <meta property="og:image" content="assets/img/og-placeholder.png">
     <meta property="og:type" content="website">
     <meta name="twitter:card" content="summary_large_image">
@@ -512,7 +512,7 @@
                 currentImages = ad.images || [];
 
                 // Update Title & Page Title
-                const siteTitle = `${ad.title} - Taggerly`;
+                const siteTitle = `${ad.title} - Tagger`;
                 document.title = siteTitle;
 
                 // Update Meta Tags for SEO & Social Sharing
@@ -1174,7 +1174,7 @@
 
         function updateMetaTags(ad) {
             const description = ad.description.substring(0, 160);
-            const title = `${ad.title} - Taggerly`;
+            const title = `${ad.title} - Tagger`;
             const image = ad.images && ad.images.length > 0 ? ad.images[0] : 'assets/img/og-placeholder.png';
 
             // Standard meta tags

@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Article - Taggerly Blog</title>
+    <title>Article - Tagger Blog</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script>
         tailwind.config = {
@@ -114,7 +114,7 @@
                         <div>
                             <h4 class="text-xl font-bold mb-2" data-translate="postedBy">Published by</h4>
                             <p id="author-name-bottom" class="text-lg font-medium text-accent mb-2"></p>
-                            <p class="text-gray-600 dark:text-gray-400 text-sm">Expert guide and storyteller at the Taggerly Team. passion for sharing knowledge that helps our community grow.</p>
+                            <p class="text-gray-600 dark:text-gray-400 text-sm">Expert guide and storyteller at the Tagger Team. passion for sharing knowledge that helps our community grow.</p>
                         </div>
                     </div>
                 </div>
@@ -155,7 +155,7 @@
                     const post = resData.data;
                     
                     // Populate UI
-                    document.title = `${lang === 'ar' ? post.title_ar : post.title_en} - Taggerly Blog`;
+                    document.title = `${lang === 'ar' ? post.title_ar : post.title_en} - Tagger Blog`;
                     document.getElementById('post-title').textContent = lang === 'ar' ? post.title_ar : post.title_en;
                     const catKey = `category${post.category.charAt(0).toUpperCase() + post.category.slice(1)}`;
                     document.getElementById('breadcrumb-category').textContent = window.translations?.[lang]?.[catKey] || post.category;
@@ -168,7 +168,7 @@
                     document.getElementById('post-image').src = post.featuredImage || 'assets/images/placeholder-blog.jpg';
                     document.getElementById('post-content').innerHTML = lang === 'ar' ? post.content_ar : post.content_en;
                     
-                    const authorName = post.author?.name || 'Taggerly Team';
+                    const authorName = post.author?.name || 'Tagger Team';
                     const authorAvatar = post.author?.avatar || 'https://www.gravatar.com/avatar/?d=mp';
                     
                     document.getElementById('author-name').textContent = authorName;

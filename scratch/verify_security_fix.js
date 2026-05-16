@@ -11,7 +11,7 @@ async function verifyFix() {
         
         // 1. Create a test user
         const [user] = await User.findOrCreate({
-            where: { email: 'security-test@taggerly.com' },
+            where: { email: 'security-test@tagger.com' },
             defaults: {
                 name: 'Security Tester',
                 password: 'password123',

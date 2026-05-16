@@ -1,7 +1,7 @@
-# Taggerly - Professional Classifieds Ads Platform Overview
+# Tagger - Professional Classifieds Ads Platform Overview
 
 ## 🌟 Executive Summary
-**Taggerly** is a high-performance, feature-rich classified ads marketplace designed for a global audience. It empowers users to buy and sell products, properties, and services across multiple countries with ease. The platform is built on modern technologies, ensuring scalability, speed, and security.
+**Tagger** is a high-performance, feature-rich classified ads marketplace designed for a global audience. It empowers users to buy and sell products, properties, and services across multiple countries with ease. The platform is built on modern technologies, ensuring scalability, speed, and security.
 
 ---
 
@@ -49,8 +49,8 @@
 
 ---
 
-## 💎 Why Taggerly?
-Taggerly is not just a clone; it is a polished, production-ready product. Its modular architecture makes it easy for developers to extend, and its professional design ensures it is ready for immediate launch. With a stable database schema and a verified email communication system, it offers a premium user experience that rivals the biggest names in the classifieds market.
+## 💎 Why Tagger?
+Tagger is not just a clone; it is a polished, production-ready product. Its modular architecture makes it easy for developers to extend, and its professional design ensures it is ready for immediate launch. With a stable database schema and a verified email communication system, it offers a premium user experience that rivals the biggest names in the classifieds market.
 
 ---
-**Taggerly - Connecting Communities, Empowering Trade.**
+**Tagger - Connecting Communities, Empowering Trade.**

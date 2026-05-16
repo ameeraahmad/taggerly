@@ -9,7 +9,7 @@
   {
     "id": 2,
     "name": "Admin User",
-    "email": "admin@taggerly.com",
+    "email": "admin@tagger.com",
     "role": "admin",
     "hashedPassword": "$2b$10$S2YLMX3Z..."
   },

@@ -3,13 +3,13 @@ const secondaryColor = '#0B2447';
 
 const emailHeader = `
 <div style="background-color: ${secondaryColor}; padding: 30px; text-align: center; border-radius: 8px 8px 0 0;">
-    <h1 style="color: white; margin: 0; font-family: sans-serif;">Taggerly</h1>
+    <h1 style="color: white; margin: 0; font-family: sans-serif;">Tagger</h1>
 </div>
 `;
 
 const emailFooter = `
 <div style="text-align: center; padding: 20px; color: #666; font-size: 12px; font-family: sans-serif;">
-    <p>&copy; 2026 Taggerly. All rights reserved.</p>
+    <p>&copy; 2026 Tagger. All rights reserved.</p>
     <p>The best place to buy and sell anything in the UAE.</p>
 </div>
 `;
@@ -38,7 +38,7 @@ exports.welcomeEmail = (options) => `
         </div>
         
         <p>If you have any questions, our support team is always here to help.</p>
-        <p>Happy trading!<br>The Taggerly Team</p>
+        <p>Happy trading!<br>The Tagger Team</p>
     </div>
     ${emailFooter}
 </div>
@@ -60,7 +60,7 @@ exports.emailVerificationEmail = (options) => `
         </div>
         
         <p>If you didn't create an account, you can safely ignore this email.</p>
-        <p>Best regards,<br>The Taggerly Team</p>
+        <p>Best regards,<br>The Tagger Team</p>
     </div>
     ${emailFooter}
 </div>
@@ -83,7 +83,7 @@ exports.resetPasswordEmail = (options) => `
         </div>
         
         <p>This link will expire in 10 minutes.</p>
-        <p>Stay safe,<br>The Taggerly Team</p>
+        <p>Stay safe,<br>The Tagger Team</p>
     </div>
     ${emailFooter}
 </div>
@@ -144,7 +144,7 @@ exports.paymentReceiptEmail = (options) => `
         </div>
         
         <p>Your features are now active. Go ahead and get more eyes on your ads!</p>
-        <p>Thank you,<br>The Taggerly Team</p>
+        <p>Thank you,<br>The Tagger Team</p>
     </div>
     ${emailFooter}
 </div>
@@ -167,7 +167,7 @@ exports.adApprovedEmail = (options) => `
         </div>
         
         <p>Good luck with your sale!</p>
-        <p>Best regards,<br>The Taggerly Team</p>
+        <p>Best regards,<br>The Tagger Team</p>
     </div>
     ${emailFooter}
 </div>
@@ -182,7 +182,7 @@ exports.adRejectedEmail = (options) => `
     <div style="padding: 40px; font-family: sans-serif; line-height: 1.6; color: #333;">
         <h2 style="color: #F44336;">Your Ad Requires Attention</h2>
         <p>Hi ${options.userName},</p>
-        <p>Thank you for posting on Taggerly. Unfortunately, your ad "<strong>${options.adTitle}</strong>" was not approved at this time.</p>
+        <p>Thank you for posting on Tagger. Unfortunately, your ad "<strong>${options.adTitle}</strong>" was not approved at this time.</p>
         
         <div style="background-color: #FFF9C4; padding: 20px; border-left: 4px solid #FBC02D; margin: 20px 0;">
             <strong>Reason for rejection:</strong><br>
@@ -194,7 +194,7 @@ exports.adRejectedEmail = (options) => `
             <a href="${process.env.FRONTEND_URL || 'http://localhost:5000'}/dashboard.html" style="background-color: ${secondaryColor}; color: white; padding: 12px 30px; text-decoration: none; border-radius: 50px; font-weight: bold;">Go to My Ads</a>
         </div>
         
-        <p>Best regards,<br>The Taggerly Team</p>
+        <p>Best regards,<br>The Tagger Team</p>
     </div>
     ${emailFooter}
 </div>
@@ -216,7 +216,7 @@ exports.adExpiringSoonEmail = (options) => `
             <a href="${options.dashboardURL}" style="background-color: ${brandColor}; color: white; padding: 12px 30px; text-decoration: none; border-radius: 50px; font-weight: bold;">Renew My Ad</a>
         </div>
         
-        <p>Best regards,<br>The Taggerly Team</p>
+        <p>Best regards,<br>The Tagger Team</p>
     </div>
     ${emailFooter}
 </div>
@@ -229,7 +229,7 @@ exports.newsletterWelcomeEmail = (options) => `
 <div style="${containerStyle}">
     ${emailHeader}
     <div style="padding: 40px; font-family: sans-serif; line-height: 1.6; color: #333;">
-        <h2 style="color: ${secondaryColor};">Welcome to the Taggerly Newsletter!</h2>
+        <h2 style="color: ${secondaryColor};">Welcome to the Tagger Newsletter!</h2>
         <p>Hi there,</p>
         <p>Thanks for subscribing to our newsletter! You're now on the list to receive the latest tips, news, and best deals straight to your inbox.</p>
         
@@ -240,14 +240,14 @@ exports.newsletterWelcomeEmail = (options) => `
             <li>Curated highlights of the most interesting listings each week.</li>
         </ul>
         
-        <p>We're excited to help you make the most of Taggerly!</p>
+        <p>We're excited to help you make the most of Tagger!</p>
         
         <div style="text-align: center; margin: 30px 0;">
             <a href="${process.env.FRONTEND_URL || 'http://localhost:5000'}" style="background-color: ${brandColor}; color: white; padding: 12px 30px; text-decoration: none; border-radius: 50px; font-weight: bold;">Browse Latest Ads</a>
         </div>
         
         <p>If you ever want to stop receiving these emails, you can <a href="${options.unsubscribeURL}" style="color: ${secondaryColor};">unsubscribe here</a> at any time.</p>
-        <p>Best regards,<br>The Taggerly Team</p>
+        <p>Best regards,<br>The Tagger Team</p>
     </div>
     ${emailFooter}
 </div>
@@ -271,9 +271,9 @@ exports.newBlogPostEmail = (options) => `
             <a href="${options.postURL}" style="background-color: ${secondaryColor}; color: white; padding: 12px 30px; text-decoration: none; border-radius: 50px; font-weight: bold;">Read Full Article</a>
         </div>
         
-        <p>Stay informed with the latest tips and news from Taggerly!</p>
+        <p>Stay informed with the latest tips and news from Tagger!</p>
         <hr style="border: 0; border-top: 1px solid #eee; margin: 30px 0;">
-        <p style="font-size: 11px; color: #999;">You're receiving this because you're subscribed to the Taggerly Newsletter. 
+        <p style="font-size: 11px; color: #999;">You're receiving this because you're subscribed to the Tagger Newsletter. 
         <a href="${options.unsubscribeURL}" style="color: ${secondaryColor};">Unsubscribe</a></p>
     </div>
     ${emailFooter}

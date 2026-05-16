@@ -1,8 +1,8 @@
 # 🚀 Deployment Guide | دليل رفع الموقع (Hostinger)
 
-This guide will help you deploy **Taggerly** on Hostinger or any other Node.js hosting service.
+This guide will help you deploy **Tagger** on Hostinger or any other Node.js hosting service.
 
-هذا الدليل سيساعدك على رفع موقع **Taggerly** على استضافة Hostinger أو أي استضافة Node.js أخرى.
+هذا الدليل سيساعدك على رفع موقع **Tagger** على استضافة Hostinger أو أي استضافة Node.js أخرى.
 
 ---
 
@@ -45,7 +45,7 @@ This guide will help you deploy **Taggerly** on Hostinger or any other Node.js h
 3. **Clone & Install**:
    ```bash
    git clone <your_repo_url>
-   cd taggerly-project
+   cd tagger-project
    npm install
    ```
 4. **Setup Environment**:

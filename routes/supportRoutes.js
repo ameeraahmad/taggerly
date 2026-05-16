@@ -185,7 +185,7 @@ router.post('/:id/reply', async (req, res) => {
             html: `
                 <div style="font-family: sans-serif; padding: 20px;">
                     <h2>Hello ${request.name},</h2>
-                    <p>Response from Taggerly Support:</p>
+                    <p>Response from Tagger Support:</p>
                     <div style="background: #f4f4f4; padding: 15px; border-left: 4px solid #FF6B00; margin: 20px 0;">
                         ${replyMessage.replace(/\n/g, '<br/>')}
                     </div>

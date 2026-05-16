@@ -62,7 +62,7 @@ const initCronJobs = (io) => {
                 if (ad.user && ad.user.email) {
                     sendEmail({
                         email: ad.user.email,
-                        subject: `⚠️ Reminder: Your ad on Taggerly is expiring soon!`,
+                        subject: `⚠️ Reminder: Your ad on Tagger is expiring soon!`,
                         message: `Your ad "${ad.title}" will expire in 3 days.`,
                         html: adExpiringSoonEmail({
                             userName: ad.user.name,
